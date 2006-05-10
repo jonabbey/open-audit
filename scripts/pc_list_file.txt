@@ -1,0 +1,10 @@
+
+Use the format below for PCs the you have admin rights to
+pcname,,
+
+Use the format below for PCs that you must supply credentials to audit (PCs not on your domain)
+pcname,domain\username,password
+
+Use PC names - NOT IPAddresses (you may need to add the names/IPs to your hosts file for this)
+Do not leave a blank line at the end of the file.
+You CAN mix and match domain and not domain PCs in the one file.

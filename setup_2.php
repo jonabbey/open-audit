@@ -1,0 +1,62 @@
+<?php
+$page = "setup_2";
+include "include.php";
+$bgcolor = "#FFFFFF";
+
+
+echo "<td valign=\"top\">\n";
+echo "<div class=\"main_each\">";
+echo "<table border=\"0\" cellpadding=\"2\" cellspacing=\"0\" width=\"100%\" >\n";
+echo "  <tr><td class=\"contenthead\">$l_s18.</td></tr>";
+echo "  <tr><td colspan=\"3\"><hr /></td></tr>";
+echo "  <tr><td>$l_s13 " . $mysql_server . " as " . $mysql_user . ".</td>\n";
+mysql_connect($mysql_server, $mysql_user, $mysql_password) or die("<td>Could not connect.</td><td><img src=\"images/button_fail.png\" width=\"16\" height=\"16\" /></td></tr>\n");
+echo "      <td>$l_cop.</td><td><img src=\"images/button_success.png\" width=\"16\" height=\"16\" /></td></tr>\n";
+echo "  <tr><td>Setting up data in tables.</td>";
+
+  $sql = "INSERT INTO call_priority (call_priority_id, call_priority_name, call_priority_colour, call_priority_font_colour) VALUES ('1','Critical','red','white')";
+  $result = mysql_query($sql) or die("<tr><td>$l_s20:<br /><font color=\"red\">" . $sql . "</font></td></tr>\n");
+  //echo "<tr><td>" . $sql . "</td></tr>\n";
+  $sql = "INSERT INTO call_priority (call_priority_id, call_priority_name, call_priority_colour, call_priority_font_colour) VALUES ('2','High','orange','black')";
+  $result = mysql_query($sql) or die("<tr><td>l_s20:<br /><font color=\"red\">" . $sql . "</font></td></tr>\n");
+  //echo "<tr><td>" . $sql . "</td></tr>\n";
+  $sql = "INSERT INTO call_priority (call_priority_id, call_priority_name, call_priority_colour, call_priority_font_colour) VALUES ('3','Medium','blue','white')";
+  $result = mysql_query($sql) or die("<tr><td>l_s20:<br /><font color=\"red\">" . $sql . "</font></td></tr>\n");
+  //echo "<tr><td>" . $sql . "</td></tr>\n";
+  $sql = "INSERT INTO call_priority (call_priority_id, call_priority_name, call_priority_colour, call_priority_font_colour) VALUES ('4','Low','grey','black')";
+  $result = mysql_query($sql) or die("<tr><td>l_s20:<br /><font color=\"red\">" . $sql . "</font></td></tr>\n");
+  //echo "<tr><td>" . $sql . "</td></tr>\n";
+  $sql = "INSERT INTO call_priority (call_priority_id, call_priority_name, call_priority_colour, call_priority_font_colour) VALUES ('5','Not Prioritised','white','black')";
+  $result = mysql_query($sql) or die("<tr><td>l_s20:<br /><font color=\"red\">" . $sql . "</font></td></tr>\n");
+  //echo "<tr><td>" . $sql . "</td></tr>\n";
+  $sql = "INSERT INTO call_status (call_status_name, call_status_colour) VALUES ('New','red')";
+  $result = mysql_query($sql) or die("<tr><td>l_s20:<br /><font color=\"red\">" . $sql . "</font></td></tr>\n");
+  //echo "<tr><td>" . $sql . "</td></tr>\n";
+  $sql = "INSERT INTO call_status (call_status_name, call_status_colour) VALUES ('Assigned','blue')";
+  $result = mysql_query($sql) or die("<tr><td>l_s20:<br /><font color=\"red\">" . $sql . "</font></td></tr>\n");
+  //echo "<tr><td>" . $sql . "</td></tr>\n";
+  $sql = "INSERT INTO call_status (call_status_name, call_status_colour) VALUES ('Awaiting More Info','orange')";
+  $result = mysql_query($sql) or die("<tr><td>l_s20:<br /><font color=\"red\">" . $sql . "</font></td></tr>\n");
+  //echo "<tr><td>" . $sql . "</td></tr>\n";
+  $sql = "INSERT INTO call_status (call_status_name, call_status_colour) VALUES ('Closed','green')";
+  $result = mysql_query($sql) or die("<tr><td>l_s20:<br /><font color=\"red\">" . $sql . "</font></td></tr>\n");
+  //echo "<tr><td>" . $sql . "</td></tr>\n";
+  $sql = "INSERT INTO config (config_name, config_value) VALUES ('calls','set')";
+  $result = mysql_query($sql) or die("<tr><td>l_s20:<br /><font color=\"red\">" . $sql . "</font></td></tr>\n");
+  //echo "<tr><td>" . $sql . "</td></tr>\n";
+  $sql = "INSERT INTO config (config_name, config_value) VALUES ('version','0.1.00')";
+  $result = mysql_query($sql) or die("<tr><td>l_s20:<br /><font color=\"red\">" . $sql . "</font></td></tr>\n");
+  //echo "<tr><td>" . $sql . "</td></tr>\n";
+  $sql = "SET PASSWORD FOR " . $mysql_user . "@localhost = OLD_PASSWORD('" . $mysql_password . "')";
+  $result = mysql_query($sql) or die("<tr><td>l_s20:<br /><font color=\"red\">" . $sql . "</font></td></tr>\n");
+  //echo "<tr><td>" . $sql . "</td></tr>\n";
+  echo "<td>Done.</td><td><img src=\"images/button_success.png\" width=\"16\" height=\"16\" /></td></tr>\n";
+  echo "<tr><td>$l_s19. <br />&nbsp;</td></tr>";
+  echo "<tr><td>$l_clk <a href=\"setup_audit.php\">$l_her</a> $l_toc.<br /></td></tr>";
+  echo "</table>";
+echo "</td>\n";
+include "include_right_column.php";
+include "include_png_replace.php";
+echo "</body>\n";
+echo "</html>\n";
+?>
