@@ -7,6 +7,7 @@ echo "<div class=\"main_each\">\n";
 echo "<p class=\"contenthead\">" . $l_swi . "</p>";
 
 if(isset($_POST['submit_button'])) {
+if (isset($_POST['language_post'])) {$language_post = $_POST['language_post'];} else { $language_post = "english";}
 if ($_POST['mysql_server_post'] == "") {echo "<font color=red>" . $l_yms . ".</font>"; $break = "1";} else {}
 if ($_POST['mysql_database_post'] == "") {echo "<font color=red>" . $l_ydb . ".</font>"; $break = "1";} else {}
 if ($_POST['mysql_user_post'] == "") {echo "<font color=red>" . $l_ymu . ".</font>"; $break = "1";} else {}
@@ -95,9 +96,8 @@ if (isset($_POST['pic_style_post'])) {$pic_style_post = $_POST['pic_style_post']
   $content .= "\n";
   $content .= "\$count_system = '" . $count_system_post . "';\n";
   $content .= "\n";
-//  $content .= "\$col = '" . $col_post . "';\n";
-//  $content .= "\$pic_style = '" . $pic_style_post . "';\n";
-//  $content .= "\n";
+  $content .= "\$language = '" . $language_post . "';\n";
+  $content .= "\n";
   $content .= "?";
   $content .= ">";
 
@@ -125,6 +125,14 @@ include "include_config.php";
 echo "<form method=\"post\" action=\"" . $_SERVER["PHP_SELF"] . "\" name=\"admin_config\">";
 echo "<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" class=\"content\">";
 echo "<tr><td colspan=\"5\"><hr /></td></tr>";
+echo "<tr>\n";
+echo "<td>$l_lan ?</td>\n";
+echo "<td><select size=\"1\" name=\"language_post\" class=\"for_forms\">\n";
+echo "                <option value=\"english\" ";
+     if ($language == "english"){ echo "selected";}
+echo " >English</option>\n";
+echo "    </select></td>\n";
+echo "</tr>\n";
 echo "<tr><td>" . $l_mss . ":&nbsp;</td><td><input type=\"text\" name=\"mysql_server_post\" size=\"12\" value=\"" . $mysql_server . "\" class=\"for_forms\"/></td></tr>\n";
 echo "<tr><td>" . $l_msu . ":&nbsp;</td><td><input type=\"text\" name=\"mysql_user_post\" size=\"12\" value=\"" . $mysql_user . "\" class=\"for_forms\" /></td></tr>\n";
 echo "<tr><td>" . $l_msp . ":&nbsp;</td><td><input type=\"password\" name=\"mysql_password_post\" size=\"12\" value=\"" . $mysql_password . "\" class=\"for_forms\" /></td></tr>\n";
