@@ -77,10 +77,6 @@ window.onload = IEHoverPseudo;
    a.style.display=(a.style.display!="none")?"none":"block";
   }
  }
- for(i=0;i<<?php echo $jscript_count; ?>;i++)   //number of folders HERE
-{
-  switchDIV('f'+i);
- }
 // -->
 </script>
 <?php } else {} ?>
