@@ -7,8 +7,8 @@ $dhcp_enabled = "";
 $dhcp_server = "";
 $ip = "";
 
-$SQL = "SELECT * FROM network_card WHERE net_uuid = '" . $pc . "'";
-$result = mysql_query($SQL, $db);
+$sql = "SELECT * FROM network_card WHERE net_uuid = '" . $pc . "'";
+$result = mysql_query($sql, $db);
 if ($myrow = mysql_fetch_array($result)){
   do {
     if ($myrow["net_ip_address"] <> "000.000.000.000") {
@@ -20,12 +20,26 @@ if ($myrow = mysql_fetch_array($result)){
   } while ($myrow = mysql_fetch_array($result));
 } else {}
 
-    $sql = "SELECT * from system WHERE system_uuid = '$pc' AND system_timestamp = '$timestamp'";
+    $sql = "SELECT * from system WHERE system_uuid = '$pc'";
     $result = mysql_query($sql, $db);
     if ($myrow = mysql_fetch_array($result)){
+      $timestamp = $myrow["system_timestamp"];
+      $img = "";
+      $os_name = $myrow["system_os_name"];
+      if (substr_count($os_name, "Ubuntu") > 0)    {$img = "<img src=\"images/linux_ubuntu_l.png\" width=\"48\" height=\"48\" alt=\"\" title=\"Ubuntu\" />";}
+      if (substr_count($os_name, "Red Hat") > 0)   {$img = "<img src=\"images/linux_redhat_l.png\" width=\"48\" height=\"48\" alt=\"\" title=\"Red Hat\" />";}
+      if ((substr_count($os_name, "Mandrake") > 0) OR (substr_count($os_name, "Mandriva") > 0)) {$img = "<img src=\"images/linux_mandriva_l.png\" width=\"48\" height=\"48\" alt=\"\" title=\"Mandrake\" />";}
+      if (substr_count($os_name, "Fedora") > 0)    {$img = "<img src=\"images/linux_fedora_l.png\" width=\"48\" height=\"48\" alt=\"\" title=\"Fedora\" />";}
+      if (substr_count($os_name, "Debian") > 0)    {$img = "<img src=\"images/linux_debian_l.png\" width=\"48\" height=\"48\" alt=\"\" title=\"Debian\" />";}
+      if (substr_count($os_name, "Slackware") > 0) {$img = "<img src=\"images/linux_slackware_l.png\" width=\"48\" height=\"48\" alt=\"\" title=\"Slackware\" />";}
+      if ((substr_count($os_name, "Suse") > 0) OR (substr_count($os_name, "Novell") > 0)){$img = "<img src=\"images/linus_suse_l.png\" width=\"48\" height=\"48\" alt=\"\" title=\"Suse\" />";}
+      if (substr_count($os_name, "Gentoo") > 0)    {$img = "<img src=\"images/linux_gentoo_l.png\" width=\"48\" height=\"48\" alt=\"$l_m58\" title=\"Gentoo\" />";}
+      if ($img == ""){$img = "<img src=\"images/summary_l.png\" width=\"48\" height=\"48\" alt=\"\" title=\"Windows\" />";}
+
       echo "<div class=\"main_each\">\n";
       echo "<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n";
       echo "<tr><td class=\"contenthead\" colspan=\"4\">$l_syw $l_sum " . ip_trans($myrow["net_ip_address"]) . " - " . $myrow["system_name"] . "<br />&nbsp;</td></tr>\n";
+      echo "<tr><td class=\"contenthead\" colspan=\"2\"><br />" . $img . "$l_sum</td></tr>\n";
       do {
         echo "<tr bgcolor=\"#F1F1F1\"><td width=\"200\">$l_sys:&nbsp;</td><td>" . $myrow["system_name"] . "</td></tr>\n";
         echo "<tr><td>$l_des:&nbsp;</td><td>" . $myrow["system_description"] . "</td></tr>\n";
@@ -35,7 +49,7 @@ if ($myrow = mysql_fetch_array($result)){
         echo "<tr><td>$l_dom:&nbsp;</td><td>" . $myrow["net_domain"] . "</td></tr>\n";
         echo "<tr bgcolor=\"#F1F1F1\"><td>$l_cha:&nbsp;</td><td>" . $myrow["system_system_type"] . "</td></tr>\n";
         echo "<tr><td>$l_mdl / $l_srl #:&nbsp;</td><td>" . $myrow["system_model"] . " / " . $myrow["system_id_number"] . "</td></tr>\n";
-        echo "<tr bgcolor=\"#F1F1F1\"><td>$l_man:&nbsp;</td><td>" . $myrow["system_vendor"] . "</td></tr>\n";
+        echo "<tr bgcolor=\"#F1F1F1\"><td>$l_mam:&nbsp;</td><td>" . $myrow["system_vendor"] . "</td></tr>\n";
         echo "<tr><td>$l_osy:&nbsp;</td><td>" . $myrow["system_os_name"] . "</td></tr>\n";
         echo "<tr bgcolor=\"#F1F1F1\"><td>$l_bul / $l_sep:&nbsp;</td><td>" . $myrow["system_build_number"] . " / " . $myrow["system_service_pack"] . "</td></tr>\n";
         echo "<tr><td>$l_syx:&nbsp;</td><td>" . $myrow["system_uuid"] . "&nbsp;&nbsp;</td></tr>\n";
@@ -49,8 +63,8 @@ if ($myrow = mysql_fetch_array($result)){
       } else {}
 
     $bgcolor = "#FFFFFF";
-    $SQL = "SELECT * FROM hard_drive WHERE hard_drive_uuid = '$pc' AND hard_drive_timestamp = '$timestamp' ORDER BY hard_drive_index";
-    $result = mysql_query($SQL, $db);
+    $sql = "SELECT * FROM hard_drive WHERE hard_drive_uuid = '$pc' AND hard_drive_timestamp = '$timestamp' ORDER BY hard_drive_index";
+    $result = mysql_query($sql, $db);
     if ($myrow = mysql_fetch_array($result)){
     do {
       $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
@@ -59,8 +73,8 @@ if ($myrow = mysql_fetch_array($result)){
     } else {}
 
 
-    $SQL = "SELECT * FROM processor WHERE processor_uuid = '$pc' AND processor_timestamp = '$timestamp' ORDER BY processor_id";
-    $result = mysql_query($SQL, $db);
+    $sql = "SELECT * FROM processor WHERE processor_uuid = '$pc' AND processor_timestamp = '$timestamp' ORDER BY processor_id";
+    $result = mysql_query($sql, $db);
     if ($myrow = mysql_fetch_array($result)){
     do {
       $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
@@ -70,8 +84,8 @@ if ($myrow = mysql_fetch_array($result)){
 
 
 
-    $SQL = "SELECT * FROM system_man WHERE system_man_uuid = '$pc'";
-    $result = mysql_query($SQL, $db);
+    $sql = "SELECT * FROM system_man WHERE system_man_uuid = '$pc'";
+    $result = mysql_query($sql, $db);
     if ($myrow = mysql_fetch_array($result)){
     do {
     $s_m_l = $myrow['system_man_location'];
@@ -99,44 +113,30 @@ if ($myrow = mysql_fetch_array($result)){
     $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
     echo "<tr bgcolor=\"" . $bgcolor . "\"><td>$l_des:&nbsp;</td><td>" . $s_m_d . "</td></tr>\n";
 
-    $SQL = "SELECT * FROM other WHERE other_linked_pc = '" . $pc . "'";
-    $result = mysql_query($SQL, $db);
+    $sql = "SELECT * FROM other WHERE other_linked_pc = '" . $pc . "'";
+    $result = mysql_query($sql, $db);
     if ($myrow = mysql_fetch_array($result)){
       do {
         $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
-        echo "<tr bgcolor=\"" . $bgcolor . "\"><td valign=\"top\">Other Items:&nbsp;</td><td>" . $myrow["other_type"] . "&nbsp;&nbsp;:&nbsp;&nbsp;<a href=\"other_summary.php?other=" . $myrow["other_id"] . "&amp;sub=1\">" . $myrow["other_name"] . "</a>&nbsp;&nbsp;:&nbsp;&nbsp;" . $myrow["other_manufacturer"] . "</td></tr>";
+        echo "<tr bgcolor=\"" . $bgcolor . "\"><td valign=\"top\">Other Items:&nbsp;</td><td>" . $myrow["other_type"] . "&nbsp;&nbsp;:&nbsp;&nbsp;<a href=\"other_summary.php?other=" . $myrow["other_id"] . "&amp;sub=1\">" . $myrow["other_network_name"] . "</a>&nbsp;&nbsp;:&nbsp;&nbsp;" . $myrow["other_manufacturer"] . "</td></tr>";
       } while ($myrow = mysql_fetch_array($result));
     } else {
-      $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
-      echo "<tr><td>$l_oth:&nbsp;</td><td>None</td></tr>\n";
+    //  $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
+    //  echo "<tr><td>$l_oth:&nbsp;</td><td>None</td></tr>\n";
     }
 
-    $SQL = "SELECT * FROM printer WHERE printer_uuid = '" . $pc . "'";
-    $result = mysql_query($SQL, $db);
-    if ($myrow = mysql_fetch_array($result)){
-      do {
-        $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
-        echo "<tr bgcolor=\"" . $bgcolor . "\"><td valign=\"top\">$l_prn:&nbsp;</td><td><a href=\"printer_summary.php?printer=" . $myrow["printer_id"] . "&amp;sub=1\">" . $myrow["printer_caption"] . "</a></td></tr>";
-      } while ($myrow = mysql_fetch_array($result));
-    } else {
-      $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
-      echo "<tr><td>$l_prn:&nbsp;</td><td>None</td></tr>\n";
-    }
-
-    $SQL = "SELECT * FROM monitor WHERE monitor_uuid = '" . $pc . "'";
-    $result = mysql_query($SQL, $db);
+    $sql = "SELECT * FROM monitor WHERE monitor_uuid = '" . $pc . "'";
+    $result = mysql_query($sql, $db);
     if ($myrow = mysql_fetch_array($result)){
       do {
         $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
         echo "<tr bgcolor=\"" . $bgcolor . "\"><td valign=\"top\">$l_mon:&nbsp;</td><td><a href=\"monitor_summary.php?monitor=" . $myrow["monitor_id"] . "&amp;sub=1\">" . $myrow["monitor_manufacturer"] . "&nbsp;&nbsp;:&nbsp;&nbsp;" . $myrow["monitor_model"] . "</a></td></tr>";
       } while ($myrow = mysql_fetch_array($result));
     } else {
-      $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
-      echo "<tr><td>$l_mon:&nbsp;</td><td>None</td></tr>\n";
+    //  $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
+    //  echo "<tr><td>$l_mon:&nbsp;</td><td>None</td></tr>\n";
     }
-
-    echo "<tr><td><form action=\"system_summary_edit.php?pc=" .  $pc . "&amp;sub=all\" method=\"post\"><input name=\"Submit\" value=\" $l_edi \" type=\"submit\" /></form></td></tr>";
-
+echo "<tr><td><form action=\"system_summary_edit.php?pc=" .  $pc . "&amp;sub=all\" method=\"post\"><input name=\"submit\" value=\" $l_edi \" type=\"submit\" /></form></td></tr>";
 echo "</table>\n";
 echo "</div>\n";
 echo "</td>\n";

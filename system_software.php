@@ -12,6 +12,9 @@ echo "</table>\n";
 
 if (($sub == "is") or ($sub == "all")){
   $SQL = "SELECT * FROM software WHERE software_uuid = '$pc' AND software_timestamp = '$timestamp' AND software_name NOT LIKE '%codec%' AND software_name NOT LIKE '%hotfix%' AND software_name NOT LIKE '%update%' AND software_name NOT LIKE '%Service Pack%' AND software_system_component <> '1' ORDER BY software_name";
+//echo $SQL . "<br />";
+  $SQL = "SELECT software_name, software_version, software_url, software_publisher FROM software, system WHERE software_uuid = '$pc' AND software_uuid = system_uuid AND software_timestamp = system_timestamp AND software_name NOT LIKE '%codec%' AND software_name NOT LIKE '%hotfix%' AND software_name NOT LIKE '%update%' AND software_name NOT LIKE '%Service Pack%' AND software_system_component <> '1' ORDER BY software_name";
+//echo "&nbsp;<br />" . $SQL . "<br />";
   $result = mysql_query($SQL, $db);
   if (($myrow = mysql_fetch_array($result))){
     echo "<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\"  width=\"100%\">\n";

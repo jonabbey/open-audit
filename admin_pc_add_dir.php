@@ -15,7 +15,7 @@ include "include.php";
 echo "<td valign=\"top\">\n";
 echo "<div class=\"main_each\">";
 echo "<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n";
-echo " <tr>\n  <td align=\"left\" class=\"contenthead\" >Uploading files from Uploads directory.<br />&nbsp;</td>\n";
+echo " <tr>\n  <td align=\"left\" class=\"contenthead\" >$l_upl.<br />&nbsp;</td>\n";
 $count = 0;
 $dir = "uploads/";
 // Open a known directory, and proceed to read its contents
@@ -29,7 +29,7 @@ if (is_dir($dir)) {
    }
 }
 foreach ($files as $file_name){
-echo "<tr><td>Uploading file: " . $file_name . "</td></tr>";
+echo "<tr><td>$l_upf: " . $file_name . "</td></tr>";
 echo "<tr><td>\n";
 
 $filename = "uploads/" . $file_name;

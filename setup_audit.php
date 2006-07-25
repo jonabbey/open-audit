@@ -99,7 +99,7 @@ if(!(isset($_POST['submit']))){
   echo "  <tr><td colspan=\"2\"><hr /></td></tr>\n";
   echo "  <tr>\n";
   echo "    <td>$l_s39.</td>\n";
-  echo "    <td><input type=\"submit\" name=\"submit\" value=\"Submit\" /></td>\n";
+  echo "    <td><input type=\"submit\" name=\"submit\" value=\"$l_sut\" /></td>\n";
   echo "  </tr>\n";
   echo "</table>\n";
   echo "</form>\n";

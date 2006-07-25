@@ -55,7 +55,7 @@ if (($sub == "sc") or ($sub == "all")){
       $opt_count = $opt_count + 1;
       echo "<tr><td colspan=\"2\" class=\"contenthead\"><br /><img src=\"images/scsi_l.png\" width=\"48\" height=\"48\" alt=\"\" />&nbsp;$l_scy #$opt_count</td><td></td></tr>\n";
       echo "<tr><td width=\"200\">$l_cap:</td><td>" . $myrow["scsi_controller_caption"] . "</td></tr>\n";
-      echo "<tr bgcolor=\"$bg1\"><td>$l_man:</td><td>" . $myrow['scsi_controller_manufacturer'] . "</td></tr>";
+      echo "<tr bgcolor=\"$bg1\"><td>$l_mam:</td><td>" . $myrow['scsi_controller_manufacturer'] . "</td></tr>";
       $sql2 = "SELECT tape_drive_caption FROM tape_drive, scsi_device WHERE scsi_device_uuid = '$pc' AND scsi_device_device = tape_drive_device_id ";
       $sql2 .= "AND scsi_device_controller = '" . STR_REPLACE("\\", "\\\\", $myrow["scsi_controller_device_id"]) . "'";
       $result2 = mysql_query($sql2, $db);
@@ -102,7 +102,7 @@ if (($sub == "fd") or ($sub == "all")){
       echo "<tr><td colspan=\"2\" class=\"contenthead\"><br /><img src=\"images/floppy_l.png\" width=\"48\" height=\"48\" alt=\"\" /> $l_fde #$opt_count</td></tr>\n";
       echo "<tr><td>$l_cap:</td><td>" . $myrow["floppy_caption"] . "</td></tr>\n";
       echo "<tr bgcolor=\"$bg1\"><td>$l_des:</td><td>" . $myrow["floppy_description"] . "</td></tr>\n";
-      echo "<tr><td>$l_man:</td><td>" . $myrow["floppy_$l_man"] . "</td></tr>\n";
+      echo "<tr><td>$l_mam:</td><td>" . $myrow["floppy_manufacturer"] . "</td></tr>\n";
     } while ($myrow = mysql_fetch_array($result));
   } else {}
 } else {}
@@ -117,7 +117,7 @@ if (($sub == "td") or ($sub == "all")){
     do {
       $opt_count = $opt_count + 1;
       echo "<tr><td class=\"contenthead\"><br /><img src=\"images/tape_l.png\" width=\"48\" height=\"48\" alt=\"\" /> $l_tdv #$opt_count</td><td></td></tr>\n";
-      echo "<tr><td>$l_man:</td><td>" . $myrow["tape_drive_$l_man"] . "</td></tr>\n";
+      echo "<tr><td>$l_mam:</td><td>" . $myrow["tape_drive_manufacturer"] . "</td></tr>\n";
       echo "<tr bgcolor=\"$bg1\"><td>$l_cap:</td><td>" . $myrow["tape_drive_caption"] . "</td></tr>\n";
       echo "<tr><td>$l_des:</td><td>" . $myrow["tape_drive_description"] . "</td></tr>\n";
     } while ($myrow = mysql_fetch_array($result));
@@ -133,7 +133,7 @@ if (($sub == "pb") or ($sub == "all")){
     do {
       $opt_count = $opt_count + 1;
       echo "<tr><td class=\"contenthead\" colspan=\"2\"><br /><img src=\"images/processor_l.png\" width=\"48\" height=\"48\" alt=\"\" /> $l_pro #$opt_count</td><td></td></tr>\n";
-      echo "<tr><td>$l_man:</td><td>" . $myrow["processor_manufacturer"] . "</td></tr>\n";
+      echo "<tr><td>$l_mam:</td><td>" . $myrow["processor_manufacturer"] . "</td></tr>\n";
       echo "<tr bgcolor=\"$bg1\"><td>Type:</td><td>" . $myrow["processor_caption"] . "</td></tr>\n";
       echo "<tr><td>Description:</td><td>" . $myrow["processor_name"] . "</td></tr>\n";
       echo "<tr bgcolor=\"$bg1\"><td>Max Speed:</td><td>" . $myrow["processor_max_clock_speed"] . "</td></tr>\n";
@@ -148,7 +148,7 @@ if (($sub == "pb") or ($sub == "all")){
       do {
         echo "<tr><td class=\"contenthead\" colspan=\"2\"><br /><img src=\"images/bios_l.png\" width=\"48\" height=\"48\" alt=\"\" /> $l_bio</td><td></td></tr>\n";
         echo "<tr><td>$l_des:</td><td>" . $myrow["bios_description"] . "</td></tr>\n";
-        echo "<tr bgcolor=\"$bg1\"><td>$l_man:</td><td>" . $myrow["bios_manufacturer"] . "</td></tr>\n";
+        echo "<tr bgcolor=\"$bg1\"><td>$l_mam:</td><td>" . $myrow["bios_manufacturer"] . "</td></tr>\n";
         echo "<tr><td>Serial:</td><td>" . $myrow["bios_serial_number"] . "</td></tr>\n";
         echo "<tr bgcolor=\"$bg1\"><td>$l_ver:</td><td>" . $myrow["bios_version"] . "</td></tr>\n";
         echo "<tr><td>SM $l_ver:</td><td>" . $myrow["bios_sm_bios_version"] . "</td></tr>\n";
@@ -186,7 +186,7 @@ if (($sub == "na") or ($sub == "all")){
     echo "<tr><td class=\"contenthead\" colspan=\"2\"><br /><img src=\"images/network_device_l.png\" width=\"48\" height=\"48\" alt=\"\" /> $l_nwa #$opt_count</td></tr>\n";
     echo "<tr><td>$l_typ:</td><td>" . $myrow["net_adapter_type"] . "</td></tr>\n";
     echo "<tr bgcolor=\"$bg1\"><td>$l_des:</td><td>" . $myrow["net_description"] . "</td></tr>\n";
-    echo "<tr><td>$l_man:</td><td>" . $myrow["net_manufacturer"] . "</td></tr>\n";
+    echo "<tr><td>$l_mam:</td><td>" . $myrow["net_manufacturer"] . "</td></tr>\n";
     echo "<tr bgcolor=\"$bg1\"><td>$l_mac:</td><td>" . $myrow["net_mac_address"] . "</td></tr>\n";
     } while ($myrow = mysql_fetch_array($result));
   } else {}
@@ -220,7 +220,7 @@ if (($sub == "vm") or ($sub == "all")){
   if ($myrow = mysql_fetch_array($result)){
     do {
       echo "<tr><td class=\"contenthead\" colspan=\"2\"><br /><img src=\"images/display_l.png\" width=\"48\" height=\"48\" alt=\"\" /> $l_moo</td></tr>\n";
-      echo "<tr><td>$l_moo $l_man:</td><td>" . $myrow["monitor_manufacturer"] . "</td></tr>\n";
+      echo "<tr><td>$l_moo $l_mam:</td><td>" . $myrow["monitor_manufacturer"] . "</td></tr>\n";
       echo "<tr bgcolor=\"$bg1\"><td>$l_mdl:</td><td>" . $myrow["monitor_model"] . "</td></tr>\n";
       echo "<tr><td>$l_srl:</td><td>" . $myrow["monitor_serial"] . "</td></tr>\n";
       echo "<tr bgcolor=\"$bg1\"><td>$l_mdt:</td><td>" . $myrow["monitor_manufacture_date"] . "</td></tr>\n";
@@ -235,7 +235,7 @@ if (($sub == "so") or ($sub == "all")){
     do {
       echo "<tr><td class=\"contenthead\" colspan=\"2\"><br /><img src=\"images/audio_l.png\" width=\"48\" height=\"48\" alt=\"\" /> $l_snd</td><td></td></tr>\n";
       echo "<tr><td>$l_des:</td><td>" . $myrow["sound_name"] . "</td></tr>\n";
-      echo "<tr bgcolor=\"$bg1\"><td>$l_man:</td><td>" . $myrow["sound_manufacturer"] . "</td></tr>\n";
+      echo "<tr bgcolor=\"$bg1\"><td>$l_mam:</td><td>" . $myrow["sound_manufacturer"] . "</td></tr>\n";
     } while ($myrow = mysql_fetch_array($result));
   } else {}
 } else {}
@@ -369,7 +369,7 @@ if (($sub == "us") or ($sub == "all")){
         
         echo "<tr><td>$l_cap:</td><td>" . $myrow["usb_caption"] . "</td></tr>\n";
         echo "<tr bgcolor=\"$bg1\"><td>$l_des:</td><td>" . $myrow["usb_description"] . "</td></tr>\n";
-        echo "<tr><td>$l_man:</td><td>" . $myrow["usb_manufacturer"] . "</td></tr>\n";
+        echo "<tr><td>$l_mam:</td><td>" . $myrow["usb_manufacturer"] . "</td></tr>\n";
     } while ($myrow = mysql_fetch_array($result));
   } else {}
 } else {}
@@ -377,7 +377,7 @@ if (($sub == "us") or ($sub == "all")){
 
 if (($sub == "pr") or ($sub == "all")){
   $opt_count = 0;
-  $SQL = "SELECT * FROM printer WHERE printer_uuid = '$pc' AND printer_timestamp = '$timestamp' AND printer_system_name = '" . $name . "' AND printer_port_name NOT LIKE '%IP%' AND printer_port_name NOT LIKE '\\\\%'";
+  $SQL = "SELECT * FROM other WHERE other_id = '$pc' AND other_timestamp = '$timestamp' AND other_linked_pc = '" . $name . "' AND other_p_port_name NOT LIKE '%IP%' AND other_p_port_name NOT LIKE '\\\\%' AND other_type = 'printer'";
   $result = mysql_query($SQL, $db);
   if ($myrow = mysql_fetch_array($result)){
     do {

@@ -88,11 +88,8 @@ include "include_config.php";
     $query = "DELETE FROM network_card";
     $result = mysql_query($query)  or die("Query failed at insert stage. network_card");
 
-    $query = "DELETE FROM nmap_other_ports";
+    $query = "DELETE FROM nmap_ports";
     $result = mysql_query($query)  or die("Query failed at insert stage. nmap_other_ports");
-
-    $query = "DELETE FROM nmap_system_ports";
-    $result = mysql_query($query)  or die("Query failed at insert stage. nmap_system_ports");
 
     $query = "DELETE FROM notes";
     $result = mysql_query($query)  or die("Query failed at insert stage. notes");

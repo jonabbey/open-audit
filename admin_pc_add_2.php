@@ -1,6 +1,15 @@
 <?php
+$page = "add_pc";
 // Increase the script timeout value
 set_time_limit(200);
+
+$systemname = "";
+$timestamp = "";
+$uuid = "";
+$user_name = "";
+$verbose = "";
+$software_audit = "";
+$verbose = "";
 
 //Get current time
     $mtime = microtime();
@@ -38,13 +47,15 @@ include "include_config.php";
 // Process the form
 mysql_connect($mysql_server, $mysql_user, $mysql_password) or die("Could not connect");
 mysql_select_db($mysql_database) or die("Could not select database");
-$user_name = $_POST['user_name'];
-$timestamp = $_POST["timestamp"];
-$uuid = $_POST["uuid"];
-$software_audit = $_POST["software_audit"];
-$systemname = $_POST["systemname"];
-$verbose = "";
-if (!is_null($_POST["verbose"])) {$verbose = $_POST["verbose"];} else {$verbose="off";}
+
+//$user_name = $_POST['user_name'];
+//$timestamp = $_POST["timestamp"];
+//$uuid = $_POST["uuid"];
+//$software_audit = $_POST["software_audit"];
+//$systemname = strtoupper($_POST["systemname"]);
+
+//if (!is_null($_POST["verbose"])) {$verbose = $_POST["verbose"];} else {$verbose="off";}
+
 $input = $_POST['add'];
 $input = explode("\n", $input);
 
@@ -53,7 +64,7 @@ foreach ($input as $split) {
   //Audit
   if (substr($split, 0, 5) == "audit"){
     $extended = explode('^^^',$split);
-    $systemname = trim($extended[1]);
+    $systemname = strtoupper(trim($extended[1]));
     $timestamp = trim($extended[2]);
     $uuid = trim($extended[3]);
     $user_name = trim($extended[4]);
@@ -62,7 +73,7 @@ foreach ($input as $split) {
   }
 }
 
-
+$verbose = "y";
 
 echo "User: " . $user_name . "<br />\n\n";
 echo "Verbose: " . $verbose . "<br />\n\n";
@@ -160,7 +171,7 @@ foreach ($input as $split) {
   // First system submit - Initial insert
   if (substr($split, 0, 8) == "system01") { insert_system01($split); }
   // Second system submit
-  if (substr($split, 0, 8) == "system02") { insert_system02($split); }
+  if (substr($split, 0, 8) == "system02") { $system_name = insert_system02($split); }
   // Third system submit
   if (substr($split, 0, 8) == "system03") { insert_system03($split); }
   // Processor
@@ -316,7 +327,7 @@ function insert_system02 ($split){
     global $timestamp, $uuid, $verbose;
     $extended = explode('^^^',$split);
     $system_model = trim($extended[1]);
-    $system_name = trim($extended[2]);
+    $system_name = strtoupper(trim($extended[2]));
     $system_num_processors = trim($extended[3]);
     $system_part_of_domain = trim($extended[4]);
     $system_primary_owner_name = trim($extended[5]);
@@ -335,7 +346,7 @@ function insert_system02 ($split){
     $sql .= "WHERE system_uuid = '$uuid' AND system_timestamp = '$timestamp'";
     if ($verbose == "y"){echo $sql . "<br />\n\n";}
     $result = mysql_query($sql) or die ('Insert Failed: ' . mysql_error() . '<br />' . $sql);
-    //return();
+    return($system_name);
   }
 
 
@@ -1153,74 +1164,98 @@ function insert_sound ($split) {
 
 
 function insert_printer ($split){
-    global $timestamp, $uuid, $verbose, $printer_timestamp ,$old_timestamp;
+    global $timestamp, $uuid, $verbose, $printer_timestamp ,$old_timestamp, $system_name;
     if ($verbose == "y"){echo "<h2>Printer</h2><br />";}
     $extended = explode('^^^',$split);
     $printer_caption = trim($extended[1]);
-    $printer_local = trim($extended[2]);
+    $printer_local = trim($extended[2]); //
     $printer_port_name = trim($extended[3]);
     $printer_shared = trim($extended[4]);
     $printer_share_name = trim($extended[5]);
-    $printer_system_name = trim($extended[6]);
+    $printer_system_name = strtoupper(str_replace('\\','',trim($extended[6])));
     $printer_location = trim($extended[7]);
     $printer_name = NULL;
+    //if (strpos($printer_system_name,'\\\\') !== false ) { $printer_system_name = substr($printer_system_name, 2); }
+    
+    if ((strpos($printer_caption,'PDF') !== false) OR (strpos($printer_caption,'__') !== false)){
+    // A pdf or Terminal Server printer - not physical, not inserted.
+    } else {
+    // A physical printer - insert
     
     if (strpos($printer_port_name,'IP_') !== false ) {
       // Network Printer
-      if (strpos($printer_caption,'\\') !== false ) { $printer_name = explode("\\", $printer_caption); }
-      if (strpos($printer_caption,'\\') !== false ) { $printer_caption = $printer_name[6]; }
-      $printer_ip = substr($printer_port_name, 3);
-      $printer_host_name = nslookup($printer_ip);
-      $sql = "SELECT count(printer_ip) AS count FROM printer WHERE printer_ip = '$printer_ip'";
+      echo "Network Printer<br />\n";
+      if (strpos($printer_caption,'\\') !== false ) { $printer_name = substr($printer_caption, 2); }
+      $printer_ip = ip_trans_to(substr($printer_port_name, 3));
+      $printer_network_name = $printer_ip;
+ //     $printer_network_name = nslookup(substr($printer_port_name, 3)); 
+      if ($printer_network_name == ""){ $printer_network_name = $printer_ip; }
+      if (strpos($printer_network_name,'\\') !== false ) { $printer_network_name = substr($printer_network_name, 2);}
+      $sql = "SELECT count(other_ip_address) AS count FROM other WHERE other_ip_address = '" . ip_trans_to($printer_ip) . "'";
       if ($verbose == "y"){echo $sql . "<br />\n\n";}
       $result = mysql_query($sql) or die ('Insert Failed: ' . mysql_error() . '<br />' . $sql);
       $myrow = mysql_fetch_array($result);
       if ($myrow['count'] == "0"){
         // Insert
-        $sql  = "INSERT INTO printer (printer_ip, printer_caption, printer_location, printer_system_name, printer_timestamp, printer_first_timestamp) VALUES (";
-        $sql .= "'$printer_ip', '$printer_caption', '$printer_location', '$printer_host_name', '$timestamp', '$timestamp')";
+        $sql  = "INSERT INTO other (other_ip_address, other_description, other_location, other_type, other_model, ";
+        $sql .= "other_network_name, other_p_port_name, other_p_shared, other_p_share_name, ";
+        $sql .= "other_timestamp, other_first_timestamp) VALUES (";
+        $sql .= "'" . ip_trans_to($printer_ip) . "', '$printer_caption', '$printer_location', 'printer', '$printer_description', ";
+        $sql .= "'$printer_network_name', '$printer_port_name', '$printer_shared', '$printer_share_name', ";
+        $sql .= "'$timestamp', '$timestamp')";
         if ($verbose == "y"){echo $sql . "<br />\n\n";}
         $result = mysql_query($sql) or die ('Insert Failed: ' . mysql_error() . '<br />' . $sql);        
       } else {
         // Update
-       $sql  = "UPDATE printer SET printer_timestamp = '$timestamp', printer_system_name = '$printer_host_name', ";
-       $sql .= "printer_location = '$printer_location', printer_caption = '$printer_caption' WHERE printer_ip = '$printer_ip'";
+       $sql  = "UPDATE other SET other_timestamp = '$timestamp', other_p_port_name = '$printer_host_name', ";
+       $sql .= "other_location = '$printer_location', other_description = '$printer_caption' WHERE other_ip_address = '" . ip_trans_to($printer_ip) . "'";
        if ($verbose == "y"){echo $sql . "<br />\n\n";}
        $result = mysql_query($sql) or die ('Insert Failed: ' . mysql_error() . '<br />' . $sql);
       }
-    } else {}
-    
-    if ($printer_port_name == "LPT1:" OR strpos($printer_port_name,'USB') !== false OR strpos($printer_port_name,'DOT') !== false ) {
-    // Locally Attached Printer
-    $printer_timestamp = $old_timestamp;
-    $sql  = "SELECT count(printer_uuid) AS count FROM printer WHERE printer_uuid = '$uuid' AND ";
-    $sql .= "printer_caption = '$printer_caption' AND printer_port_name = '$printer_port_name' AND ";
-    $sql .= "(printer_timestamp = '$printer_timestamp' OR printer_timestamp = '$timestamp')";
-    if ($verbose == "y"){echo $sql . "<br />\n\n";}
-    $result = mysql_query($sql) or die ('Insert Failed: ' . mysql_error() . '<br />' . $sql);
-    $myrow = mysql_fetch_array($result);
-    if ($verbose == "y"){echo "Count: " . $myrow['count'] . "<br />\n\n";}
-    if ($myrow['count'] == "0"){
-      // Insert into database
-      $sql  = "INSERT INTO printer (printer_uuid, printer_caption, ";
-      $sql .= "printer_port_name, ";
-      $sql .= "printer_shared, printer_share_name, ";
-      $sql .= "printer_system_name, printer_location,";
-      $sql .= "printer_timestamp, printer_first_timestamp ) VALUES (";
-      $sql .= "'$uuid', '$printer_caption', ";
-      $sql .= "'$printer_port_name',";
-      $sql .= "'$printer_shared', '$printer_share_name', ";
-      $sql .= "'$printer_system_name', '$printer_location', ";
-      $sql .= "'$timestamp', '$timestamp')";
-      if ($verbose == "y"){echo $sql . "<br />\n\n";}
-      $result = mysql_query($sql) or die ('Insert Failed: ' . mysql_error() . '<br />' . $sql);
     } else {
-      // Already present in database - update timestamp
-      $sql = "UPDATE printer SET printer_timestamp = '$timestamp', printer_location = '$printer_location' WHERE printer_caption = '$printer_caption' AND printer_uuid = '$uuid' AND printer_timestamp = '$printer_timestamp'";
-      if ($verbose == "y"){echo $sql . "<br />\n\n";}
-      $result = mysql_query($sql) or die ('Insert Failed: ' . mysql_error() . '<br />' . $sql);
-    }
+      // Locally Attached Printer
+      // Below is to determine if is REALLY a local printer
+      // If not, the audit of the PC $printer_system_name will be relied
+      // upon to detect and insert the printer.
+      echo "Local Printer<br />\n";
+      if (($printer_system_name == $system_name) AND 
+          ($printer_port_name !== "FILE:") AND 
+          ($printer_port_name !== "MSFAX:") AND 
+          ($printer_port_name !== "SHRFAX:") AND 
+          ($printer_port_name !== "BIPORT") AND 
+          (substr($printer_port_name,0,2) !== "TS") AND 
+          ($printer_port_name !== "SmarThruFaxPort")) {
+        $printer_timestamp = $old_timestamp;
+        $sql  = "SELECT count(other_linked_pc) AS count FROM other WHERE other_linked_pc = '$uuid' AND ";
+        $sql .= "other_description = '$printer_caption' AND other_p_port_name = '$printer_port_name' AND ";
+        $sql .= "(other_timestamp = '$printer_timestamp' OR other_timestamp = '$timestamp')";
+        if ($verbose == "y"){echo $sql . "<br />\n\n";}
+        $result = mysql_query($sql) or die ('Insert Failed: ' . mysql_error() . '<br />' . $sql);
+        $myrow = mysql_fetch_array($result);
+        if ($verbose == "y"){echo "Count: " . $myrow['count'] . "<br />\n\n";}
+        if ($myrow['count'] == "0"){
+        // Insert into database
+        $sql  = "INSERT INTO other (other_linked_pc, other_description, other_type, ";
+        $sql .= "other_p_port_name, ";
+        $sql .= "other_p_shared, other_p_share_name, ";
+        $sql .= "other_network_name, other_location,";
+        $sql .= "other_timestamp, other_first_timestamp ) VALUES (";
+        $sql .= "'$uuid', '$printer_caption', 'printer', ";
+        $sql .= "'$printer_port_name',";
+        $sql .= "'$printer_shared', '$printer_share_name', ";
+        $sql .= "'$printer_system_name', '$printer_location', ";
+        $sql .= "'$timestamp', '$timestamp')";
+        if ($verbose == "y"){echo $sql . "<br />\n\n";}
+        $result = mysql_query($sql) or die ('Insert Failed: ' . mysql_error() . '<br />' . $sql);
+      } else {
+        // Already present in database - update timestamp
+        $sql = "UPDATE other SET other_timestamp = '$timestamp', other_location = '$printer_location' WHERE other_description = '$printer_caption' AND other_linked_pc = '$uuid' AND other_timestamp = '$printer_timestamp'";
+        if ($verbose == "y"){echo $sql . "<br />\n\n";}
+        $result = mysql_query($sql) or die ('Insert Failed: ' . mysql_error() . '<br />' . $sql);
+      }
+    } // End of local printer
     } // End of IP detection in printer_port
+    } // End of pdf printer
   }
 
  
@@ -1517,8 +1552,9 @@ function insert_service ($split) {
     $sql .= "service_state = '$service_state' AND ";
     $sql .= "(service_timestamp = '$service_timestamp' OR service_timestamp = '$timestamp')";
     if ($verbose == "y"){echo $sql . "<br />\n\n";}
-    if ($verbose == "y"){echo "Affected Rows: " . mysql_affected_rows() . "<br />\n\n";}
-    $result = mysql_query($sql) or die ('Insert Failed: ' . mysql_error() . '<br />' . $sql);
+    $result = mysql_query($sql) or die ('Update Failed: ' . mysql_error() . '<br />' . $sql);
+    $affected = mysql_affected_rows();
+    if ($verbose == "y"){echo "Affected Rows: $affected<br />\n\n";}
     if (mysql_affected_rows() == 0) {
       // Insert into database
       $sql  = "INSERT INTO service (service_uuid, service_display_name, service_name, ";
@@ -1610,11 +1646,9 @@ function insert_software ($split) {
     $sql .= "WHERE software_uuid = '$uuid' AND ";
     $sql .= "software_name = '$software_name' AND ";
     $sql .= "(software_timestamp = '$software_timestamp' OR software_timestamp = '$timestamp')";
- echo $sql . "<br />";
     if ($verbose == "y"){echo $sql . "<br />\n\n";}
     $result = mysql_query($sql) or die ('Insert Failed: ' . mysql_error() . '<br />' . $sql);
     $affected = mysql_affected_rows();
- echo "Affected Rows: " . $affected . "<br />\n\n";
     if ($verbose == "y"){echo "Affected Rows: " . $affected . "<br />\n\n";}
     if ($affected == "0") {
       //Insert a new record
@@ -1625,9 +1659,6 @@ function insert_software ($split) {
       $sql .= "'$software_location','$software_uninstall','$software_install_date','$software_publisher',";
       $sql .= "'$software_install_source','$software_system_component','$software_url','$software_comments','$count','$timestamp','$timestamp')";
       $result = mysql_query($sql) or die ('Insert Failed: ' . mysql_error() . '<br />' . $sql);
- echo "Affected: " . $affected . "<br />";
- echo $sql . "<br />";
-
       if ($verbose == "y"){echo $sql . "<br />\n\n";}
       if ($verbose == "y"){echo "Affected Rows: " . mysql_affected_rows() . "<br />\n\n";}
     } else {}
@@ -1944,16 +1975,11 @@ echo "<a href=\"javascript:window.close()\" name=\"clicktoclose\">Close</a>";
 //Output result
     echo "<br />&nbsp;<br />Page was generated in " . round($totaltime,2) . " seconds !";
 
-if (isset($_GET['fs'])) {
-//  echo "Thankyou. Your PC has now been audited. <a href=\"JavaScript:window.close();\">Close this window</a>.";
-} else {
-//  header("Location: index.php");
-}
-
 function nslookup ($ip) {
  $host = split('Name:',`nslookup $ip`);
  return ( trim (isset($host[1]) ? str_replace ("\n".'Address:  '.$ip, '', $host[1]) : $ip));
 }
+
 function return_country($country)
 {
 if ($country == "335"){$country_formatted="Albania";}
@@ -2248,4 +2274,18 @@ if ($language == "20490"){$lang="Spanish  Puerto Rico";}
 return $lang;
 }
 
+function ip_trans_to($ip)
+{
+  if (($ip <> "") AND (!(is_null($ip)))){
+   $myip = explode(".",$ip);
+   $myip[0] = substr("000" . $myip[0], -3);
+   $myip[1] = substr("000" . $myip[1], -3);
+   $myip[2] = substr("000" . $myip[2], -3);
+   $myip[3] = substr("000" . $myip[3], -3);
+   $ip = $myip[0] . "." . $myip[1] . "." . $myip[2] . "." . $myip[3];
+  } else {
+   $ip = " Not-Networked";
+  }
+  return $ip;
+}
 ?>

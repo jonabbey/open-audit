@@ -8,6 +8,14 @@ body {
   padding:0;
   padding-left: 0px; }
 
+.for_forms { 
+  font: normal 100% verdana, tahoma, arial, Sans ; 
+  text-decoration: none;
+  color: #777; 
+  margin:5;
+  padding:0;
+  padding-left: 0px; }
+
 .main_each {
   margin: 2px;
   padding: 5px;

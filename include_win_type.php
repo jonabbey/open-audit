@@ -116,6 +116,10 @@ if ($os == $l_m57) {
   $os_returned = $l_m58; }
 else {}
 
+if (substr_count($os, "Ubuntu") > 0){
+  $os_returned = "Ubuntu"; }
+else {} 
+
 return $os_returned;
 }
 

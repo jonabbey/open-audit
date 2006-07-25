@@ -185,6 +185,7 @@ if audit_local_domain = "y" then
   end if
 
   For i = 0 To Ubound(comparray)
+'  For i = 118 To 128
     while num_running > number_of_audits
       if verbose = "y" then
         wscript.echo "Processes running (" & num_running & ") greater than number wanted (" & number_of_audits & ")"
@@ -327,6 +328,7 @@ if verbose = "y" then
    wscript.echo "PC name from WMI: " & system_name
    full_system_name = LCase(system_name) & "." & LCase(domain)
    wscript.echo "User executing this script: " & user_name
+  wscript.echo "System UUID: " & system_uuid
 end if
 ns_ip = NSlookup(system_name)
 if verbose = "y" then
@@ -404,7 +406,7 @@ For Each objItem in colItems
      form_input = "network^^^" & net_mac            & "^^^" & net_description   & "^^^" & net_dhcp_enabled _
                        & "^^^" & net_dhcp_server    & "^^^" & net_dns_host_name & "^^^" & net_dns_server _
                        & "^^^" & net_ip             & "^^^" & net_ip_subnet     & "^^^" & net_wins_primary _
-                       & "^^^" & net_wins_secondary & "^^^" & net_adapter_type  & "^^^" & net_manufacturer
+                       & "^^^" & net_wins_secondary & "^^^" & net_adapter_type  & "^^^" & net_manufacturer & "^^^"
      entry form_input,comment,objTextFile,oAdd,oComment
      form_input = ""
      if net_mac_uuid = "" then net_mac_uuid = net_mac end if
@@ -434,7 +436,7 @@ if isnull(net_domain_controller_name) then net_domain_controller_name = "" end i
 
 form_input = "system01^^^" & clean(net_ip_address) & "^^^" & clean(net_domain) _
                    & "^^^" & clean(net_user_name) & "^^^" & clean(net_client_site_name) _
-                   & "^^^" & clean(Replace(net_domain_controller_address, "\\", "")) & "^^^" & clean(Replace(net_domain_controller_name, "\\", ""))
+                   & "^^^" & clean(Replace(net_domain_controller_address, "\\", "")) & "^^^" & clean(Replace(net_domain_controller_name, "\\", "")) & "^^^"
 entry form_input,comment,objTextFile,oAdd,oComment
 form_input = ""
 
@@ -459,7 +461,9 @@ if  (isnull(system_uuid) OR system_uuid = "" OR system_uuid = ".") then system_u
 if system_uuid = "00000000-0000-0000-0000-000000000000" then system_uuid = system_name + "." + domain end if
 if system_uuid = "FFFFFFFF-FFFF-FFFF-FFFF-FFFFFFFFFFFF" then system_uuid = system_name + "." + domain end if
 
-
+form_input = ""
+form_input = "audit^^^" & system_name & "^^^" & timestamp & "^^^" & system_uuid & "^^^" & user_name & "^^^" & ie_submit_verbose & "^^^" & software_audit & "^^^"
+entry form_input,comment,objTextFile,oAdd,oComment
 
 '''''''''''''''''''''''''''''''''''''
 '   System Information  & Timezone  '
@@ -493,7 +497,7 @@ For Each objItem in colItems
    domain_role = clean(objItem.DomainRole)
 Next
 if domain_role = "0" then domain_role_text = "Standalone Workstation" end if
-if domain_role = "1" then domain_role_text = "Member Workstation" end if
+if domain_role = "1" then domain_role_text = "Workstation" end if
 if domain_role = "2" then domain_role_text = "Standalone Server" end if
 if domain_role = "3" then domain_role_text = "Member Server" end if
 if domain_role = "4" then domain_role_text = "Backup Domain Controller" end if
@@ -540,7 +544,7 @@ form_input = "system02^^^" & trim(system_model) & "^^^" & system_name _
                   & "^^^" & system_primary_owner_name & "^^^" & system_system_type _
                   & "^^^" & mem_size & "^^^" & system_id_number _
                   & "^^^" & trim(system_vendor) & "^^^" & domain_role_text _
-                  & "^^^" & tm_zone & "^^^" & tm_daylight
+                  & "^^^" & tm_zone & "^^^" & tm_daylight & "^^^"
 entry form_input,comment,objTextFile,oAdd,oComment
 form_input = ""
 
@@ -596,7 +600,7 @@ form_input = "system03^^^" & boot_device & "^^^" & build_number _
                   & "^^^" & system_description & "^^^" & OSInstall _
                   & "^^^" & RegOrg & "^^^" & OSLang _
                   & "^^^" & RegUser & "^^^" & SerNum _
-                  & "^^^" & OSSerPack & "^^^" & Version & "^^^" & WinDir
+                  & "^^^" & OSSerPack & "^^^" & Version & "^^^" & WinDir & "^^^"
 entry form_input,comment,objTextFile,oAdd,oComment
 form_input = ""
 
@@ -678,7 +682,7 @@ For Each objItem in colItems
                      & "^^^" & clean(objItem.SerialNumber) _
                      & "^^^" & clean(objItem.SMBIOSBIOSVersion) _
                      & "^^^" & clean(objItem.Version) _
-                     & "^^^" & clean(bios_asset)
+                     & "^^^" & clean(bios_asset) & "^^^"
   entry form_input,comment,objTextFile,oAdd,oComment
   form_input = ""
   if online = "p" then
@@ -706,7 +710,7 @@ For Each objItem in colItems
                               & clean(objItem.CurrentVoltage)           & "^^^" & clean(objItem.DeviceID)          & "^^^" _
                               & clean(objItem.ExtClock)                 & "^^^" & clean(objItem.Manufacturer)      & "^^^" _
                               & clean(objItem.MaxClockSpeed)            & "^^^" & LTrim(clean(objItem.Name))       & "^^^" _
-                              & clean(objItem.PowerManagementSupported) & "^^^" & clean(objItem.SocketDesignation)
+                              & clean(objItem.PowerManagementSupported) & "^^^" & clean(objItem.SocketDesignation) & "^^^"
   entry form_input,comment,objTextFile,oAdd,oComment
   form_input = ""
   if online = "p" then
@@ -832,7 +836,7 @@ For Each objItem in colItems
    mem_size = int(objItem.Capacity /1024 /1024)
 
    form_input = "memory^^^" & mem_bank       & "^^^" & mem_formfactor & "^^^" & mem_detail & "^^^" _
-                            & mem_typedetail & "^^^" & mem_size       & "^^^" & clean(objItem.Speed)
+                            & mem_typedetail & "^^^" & mem_size       & "^^^" & clean(objItem.Speed) & "^^^"
    entry form_input,comment,objTextFile,oAdd,oComment
    form_input = ""
    if online = "p" then
@@ -850,7 +854,7 @@ If mem_size = 0 Then
    mem_size = int(mem_size /1024)
 
    form_input = "memory^^^" & "Unknown" & "^^^" & "Unknown" & "^^^" & "Unknown" & "^^^" _
-                            & "Unknown" & "^^^" & mem_size  & "^^^" & "0"
+                            & "Unknown" & "^^^" & mem_size  & "^^^" & "0" & "^^^"
    entry form_input,comment,objTextFile,oAdd,oComment
    form_input = ""
 
@@ -879,7 +883,7 @@ If (Instr(objItem.Caption, "vnc") = 0 AND Instr(objItem.Caption, "Innobec SideWi
                            & clean(objItem.CurrentVerticalResolution) & "^^^" & clean(objItem.Description)                 & "^^^" _
                            & Left(LeftString, 4) & "/" & Mid(LeftString, 5, 2) & "/" & Right(LeftString, 2)                & "^^^" _
                            & clean(objItem.DriverVersion)             & "^^^" & clean(objItem.MaxRefreshRate)              & "^^^" _
-                           & clean(objItem.MinRefreshRate)            & "^^^" & clean(objItem.DeviceID)
+                           & clean(objItem.MinRefreshRate)            & "^^^" & clean(objItem.DeviceID)                    & "^^^"
    entry form_input,comment,objTextFile,oAdd,oComment
    form_input = ""
    if online = "p" then
@@ -891,6 +895,7 @@ If (Instr(objItem.Caption, "vnc") = 0 AND Instr(objItem.Caption, "Innobec SideWi
 end if
 Next
 
+
 '''''''''''''''''''''''
 ' Monitor Information '
 '''''''''''''''''''''''
@@ -898,7 +903,6 @@ comment = "Monitor Info"
 if verbose = "y" then
    wscript.echo comment
 end if
-' sql = "DELETE FROM other WHERE other_type = 'monitor' AND other_linked_pc = '" & system_uuid & "'"
 Dim strarrRawEDID()
 intMonitorCount=0
 Const HKLM = &H80000002
@@ -1032,16 +1036,18 @@ tmpctr=0
     man_dt = clean(arrMonitorInfo(tmpctr,2))
     mon_sr = clean(arrMonitorInfo(tmpctr,3))
     mon_md = clean(arrMonitorInfo(tmpctr,4))
+    mon_md = escape(mon_md)
+    mon_md = replace(mon_md, "%00", "")
+    mon_md = unescape(mon_md)
     mon_ed = clean(arrMonitorInfo(tmpctr,5))
 
      ' Inserts a 0 if month < 10
      temp_date = Split(man_dt, "/", -1, 1)
      temp_date(0) = right("0" & temp_date(0),2)
      man_dt = temp_date(0) & "/" & temp_date(1)
-
     if man_id <> "" then
       form_input = "monitor_sys^^^" & man_id & "^^^" & dev_id & "^^^" & man_dt & "^^^" _
-                                    & mon_md & "^^^" & mon_sr & "^^^" & mon_ed
+                                    & mon_md & "^^^" & mon_sr & "^^^" & mon_ed & "^^^"
       entry form_input,comment,objTextFile,oAdd,oComment
       form_input = ""
       if verbose = "y" then
@@ -1085,9 +1091,9 @@ For Each objDevice in colDevices
         (objUSBDevice.Description <> "USB Printing Support")) then
       if name <> objUSBDevice.Caption then
         form_input = "usb^^^" & clean(objUSBDevice.Caption)      & "^^^" _
-                              & clean(objUSBDevice.Description) & "^^^" _
+                              & clean(objUSBDevice.Description)  & "^^^" _
                               & clean(objUSBDevice.Manufacturer) & "^^^" _
-                              & clean(objUSBDevice.DeviceID)
+                              & clean(objUSBDevice.DeviceID)     & "^^^"
         entry form_input,comment,objTextFile,oAdd,oComment
         form_input = ""
       end if
@@ -1109,7 +1115,7 @@ For Each objItem in colItems
      & clean(objItem.Caption)      & "^^^" & clean(objItem.Index)           & "^^^" & clean(objItem.InterfaceType) & "^^^" _
      & clean(objItem.Manufacturer) & "^^^" & clean(objItem.Model)           & "^^^" & clean(objItem.Partitions)    & "^^^" _
      & clean(objItem.SCSIBus)      & "^^^" & clean(objItem.SCSILogicalUnit) & "^^^" & clean(objItem.SCSIPort)      & "^^^" _
-     & clean(int(objItem.Size /1024 /1024)) & "^^^" & clean(objItem.PNPDeviceID)
+     & clean(int(objItem.Size /1024 /1024)) & "^^^" & clean(objItem.PNPDeviceID) & "^^^"
    entry form_input,comment,objTextFile,oAdd,oComment
    form_input = ""
    if online = "p" then
@@ -1159,7 +1165,7 @@ For Each LocalDrive in LocalDrives
                                & partition_percent           & "^^^" & partition_primary_partition & "^^^" _
                                & partition_caption           & "^^^" & partition_file_system       & "^^^" _
                                & partition_free_space        & "^^^" & partition_size              & "^^^" _
-                               & partition_volume_name
+                               & partition_volume_name       & "^^^"
    entry form_input,comment,objTextFile,oAdd,oComment
    form_input = ""
 Next
@@ -1174,7 +1180,7 @@ end if
 On Error Resume Next
 Set colItems = objWMIService.ExecQuery("Select * from Win32_SCSIController",,48)
 For Each objItem in colItems
-   form_input = "scsi_controller^^^" & clean(objItem.Caption) & "^^^" & clean(objItem.DeviceID) & "^^^" & clean(objItem.Manufacturer)
+   form_input = "scsi_controller^^^" & clean(objItem.Caption) & "^^^" & clean(objItem.DeviceID) & "^^^" & clean(objItem.Manufacturer) & "^^^"
    entry form_input,comment,objTextFile,oAdd,oComment
    form_input = ""
    if online = "p" then
@@ -1193,7 +1199,7 @@ end if
 On Error Resume Next
 Set colItems = objWMIService.ExecQuery("Select * from Win32_SCSIControllerDevice",,48)
 For Each objItem in colItems
-  form_input = "scsi_device^^^" & clean(objItem.Antecedent) & "^^^" & clean(objItem.Dependent)
+  form_input = "scsi_device^^^" & clean(objItem.Antecedent) & "^^^" & clean(objItem.Dependent) & "^^^"
   entry form_input,comment,objTextFile,oAdd,oComment
   form_input = ""
   'wscript.echo "Device on " & objItem.Antecedent & "   is " & objItem.Dependent
@@ -1209,7 +1215,7 @@ end if
 On Error Resume Next
 Set colItems = objWMIService.ExecQuery("Select * from Win32_CDROMDrive",,48)
 For Each objItem in colItems
-   form_input = "optical^^^" & clean(objItem.Caption) & "^^^" & clean(objItem.Drive) & "^^^" & clean(objItem.DeviceID)
+   form_input = "optical^^^" & clean(objItem.Caption) & "^^^" & clean(objItem.Drive) & "^^^" & clean(objItem.DeviceID) & "^^^"
    entry form_input,comment,objTextFile,oAdd,oComment
    form_input = ""
    if online = "p" then
@@ -1230,7 +1236,7 @@ For Each objItem In colItems
    form_input = "floppy^^^" & clean(objItem.Description)  & "^^^" _
                             & clean(objItem.Manufacturer) & "^^^" _
                             & clean(objItem.Caption)      & "^^^" _
-                            & clean(objItem.DeviceID)
+                            & clean(objItem.DeviceID)     & "^^^"
    entry form_input,comment,objTextFile,oAdd,oComment
    form_input = ""
    if online = "p" then
@@ -1250,7 +1256,7 @@ On Error Resume Next
 Set colItems = objWMIService.ExecQuery("Select * from Win32_TapeDrive",,48)
 For Each objItem in colItems
    form_input = "tape^^^" & clean(objItem.Caption)      & "^^^" & clean(objItem.Description) & "^^^" _
-                          & clean(objItem.Manufacturer) & "^^^" & clean(objItem.Name) & "^^^" & clean(objItem.DeviceID)
+                          & clean(objItem.Manufacturer) & "^^^" & clean(objItem.Name) & "^^^" & clean(objItem.DeviceID) & "^^^"
    entry form_input,comment,objTextFile,oAdd,oComment
    form_input = ""
    if online = "p" then
@@ -1269,7 +1275,7 @@ end if
 On Error Resume Next
 Set colItems = objWMIService.ExecQuery("Select * from Win32_Keyboard",,48)
 For Each objItem in colItems
-   form_input = "keyboard^^^" & clean(objItem.Caption) & "^^^" & clean(objItem.Description) & "^^^" & clean(objItem.DeviceID)
+   form_input = "keyboard^^^" & clean(objItem.Caption) & "^^^" & clean(objItem.Description) & "^^^" & clean(objItem.DeviceID) & "^^^"
    entry form_input,comment,objTextFile,oAdd,oComment
    form_input = ""
    if online = "p" then
@@ -1287,7 +1293,7 @@ end if
 On Error Resume Next
 Set colItems = objWMIService.ExecQuery("Select * from Win32_Battery",,48)
 For Each objItem in colItems
-   form_input = "battery^^^" & clean(objItem.Description) & "^^^" & clean(objItem.DeviceID)
+   form_input = "battery^^^" & clean(objItem.Description) & "^^^" & clean(objItem.DeviceID) & "^^^"
    entry form_input,comment,objTextFile,oAdd,oComment
    form_input = ""
    if online = "p" then
@@ -1307,7 +1313,7 @@ Set colItems = objWMIService.ExecQuery("Select * from Win32_POTSModem",,48)
 For Each objItem in colItems
    form_input = "modem^^^" & clean(objItem.AttachedTo)  & "^^^" & clean(objItem.CountrySelected) & "^^^" _
                            & clean(objItem.Description) & "^^^" & clean(objItem.DeviceType)  & "^^^" _
-                           & clean(objItem.DeviceID)
+                           & clean(objItem.DeviceID)    & "^^^"
    entry form_input,comment,objTextFile,oAdd,oComment
    form_input = ""
    if online = "p" then
@@ -1351,7 +1357,7 @@ For Each objItem in colItems
                           & clean(objItem.NumberOfButtons) & "^^^" _
                           & clean(objItem.DeviceID) & "^^^" _
                           & mouse_type & "^^^" _
-                          & mouse_port
+                          & mouse_port & "^^^"
   entry form_input,comment,objTextFile,oAdd,oComment
   form_input = ""
   if online = "p" then
@@ -1369,7 +1375,7 @@ end if
 On Error Resume Next
 Set colItems = objWMIService.ExecQuery("Select * from Win32_SoundDevice",,48)
 For Each objItem in colItems
-   form_input = "sound^^^" & clean(objItem.Manufacturer) & "^^^" & clean(objItem.Name) & "^^^" & clean(objItem.DeviceID)
+   form_input = "sound^^^" & clean(objItem.Manufacturer) & "^^^" & clean(objItem.Name) & "^^^" & clean(objItem.DeviceID) & "^^^"
    entry form_input,comment,objTextFile,oAdd,oComment
    form_input = ""
    if online = "p" then
@@ -1414,7 +1420,7 @@ For Each objItem in colItems
      & printer_shared         & "^^^" _
      & printer_share_name     & "^^^" _
      & printer_system_name    & "^^^" _
-     & printer_location
+     & printer_location       & "^^^"
      entry form_input,comment,objTextFile,oAdd,oComment
      form_input = ""
 Next
@@ -1429,7 +1435,7 @@ end if
 On Error Resume Next
 Set colItems = objWMIService.ExecQuery("Select * from Win32_Share",,48)
 For Each objItem in colItems
-   form_input = "shares^^^" & clean(objItem.Caption) & "^^^" & clean(objItem.Name) & "^^^" & clean(objItem.Path)
+   form_input = "shares^^^" & clean(objItem.Caption) & "^^^" & clean(objItem.Name) & "^^^" & clean(objItem.Path) & "^^^"
    entry form_input,comment,objTextFile,oAdd,oComment
    form_input = ""
 Next
@@ -1450,7 +1456,7 @@ if audit_location = "l" then
                                & clean(objItem.FileSystem)                          & "^^^" _
                                & int(Round(objItem.FreeSpace /1024 /1024 /1024 ,1)) & "^^^" _
                                & clean(objItem.ProviderName)                        & "^^^" _
-                               & int(Round(objItem.Size /1024 /1024 /1024 ,1))
+                               & int(Round(objItem.Size /1024 /1024 /1024 ,1))      & "^^^"
       entry form_input,comment,objTextFile,oAdd,oComment
       form_input = ""
     end if
@@ -1490,9 +1496,9 @@ else
       users = "No Members in this group."
     end if
     form_input = "l_group^^^" & clean(objItem.Description) & "^^^" _
-                             & clean(objItem.Name)        & "^^^" _
-                             & users                      & "^^^" _
-                             & clean(objItem.SID)
+                             & clean(objItem.Name)         & "^^^" _
+                             & users                       & "^^^" _
+                             & clean(objItem.SID)          & "^^^"
     entry form_input,comment,objTextFile,oAdd,oComment
     form_input = ""
   Next
@@ -1520,7 +1526,7 @@ else
                              & clean(objItem.PasswordChangeable) & "^^^" _
                              & clean(objItem.PasswordExpires)    & "^^^" _
                              & clean(objItem.PasswordRequired)   & "^^^" _
-                             & clean(objItem.SID)
+                             & clean(objItem.SID)                & "^^^"
     entry form_input,comment,objTextFile,oAdd,oComment
     form_input = ""
   Next
@@ -1610,7 +1616,7 @@ if (ServicePack = "2" AND SystemBuildNumber = "2600") then
     form_input = "system10^^^" & clean(av_prod) & "^^^" _
                                & clean(av_disp) & "^^^" _
                                & clean(av_up2d) & "^^^" _
-                               & clean(av_vers)
+                               & clean(av_vers) & "^^^"
     entry form_input,comment,objTextFile,oAdd,oComment
     form_input = ""
   Next
@@ -1637,7 +1643,7 @@ For Each objItem in colItems
                               & objItem.Description & " ^^^" _
                               & objItem.Location    & " ^^^" _
                               & objItem.Name        & " ^^^" _
-                              & objItem.User
+                              & objItem.User        & "^^^"
     entry form_input,comment,objTextFile,oAdd,oComment
     form_input = ""
   end if
@@ -1659,7 +1665,7 @@ For Each objItem in colItems
                             & clean(objItem.PathName)    & " ^^^" _
                             & clean(objItem.Started)     & " ^^^" _
                             & clean(objItem.StartMode)   & " ^^^" _
-                            & clean(objItem.State)
+                            & clean(objItem.State)       & "^^^"
   entry form_input,comment,objTextFile,oAdd,oComment
   form_input = ""
   if objItem.Name = "W3SVC" then
@@ -1683,9 +1689,9 @@ if (OSName <> "Microsoft Windows 95" AND OSName <> "Microsoft Windows 98") then
   end if
   Set colIESettings = objWMIService_IE.ExecQuery ("Select * from MicrosoftIE_Object")
   For Each strIESetting in colIESettings
-    form_input = "ie_bho^^^" & clean(strIESetting.CodeBase) & "^^^" _
-                             & clean(strIESetting.Status)   & "^^^" _
-                             & clean(strIESetting.ProgramFile)
+    form_input = "ie_bho^^^" & clean(strIESetting.CodeBase)    & "^^^" _
+                             & clean(strIESetting.Status)      & "^^^" _
+                             & clean(strIESetting.ProgramFile) & "^^^"
     entry form_input,comment,objTextFile,oAdd,oComment
     form_input = ""
   Next
@@ -1768,16 +1774,16 @@ For Each subkey In arrSubKeys
      if online = "p" then
        software = software & display_name & vbcrlf
      end if
-    form_input = "software^^^" & clean(display_name)     & " ^^^" _
-                               & clean(version)          & " ^^^" _
-                               & clean(install_location) & " ^^^" _
-                               & clean(uninstall_string) & " ^^^" _
-                               & clean(install_date)     & " ^^^" _
-                               & clean(publisher)        & " ^^^" _
-                               & clean(install_source)   & " ^^^" _
-                               & clean(system_component) & " ^^^" _
-                               & clean(software_url)     &  "^^^" _
-                               & clean(software_comments)
+    form_input = "software^^^" & clean(display_name)      & " ^^^" _
+                               & clean(version)           & " ^^^" _
+                               & clean(install_location)  & " ^^^" _
+                               & clean(uninstall_string)  & " ^^^" _
+                               & clean(install_date)      & " ^^^" _
+                               & clean(publisher)         & " ^^^" _
+                               & clean(install_source)    & " ^^^" _
+                               & clean(system_component)  & " ^^^" _
+                               & clean(software_url)      &  "^^^" _
+                               & clean(software_comments) & "^^^"
     entry form_input,comment,objTextFile,oAdd,oComment
     form_input = ""
    end If
@@ -1800,7 +1806,7 @@ For Each objItem In colItems
                                        & " ^^^" _
                                        & " ^^^" _
                                        & " ^^^" _
-                                       & clean(objItem.Description)
+                                       & clean(objItem.Description) & "^^^"
     entry form_input,comment,objTextFile,oAdd,oComment
     form_input = ""
   end if
@@ -1997,7 +2003,7 @@ For i = 0 to UBound(folder_array)
                                       & "^^^" _
                                       & "^^^" _
                                       & clean(homepage) & "^^^" _
-                                      & clean(description)
+                                      & clean(description) & "^^^"
             entry form_input,comment,objTextFile,oAdd,oComment
           end if
           form_input = ""
@@ -2042,7 +2048,7 @@ For i = 0 to UBound(folder_array)
                                       & "^^^" _
                                       & "^^^" _
                                       & clean(homepage) & "^^^" _
-                                      & clean(description)
+                                      & clean(description) & "^^^"
             entry form_input,comment,objTextFile,oAdd,oComment
           end if
           form_input = ""
@@ -2098,7 +2104,7 @@ if (ServicePack = "2" AND SystemBuildNumber = "2600") then
                              & clean(dm_DNExceptions) & "^^^" _
                              & clean(std_EnFirewall) & "^^^" _
                              & clean(std_DisNotifications) & "^^^" _
-                             & clean(std_DNExceptions)
+                             & clean(std_DNExceptions) & "^^^"
   entry form_input,comment,objTextFile,oAdd,oComment
   form_input = ""
   strKeyPath = "SYSTEM\CurrentControlSet\Services\SharedAccess\Parameters\FirewallPolicy\StandardProfile\AuthorizedApplications\List"
@@ -2123,7 +2129,7 @@ if (ServicePack = "2" AND SystemBuildNumber = "2600") then
                                  & application_path           & "^^^" _
                                  & application_remote_address & "^^^" _
                                  & application_enabled        & "^^^" _
-                                 & "Standard"
+                                 & "Standard"                 & "^^^"
       entry form_input,comment,objTextFile,oAdd,oComment
       form_input = ""
     end if
@@ -2150,7 +2156,7 @@ if (ServicePack = "2" AND SystemBuildNumber = "2600") then
                                  & application_path           & "^^^" _
                                  & application_remote_address & "^^^" _
                                  & application_enabled        & "^^^" _
-                                 & "Domain"
+                                 & "Domain"                   & "^^^"
       entry form_input,comment,objTextFile,oAdd,oComment
       form_input = ""
     end if
@@ -2169,7 +2175,7 @@ if (ServicePack = "2" AND SystemBuildNumber = "2600") then
                                   & port_protocol & "^^^" _
                                   & port_scope    & "^^^" _
                                   & port_enabled  & "^^^" _
-                                  & "User"
+                                  & "User"        & "^^^"
       entry form_input,comment,objTextFile,oAdd,oComment
     end if
   Next
@@ -2187,7 +2193,7 @@ if (ServicePack = "2" AND SystemBuildNumber = "2600") then
                                   & port_protocol & "^^^" _
                                   & port_scope    & "^^^" _
                                   & port_enabled  & "^^^" _
-                                  & "Domain"
+                                  & "Domain"      & "^^^"
       entry form_input,comment,objTextFile,oAdd,oComment
     end if
   Next
@@ -2218,7 +2224,7 @@ For Each subkey In arrSubKeys
                                 & strOffXPRUKey & "^^^" _
                                 & release_type  & "^^^" _
                                 & edition_type  & "^^^" _
-                                & "office_2003"
+                                & "office_2003" & "^^^"
       entry form_input,comment,objTextFile,oAdd,oComment
       strOffXPRUKey = ""
       release_type = ""
@@ -2247,7 +2253,7 @@ For Each subkey In arrSubKeys
                                 & strOffXPRUKey & "^^^" _
                                 & release_type  & "^^^" _
                                 & edition_type  & "^^^" _
-                                & "office_xp"
+                                & "office_xp"   & "^^^"
       entry form_input,comment,objTextFile,oAdd,oComment
       strOffXPRUKey = ""
       release_type = ""
@@ -2275,7 +2281,7 @@ if (IsOSXP2K2K3 > 0) then
                               & strXPKey          & "^^^" _
                               & SystemBuildNumber & "^^^" _
                               & Version           & "^^^" _
-                              & "windows_xp"
+                              & "windows_xp"      & "^^^"
     entry form_input,comment,objTextFile,oAdd,oComment
     strOffXPRUKey = ""
     release_type = ""
@@ -2297,7 +2303,7 @@ if InStr(OSName, "Windows NT") then
                             & Key               & "^^^" _
                             & SystemBuildNumber & "^^^" _
                             & Version           & "^^^" _
-                            & "windows_nt"
+                            & "windows_nt"      & "^^^"
   entry form_input,comment,objTextFile,oAdd,oComment
   strOffXPRUKey = ""
   release_type = ""
@@ -2319,7 +2325,7 @@ if (InStr(OSName, "Windows 98") Or InStr(OSName, "Windows ME")) then
                             & Key               & "^^^" _
                             & SystemBuildNumber & "^^^" _
                             & Version           & "^^^" _
-                            & "windows_98"
+                            & "windows_98"      & "^^^"
   entry form_input,comment,objTextFile,oAdd,oComment
   strOffXPRUKey = ""
   release_type = ""
@@ -2347,7 +2353,7 @@ For Each subkey In arrSubKeys
                               & strOffXPRUKey & "^^^" _
                               & release_type  & "^^^" _
                               & edition_type  & "^^^" _
-                              & "crystal_reports_9"
+                              & "crystal_reports_9" & "^^^"
     entry form_input,comment,objTextFile,oAdd,oComment
     strOffXPRUKey = ""
     release_type = ""
@@ -2377,7 +2383,7 @@ strKeyPath = "SOFTWARE\Business Objects\Suite 11.0\Crystal Reports"
                               & strOffXPRUKey & "^^^" _
                               & release_type  & "^^^" _
                               & edition_type  & "^^^" _
-                              & "crystal_reports_11"
+                              & "crystal_reports_11" & "^^^"
     entry form_input,comment,objTextFile,oAdd,oComment
     strOffXPRUKey = ""
     release_type = ""
@@ -2403,7 +2409,7 @@ strKeyPath = "SOFTWARE\Ahead\Nero - Burning Rom\Info"
                               & strOffXPRUKey & "^^^" _
                               & release_type  & "^^^" _
                               & edition_type  & "^^^" _
-                              & "nero_6"
+                              & "nero_6"      & "^^^"
     entry form_input,comment,objTextFile,oAdd,oComment
     strOffXPRUKey = ""
     release_type = ""
@@ -2429,7 +2435,7 @@ strKeyPath = "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Adobe Photosho
                               & strOffXPRUKey & "^^^" _
                               & release_type  & "^^^" _
                               & edition_type  & "^^^" _
-                              & "photoshop_5"
+                              & "photoshop_5" & "^^^"
     entry form_input,comment,objTextFile,oAdd,oComment
     strOffXPRUKey = ""
     release_type = ""
@@ -2455,7 +2461,7 @@ strKeyPath = "SOFTWARE\Adobe\Photoshop\7.0\Registration"
                               & strOffXPRUKey & "^^^" _
                               & release_type  & "^^^" _
                               & edition_type  & "^^^" _
-                              & "photoshop_7"
+                              & "photoshop_7" & "^^^"
     entry form_input,comment,objTextFile,oAdd,oComment
     strOffXPRUKey = ""
     release_type = ""
@@ -2481,7 +2487,7 @@ strKeyPath = "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Adobe Acrobat 
                               & strOffXPRUKey & "^^^" _
                               & release_type  & "^^^" _
                               & edition_type  & "^^^" _
-                              & "acrobat_5"
+                              & "acrobat_5"   & "^^^"
     entry form_input,comment,objTextFile,oAdd,oComment
     strOffXPRUKey = ""
     release_type = ""
@@ -2507,7 +2513,7 @@ strKeyPath = "SOFTWARE\Microsoft\Microsoft SQL Server\80\Registration"
                               & strOffXPRUKey & "^^^" _
                               & release_type  & "^^^" _
                               & edition_type  & "^^^" _
-                              & "sql_server_2000"
+                              & "sql_server_2000" & "^^^"
     entry form_input,comment,objTextFile,oAdd,oComment
     strOffXPRUKey = ""
     release_type = ""
@@ -2533,7 +2539,7 @@ strKeyPath = "SOFTWARE\VMware, Inc.\VMware Workstation\License.ws.4.0"
                               & strOffXPRUKey & "^^^" _
                               & release_type  & "^^^" _
                               & edition_type  & "^^^" _
-                              & "vmware_4"
+                              & "vmware_4"    & "^^^"
     entry form_input,comment,objTextFile,oAdd,oComment
     strOffXPRUKey = ""
     release_type = ""
@@ -2558,7 +2564,7 @@ strOffXPRUKey = key
                               & strOffXPRUKey & "^^^" _
                               & release_type  & "^^^" _
                               & edition_type  & "^^^" _
-                              & "autocad_2000"
+                              & "autocad_2000" & "^^^"
     entry form_input,comment,objTextFile,oAdd,oComment
     strOffXPRUKey = ""
     release_type = ""
@@ -2584,7 +2590,7 @@ strOffXPRUKey = key
                               & strOffXPRUKey & "^^^" _
                               & release_type  & "^^^" _
                               & edition_type  & "^^^" _
-                              & "vmware_5"
+                              & "vmware_5"    & "^^^"
     entry form_input,comment,objTextFile,oAdd,oComment
     strOffXPRUKey = ""
     release_type = ""
@@ -2610,7 +2616,7 @@ strOffXPRUKey = key
                               & strOffXPRUKey & "^^^" _
                               & release_type  & "^^^" _
                               & edition_type  & "^^^" _
-                              & "illustrator_10"
+                              & "illustrator_10" & "^^^"
     entry form_input,comment,objTextFile,oAdd,oComment
     strOffXPRUKey = ""
     release_type = ""
@@ -2636,7 +2642,7 @@ strOffXPRUKey = key
                               & strOffXPRUKey & "^^^" _
                               & release_type  & "^^^" _
                               & edition_type  & "^^^" _
-                              & "powerdvd_4"
+                              & "powerdvd_4"  & "^^^"
     entry form_input,comment,objTextFile,oAdd,oComment
     strOffXPRUKey = ""
     release_type = ""
@@ -2709,7 +2715,7 @@ else
     form_input = "iis_3^^^" & ArgSiteIndex & "^^^" _
                             & iis_ip       & "^^^" _
                             & iis_port     & "^^^" _
-                            & iis_host
+                            & iis_host     & "^^^"
     entry form_input,comment,objTextFile,oAdd,oComment
     form_input = ""
   Next
@@ -2784,7 +2790,7 @@ else
                           & iis_dir_browsing   & "^^^" _
                           & clean(iis_def_doc) & "^^^" _
                           & iis_sec_ip         & "^^^" _
-                          & iis_sec_port
+                          & iis_sec_port       & "^^^"
   entry form_input,comment,objTextFile,oAdd,oComment
   ' ------------------
   ' --- Enumerating Virtual Directories ----
@@ -2798,7 +2804,7 @@ else
       iis_vd_path = objWebVirtualDir.Path
       form_input = "iis_2^^^" & ArgSiteIndex       & "^^^" _
                               & clean(iis_vd_name) & "^^^" _
-                              & clean(iis_vd_path)
+                              & clean(iis_vd_path) & "^^^"
       entry form_input,comment,objTextFile,oAdd,oComment
       form_input = ""
       VirDirCounter = VirDirCounter + 1
@@ -2814,10 +2820,6 @@ else
 ' End of IIS = True
 end if
 
-form_input = ""
-form_input = "audit^^^" & system_name & "^^^" & timestamp & "^^^" & system_uuid & "^^^" & user_name & "^^^" & ie_submit_verbose & "^^^" & software_audit
-comment = "The End"
-entry form_input,comment,objTextFile,oAdd,oComment
 
 if online = "n" then
    objTextFile.Close
@@ -2829,6 +2831,7 @@ if verbose = "y" then
   wscript.echo "Audit.vbs Execution Time: " & int(elapsed_time) & " seconds."
 end if
 
+
 if online = "ie" then
   ie_time = Timer
   '''''''''''''''''''''''''''''''''''''''''
@@ -2837,9 +2840,7 @@ if online = "ie" then
   Dim ie
   Set ie = CreateObject("InternetExplorer.Application")
   ie.navigate ie_form_page
-  Do Until IE.readyState = 4
-    WScript.sleep(200)
-  Loop
+  Do Until IE.readyState = 4 : WScript.sleep(200) : Loop
   if ie_visible = "y" then
     ie.visible= True
   else
@@ -2850,44 +2851,27 @@ if online = "ie" then
   Dim oDoc
   Set oDoc = IE.document
   Set oAdd = oDoc.getElementById("add")
-  Set oComment = oDoc.getElementById("comment")
-  Set oUUID = oDoc.getElementById("uuid")
-  Set oTimestamp = oDoc.getElementById("timestamp")
-  Set oSystemName = oDoc.getElementById("systemname")
-  Set oVerbose = oDoc.getElementById("verbose")
-  Set oSoftwareAudit = oDoc.getElementById("software_audit")
-  Set oUserName = oDoc.getElementById("user_name")
-  Set oAutoClose = oDoc.getElementById("autoclose")
-  Set clicktoclose = oDoc.getElementById("clicktoclose")
-
   '''''''''''''''''''''''''''''''''
   ' Output UUID & Timestamp to IE '
   '''''''''''''''''''''''''''''''''
-  oSystemName.value = system_name
-  oTimestamp.value = timestamp
-  oUUID.value = system_uuid
-  oVerbose.value = ie_submit_verbose
-  oUserName.Value = user_name
-  oSoftwareAudit.Value = software_audit
   oAdd.value = oAdd.value + form_total + vbcrlf
-  'end_time = Timer
-  'elapsed_time = end_time - start_time
-  'form_input = "elapsed_time^^^" & int(elapsed_time)
-  'entry form_input,comment,objTextFile,oAdd,oComment
-  if ie_auto_submit = "n" then
-    oComment.value = "All Done. Please click Submit."
-  else
+  if ie_auto_submit = "y" then
     IE.Document.All("submit").Click
-    Do While IE.busy : WScript.sleep(200) : Loop
+    Do Until IE.readyState = 4 : WScript.sleep(2000) : Loop
   end if
-  if ie_visible = "n" then
+
+  if ie_auto_close = "y" then
+    Do Until IE.readyState = 4 : WScript.sleep(5000) : Loop
+    WScript.sleep(5000)
     ie.Quit
-    end_time = Timer
-    elapsed_time = end_time - ie_time
-    if verbose = "y" then
-      wscript.echo "IE Execution Time: " & int(elapsed_time) & " seconds."
-    end if
   end if
+
+  end_time = Timer
+  elapsed_time = end_time - ie_time
+  if verbose = "y" then
+    wscript.echo "IE Execution Time: " & int(elapsed_time) & " seconds."
+  end if
+
 end if
 
 if online = "p" then
@@ -2901,7 +2885,7 @@ if verbose = "y" then
   wscript.echo
   WScript.sleep(2500)
 end if
-database.close conn
+' database.close conn
 
 End Function
 

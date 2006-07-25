@@ -122,7 +122,37 @@ if ($system_type == "Laptop" OR $system_type == "Expansion Chassis" OR $system_t
   $img = "<img src=\"images/laptop.png\" width=\"16\" height=\"16\" alt=\"$l_lap\" title=\"$l_lap\" />"; }
 else {}
 
+if (substr_count($os_name, "Ubuntu") > 0) {
+  $img = "<img src=\"images/linux_ubuntu.png\" width=\"16\" height=\"16\" alt=\"$l_m58\" title=\"Ubuntu\" />";}
+else {}
 
+if (substr_count($os_name, "Red Hat") > 0) {
+  $img = "<img src=\"images/linux_redhat.png\" width=\"16\" height=\"16\" alt=\"$l_m58\" title=\"Red Hat\" />";}
+else {}
+
+if ((substr_count($os_name, "Mandrake") > 0) OR (substr_count($os_name, "Mandriva") > 0)) {
+  $img = "<img src=\"images/linux_mandriva.png\" width=\"16\" height=\"16\" alt=\"$l_m58\" title=\"Mandrake\" />";}
+else {}
+
+if (substr_count($os_name, "Fedora") > 0) {
+  $img = "<img src=\"images/linux_fedora.png\" width=\"16\" height=\"16\" alt=\"$l_m58\" title=\"Fedora\" />";}
+else {}
+
+if (substr_count($os_name, "Debian") > 0) {
+  $img = "<img src=\"images/linux_debian.png\" width=\"16\" height=\"16\" alt=\"$l_m58\" title=\"Debian\" />";}
+else {}
+
+if (substr_count($os_name, "Slackware") > 0) {
+  $img = "<img src=\"images/linux_slackware.png\" width=\"16\" height=\"16\" alt=\"$l_m58\" title=\"Slackware\" />";}
+else {}
+
+if ((substr_count($os_name, "Suse") > 0) OR (substr_count($os_name, "Novell") > 0)){
+  $img = "<img src=\"images/linus_suse.png\" width=\"16\" height=\"16\" alt=\"$l_m58\" title=\"Suse\" />";}
+else {}
+
+if (substr_count($os_name, "Gentoo") > 0) {
+  $img = "<img src=\"images/computer.png\" width=\"16\" height=\"16\" alt=\"$l_m58\" title=\"Gentoo\" />";}
+else {}
 return $img;
 }
 

@@ -15,6 +15,7 @@ if ($show_software_detected == 'y'){ $jscript_count = $jscript_count + 1; }
 if ($show_patches_not_detected == 'y'){ $jscript_count = $jscript_count + 1; }
 if ($show_detected_servers == 'y'){ $jscript_count = $jscript_count + 5; }
 
+if ($page == "add_pc"){$use_pass = "n";}
 
 if ($use_pass != "n") { 
   // If there's no Authentication header, exit
@@ -75,12 +76,12 @@ window.onload = IEHoverPseudo;
    a.style.display=(a.style.display!="none")?"none":"block";
   }
  }
- for(i=0;i<$jscript_count;i++)   //number of folders HERE
+ for(i=0;i<<?php echo $jscript_count; ?>;i++)   //number of folders HERE
 {
   switchDIV('f'+i);
  }
 // -->
-</SCRIPT>
+</script>
 <?php } else {} ?>
 </head>
 <?php
@@ -105,7 +106,7 @@ if ($page <> "setup"){
 }
 
 echo "<table width=\"100%\" border=\"0\">\n";
-echo "<tr><td colspan=\"3\" class=\"main_each\"><img src=\"images/logo.png\" width=\"300\" height=\"48\" alt=\"\"/></td></tr>\n";
+echo "<tr><td colspan=\"3\" class=\"main_each\"><a href=\"index.php\"><img src=\"images/logo.png\" width=\"300\" height=\"48\" alt=\"\" border=\"0\"/></a></td></tr>\n";
 echo "<tr><td width=\"170\" rowspan=\"12\" valign=\"top\">\n";
 echo "<ul id=\"primary-nav\">\n";
 echo "  <li><a href=\"index.php\">$l_hom</a></li>\n";
@@ -120,9 +121,9 @@ $ip = $myrow["net_ip_address"];
 $name = $myrow['system_name'];
 $domain = $myrow['net_domain'];
 
-echo "  <li class=\"menuparent\"><a href=\"#\">$name</a>\n";
+echo "  <li class=\"menuparent\"><a href=\"system_summary.php?pc=$pc\">$name</a>\n";
 echo "    <ul>\n";
-echo "      <li class=\"menuparent\"><a href=\"system_hardware?pc=$pc\"><img src=\"images/printer.png\" width=\"16\" height=\"16\" border=\"0\" alt=\"\" /> $l_hwd</a>\n";
+echo "      <li class=\"menuparent\"><a href=\"system_hardware.php?pc=$pc\"><img src=\"images/printer.png\" width=\"16\" height=\"16\" border=\"0\" alt=\"\" /> $l_hwd</a>\n";
 echo "        <ul>\n";
 echo "        <li><a href=\"system_hardware.php?pc=$pc&amp;sub=all\"><img src=\"images/statistics.png\"    width=\"16\" height=\"16\" border=\"0\" alt=\"\" /> $l_all</a></li>";
 echo "        <li><a href=\"system_hardware.php?pc=$pc&amp;sub=pb\"><img src=\"images/processor.png\"      width=\"16\" height=\"16\" border=\"0\" alt=\"\" /> $l_pab</a></li>\n";
@@ -176,9 +177,9 @@ echo "       </li>\n";
 echo "      <li class=\"menuparent\"><a href=\"#\"><img src=\"images/security.png\" width=\"16\" height=\"16\" border=\"0\" alt=\"\" /> $l_sec</a>\n";
 echo "        <ul>\n";
 echo "        <li><a href=\"system_security.php?pc=$pc&amp;sub=all\"><img src=\"images/statistics.png\" width=\"16\" height=\"16\" border=\"0\" alt=\"\" /> $l_all</a></li>\n";
-echo "        <li><a href=\"#\"><img src=\"images/firewall.png\"   width=\"16\" height=\"16\" border=\"0\" alt=\"\" /> $l_fir</a></li>\n";
-echo "        <li><a href=\"#\"><img src=\"images/antivirus.png\"  width=\"16\" height=\"16\" border=\"0\" alt=\"\" /> $l_ant</a></li>\n";
-echo "        <li><a href=\"#\"><img src=\"images/nmap.png\"       width=\"16\" height=\"16\" border=\"0\" alt=\"\" /> $l_nmp</a></li>\n";
+echo "        <li><a href=\"system_security.php?pc=$pc&amp;sub=fw\"><img src=\"images/firewall.png\"   width=\"16\" height=\"16\" border=\"0\" alt=\"\" /> $l_fir</a></li>\n";
+echo "        <li><a href=\"system_security.php?pc=$pc&amp;sub=vi\"><img src=\"images/antivirus.png\"  width=\"16\" height=\"16\" border=\"0\" alt=\"\" /> $l_ant</a></li>\n";
+echo "        <li><a href=\"system_security.php?pc=$pc&amp;sub=nm\"><img src=\"images/nmap.png\"       width=\"16\" height=\"16\" border=\"0\" alt=\"\" /> $l_nmp</a></li>\n";
 echo "        <li><a href=\"#\"><img src=\"images/software_2.png\" width=\"16\" height=\"16\" border=\"0\" alt=\"\" /> $l_hfn</a></li>\n";
 echo "        </ul>\n";
 echo "       </li>\n";
@@ -225,15 +226,15 @@ echo "  <li class=\"menuparent\"><a href=\"#\">$l_qry</a>\n";
 echo "    <ul>\n";
 echo "      <li><a href=\"list_all.php\"><img src=\"images/computer.png\"               width=\"16\" height=\"16\" border=\"0\" alt=\"\" /> $l_awp</a></li>\n";
 echo "      <li><a href=\"list_servers.php\"><img src=\"images/server.png\"             width=\"16\" height=\"16\" border=\"0\" alt=\"\" /> $l_asv</a></li>\n";
-echo "      <li><a href=\"list_desktops.php\"><img src=\"images/computer_2.png\"    width=\"16\" height=\"16\" border=\"0\" alt=\"\" /> $l_aws</a></li>\n";
+echo "      <li><a href=\"list_desktops.php\"><img src=\"images/computer_2.png\"        width=\"16\" height=\"16\" border=\"0\" alt=\"\" /> $l_aws</a></li>\n";
 echo "      <li><a href=\"list_laptops.php\"><img src=\"images/laptop.png\"             width=\"16\" height=\"16\" border=\"0\" alt=\"\" /> $l_alp</a></li>\n";
 echo "      <li><a href=\"list_software.php\"><img src=\"images/software_2.png\"        width=\"16\" height=\"16\" border=\"0\" alt=\"\" /> $l_asw</a></li>\n";
 echo "      <li><a href=\"list_software_hotfixes.php\"><img src=\"images/software.png\" width=\"16\" height=\"16\" border=\"0\" alt=\"\" /> $l_ahf</a></li>\n";
 echo "      <li><a href=\"list_software_bho.php\"><img src=\"images/browser_bho.png\"   width=\"16\" height=\"16\" border=\"0\" alt=\"\" /> $l_abh</a></li>\n";
 echo "      <li><a href=\"list_office_keys.php\"><img src=\"images/key_1.png\"          width=\"16\" height=\"16\" border=\"0\" alt=\"\" /> $l_ofc</a></li>\n";
 echo "      <li><a href=\"list_ms_keys.php\"><img src=\"images/key_2.png\"              width=\"16\" height=\"16\" border=\"0\" alt=\"\" /> $l_wcd</a></li>\n";
-echo "      <li><a href=\"list_other_keys\"><img src=\"images/key_3.png\"               width=\"16\" height=\"16\" border=\"0\" alt=\"\" /> $l_ocd</a></li>\n";
-//echo "      <li><a href=\"query.php\"><img src=\"images/audit.png\"                     width=\"16\" height=\"16\" border=\"0\" alt=\"\" /> $l_oah</a></li>\n";
+echo "      <li><a href=\"list_other_keys.php\"><img src=\"images/key_3.png\"           width=\"16\" height=\"16\" border=\"0\" alt=\"\" /> $l_ocd</a></li>\n";
+//echo "      <li><a href=\"query.php\"><img src=\"images/audit.png\"                   width=\"16\" height=\"16\" border=\"0\" alt=\"\" /> $l_oah</a></li>\n";
 echo "    </ul>\n";
 echo "  </li>\n";
 //echo "  <li class=\"menuparent\"><a href=\"#\">$l_swr</a>\n";
@@ -252,16 +253,17 @@ echo "  </li>\n";
 //echo "      <li><a href=\"statistics.php?sub=s5\"><img src=\"images/processor.png\"  width=\"16\" height=\"16\" border=\"0\" alt=\"\" /> $l_pro</a></li>\n";
 //echo "    </ul>\n";
 //echo "  </li>\n";
-//echo "  <li class=\"menuparent\"><a href=\"#\">$l_oth</a>\n";
-//echo "    <ul>\n";
-//echo "      <li><a href=\"list_printers.php\"><img src=\"images/printer.png\"        width=\"16\" height=\"16\" border=\"0\" alt=\"\" /> $l_prn</a></li>\n";
-//echo "      <li><a href=\"list_monitors.php\"><img src=\"images/display.png\"        width=\"16\" height=\"16\" border=\"0\" alt=\"\" /> $l_mon</a></li>\n";
-//echo "      <li><a href=\"other_list.php?id=2\"><img src=\"images/network_device.png\" width=\"16\" height=\"16\" border=\"0\" alt=\"\" /> $l_nit</a></li>\n";
-//echo "      <li><a href=\"other_list.php?id=3\"><img src=\"images/non_network.png\"    width=\"16\" height=\"16\" border=\"0\" alt=\"\" /> $l_nni</a></li>\n";
+echo "  <li class=\"menuparent\"><a href=\"#\">$l_oth</a>\n";
+echo "    <ul>\n";
+echo "      <li><a href=\"list_printers.php\"><img src=\"images/printer.png\"        width=\"16\" height=\"16\" border=\"0\" alt=\"\" /> $l_prn</a></li>\n";
+echo "      <li><a href=\"list_monitors.php\"><img src=\"images/display.png\"        width=\"16\" height=\"16\" border=\"0\" alt=\"\" /> $l_mon</a></li>\n";
+echo "      <li><a href=\"list_other.php?id=2\"><img src=\"images/network_device.png\" width=\"16\" height=\"16\" border=\"0\" alt=\"\" /> $l_nit</a></li>\n";
+echo "      <li><a href=\"list_other.php?id=3\"><img src=\"images/non_network.png\"    width=\"16\" height=\"16\" border=\"0\" alt=\"\" /> $l_nni</a></li>\n";
+echo "      <li><a href=\"list_other.php?id=1\"><img src=\"images/non_network.png\"    width=\"16\" height=\"16\" border=\"0\" alt=\"\" /> All Other Devices</a></li>\n";
 //echo "      <li><a href=\"other_add.php?sub=d1\"><img src=\"images/add.png\"            width=\"16\" height=\"16\" border=\"0\" alt=\"\" /> $l_ado</a></li>\n";
-//echo "      <li><a href=\"other_delete.php?sub=d1\"><img src=\"images/delete.png\"         width=\"16\" height=\"16\" border=\"0\" alt=\"\" /> $l_rem</a></li>\n";
-//echo "    </ul>\n";
-//echo "  </li>\n";
+echo "      <li><a href=\"other_delete.php?sub=d1\"><img src=\"images/delete.png\"         width=\"16\" height=\"16\" border=\"0\" alt=\"\" /> $l_rem</a></li>\n";
+echo "    </ul>\n";
+echo "  </li>\n";
 //echo "  <li class=\"menuparent\"><a href=\"#\">$l_grp</a>\n";
 //echo "    <ul>\n";
 //echo "     <li><a href=\"group_list.php\"><img src=\"images/statistics.png\"       width=\"16\" height=\"16\" border=\"0\" alt=\"\" /> $l_lgp</a></li>\n";

@@ -27,10 +27,10 @@ echo " </tr>\n</table>\n";
 
 echo "<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">";
 echo "<tr>\n";
-echo "  <td align=\"center\">$l_ipa</td>\n";
-echo "  <td align=\"center\">$l_sys</td>\n";
-echo "  <td>Field</td>\n";
-echo "  <td>Result</td>\n";
+echo "  <td align=\"center\"><b>$l_ipa</b></td>\n";
+echo "  <td align=\"center\"><b>$l_sys</b></td>\n";
+echo "  <td width=\"150\"><b>&nbsp;$l_fld</b></td>\n";
+echo "  <td><b>&nbsp;$l_res</b></td>\n";
 echo "</tr>";
 
 $search = stripslashes($_POST["search_field"]);
@@ -169,11 +169,12 @@ sort($result_set);
 $count = count ($result_set);
 for ($i=0; $i<$count; $i++){
   $countmore=count($result_set[0]);
-  echo "<tr>";
-  echo "<td align=\"center\">" . $result_set[$i][2] . "</td>";
-  echo "<td align=\"center\"><a href=\"system_summary.php?pc=" . $result_set[$i][1] . "\">" . $result_set[$i][0] . "</a></td>";
-  echo "<td>" . $result_set[$i][3] . "</td>";
-  echo "<td>" . $result_set[$i][4] . "</td>";
+  $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
+  echo "<tr bgcolor=\"$bgcolor\">";
+  echo "<td align=\"center\">&nbsp;" . $result_set[$i][2] . "&nbsp;</td>";
+  echo "<td align=\"center\">&nbsp;<a href=\"system_summary.php?pc=" . $result_set[$i][1] . "\">" . $result_set[$i][0] . "</a>&nbsp;</td>";
+  echo "<td>&nbsp;" . $result_set[$i][3] . "&nbsp;</td>";
+  echo "<td>&nbsp;" . $result_set[$i][4] . "&nbsp;</td>";
   echo "</tr>\n";
 }
 

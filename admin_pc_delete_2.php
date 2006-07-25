@@ -41,9 +41,6 @@ include "include_config.php";
     $query = "DELETE FROM hard_drive WHERE hard_drive_uuid = '" . $_GET['pc'] . "'";
     $result = mysql_query($query)  or die("Query failed at insert stage. hard_drive");
 
-    $query = "DELETE FROM hotfix WHERE hotfix_uuid = '" . $_GET['pc'] . "'";
-    $result = mysql_query($query)  or die("Query failed at insert stage. hotfixes");
-
     $query = "DELETE FROM iis WHERE iis_uuid = '" . $_GET['pc'] . "'";
     $result = mysql_query($query)  or die("Query failed at insert stage. iis");
 
@@ -86,7 +83,7 @@ include "include_config.php";
     $query = "DELETE FROM network_card WHERE net_uuid = '" . $_GET['pc'] . "'";
     $result = mysql_query($query)  or die("Query failed at insert stage. network_card");
 
-    $query = "DELETE FROM nmap_other_ports WHERE nmap_other_id = '" . $_GET['pc'] . "'";
+    $query = "DELETE FROM nmap_ports WHERE nmap_other_id = '" . $_GET['pc'] . "'";
     $result = mysql_query($query)  or die("Query failed at insert stage. nmap_other_ports");
 
     $query = "DELETE FROM notes WHERE notes_uuid = '" . $_GET['pc'] . "'";
@@ -100,9 +97,6 @@ include "include_config.php";
 
     $query = "DELETE FROM passwords WHERE passwords_uuid = '" . $_GET['pc'] . "'";
     $result = mysql_query($query)  or die("Query failed at insert stage. passwords");
-
-    $query = "DELETE FROM printer WHERE printer_uuid = '" . $_GET['pc'] . "'";
-    $result = mysql_query($query)  or die("Query failed at insert stage. printer");
 
     $query = "DELETE FROM processor WHERE processor_uuid = '" . $_GET['pc'] . "'";
     $result = mysql_query($query)  or die("Query failed at insert stage. processor");

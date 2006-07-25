@@ -34,7 +34,7 @@ if ($sub <> "sw1"){
   echo " </tr>\n";
   if ($myrow = mysql_fetch_array($result)){
     echo " <tr>\n";
-    echo "  <td align=\"center\"><a href=\"" . $_SERVER["PHP_SELF"] . ".php?sub=" . $sub . "&amp;page_count=" . $page_current . "&amp;sort=software_count\">$l_cnt</a>&nbsp;</td>\n";
+    echo "  <td align=\"center\"><a href=\"" . $_SERVER["PHP_SELF"] . "?sub=" . $sub . "&amp;page_count=" . $page_current . "&amp;sort=software_count\">$l_cnt</a>&nbsp;</td>\n";
     echo "  <td><a href=\"" . $_SERVER["PHP_SELF"] . "?sub=" . $sub . "&amp;page_count=" . $page_current . "&amp;sort=software_name\">$l_swf $l_nam</a></td>\n";
     echo "  <td><a href=\"" . $_SERVER["PHP_SELF"] . "?sub=" . $sub . "&amp;page_count=" . $page_current . "&amp;sort=software_version\">$l_ver</a></td>\n";
     echo "  <td><a href=\"" . $_SERVER["PHP_SELF"] . "?sub=" . $sub . "&amp;page_count=" . $page_current . "&amp;sort=software_publisher\">$l_pub</a></td>\n";

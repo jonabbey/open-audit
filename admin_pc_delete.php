@@ -14,7 +14,7 @@ if ($myrow = mysql_fetch_array($result)){
   do {
   $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
   echo "<tr bgcolor=\"" . $bgcolor . "\" >";
-  echo "<td>" . $myrow["net_ip_address"] . "</td>\n";
+  echo "<td>" . ip_trans($myrow["net_ip_address"]) . "</td>\n";
   echo "<td>" . $myrow["system_name"] . "</td>\n";
   echo "<td>" . return_date_time($myrow["system_timestamp"]) . "</td>\n";
   echo "<td><a href=\"admin_pc_delete_2.php?pc=" . $myrow["system_uuid"] . "&amp;sub=no\"";

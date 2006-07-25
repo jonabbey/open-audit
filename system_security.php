@@ -8,11 +8,13 @@ echo "<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">";
 echo "<tr><td class=\"contenthead\" colspan=\"2\">$l_sed " . $name . "<br />&nbsp;</td></tr>\n";
 echo "</table>";
 
+echo "<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">";
+
+if (($sub == "fw") or ($sub == "all")){
 $opt_count = 0;
 $SQL = "SELECT * FROM system WHERE system_uuid = '$pc' AND system_timestamp = '$timestamp'";
 $result = mysql_query($SQL, $db);
 $myrow = mysql_fetch_array($result);
-echo "<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">";
 echo "<tr><td colspan=\"4\" class=\"contenthead\"><img src=\"images/firewall_l.png\" width=\"48\" height=\"48\" alt=\"\" /> $l_xpf</td></tr>";
 echo "<tr><td colspan=\"4\"><b>General Settings - Domain.</b></td></tr>";
 
@@ -33,7 +35,6 @@ if (($myrow["firewall_enabled_domain"] == "1") OR ($myrow["firewall_enabled_doma
   echo "<tr bgcolor=\"$bg1\"><td colspan=\"2\">$l_doo.</td><td></td><td></td></tr>\n";
 }
 
-
 echo "<tr><td colspan=\"4\"><b>$l_ges.</b></td></tr>";
 $bgcolor = "#FFFFFF";
 if (($myrow["firewall_enabled_standard"] == "1") OR ($myrow["firewall_enabled_standard"] == "0")) {
@@ -52,8 +53,6 @@ if (($myrow["firewall_enabled_standard"] == "1") OR ($myrow["firewall_enabled_st
 } else {
   echo "<tr bgcolor=\"$bg1\"><td colspan=\"2\">$l_gen.</td><td></td><td></td></tr>\n";
 }
-
-
 
 $SQL = "SELECT * FROM firewall_ports where port_uuid = '$pc' AND port_timestamp = '$timestamp' ORDER BY port_profile, port_number";
 $result = mysql_query($SQL, $db);
@@ -86,7 +85,6 @@ if ($myrow = mysql_fetch_array($result)){
   } while ($myrow = mysql_fetch_array($result));
 } else {}
 
-
 $opt_count = 0;
 $SQL = "SELECT * from software WHERE software_uuid = '$pc' AND software_timestamp = '$timestamp' AND software_name LIKE '%ZoneAlarm%'";
 $result = mysql_query($SQL, $db);
@@ -98,7 +96,9 @@ if ($myrow = mysql_fetch_array($result)){
     $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
   } while ($myrow = mysql_fetch_array($result));
 } else {}
+} // End of Firewall
 
+if (($sub == "vi") or ($sub == "all")){
 $opt_count = 0;
 $SQL = "SELECT * from system WHERE system_uuid = '$pc' AND system_timestamp = '$timestamp' AND (virus_name <> '' OR virus_manufacturer <> '')";
 $result = mysql_query($SQL, $db);
@@ -128,10 +128,11 @@ if ($myrow = mysql_fetch_array($result)){
     echo "<tr><td>$l_anu:</td><td colspan=\"3\">$l_nti.</td></tr>\n";
   }
 }
+} // End of AntiVirus
 
-
+if (($sub == "nm") or ($sub == "all")){
 $opt_count = 0;
-$SQL = "SELECT * from nmap_other_ports WHERE nmap_other_id = '" . $pc . "' ORDER BY nmap_port_number";
+$SQL = "SELECT * from nmap_ports WHERE nmap_other_id = '" . $pc . "' ORDER BY nmap_port_number";
 $result = mysql_query($SQL, $db);
 echo "<tr><td class=\"contenthead\" colspan=\"4\"><br /><img src=\"images/nmap_l.png\" width=\"48\" height=\"48\" alt=\"\" /> $l_nma</td></tr>\n";
 if ($myrow = mysql_fetch_array($result)){
@@ -144,6 +145,7 @@ if ($myrow = mysql_fetch_array($result)){
   $bgcolor = "#F1F1F1";
   echo "<tr bgcolor=\"$bgcolor\"><td colspan=\"4\">$l_npt.</td></tr>\n";
 }
+} // End of nmap
 
 echo "</table>\n";
 echo "</div>\n";
