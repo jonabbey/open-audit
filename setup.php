@@ -24,6 +24,12 @@ if(!(isset($_POST['submit']))){
   echo "            <td colspan=\"2\"><hr /></td>\n";
   echo "          </tr>\n";
   echo "          <tr>\n";
+  echo "            <td>$l_lan ?</td>\n";
+  echo "            <td><select size=\"1\" name=\"language\" class=\"for_forms\">\n";
+  echo "                <option value=\"english\" selected>English</option>\n";
+  echo "                </select></td>\n";
+  echo "          </tr>\n";
+  echo "          <tr>\n";
   echo "            <td>$l_s02 ?</td>\n";
   echo "            <td><input type=\"text\" size=\"20\" name=\"mysql_host\" value=\"localhost\" class=\"for_forms\" /></td>\n";
   echo "          </tr>\n";
@@ -120,10 +126,12 @@ if(!(isset($_POST['submit']))){
   $content .= "\$show_service_pack = 'n'; \r\n";
   $content .= " \r\n";
   $content .= "\$count_system = '20'; \r\n";
-  $content .= "\n";
+  $content .= "\r\n";
   $content .= "\$col = 'blue'; \r\n";
   $content .= "\$pic_style = '_win'; \r\n";
   $content .= " \r\n";
+  $content .= "\$language = '" . $_POST["language"] . "'; \r\n";
+  $content .= "\r\n";
   $content .= "?";
   $content .= ">";
   if (is_writable($filename)) {
