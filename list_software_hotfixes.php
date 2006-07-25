@@ -4,7 +4,6 @@ $extra = "";
 include "include.php";
 echo "<td valign=\"top\">\n";
 
-if (isset($_GET['version'])){ $version = $_GET['version']; } else { $version = 'no version';}
 if (isset($_GET['show_all'])){ $count_system = '10000'; } else {}
 if (isset($_GET['page_count'])){ $page_count = $_GET['page_count']; } else { $page_count = 0;}
 $page_prev = $page_count - 1;
