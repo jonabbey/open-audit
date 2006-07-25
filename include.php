@@ -140,7 +140,7 @@ echo "        <li><a href=\"system_hardware.php?pc=$pc&amp;sub=us\"><img src=\"i
 echo "        <li><a href=\"system_hardware.php?pc=$pc&amp;sub=ba\"><img src=\"images/battery.png\"        width=\"16\" height=\"16\" border=\"0\" alt=\"\" /> $l_bat</a></li>\n";
 echo "        </ul>\n";
 echo "      </li>\n";
-echo "      <li class=\"menuparent\"><a href=\"#\"><img src=\"images/software.png\" width=\"16\" height=\"16\" border=\"0\" alt=\"\" /> $l_swf</a>\n";
+echo "      <li class=\"menuparent\"><a href=\"system_software.php?pc=$pc\"><img src=\"images/software.png\" width=\"16\" height=\"16\" border=\"0\" alt=\"\" /> $l_swf</a>\n";
 echo "        <ul>\n";
 echo "        <li><a href=\"system_software.php?pc=$pc&amp;sub=all\"><img src=\"images/statistics.png\"  width=\"16\" height=\"16\" border=\"0\" alt=\"\" /> $l_all</a></li>\n";
 echo "        <li><a href=\"system_software.php?pc=$pc&amp;sub=is\"><img src=\"images/software.png\"    width=\"16\" height=\"16\" border=\"0\" alt=\"\" /> $l_isw</a></li>\n";
@@ -154,7 +154,7 @@ echo "        <li><a href=\"system_software_codecs.php?pc=$pc&amp;sub=\"><img sr
 echo "        <li><a href=\"system_software_services.php?pc=$pc&amp;sub=\"><img src=\"images/services.png\"    width=\"16\" height=\"16\" border=\"0\" alt=\"\" /> $l_ser</a></li>\n";
 echo "        </ul>\n";
 echo "       </li>\n";
-echo "      <li class=\"menuparent\"><a href=\"#\"><img src=\"images/os.png\" width=\"16\" height=\"16\" border=\"0\" alt=\"\" /> $l_oss</a>\n";
+echo "      <li class=\"menuparent\"><a href=\"system_os.php?pc=$pc\"><img src=\"images/os.png\" width=\"16\" height=\"16\" border=\"0\" alt=\"\" /> $l_oss</a>\n";
 echo "        <ul>\n";
 echo "        <li><a href=\"system_os.php?pc=$pc&amp;sub=all\"><img src=\"images/statistics.png\"    width=\"16\" height=\"16\" border=\"0\" alt=\"\" /> $l_all</a></li>\n";
 echo "        <li><a href=\"system_os.php?pc=$pc&amp;sub=su\"><img src=\"images/summary.png\"        width=\"16\" height=\"16\" border=\"0\" alt=\"\" /> $l_sum</a></li>\n";
@@ -171,7 +171,7 @@ echo "        <li><a href=\"#\"><img src=\"images/antivirus.png\"  width=\"16\" 
 echo "        <li><a href=\"#\"><img src=\"images/audit.png\"      width=\"16\" height=\"16\" border=\"0\" alt=\"\" /> $l_det</a></li>\n";
 echo "        </ul>\n";
 echo "       </li>\n";
-echo "      <li class=\"menuparent\"><a href=\"#\"><img src=\"images/security.png\" width=\"16\" height=\"16\" border=\"0\" alt=\"\" /> $l_sec</a>\n";
+echo "      <li class=\"menuparent\"><a href=\"system_security.php?pc=$pc\"><img src=\"images/security.png\" width=\"16\" height=\"16\" border=\"0\" alt=\"\" /> $l_sec</a>\n";
 echo "        <ul>\n";
 echo "        <li><a href=\"system_security.php?pc=$pc&amp;sub=all\"><img src=\"images/statistics.png\" width=\"16\" height=\"16\" border=\"0\" alt=\"\" /> $l_all</a></li>\n";
 echo "        <li><a href=\"system_security.php?pc=$pc&amp;sub=fw\"><img src=\"images/firewall.png\"   width=\"16\" height=\"16\" border=\"0\" alt=\"\" /> $l_fir</a></li>\n";
@@ -180,7 +180,7 @@ echo "        <li><a href=\"system_security.php?pc=$pc&amp;sub=nm\"><img src=\"i
 echo "        <li><a href=\"#\"><img src=\"images/software_2.png\" width=\"16\" height=\"16\" border=\"0\" alt=\"\" /> $l_hfn</a></li>\n";
 echo "        </ul>\n";
 echo "       </li>\n";
-echo "      <li class=\"menuparent\"><a href=\"#\"><img src=\"images/users_2.png\" width=\"16\" height=\"16\" border=\"0\" alt=\"\" /> $l_uag</a>\n";
+echo "      <li class=\"menuparent\"><a href=\"system_users.php?pc=$pc\"><img src=\"images/users_2.png\" width=\"16\" height=\"16\" border=\"0\" alt=\"\" /> $l_uag</a>\n";
 echo "        <ul>\n";
 echo "        <li><a href=\"system_users.php?pc=$pc&amp;sub=all\"><img src=\"images/statistics.png\" width=\"16\" height=\"16\" border=\"0\" alt=\"\" /> $l_all</a></li>\n";
 echo "       <li><a href=\"system_users.php?pc=$pc&amp;sub=us\"><img src=\"images/users.png\"       width=\"16\" height=\"16\" border=\"0\" alt=\"\" /> $l_usr</a></li>\n";
