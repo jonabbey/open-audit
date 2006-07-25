@@ -42,4 +42,5 @@ $show_service_pack = 'n';
 
 $count_system = '30';
 
+$language = "english";
 ?>
