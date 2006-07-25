@@ -1,6 +1,7 @@
 <?php
 include "include_config.php";
 include "include_lang_english.php";
+if ($language <> "english"){ include "include_lang_" . $language . ".php"; }
 include "include_win_type.php";
 include "include_win_img.php";
 include "include_functions.php";
