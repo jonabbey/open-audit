@@ -2872,7 +2872,19 @@ if online = "ie" then
     wscript.echo "IE Execution Time: " & int(elapsed_time) & " seconds."
   end if
 
-end if
+end if ' End of IE
+
+
+if online = "yesxml" then
+   url = server & "admin_pc_add_2.php"
+   Set objHTTP = CreateObject("MSXML2.XMLHTTP")
+   Call objHTTP.Open("POST", url, FALSE)
+   objHTTP.setRequestHeader "Content-Type","application/x-www-form-urlencoded"
+   objHTTP.Send "add=" + escape(form_total + vbcrlf)
+'   if verbose = "y" then
+'      WScript.Echo(objHTTP.ResponseText)
+'   end if
+end if 
 
 if online = "p" then
   oIE.document.WriteLn "</div>"
@@ -3166,13 +3178,11 @@ End Function
 
 sub entry(form_input, comment,objTextFile,oAdd,oComment)
 if form_input <> "" then
-  if online = "n" then
+  if online = "no" then
     objTextFile.WriteLine(form_input)
   end if
-  if online = "ie" then
+  if online = "yes" or online = "yesxml" then
     form_total = form_total + form_input + vbcrlf
-    ' oAdd.value = oAdd.value + form_input + vbcrlf
-    ' oComment.value = comment
   end if  
 end if
 end sub
