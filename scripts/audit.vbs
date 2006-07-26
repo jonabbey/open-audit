@@ -2876,7 +2876,7 @@ end if ' End of IE
 
 
 if online = "yesxml" then
-   url = server & "admin_pc_add_2.php"
+   url = non_ie_page
    Set objHTTP = CreateObject("MSXML2.XMLHTTP")
    Call objHTTP.Open("POST", url, FALSE)
    objHTTP.setRequestHeader "Content-Type","application/x-www-form-urlencoded"
