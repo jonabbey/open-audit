@@ -49,7 +49,7 @@ if(!(isset($_POST['submit']))){
   if (isset($name)){} else { $name = $_SERVER["SERVER_NAME"]; }
   if (isset($name)){} else { $name = "localhost"; }
   echo "    <td>$l_s27 ?<br />$l_s28.<br />&nbsp;</td>\n";
-  echo "    <td valign=\"bottom\"><input size=\"25\" name=\"ie_form_page\" value=\"http://$name/openaudit/admin_pc_add_1.php\" /><br />&nbsp;</td>\n";
+  echo "    <td valign=\"bottom\"><input size=\"25\" name=\"ie_form_page\" value=\"http://$name/openaudit/\" /><br />&nbsp;</td>\n";
   echo "  </tr>\n";
   echo "  <tr>\n";
   echo "    <td>$l_s29 ?<br />$l_s30.<br />&nbsp;</td>\n";
@@ -114,7 +114,8 @@ if(!(isset($_POST['submit']))){
   $content .= "ie_visible = \"" . $_POST['ie_visible'] . "\" \r\n";
   $content .= "ie_auto_submit = \"" . $_POST['ie_auto_submit'] . "\" \r\n";
   $content .= "ie_submit_verbose = \"" . $_POST['audit_ie_verbose'] . "\" \r\n";
-  $content .= "ie_form_page = \"" . $_POST['ie_form_page'] . "\" \r\n";
+  $content .= "ie_form_page = \"" . $_POST['ie_form_page'] . "admin_pc_add_1.php\" \r\n";
+  $content .= "non_ie_page = \"" . $_POST['ie_form_page'] . "admin_pc_add_2.php\" \r\n";
   $content .= "input_file = \"" . $_POST['input_file'] . "\" \r\n";
   $content .= "email_to = \"" . $_POST['email_to'] . "\" \r\n";
   $content .= "email_from = \"" . $_POST['email_from'] . "\" \r\n";
