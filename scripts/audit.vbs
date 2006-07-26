@@ -388,6 +388,7 @@ For Each objItem in colItems
        net_manufacturer = objItem2.Manufacturer
    Next
   ' Below is to account for a NULL in various items
+   if net_ip = "" then net_ip = "0.0.0.0"
    if isnull(net_dns_server_2) then net_dns_server_2 = "none"
    if isnull(net_dhcp_server) then net_dhcp_server = "none"
    if net_dhcp_server = "" then net_dhcp_server = "none"
