@@ -14,7 +14,7 @@ mysql_connect($mysql_server, $mysql_user, $mysql_password) or die("<td>Could not
 echo "      <td>$l_cop.</td><td><img src=\"images/button_success.png\" width=\"16\" height=\"16\" /></td></tr>\n";
 echo "  <tr><td>Setting up data in tables.</td>";
 mysql_select_db($mysql_database) or die("<td>Could not select database.</td><td><img src=\"images/button_fail.png\" width=\"16\" height=\"16\" /></td></tr>\n");
-$sql = "INSERT INTO config (config_name, config_value) VALUES ('version','06.07.25')";
+$sql = "INSERT INTO config (config_name, config_value) VALUES ('version','06.07')";
 $result = mysql_query($sql) or die("<tr><td>$l_s20:<br /><font color=\"red\">" . $sql . "</font></td></tr>\n");
 //echo "<tr><td>" . $sql . "</td></tr>\n";
 $sql = "SET PASSWORD FOR " . $mysql_user . "@localhost = OLD_PASSWORD('" . $mysql_password . "')";
