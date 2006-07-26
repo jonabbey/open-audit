@@ -397,12 +397,14 @@ For Each objItem in colItems
    net_description = clean(net_description)
    ' IP Address padded with zeros so it sorts properly
    MyIP = Split(net_ip, ".", -1, 1)
-   MyIP(0) = right("000" & MyIP(0),3)
-   MyIP(1) = right("000" & MyIP(1),3)
-   MyIP(2) = right("000" & MyIP(2),3)
-   MyIP(3) = right("000" & MyIP(3),3)
-   net_ip = MyIP(0) & "." & MyIP(1) & "." & MyIP(2) & "." & MyIP(3)
-   if net_ip <> "000.000.000.000" then net_ip_address = net_ip end if
+   if MyIP(0) <> "169" AND MyIP(1) <> "254" then
+     MyIP(0) = right("000" & MyIP(0),3)
+     MyIP(1) = right("000" & MyIP(1),3)
+     MyIP(2) = right("000" & MyIP(2),3)
+     MyIP(3) = right("000" & MyIP(3),3)
+     net_ip = MyIP(0) & "." & MyIP(1) & "." & MyIP(2) & "." & MyIP(3)
+     if net_ip <> "000.000.000.000" then net_ip_address = net_ip end if
+   end if
    if net_dhcp_server <> "255.255.255.255" then
      form_input = "network^^^" & net_mac            & "^^^" & net_description   & "^^^" & net_dhcp_enabled _
                        & "^^^" & net_dhcp_server    & "^^^" & net_dns_host_name & "^^^" & net_dns_server _
