@@ -49,7 +49,7 @@ ob_start();
 <title>Open-AudIT</title>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
 
-<?php include "include_style.php"; ?>
+<link rel="stylesheet" type="text/css" href="default.css" />
 
 <script type="text/javascript">
 /*<![CDATA[*/
