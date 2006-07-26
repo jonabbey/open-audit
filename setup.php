@@ -49,7 +49,7 @@ if(!(isset($_POST['submit']))){
   echo "          <tr>\n";
   echo "            <td>$l_s17 ?</td>\n";
   echo "            <td><select size=\"1\" name=\"usernames\" class=\"for_forms\">\n";
-  echo "                <option value=\"n\" selected>No</option>\n";
+  echo "                <option value=\"n\" selected=\"selected\">No</option>\n";
   echo "                <option value=\"y\">Yes</option>\n";
   echo "                </select></td>\n";
   echo "          </tr>\n";
