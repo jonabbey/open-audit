@@ -58,7 +58,6 @@ if (isset($_POST['pic_style_post'])) {$pic_style_post = $_POST['pic_style_post']
   $content .= "// Make sure to set use_pass = \"n\" if you do not wish to use passwords\n";
   $content .= "\$use_pass = '" . $iis_passwords_post . "';\n";
   $content .= "\$users = array(\n";
-  $content .= "  'admin' => 'Open-AudIT'";
   if ($username0 == "") {} else { $content .= "  '$username0' => '$password0'"; }
   if ($username1 == "") {} else { $content .= " ,\n  '$username1' => '$password1'"; }
   if ($username2 == "") {} else { $content .= " ,\n  '$username2' => '$password2'"; }
