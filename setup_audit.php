@@ -109,7 +109,7 @@ if(!(isset($_POST['submit']))){
   $filename = "scripts/audit.config";
   $content  = "audit_location = \"l\" \r\n";
   $content .= "verbose = \"" . $_POST['verbose'] . "\" \r\n";
-  $content .= "online = \"ie\" \r\n";
+  $content .= "online = \"iexml\" \r\n";
   $content .= "strComputer = \"" . $_POST['strcomputer'] . "\" \r\n";
   $content .= "ie_visible = \"" . $_POST['ie_visible'] . "\" \r\n";
   $content .= "ie_auto_submit = \"" . $_POST['ie_auto_submit'] . "\" \r\n";

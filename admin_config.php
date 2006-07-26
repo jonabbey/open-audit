@@ -131,6 +131,9 @@ echo "<td><select size=\"1\" name=\"language_post\" class=\"for_forms\">\n";
 echo "                <option value=\"english\" ";
      if ($language == "english"){ echo "selected";}
 echo " >English</option>\n";
+echo "                <option value=\"italian\" ";
+     if ($language == "italian"){ echo "selected";}
+echo " >Italian</option>\n";
 echo "    </select></td>\n";
 echo "</tr>\n";
 echo "<tr><td>" . $l_mss . ":&nbsp;</td><td><input type=\"text\" name=\"mysql_server_post\" size=\"12\" value=\"" . $mysql_server . "\" class=\"for_forms\"/></td></tr>\n";
