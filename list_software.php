@@ -3,7 +3,8 @@ $page = "";
 $extra = "";
 include "include.php";
 echo "<td valign=\"top\">\n";
-
+if (isset($_GET['version'])){$version = $_GET['version'];}else{$version = "";}
+if (isset($_GET['name'])){$name = mysql_escape_string($_GET['name']);}else{$name = "";}
 if (isset($_GET['show_all'])){ $count_system = '10000'; } else {}
 if (isset($_GET['page_count'])){ $page_count = $_GET['page_count']; } else { $page_count = 0;}
 $page_prev = $page_count - 1;
@@ -61,10 +62,10 @@ if ($sub <> "sw1"){
 
 if ($sub == "sw1"){
   if (isset($_GET['sort'])){ $sort = $_GET['sort']; } else { $sort = 'system_name';}
-  if ($version <> "no version"){
-    $sql = "SELECT software_name, software_version, software_publisher, net_ip_address, system_uuid, system_name, system_description FROM software, system where software_name = '" . $_GET["name"] . "' AND software_version = '" . $version . "' AND software_uuid = system_uuid AND software_timestamp = system_timestamp ORDER BY " . $sort;
+  if ($version <> ""){
+    $sql = "SELECT software_name, software_version, software_publisher, net_ip_address, system_uuid, system_name, system_description FROM software, system where software_name = '$name' AND software_version = '$version' AND software_uuid = system_uuid AND software_timestamp = system_timestamp ORDER BY " . $sort;
   } else {
-    $sql = "SELECT software_name, software_version, software_publisher, net_ip_address, system_uuid, system_name, system_description FROM software, system where software_name = '" . $_GET["name"] . "' AND software_uuid = system_uuid AND software_timestamp = system_timestamp ORDER BY " . $sort;
+    $sql = "SELECT software_name, software_version, software_publisher, net_ip_address, system_uuid, system_name, system_description FROM software, system where software_name = '$name' AND software_uuid = system_uuid AND software_timestamp = system_timestamp ORDER BY " . $sort;
   }
   $result = mysql_query($sql);
   if ($myrow = mysql_fetch_array($result)){
