@@ -48,9 +48,9 @@ ob_start();
   <head>
     <title>Open-AudIT</title>
     <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
-   	<link rel="stylesheet" type="text/css" href="default.css" />
+        <link rel="stylesheet" type="text/css" href="default.css" />
     <style type="text/css">
-	</style>
+        </style>
     <script type="text/javascript">
       /*<![CDATA[*/
       function IEHoverPseudo() {
@@ -63,11 +63,11 @@ ob_start();
         }
       }
       
-	  window.onload = IEHoverPseudo;
+          window.onload = IEHoverPseudo;
 
       /*]]>*/
     </script>
-	
+        
   <?php if ($page == NULL) { ?>
     <script type="text/javascript">
       <!--
@@ -79,7 +79,7 @@ ob_start();
       }
       // -->
     </script>
-	
+        
   <?php } else {} ?>
   </head>
   <body>
@@ -109,14 +109,14 @@ if ($page <> "setup"){
 ?>
 <table width="100%" border="0">
   <tr>
-  	<td colspan="3" class="main_each"><a href="index.php"><img src="images/logo.png" width="300" height="48" alt="" border="0"/></a></td>
+        <td colspan="3" class="main_each"><a href="index.php"><img src="images/logo.png" width="300" height="48" alt="" border="0"/></a></td>
   </tr>
 
   <tr>
     <td width="170" rowspan="12" valign="top">
       <ul id="primary-nav">
         <li><a href="index.php"><?php echo $l_hom; ?></a></li>
-		
+                
 <?php
 if ($pc > "0") {
   $sql = "SELECT system_uuid, system_timestamp, system_name, system.net_ip_address, net_domain FROM system, network_card WHERE system_uuid = '$pc' OR system_name = '$pc' OR (net_mac_address = '$pc' AND net_uuid = system_uuid)";
@@ -135,7 +135,7 @@ if ($pc > "0") {
               <ul>
                 <li><a href="system_hardware.php?pc=<?php echo $pc; ?>&amp;sub=all"><img src="images/statistics.png" alt="" /><?php echo $l_all; ?></a></li>
                 <li><a href="system_hardware.php?pc=<?php echo $pc; ?>&amp;sub=pb"><img src="images/processor.png" alt="" /><?php  echo $l_pb; ?></a></li>
-				<li><a href="system_hardware.php?pc=<?php echo $pc; ?>&amp;sub=me"><img src="images/memory.png" alt="" /><?php echo $l_mem; ?></a></li>
+                <li><a href="system_hardware.php?pc=<?php echo $pc; ?>&amp;sub=me"><img src="images/memory.png" alt="" /><?php echo $l_mem; ?></a></li>
                 <li><a href="system_hardware.php?pc=<?php echo $pc; ?>&amp;sub=hd"><img src="images/harddisk.png" alt="" /><?php echo $l_hdd; ?></a></li>
                 <li><a href="system_hardware.php?pc=<?php echo $pc; ?>&amp;sub=sc"><img src="images/scsi.png" alt="" /><?php echo $l_scs; ?></a></li>
                 <li><a href="system_hardware.php?pc=<?php echo $pc; ?>&amp;sub=od"><img src="images/optical.png" alt="" /><?php echo $l_odd; ?></a></li>
@@ -152,59 +152,59 @@ if ($pc > "0") {
               </ul>
             </li>
       
-	        <li class="menuparent">
-			  <a href="system_software.php?pc=<?php echo $pc; ?>"><img src="images/software.png" alt="" /><?php echo $l_swf; ?></a>
+            <li class="menuparent">
+              <a href="system_software.php?pc=<?php echo $pc; ?>"><img src="images/software.png" alt="" /><?php echo $l_swf; ?></a>
         
-		      <ul>
+              <ul>
                 <li><a href="system_software.php?pc=<?php echo $pc; ?>&amp;sub=all"><img src="images/statistics.png" alt="" /><?php echo $l_all; ?></a></li>
                 <li><a href="system_software.php?pc=<?php echo $pc; ?>&amp;sub=is"><img src="images/software.png" alt="" /><?php echo $l_isw; ?></a></li>
                 <li><a href="system_software.php?pc=<?php echo $pc; ?>&amp;sub=sy"><img src="images/settings_2.png" alt="" /><?php echo $l_syb; ?></a></li>
                 <li><a href="system_software.php?pc=<?php echo $pc; ?>&amp;sub=ph"><img src="images/software_2.png" alt="" /><?php echo $l_pah; ?></a></li>
-				<li><a href="system_software.php?pc=<?php echo $pc; ?>&amp;sub=rs"><img src="images/scsi.png" alt="" /><?php echo  $l_ras; ?></a></li>
-				<li><a href="system_software_audit.php?pc=<?php echo $pc; ?>&amp;sub="><img src="images/audit.png" alt="" /><?php echo $l_aut; ?></a></li>
+                <li><a href="system_software.php?pc=<?php echo $pc; ?>&amp;sub=rs"><img src="images/scsi.png" alt="" /><?php echo  $l_ras; ?></a></li>
+                <li><a href="system_software_audit.php?pc=<?php echo $pc; ?>&amp;sub="><img src="images/audit.png" alt="" /><?php echo $l_aut; ?></a></li>
                 <li><a href="system_software_keys.php?pc=<?php echo $pc; ?>&amp;sub="><img src="images/key_2.png" alt="" /><?php echo $l_cdk; ?></a></li>
                 <li><a href="system_software_bho.php?pc=<?php echo $pc; ?>&amp;sub="><img src="images/browser_bho.png" alt="" /><?php echo $l_ieb; ?></a></li>
-        		<li><a href="system_software_codecs.php?pc=<?php echo $pc; ?>&amp;sub="><img src="images/audio.png" alt="" /><?php echo $l_cod; ?></a></li>
-        		<li><a href="system_software_services.php?pc=<?php echo $pc; ?>&amp;sub="><img src="images/services.png" alt="" /><?php echo $l_ser; ?></a></li>
-        	  </ul>
-       	    </li>
-      		
-			<li class="menuparent"><a href="system_os.php?pc=<?php echo $pc; ?>"><img src="images/os.png" alt="" /><?php echo $l_oss; ?></a>
-        	  <ul>
-        		<li><a href="system_os.php?pc=<?php echo $pc; ?>&amp;sub=all"><img src="images/statistics.png" alt="" /><?php echo $l_all; ?></a></li>
-        		<li><a href="system_os.php?pc=<?php echo $pc; ?>&amp;sub=su"><img src="images/summary.png" alt="" /><?php echo $l_sum; ?></a></li>
-        		<li><a href="system_os.php?pc=<?php echo $pc; ?>&amp;sub=os"><img src="images/os.png" alt="" /><?php echo $l_osi; ?></a></li>
-        		<li><a href="system_os.php?pc=<?php echo $pc; ?>&amp;sub=ne"><img src="images/network_device.png" alt="" /><?php echo $l_nws; ?></a></li>
-        		<li><a href="system_os.php?pc=<?php echo $pc; ?>&amp;sub=sh"><img src="images/shared_drive.png" alt="" /><?php echo $l_shd; ?></a></li>
-        	  </ul>
-       		</li>
-			
-      		<li class="menuparent"><a href="#"><img src="images/statistics.png" alt="" /><?php echo $l_man; ?></a>
-        	  <ul>
-        		<li><a href="#"><img src="images/statistics.png" alt="" /><?php echo  $l_all; ?></a></li>
-        		<li><a href="#"><img src="images/notes.png"      alt="" /><?php echo  $l_nts; ?></a></li>
-        		<li><a href="#"><img src="images/antivirus.png"  alt="" /><?php echo  $l_psw; ?></a></li>
-        		<li><a href="#"><img src="images/audit.png"      alt="" /><?php echo  $l_det; ?></a></li>
-        	  </ul>
-       		</li>
-			
-      		<li class="menuparent"><a href="system_security.php?pc=<?php echo $pc; ?>"><img src="images/security.png" alt="" /><?php echo $l_sec; ?></a>
-        	  <ul>
-        		<li><a href="system_security.php?pc=<?php echo $pc; ?>&amp;sub=all"><img src="images/statistics.png" alt="" /><?php echo $l_all; ?></a></li>
-        		<li><a href="system_security.php?pc=<?php echo $pc; ?>&amp;sub=fw"><img src="images/firewall.png" alt="" /><?php echo $l_fir; ?></a></li>
-        		<li><a href="system_security.php?pc=<?php echo $pc; ?>&amp;sub=vi"><img src="images/antivirus.png" alt="" /><?php echo $l_ant; ?></a></li>
-        		<li><a href="system_security.php?pc=<?php echo $pc; ?>&amp;sub=nm"><img src="images/nmap.png" alt="" /><?php echo $l_nmp; ?></a></li>
-        		<li><a href="#"><img src="images/software_2.png" alt="" /> $l_hfn</a></li>
-        	  </ul>
-       		</li>
-			
-      	    <li class="menuparent"><a href="system_users.php?pc=<?php echo $pc; ?>"><img src="images/users_2.png" alt="" /><?php echo $l_uag; ?></a>
+                <li><a href="system_software_codecs.php?pc=<?php echo $pc; ?>&amp;sub="><img src="images/audio.png" alt="" /><?php echo $l_cod; ?></a></li>
+                <li><a href="system_software_services.php?pc=<?php echo $pc; ?>&amp;sub="><img src="images/services.png" alt="" /><?php echo $l_ser; ?></a></li>
+              </ul>
+            </li>
+                
+            <li class="menuparent"><a href="system_os.php?pc=<?php echo $pc; ?>"><img src="images/os.png" alt="" /><?php echo $l_oss; ?></a>
               <ul>
-                <li><a href="system_users.php?pc=<?php echo $pc; ?>&amp;sub=all"><img src="images/statistics.png" alt="" /><?php echo $l_all; ?></a></li>
-                <li><a href="system_users.php?pc=<?php echo $pc; ?>&amp;sub=us"><img src="images/users.png" alt="" /><?php echo $l_usr; ?></a></li>
-       			<li><a href="system_users.php?pc=<?php echo $pc; ?>&amp;sub=gr"><img src="images/groups.png" alt="" /><?php echo $l_grp; ?></a></li>
-        	  </ul>
-       		</li>
+                <li><a href="system_os.php?pc=<?php echo $pc; ?>&amp;sub=all"><img src="images/statistics.png" alt="" /><?php echo $l_all; ?></a></li>
+                <li><a href="system_os.php?pc=<?php echo $pc; ?>&amp;sub=su"><img src="images/summary.png" alt="" /><?php echo $l_sum; ?></a></li>
+                <li><a href="system_os.php?pc=<?php echo $pc; ?>&amp;sub=os"><img src="images/os.png" alt="" /><?php echo $l_osi; ?></a></li>
+                <li><a href="system_os.php?pc=<?php echo $pc; ?>&amp;sub=ne"><img src="images/network_device.png" alt="" /><?php echo $l_nws; ?></a></li>
+                <li><a href="system_os.php?pc=<?php echo $pc; ?>&amp;sub=sh"><img src="images/shared_drive.png" alt="" /><?php echo $l_shd; ?></a></li>
+              </ul>
+                </li>
+                        
+                <li class="menuparent"><a href="#"><img src="images/statistics.png" alt="" /><?php echo $l_man; ?></a>
+                  <ul>
+                    <li><a href="#"><img src="images/statistics.png" alt="" /><?php echo  $l_all; ?></a></li>
+                    <li><a href="#"><img src="images/notes.png"      alt="" /><?php echo  $l_nts; ?></a></li>
+                    <li><a href="#"><img src="images/antivirus.png"  alt="" /><?php echo  $l_psw; ?></a></li>
+                    <li><a href="#"><img src="images/audit.png"      alt="" /><?php echo  $l_det; ?></a></li>
+                  </ul>
+                </li>
+                        
+                <li class="menuparent"><a href="system_security.php?pc=<?php echo $pc; ?>"><img src="images/security.png" alt="" /><?php echo $l_sec; ?></a>
+                  <ul>
+                    <li><a href="system_security.php?pc=<?php echo $pc; ?>&amp;sub=all"><img src="images/statistics.png" alt="" /><?php echo $l_all; ?></a></li>
+                    <li><a href="system_security.php?pc=<?php echo $pc; ?>&amp;sub=fw"><img src="images/firewall.png" alt="" /><?php echo $l_fir; ?></a></li>
+                    <li><a href="system_security.php?pc=<?php echo $pc; ?>&amp;sub=vi"><img src="images/antivirus.png" alt="" /><?php echo $l_ant; ?></a></li>
+                    <li><a href="system_security.php?pc=<?php echo $pc; ?>&amp;sub=nm"><img src="images/nmap.png" alt="" /><?php echo $l_nmp; ?></a></li>
+                    <li><a href="#"><img src="images/software_2.png" alt="" /> $l_hfn</a></li>
+                  </ul>
+                </li>
+                        
+                <li class="menuparent"><a href="system_users.php?pc=<?php echo $pc; ?>"><img src="images/users_2.png" alt="" /><?php echo $l_uag; ?></a>
+                  <ul>
+                    <li><a href="system_users.php?pc=<?php echo $pc; ?>&amp;sub=all"><img src="images/statistics.png" alt="" /><?php echo $l_all; ?></a></li>
+                    <li><a href="system_users.php?pc=<?php echo $pc; ?>&amp;sub=us"><img src="images/users.png" alt="" /><?php echo $l_usr; ?></a></li>
+                   <li><a href="system_users.php?pc=<?php echo $pc; ?>&amp;sub=gr"><img src="images/groups.png" alt="" /><?php echo $l_grp; ?></a></li>
+                </ul>
+             </li>
 
 <?php
 //<li class="menuparent"><a href="#"><img src="images/action.png" width="16" height="16" border="0" alt="" /> $l_act</a>
@@ -223,44 +223,44 @@ if ($pc > "0") {
 //</li>
 ?>
 
-			<li><a href="system_iis.php?pc=<?php echo $pc; ?>"><img src="images/browser.png" alt="" /><?php echo $l_iis; ?></a></li>
-			<li><a href="system_graphs.php?pc=<?php echo $pc; ?>"><img src="images/harddisk.png" alt="" /><?php echo $l_dug; ?></a></li>
-			<li><a href="system_audits.php?pc=<?php echo $pc; ?>"><img src="images/audit.png" alt="" /><?php echo $l_aut; ?></a></li>
-			<li><a href="system_report.php?pc=<?php echo $pc; ?>"><img src="images/printer.png" alt="" /><?php echo $l_prt; ?></a></li>
-		  </ul>
-		</li>
+             <li><a href="system_iis.php?pc=<?php echo $pc; ?>"><img src="images/browser.png" alt="" /><?php echo $l_iis; ?></a></li>
+             <li><a href="system_graphs.php?pc=<?php echo $pc; ?>"><img src="images/harddisk.png" alt="" /><?php echo $l_dug; ?></a></li>
+             <li><a href="system_audits.php?pc=<?php echo $pc; ?>"><img src="images/audit.png" alt="" /><?php echo $l_aut; ?></a></li>
+             <li><a href="system_report.php?pc=<?php echo $pc; ?>"><img src="images/printer.png" alt="" /><?php echo $l_prt; ?></a></li>
+           </ul>
+         </li>
 
 <?php
 } else {}
 ?>
 
-		<li class="menuparent"><a href="#"><?php echo $l_adm; ?></a>
-		  <ul>
-			<li><a href="admin_config.php?sub=1"><img src="images/settings.png" alt="" /><?php echo $l_con; ?></a></li>
-			<li><a href="setup_audit.php"><img src="images/settings_2.png" alt="" /><?php echo $l_auc; ?></a></li>
-			<li><a href="admin_pc_add_1.php?sub=1"><img src="images/add.png" alt="" /><?php echo $l_add; ?></a></li>
-			<li><a href="admin_pc_delete.php?sub=1"><img src="images/delete.png" alt="" /><?php echo $l_del; ?></a></li>
-			<li><a href="scripts/audit.vbs"><img src="images/audit.png" alt="" /><?php echo $l_aud; ?></a></li>
-		  </ul>
-		</li>
+         <li class="menuparent"><a href="#"><?php echo $l_adm; ?></a>
+           <ul>
+             <li><a href="admin_config.php?sub=1"><img src="images/settings.png" alt="" /><?php echo $l_con; ?></a></li>
+             <li><a href="setup_audit.php"><img src="images/settings_2.png" alt="" /><?php echo $l_auc; ?></a></li>
+             <li><a href="admin_pc_add_1.php?sub=1"><img src="images/add.png" alt="" /><?php echo $l_add; ?></a></li>
+             <li><a href="admin_pc_delete.php?sub=1"><img src="images/delete.png" alt="" /><?php echo $l_del; ?></a></li>
+             <li><a href="scripts/audit.vbs"><img src="images/audit.png" alt="" /><?php echo $l_aud; ?></a></li>
+           </ul>
+         </li>
 
-		<li class="menuparent"><a href="#"><?php echo $l_qry; ?></a>
-		  <ul>
-			<li><a href="list_all.php"><img src="images/computer.png" alt="" /><?php echo $l_awp; ?></a></li>
-			<li><a href="list_servers.php"><img src="images/server.png" alt="" /><?php echo $l_asv; ?></a></li>
-			<li><a href="list_desktops.php"><img src="images/computer_2.png" alt="" /><?php echo $l_aws; ?></a></li>
-			<li><a href="list_laptops.php"><img src="images/laptop.png" alt="" /><?php echo $l_alp; ?></a></li>
-			<li><a href="list_software.php"><img src="images/software_2.png" alt="" /><?php echo $l_asw; ?></a></li>
-			<li><a href="list_software_hotfixes.php"><img src="images/software.png" alt="" /><?php echo $l_ahf; ?></a></li>
-			<li><a href="list_software_bho.php"><img src="images/browser_bho.png" alt="" /><?php echo $l_abh; ?></a></li>
-			<li><a href="list_office_keys.php"><img src="images/key_1.png" alt="" /><?php echo $l_ofc; ?></a></li>
-			<li><a href="list_ms_keys.php"><img src="images/key_2.png" alt="" /><?php echo $l_wcd; ?></a></li>
-			<li><a href="list_other_keys.php"><img src="images/key_3.png" alt="" /><?php echo $l_ocd; ?></a></li>
+         <li class="menuparent"><a href="#"><?php echo $l_qry; ?></a>
+           <ul>
+             <li><a href="list_all.php"><img src="images/computer.png" alt="" /><?php echo $l_awp; ?></a></li>
+             <li><a href="list_servers.php"><img src="images/server.png" alt="" /><?php echo $l_asv; ?></a></li>
+             <li><a href="list_desktops.php"><img src="images/computer_2.png" alt="" /><?php echo $l_aws; ?></a></li>
+             <li><a href="list_laptops.php"><img src="images/laptop.png" alt="" /><?php echo $l_alp; ?></a></li>
+             <li><a href="list_software.php"><img src="images/software_2.png" alt="" /><?php echo $l_asw; ?></a></li>
+             <li><a href="list_software_hotfixes.php"><img src="images/software.png" alt="" /><?php echo $l_ahf; ?></a></li>
+             <li><a href="list_software_bho.php"><img src="images/browser_bho.png" alt="" /><?php echo $l_abh; ?></a></li>
+             <li><a href="list_office_keys.php"><img src="images/key_1.png" alt="" /><?php echo $l_ofc; ?></a></li>
+             <li><a href="list_ms_keys.php"><img src="images/key_2.png" alt="" /><?php echo $l_wcd; ?></a></li>
+             <li><a href="list_other_keys.php"><img src="images/key_3.png" alt="" /><?php echo $l_ocd; ?></a></li>
 
 <?php //<li><a href="query.php"><img src="images/audit.png" alt="" /> $l_oah</a></li> ?>
 
-		  </ul>
-		</li>
+           </ul>
+         </li>
 
 <?php
 //<li class="menuparent"><a href="#">$l_swr</a>
@@ -281,21 +281,21 @@ if ($pc > "0") {
 //</li>
 ?>
 
-		<li class="menuparent"><a href="#"><?php echo $l_oth; ?></a>
-		  <ul>
-			<li><a href="list_printers.php"><img src="images/printer.png" alt="" /><?php echo $l_prn; ?></a></li>
-			<li><a href="list_monitors.php"><img src="images/display.png" alt="" /><?php echo $l_mon; ?></a></li>
-			<li><a href="list_other.php?id=2"><img src="images/network_device.png" alt="" /><?php echo $l_nit; ?></a></li>
-			<li><a href="list_other.php?id=3"><img src="images/non_network.png" alt="" /><?php echo $l_nni; ?></a></li>
-			<li><a href="list_other.php?id=1"><img src="images/non_network.png" alt="" /> All Other Devices</a></li>
+         <li class="menuparent"><a href="#"><?php echo $l_oth; ?></a>
+           <ul>
+             <li><a href="list_printers.php"><img src="images/printer.png" alt="" /><?php echo $l_prn; ?></a></li>
+             <li><a href="list_monitors.php"><img src="images/display.png" alt="" /><?php echo $l_mon; ?></a></li>
+             <li><a href="list_other.php?id=2"><img src="images/network_device.png" alt="" /><?php echo $l_nit; ?></a></li>
+             <li><a href="list_other.php?id=3"><img src="images/non_network.png" alt="" /><?php echo $l_nni; ?></a></li>
+             <li><a href="list_other.php?id=1"><img src="images/non_network.png" alt="" /> All Other Devices</a></li>
 
 <?php
 //<li><a href="other_add.php?sub=d1"><img src="images/add.png"            alt="" /> $l_ado</a></li>
 ?>
 
-			<li><a href="other_delete.php?sub=d1"><img src="images/delete.png" alt="" /><?php echo $l_rem; ?></a></li> 
-		  </ul>
-		</li>
+             <li><a href="other_delete.php?sub=d1"><img src="images/delete.png" alt="" /><?php echo $l_rem; ?></a></li> 
+           </ul>
+         </li>
 
 <?php
 //<li class="menuparent"><a href="#">$l_grp</a>
@@ -311,6 +311,6 @@ if ($pc > "0") {
 //</li>
 ?>
 
-	  </ul>
-	</td>
+       </ul>
+     </td>
 
