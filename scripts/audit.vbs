@@ -3181,7 +3181,7 @@ End Function
 
 sub entry(form_input, comment,objTextFile,oAdd,oComment)
 if form_input <> "" then
-  if online = "no" then
+  if online = "n" then
     objTextFile.WriteLine(form_input)
   end if
   if online = "yes" or online = "yesxml" then
