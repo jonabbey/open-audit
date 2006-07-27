@@ -367,10 +367,10 @@ if ($show_detected_servers == "y"){
               <td colspan=\"2\"><b>$l_sev</b></td>
             </tr>\n";
 
-  $sql  = "SELECT ser.service_uuid, ser.service_display_name, ser.service_started, sys.system_name, sys.net_ip_address FROM service ser, system sys ";
-  $sql .= "WHERE (ser.service_display_name LIKE 'IIS Admin%' OR ser.service_display_name LIKE 'Apache%') AND ";
-  $sql .= "ser.service_started = 'True' AND ser.service_uuid = sys.system_uuid AND ";
-  $sql .= "ser.service_timestamp = sys.system_timestamp ORDER BY system_name";
+  $sql  = "SELECT ser.service_uuid, ser.service_display_name, ser.service_started, sys.system_name, sys.net_ip_address FROM service ser, system sys 
+           WHERE (ser.service_display_name LIKE 'IIS Admin%' OR ser.service_display_name LIKE 'Apache%') AND 
+           ser.service_started = 'True' AND ser.service_uuid = sys.system_uuid AND 
+           ser.service_timestamp = sys.system_timestamp ORDER BY system_name";
 
   $result = mysql_query($sql, $db);
   if ($myrow = mysql_fetch_array($result)){
@@ -500,7 +500,9 @@ if ($show_detected_servers == "y"){
         <div style=\"display:none;\" id=\"f7\">
          <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" >\n";
 
-  $sql = "SELECT service_uuid, service_display_name, service_started, system_name, net_ip_address FROM service, system WHERE service_display_name = 'FTP Publishing Service' AND service_uuid = system_uuid AND service_timestamp = system_timestamp";
+  $sql = "SELECT service_uuid, service_display_name, service_started, system_name, net_ip_address FROM service, system 
+          WHERE service_display_name = 'FTP Publishing Service' AND service_uuid = system_uuid AND service_timestamp = system_timestamp 
+          ORDER BY system_name";
   $result = mysql_query($sql, $db);
 
   if ($myrow = mysql_fetch_array($result)){
@@ -642,7 +644,9 @@ if ($show_detected_servers == "y"){
        <div style=\"display:none;\" id=\"f8\">
          <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" >\n";
 
-  $sql = "SELECT service_uuid, service_display_name, service_started, system_name, net_ip_address FROM service, system WHERE service_display_name = 'Telnet' AND service_started = 'True' AND service_timestamp = system_timestamp AND service_uuid = system_uuid";
+  $sql = "SELECT service_uuid, service_display_name, service_started, system_name, net_ip_address FROM service, system 
+          WHERE service_display_name = 'Telnet' AND service_started = 'True' AND service_timestamp = system_timestamp 
+          AND service_uuid = system_uuid ORDER BY system_name";
   $result = mysql_query($sql, $db);
   if ($myrow = mysql_fetch_array($result)){
     // Service Detected and Started
@@ -776,11 +780,11 @@ if ($show_detected_servers == "y"){
        <div style=\"display:none;\" id=\"f9\">
          <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" >\n";
 
-  $sql  = "SELECT service_uuid, service_display_name, service_started, system_name, net_ip_address FROM service, system WHERE ";
-  $sql .= "(service_display_name = 'Microsoft Exchange Information Store' OR ";
-  $sql .= "service_display_name = 'Simple Mail Transport Protocol (SMTP)' OR ";
-  $sql .= "service_display_name = 'Simple Mail Transfer Protocol (SMTP)') ";
-  $sql .= "AND service_timestamp = system_timestamp AND service_uuid = system_uuid";
+  $sql  = "SELECT service_uuid, service_display_name, service_started, system_name, net_ip_address FROM service, system WHERE 
+           (service_display_name = 'Microsoft Exchange Information Store' OR 
+           service_display_name = 'Simple Mail Transport Protocol (SMTP)' OR 
+           service_display_name = 'Simple Mail Transfer Protocol (SMTP)')
+           AND service_timestamp = system_timestamp AND service_uuid = system_uuid ORDER BY system_name";
   $result = mysql_query($sql, $db);
   if ($myrow = mysql_fetch_array($result)){
     // Service Detected
@@ -911,9 +915,9 @@ if ($show_detected_servers == "y"){
        <div style=\"display:none;\" id=\"f10\">
          <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" >\n";
 
-  $sql  = "SELECT service_uuid, service_display_name, service_started, system_name, net_ip_address FROM service, system WHERE ";
-  $sql .= "service_display_name LIKE '%VNC%' AND service_started = 'True' AND ";
-  $sql .= "service_timestamp = system_timestamp AND service_uuid = system_uuid";
+  $sql  = "SELECT service_uuid, service_display_name, service_started, system_name, net_ip_address FROM service, system WHERE 
+           service_display_name LIKE '%VNC%' AND service_started = 'True' AND 
+           service_timestamp = system_timestamp AND service_uuid = system_uuid ORDER BY system_name";
   $result = mysql_query($sql, $db);
   if ($myrow = mysql_fetch_array($result)){
     // Service Detected
