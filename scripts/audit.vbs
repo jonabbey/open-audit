@@ -2352,6 +2352,7 @@ For Each subkey In arrSubKeys
   oReg.GetStringValue HKEY_LOCAL_MACHINE,Path,subKey,key
   if IsNull(key) then
   else
+    strOffXPRUKey = GetCrystalKey(key)
     form_input = "ms_keys^^^" & name_xp       & "^^^" _
                               & strOffXPRUKey & "^^^" _
                               & release_type  & "^^^" _
