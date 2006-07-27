@@ -22,14 +22,14 @@ for i in `cat /etc/resolv.conf | cut -d" " -f2`
 do
   dns_server="$i"
 done
-echo "network^^^$mac^^^$name^^^ ^^^ ^^^$HOSTNAME^^^$dns_server^^^$ip^^^$subnet^^^ ^^^ ^^^$type^^^$manufacturer" >> $ReportFile
+echo "network^^^$mac^^^$name^^^ ^^^ ^^^$HOSTNAME^^^$dns_server^^^$ip^^^$subnet^^^ ^^^ ^^^$type^^^$manufacturer^^^" >> $ReportFile
 # Missing - DHCP Enabled
 #         - DHCP Server
 #         - WINS Primary
 #         - WINS Secondary
 
 # System01
-echo "system01^^^$ip^^^ ^^^$HOSTNAME\ ^^^ ^^^ ^^^ " >> $ReportFile
+echo "system01^^^$ip^^^ ^^^$HOSTNAME\ ^^^ ^^^ ^^^ ^^^" >> $ReportFile
 # Missing - Domain
 #         - User
 #         - AD Site
@@ -38,8 +38,11 @@ echo "system01^^^$ip^^^ ^^^$HOSTNAME\ ^^^ ^^^ ^^^ " >> $ReportFile
 
 
 # Memory
-RAMsizekb=`cat /proc/meminfo | grep MemTotal |cut -d: -f2 | cut -c8- | cut -d" " -f1`
+#RAMsizekb=`cat /proc/meminfo | grep MemTotal |cut -d: -f2 | cut -c8- | cut -d" " -f1`
+RAMsizekb=`cat /proc/meminfo | grep MemTotal |cut -d: -f2 | cut -dk -f1`
+RAMsizekb=`expr $RAMsizekb / 1`
 RAMsize=`expr $RAMsizekb / 1024`
+
 #Number of CPUs
 nbcpu=`cat /proc/cpuinfo | grep "processor" | wc -l`
 # System Model
@@ -50,7 +53,7 @@ sys_manufacturer=`lshal --long --show /org/freedesktop/Hal/devices/computer | gr
 country=`cat /etc/timezone`
 timezone=`date | cut -d" " -f5`
 # System02
-echo "system02^^^$sys_model^^^$HOSTNAME^^^$nbcpu^^^ ^^^ ^^^$chassis_type^^^$RAMsize^^^$sys_serial^^^$sys_manufacturer^^^ ^^^$country^^^$timezone^^^" >> $ReportFile
+echo "system02^^^$sys_model^^^$HOSTNAME^^^$nbcpu^^^ ^^^ ^^^$chassis_type^^^$RAMsize^^^$sys_serial^^^$sys_manufacturer^^^ ^^^$country^^^$timezone^^^^^^" >> $ReportFile
 # Missing - DHCP Enabled
 #         - Registered Owner
 #         - Domain Role
@@ -63,7 +66,7 @@ bios_manufacturer=`lshal --long --show /org/freedesktop/Hal/devices/computer | g
 bios_description=`lshal --long --show /org/freedesktop/Hal/devices/computer | grep smbios.system.product | cut -d" " -f5 | cut -d"'" -f2`
 
 #Bios
-echo "bios^^^$bios_description^^^$bios_manufacturer^^^$bios_serial^^^$bios_version^^^$bios_version" >> $ReportFile
+echo "bios^^^$bios_description^^^$bios_manufacturer^^^$bios_serial^^^$bios_version^^^$bios_version^^^" >> $ReportFile
 
 
 #Operating System
@@ -125,7 +128,12 @@ fi
 done
 mount_point=`grep ' / ' /etc/mtab |cut -d " " -f1`
 
-echo "system03^^^$mount_point^^^$version^^^Linux^^^$distribution ($release)^^^$country^^^ ^^^ ^^^ ^^^ ^^^ ^^^$sys_serial^^^ ^^^$version^^^" >> $ReportFile
+if [ "$release" = "Ubuntu 6.06 LTS \n \l" ]
+then
+release="Ubuntu 6.06"
+fi
+
+echo "system03^^^$mount_point^^^$version^^^Linux^^^$distribution ($release)^^^$country^^^ ^^^ ^^^ ^^^ ^^^ ^^^$sys_serial^^^ ^^^$version^^^^^^" >> $ReportFile
 # Missing - Description
 #         - Date OS Installed
 #         - Organisation
@@ -134,17 +142,18 @@ echo "system03^^^$mount_point^^^$version^^^Linux^^^$distribution ($release)^^^$c
 #         - System Version
 
 # Processor
-cpu_name=`cat /proc/cpuinfo | grep "model name" | cut -d: -f2 | cut -c2-`
-cpu_freq=`cat /proc/cpuinfo | grep "cpu MHz" | cut -d: -f2 | cut -c2- | cut -d. -f1`
-cpu_manufacturer=`cat /proc/cpuinfo | grep "vendor_id" | cut -d: -f2 | cut -c2-`
-cpu_power=`lshal --long --show /org/freedesktop/Hal/devices/acpi_CPU0 | grep processor.can_throttle | cut -d" " -f5 | cut -d"'" -f2`
-
-echo "processor^^^$cpu_name^^^$cpu_freq^^^ ^^^ ^^^ ^^^$cpu_manufacturer^^^$cpu_freq^^^$cpu_name^^^$cpu_power^^^ ^^^" >> $ReportFile
-# Missing - Voltage
-#         - Device ID
-#         - External Clock
-#         - Processor Socket
-
+cpu_device_id=`cat /proc/cpuinfo | grep "processor" | cut -d: -f2 | cut -c2-`
+for i in $cpu_device_id; do
+  count=` expr $i + 1`
+  cpu_name=`cat /proc/cpuinfo | grep "model name" | cut -d: -f2 | cut -c2- | tr "\n" "^" | cut -d^ -f$count`
+  cpu_freq=`cat /proc/cpuinfo | grep "cpu MHz" | cut -d: -f2 | cut -c2- | cut -d. -f1 | tr "\n" "^" | cut -d^ -f$count`
+  cpu_manufacturer=`cat /proc/cpuinfo | grep "vendor_id" | cut -d: -f2 | cut -c2- | tr "\n" "^" | cut -d^ -f$count`
+  cpu_power=`lshal --long --show /org/freedesktop/Hal/devices/acpi_CPU0 | grep processor.can_throttle | cut -d" " -f5 | cut -d"'" -f2`
+  echo "processor^^^$cpu_name^^^$cpu_freq^^^ ^^^$i^^^ ^^^$cpu_manufacturer^^^$cpu_freq^^^$cpu_name^^^$cpu_power^^^ ^^^^^^" >> $ReportFile
+  # Missing - Voltage
+  #         - External Clock
+  #         - Processor Socket
+done
 
 pcilist=`lspci -vm`
 perif=`lspci -vm | grep "[[:digit:]]:[[:digit:]]" | cut -f2`
@@ -153,12 +162,11 @@ for i in $perif; do
   name=`echo "$pcilist" | grep -w $i -A 4 | grep -v "[[:digit:]]:[[:digit:]]" | grep -w "Device:" | cut -d":" -f2 | cut -f2`
   manufacturer=`echo "$pcilist" | grep -w $i -A 4 | grep -w "Vendor:" | cut -d":" -f2 | cut -f2`
   device_id=`echo "$pcilist" | grep -w $i -A 4 | grep -w "Device:" | cut -d":" -f2 | cut -f2`
-  #echo "$i - $type"
 
   # Graphic Card
   if [ "$type" = "VGA compatible controller" ]
   then
-    echo "video^^^ ^^^$manufacturer - $name^^^0^^^0^^^0^^^0^^^$manufacturer - $name^^^0000-00-00^^^ ^^^ ^^^ ^^^$device_id" >> $ReportFile
+    echo "video^^^ ^^^$manufacturer - $name^^^0^^^0^^^0^^^0^^^$manufacturer - $name^^^0000-00-00^^^ ^^^ ^^^ ^^^$device_id^^^" >> $ReportFile
   fi
   # Missing - Adapter Ram
   #         - Hor Res
@@ -173,7 +181,7 @@ for i in $perif; do
   #Sound Card
   if [ "$type" = "Multimedia audio controller" ]
   then
-    echo "sound^^^$manufacturer^^^$name^^^$device_id" >> $ReportFile
+    echo "sound^^^$manufacturer^^^$name^^^$device_id^^^" >> $ReportFile
   fi
 done
 
@@ -183,7 +191,7 @@ for name in $packages; do
   version=`dpkg --list | grep "$name " |tail -n1|awk '{print $3}' 2> /dev/null`
   if [ "$version" ] 
   then
-    echo "software^^^$name^^^$version^^^^^^^^^^^^^^^^^^^^^^^^" >> $ReportFile
+    echo "software^^^$name^^^$version^^^^^^^^^^^^^^^^^^^^^^^^^^^" >> $ReportFile
   fi
 done
 
@@ -193,8 +201,8 @@ if [ "$sys_uuid" = "Not" ]
 then
   sys_uuid="$HOSTNAME"
 fi
-audited_by=`echo whoami`
-echo "audit^^^$HOSTNAME^^^$audit_date^^^$sys_uuid^^^$audited_by^^^y^^^y" >> $ReportFile
+audited_by=`whoami`
+echo "audit^^^$HOSTNAME^^^$audit_date^^^$sys_uuid^^^$audited_by^^^y^^^y^^^^^^" >> $ReportFile
 
 
 # Hard Disks
@@ -211,19 +219,25 @@ do
     product=`hal-get-property --udi $udi --key info.product`
     bus=`hal-get-property --udi $udi --key storage.bus`
     mount=`hal-get-property --udi $udi --key block.device`
-    product_dvd=`echo $product | grep DVD`
+    product_dvd=`echo $product | grep -i DVD`
     if [ "$category" = "storage" ]
     then
       if [ "$product_dvd" = "$product" ]
       then
         # Item is a DVD or CD drive
-        echo "optical^^^$product^^^$mount^^^" >> $ReportFile
+        echo "optical^^^$product^^^$mount^^^^^^" >> $ReportFile
 
       else
         # Item is a hard drive
         mount_end=`echo $mount | cut -d"/" -f3`
-        size=`dmesg | grep -w $mount_end: | grep MB | cut -d"(" -f2 | cut -d" " -f1 | uniq`
-        echo "harddrive^^^$mount^^^ ^^^$bus^^^$vendor^^^$product^^^1^^^^^^^^^^^^$size^^^" >> $ReportFile
+        # size=`dmesg | grep -w $mount_end: | grep MB | cut -d"(" -f2 | cut -d" " -f1 | uniq`
+        size=`fdisk -l $mount | grep Disk | cut -d" " -f3 | cut -d"." -f1`
+        size_type=`fdisk -l $mount | grep Disk | cut -d" " -f4`
+        if [ "$size_type" = "GB," ]
+        then
+          let "size = $size * 1024"
+        fi
+        echo "harddrive^^^$mount^^^ ^^^$bus^^^$vendor^^^$product^^^1^^^^^^^^^^^^$size^^^^^^" >> $ReportFile
         # Missing - Partitions (1)
         #         - scsi bus
         #         - scsi logical unit
@@ -233,7 +247,7 @@ do
     else
       if [ "$bus" = "usb" ]
       then
-        echo "usb^^^$category^^^$product^^^$vendor^^^" >> $ReportFile
+        echo "usb^^^$category^^^$product^^^$vendor^^^^^^" >> $ReportFile
       fi
     fi
   fi
