@@ -164,18 +164,22 @@ if ($myrow = mysql_fetch_array($result)){
 } else {}
 
 
-
-sort($result_set);
-$count = count ($result_set);
-for ($i=0; $i<$count; $i++){
-  $countmore=count($result_set[0]);
-  $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
-  echo "<tr bgcolor=\"$bgcolor\">";
-  echo "<td align=\"center\">&nbsp;" . $result_set[$i][2] . "&nbsp;</td>";
-  echo "<td align=\"center\">&nbsp;<a href=\"system_summary.php?pc=" . $result_set[$i][1] . "\">" . $result_set[$i][0] . "</a>&nbsp;</td>";
-  echo "<td>&nbsp;" . $result_set[$i][3] . "&nbsp;</td>";
-  echo "<td>&nbsp;" . $result_set[$i][4] . "&nbsp;</td>";
-  echo "</tr>\n";
+if($result_set) {
+  sort($result_set);
+  $count = count ($result_set);
+  for ($i=0; $i<$count; $i++){
+    $countmore=count($result_set[0]);
+    $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
+    echo "<tr bgcolor=\"$bgcolor\">";
+    echo "<td align=\"center\">&nbsp;" . $result_set[$i][2] . "&nbsp;</td>";
+    echo "<td align=\"center\">&nbsp;<a href=\"system_summary.php?pc=" . $result_set[$i][1] . "\">" . $result_set[$i][0] . "</a>&nbsp;</td>";
+    echo "<td>&nbsp;" . $result_set[$i][3] . "&nbsp;</td>";
+    echo "<td>&nbsp;" . $result_set[$i][4] . "&nbsp;</td>";
+    echo "</tr>\n";
+  }
+}
+else {
+  echo "<tr><td colspan=\"4\">No Results.</td></tr>\n";
 }
 
 echo "</table>\n";
