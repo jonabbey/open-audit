@@ -52,11 +52,19 @@ function replacePngTags($x){
         $image_path=join('/',$tmp);
         if(strlen($image_path)) $image_path.='/';
 
+        if($width!=0 && $height!=0) {
         // end quote is already supplied by originial src attribute
         $replace_src_with=$image_path.'spacer.gif" style="width: '.$width.
             'px; height: '.$height.'px; filter: progid:DXImageTransform.'.
             'Microsoft.AlphaImageLoader(src=\''.$image.'\', sizingMethod='.
             '\'scale\')';
+        }
+        else {
+        $replace_src_with=$image_path.'spacer.gif" style="
+            filter: progid:DXImageTransform.'.
+            'Microsoft.AlphaImageLoader(src=\''.$image.'\')';
+        }
+
         
         // now create the new tag from the old
         $new_tag=str_replace($image,$replace_src_with,$original);
