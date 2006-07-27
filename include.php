@@ -134,7 +134,7 @@ if ($pc > "0") {
             <li class="menuparent"><a href="system_hardware.php?pc=<?php echo $pc; ?>"><img src="images/printer.png" alt="" /><?php echo $l_hwd; ?></a>
               <ul>
                 <li><a href="system_hardware.php?pc=<?php echo $pc; ?>&amp;sub=all"><img src="images/statistics.png" alt="" /><?php echo $l_all; ?></a></li>
-                <li><a href="system_hardware.php?pc=<?php echo $pc; ?>&amp;sub=pb"><img src="images/processor.png" alt="" /><?php  echo $l_pb; ?></a></li>
+                <li><a href="system_hardware.php?pc=<?php echo $pc; ?>&amp;sub=pb"><img src="images/processor.png" alt="" /><?php  echo $l_pab; ?></a></li>
                 <li><a href="system_hardware.php?pc=<?php echo $pc; ?>&amp;sub=me"><img src="images/memory.png" alt="" /><?php echo $l_mem; ?></a></li>
                 <li><a href="system_hardware.php?pc=<?php echo $pc; ?>&amp;sub=hd"><img src="images/harddisk.png" alt="" /><?php echo $l_hdd; ?></a></li>
                 <li><a href="system_hardware.php?pc=<?php echo $pc; ?>&amp;sub=sc"><img src="images/scsi.png" alt="" /><?php echo $l_scs; ?></a></li>
@@ -194,7 +194,7 @@ if ($pc > "0") {
                     <li><a href="system_security.php?pc=<?php echo $pc; ?>&amp;sub=fw"><img src="images/firewall.png" alt="" /><?php echo $l_fir; ?></a></li>
                     <li><a href="system_security.php?pc=<?php echo $pc; ?>&amp;sub=vi"><img src="images/antivirus.png" alt="" /><?php echo $l_ant; ?></a></li>
                     <li><a href="system_security.php?pc=<?php echo $pc; ?>&amp;sub=nm"><img src="images/nmap.png" alt="" /><?php echo $l_nmp; ?></a></li>
-                    <li><a href="#"><img src="images/software_2.png" alt="" /> $l_hfn</a></li>
+                    <li><a href="#"><img src="images/software_2.png" alt="" /><?php echo $l_hfn; ?></a></li>
                   </ul>
                 </li>
                         
