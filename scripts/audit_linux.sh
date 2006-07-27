@@ -253,8 +253,14 @@ do
   fi
 done
 
-
-
+# Users
+users=`cat /etc/passwd | cut -d":" -f1`
+for i in $users
+do
+  username=`cat /etc/passwd | grep $i | cut -d":" -f5 | tr -s ',' | tr ',' ' '`
+  user_id=`cat /etc/passwd | grep $i | cut -d":" -f3`
+  echo "l_user^^^^^^^^^$username^^^$i^^^^^^^^^^^^$user_id^^^" >> $ReportFile
+done
 
 # The end - submit to Open-AudIT
 audit_result=`cat $ReportFile`

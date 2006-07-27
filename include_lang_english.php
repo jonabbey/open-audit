@@ -484,6 +484,7 @@ $l_upf = "Uploading file";
 $l_upl = "Uploading files from Uploads directory";
 $l_usb = "USB Devices";
 $l_usc = "USB Device";
+$l_usd = "Users SID";
 $l_uui = "UUID";
 
 $l_vam = "Video &amp; Monitor";

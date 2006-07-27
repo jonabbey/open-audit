@@ -25,6 +25,7 @@ if (($sub == "us") or ($sub == "all")){
       $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
       echo "<tr bgcolor=\"" . $bgcolor . "\"><td>$l_usn:&nbsp;</td><td>" . $myrow["users_name"] . "</td></tr>";
       echo "<tr bgcolor=\"" . $bgcolor . "\"><td>$l_ful:&nbsp;</td><td>" . $myrow["users_full_name"] . "</td></tr>";
+      echo "<tr bgcolor=\"" . $bgcolor . "\"><td>$l_usd:&nbsp;</td><td>" . $myrow["users_sid"] . "</td></tr>";
       echo "<tr bgcolor=\"" . $bgcolor . "\"><td>$l_dis:&nbsp;</td><td>" . $myrow["users_disabled"] . "</td></tr>";
       echo "<tr bgcolor=\"" . $bgcolor . "\"><td>$l_psc:&nbsp;</td><td>" . $myrow["users_password_changeable"] . "</td></tr>";
       echo "<tr bgcolor=\"" . $bgcolor . "\"><td>$l_psr:&nbsp;</td><td>" . $myrow["users_password_required"] . "</td></tr>";
