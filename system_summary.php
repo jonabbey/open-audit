@@ -49,7 +49,13 @@ if ($myrow = mysql_fetch_array($result)){
         echo "<tr><td>$l_dom:&nbsp;</td><td>" . $myrow["net_domain"] . "</td></tr>\n";
         echo "<tr bgcolor=\"#F1F1F1\"><td>$l_cha:&nbsp;</td><td>" . $myrow["system_system_type"] . "</td></tr>\n";
         echo "<tr><td>$l_mdl / $l_srl #:&nbsp;</td><td>" . $myrow["system_model"] . " / " . $myrow["system_id_number"] . "</td></tr>\n";
-        echo "<tr bgcolor=\"#F1F1F1\"><td>$l_mam:&nbsp;</td><td>" . $myrow["system_vendor"] . "</td></tr>\n";
+        echo "<tr bgcolor=\"#F1F1F1\"><td>$l_mam:&nbsp;</td><td>" . $myrow["system_vendor"];
+        if ($myrow["system_vendor"] == "Dell Inc." || $myrow["system_vendor"] == "Dell Computer Corporation") {
+          echo " / <a href='http://support.dell.com/support/topics/global.aspx/support/my_systems_info/en/details?c=us&amp;cs=usbsdt1&amp;servicetag=" . $myrow["system_id_number"] . "' target=_blank>Warranty Information</a> / <a href='http://support.dell.com/support/downloads/index.aspx?c=us&amp;l=en&amp;s=gen&amp;servicetag=" . $myrow["system_id_number"] . "' target=_blank>Drivers &amp; Software</a>"; 
+        } elseif ($myrow["system_vendor"] == "Compaq") { 
+          echo " / <a href='http://www4.itrc.hp.com/service/ewarranty/warrantyResults.do?BODServiceID=NA&&amp;RegisteredPurchaseDate=&&amp;country=GB&&amp;productNumber=&&amp;serialNumber1=" . $myrow["system_id_number"] . "' target=_blank>Warranty Information</a> / <a href='http://h20180.www2.hp.com/apps/Lookup?h_lang=en&h_cc=uk&cc=uk&h_page=hpcom&lang=en&h_client=S-A-R135-1&h_pagetype=s-002&h_query=" . $myrow["system_id_number"] . "' target=_blank>Drivers & Software</a>"; 
+        } else {}
+        echo "</td></tr>\n";
         echo "<tr><td>$l_osy:&nbsp;</td><td>" . $myrow["system_os_name"] . "</td></tr>\n";
         echo "<tr bgcolor=\"#F1F1F1\"><td>$l_bul / $l_sep:&nbsp;</td><td>" . $myrow["system_build_number"] . " / " . $myrow["system_service_pack"] . "</td></tr>\n";
         echo "<tr><td>$l_syx:&nbsp;</td><td>" . $myrow["system_uuid"] . "&nbsp;&nbsp;</td></tr>\n";
