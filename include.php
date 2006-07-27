@@ -131,7 +131,7 @@ if ($pc > "0") {
 
         <li class="menuparent"><a href="system_summary.php?pc=<?php echo $pc; ?>"><?php echo $name; ?></a>
           <ul>
-            <li class="menuparent"><a href="system_hardware.php?pc=<?php echo $pc; ?>"><img src="images/printer.png" alt="" /> $l_hwd</a>
+            <li class="menuparent"><a href="system_hardware.php?pc=<?php echo $pc; ?>"><img src="images/printer.png" alt="" /><?php echo $l_hwd; ?></a>
               <ul>
                 <li><a href="system_hardware.php?pc=<?php echo $pc; ?>&amp;sub=all"><img src="images/statistics.png" alt="" /><?php echo $l_all; ?></a></li>
                 <li><a href="system_hardware.php?pc=<?php echo $pc; ?>&amp;sub=pb"><img src="images/processor.png" alt="" /><?php  echo $l_pb; ?></a></li>
