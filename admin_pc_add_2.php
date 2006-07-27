@@ -1982,6 +1982,7 @@ function nslookup ($ip) {
 
 function return_country($country)
 {
+$country_formatted = "Unknown";
 if ($country == "335"){$country_formatted="Albania";}
 if ($country == "213"){$country_formatted="Algeria";}
 if ($country == "684"){$country_formatted="American Samoa";}
@@ -2149,6 +2150,7 @@ return $country_formatted;
 
 function return_language($language)
 {
+$lang = "Unknown";
 if ($language == "1"){$lang="Arabic";}
 if ($language == "4"){$lang="Chinese";}
 if ($language == "9"){$lang="English";}
