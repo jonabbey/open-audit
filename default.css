@@ -73,3 +73,12 @@ ul#primary-nav li li li.over ul { display: block; } /* The magic */
 ul#primary-nav li.menuparent:hover,
 ul#primary-nav li.over { background-color: #f9f9f9; }
 ul#primary-nav li a:hover { color: #E2144A; }
+
+.menuparent img {
+  border: none;
+  width: 16px;
+  height: 16px;
+  border: none;
+  padding-right: 5px;
+  /* may need some top padding as well */
+  }

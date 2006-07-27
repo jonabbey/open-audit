@@ -50,13 +50,6 @@ ob_start();
     <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
    	<link rel="stylesheet" type="text/css" href="default.css" />
     <style type="text/css">
-		.menuparent img {
-		 	border: none;
-		  	width: 16px;
-		  	height: 16px;
-		  	border: none;
-			padding-right: 5px;
-			}
 	</style>
     <script type="text/javascript">
       /*<![CDATA[*/
