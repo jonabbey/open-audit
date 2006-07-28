@@ -203,7 +203,6 @@ echo "</table>\n";
 echo "</form>\n";
 echo "</div>\n";
 include "include_right_column.php";
-echo "</table>\n";
 echo "</body>\n";
 echo "</html>\n";
 include "include_png_replace.php";
