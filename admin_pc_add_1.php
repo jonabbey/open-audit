@@ -33,10 +33,10 @@ echo "<tr><td colspan=\"2\"><input name=\"submit\" value=\"$l_sut\" type=\"submi
 echo "</table>\n";
 echo "</form>\n";
 echo "</div>\n";
-echo "<a href=\"javascript:window.close()\" name=\"clicktoclose\"> </a>";
-echo "</div>\n";
+echo "<a href=\"javascript:window.close()\" name=\"clicktoclose\"> </a>\n";
 echo "</td>\n";
 //include "include_right_column.php";
+echo "</table>\n";
 echo "</body>\n";
 echo "</html>\n";
 include "include_png_replace.php";
