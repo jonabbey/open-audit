@@ -9,7 +9,8 @@ $db = mysql_connect($mysql_server,$mysql_user,$mysql_password) or die('Could not
 mysql_select_db($mysql_database,$db);
 
 ?>
-<html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <title>Open-AudIT - Report</title>
 <style type="text/css">
@@ -77,7 +78,7 @@ $result11 = mysql_query($sql11, $db);
 $sound = mysql_fetch_array($result11);
 
 echo "<h1>$l_rep " . $myrow['system_name'] . "</h1>\n";
-echo "<div id=\"content\">\n";
+echo "<div>\n";
 echo "<table border=\"0\" cellpadding=\"2\" cellspacing=\"0\" class=\"content\">\n";
 echo "  <tr><td colspan=\"2\"><b>$l_syw</b></td></tr>\n";
 echo "  <tr bgcolor=\"#F1F1F1\"><td width=\"250\">$l_usn: </td><td>" . $myrow['net_user_name'] . "</td></tr>\n";
@@ -93,7 +94,7 @@ echo "</table>\n";
 echo "</div>\n";
 echo "<br />\n";
 
-echo "<div id=\"content\">\n";
+echo "<div>\n";
 echo "<table border=\"0\" cellpadding=\"2\" cellspacing=\"0\" class=\"content\">\n";
 echo "  <tr><td colspan=\"2\"><b>$l_wii</b></td></tr>\n";
 echo "  <tr><td width=\"250\">$l_osy: </td><td>" . $myrow['system_os_name'] . "</td></tr>\n";
@@ -109,7 +110,7 @@ echo "</table>\n";
 echo "</div>\n";
 echo "<br />\n";
 
-echo "<div id=\"content\">\n";
+echo "<div>\n";
 echo "<table border=\"0\" cellpadding=\"2\" cellspacing=\"0\" class=\"content\">\n";
 echo "  <tr><td colspan=\"2\"><b>$l_nws</b></td></tr>\n";
 echo "  <tr><td width=\"250\">$l_sys: </td><td>" . $myrow['system_name'] . "</td></tr>\n";
@@ -132,7 +133,7 @@ echo "</div>\n";
 
 echo "<br style=\"page-break-before:always;\" />\n";
 
-echo "<div id=\"content\">\n";
+echo "<div>\n";
 echo "<table border=\"0\" cellpadding=\"2\" cellspacing=\"0\" class=\"content\">\n";
 echo "  <tr><td colspan=\"2\"><b>$l_hwd</b></td></tr>\n";
 echo "  <tr><td width=\"250\">$l_bio $l_man: </td><td>" .  $bios['bios_manufacturer'] . "</td></tr>\n";
@@ -160,7 +161,7 @@ if (($monitor = mysql_fetch_array($result6))){
 if (($hard_drive = mysql_fetch_array($result7))){
   do { 
     echo "<tr bgcolor=\"#F1F1F1\"><td>$l_hde &amp; $l_mdl: </td><td>" . $hard_drive['hard_drive_interface_type'] . " - " . $hard_drive['hard_drive_model'] . "</td></tr>";
-    echo "<tr><td>$l_hde $l_siz &amp $l_pau: </td><td>" . number_format($hard_drive['hard_drive_size']) . " MB - " . $hard_drive['hard_drive_partitions'] . "</td></tr>";
+    echo "<tr><td>$l_hde $l_siz &amp; $l_pau: </td><td>" . number_format($hard_drive['hard_drive_size']) . " MB - " . $hard_drive['hard_drive_partitions'] . "</td></tr>";
     $sql_partition = "SELECT * FROM partition WHERE (partition_uuid = '$pc' && partition_timestamp = '" . $myrow['system_timestamp'] . "' && partition_disk_index = '" . $hard_drive["hard_drive_index"] . "') ORDER BY partition_caption ";
     $sql_partition_result = mysql_query($sql_partition, $db);
     if ($partition = mysql_fetch_array($sql_partition_result)){ 
@@ -180,8 +181,8 @@ if (($optical_drive = mysql_fetch_array($result8))){
 echo "<tr bgcolor=\"#F1F1F1\"><td>$l_key $l_des: </td><td>" . $keyboard['keyboard_caption'] . "</td></tr>";
 echo "<tr><td>$l_mou $l_des: </td><td>" . $mouse['mouse_description'] . "</td></tr>";
 echo "<tr bgcolor=\"#F1F1F1\"><td>$l_snd: </td><td>" . $sound['sound_name'] . "</td></tr>";
-echo "<br />\n";
-echo "<br />\n";
 echo "</table>\n";
+echo "<br />\n";
+echo "<br />\n";
 echo "</div>\n";
 ?>

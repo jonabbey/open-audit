@@ -86,7 +86,7 @@ ul#primary-nav li a:hover { color: #E2144A; }
   padding-right: 5px;
   /* may need some top padding as well */
   }
-.menuparent div {
+.menuparent span {
   float: right;
   cursor: pointer;
 }
