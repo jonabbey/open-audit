@@ -129,9 +129,9 @@ if ($pc > "0") {
   $domain = $myrow['net_domain'];
 ?>
 
-        <li class="menuparent"><a href="system_summary.php?pc=<?php echo $pc; ?>"><?php echo $name; ?></a>
+        <li class="menuparent"><a href="system_summary.php?pc=<?php echo $pc; ?>"><div>&gt;</div><?php echo $name; ?></a>
           <ul>
-            <li class="menuparent"><a href="system_hardware.php?pc=<?php echo $pc; ?>"><img src="images/printer.png" alt="" /><?php echo $l_hwd; ?></a>
+            <li class="menuparent"><a href="system_hardware.php?pc=<?php echo $pc; ?>"><div><img src="images/spacer.gif" height="16" width="0">&gt;</div><img src="images/printer.png" alt="" /><?php echo $l_hwd; ?></a>
               <ul>
                 <li><a href="system_hardware.php?pc=<?php echo $pc; ?>&amp;sub=all"><img src="images/statistics.png" alt="" /><?php echo $l_all; ?></a></li>
                 <li><a href="system_hardware.php?pc=<?php echo $pc; ?>&amp;sub=pb"><img src="images/processor.png" alt="" /><?php  echo $l_pab; ?></a></li>
@@ -153,7 +153,7 @@ if ($pc > "0") {
             </li>
       
             <li class="menuparent">
-              <a href="system_software.php?pc=<?php echo $pc; ?>"><img src="images/software.png" alt="" /><?php echo $l_swf; ?></a>
+              <a href="system_software.php?pc=<?php echo $pc; ?>"><div><img src="images/spacer.gif" height="16" width="0">&gt;</div><img src="images/software.png" alt="" /><?php echo $l_swf; ?></a>
         
               <ul>
                 <li><a href="system_software.php?pc=<?php echo $pc; ?>&amp;sub=all"><img src="images/statistics.png" alt="" /><?php echo $l_all; ?></a></li>
@@ -169,7 +169,7 @@ if ($pc > "0") {
               </ul>
             </li>
                 
-            <li class="menuparent"><a href="system_os.php?pc=<?php echo $pc; ?>"><img src="images/os.png" alt="" /><?php echo $l_oss; ?></a>
+            <li class="menuparent"><a href="system_os.php?pc=<?php echo $pc; ?>"><div><img src="images/spacer.gif" height="16" width="0">&gt;</div><img src="images/os.png" alt="" /><?php echo $l_oss; ?></a>
               <ul>
                 <li><a href="system_os.php?pc=<?php echo $pc; ?>&amp;sub=all"><img src="images/statistics.png" alt="" /><?php echo $l_all; ?></a></li>
                 <li><a href="system_os.php?pc=<?php echo $pc; ?>&amp;sub=su"><img src="images/summary.png" alt="" /><?php echo $l_sum; ?></a></li>
@@ -179,32 +179,32 @@ if ($pc > "0") {
               </ul>
                 </li>
                         
-                <li class="menuparent"><a href="#"><img src="images/statistics.png" alt="" /><?php echo $l_man; ?></a>
-                  <ul>
-                    <li><a href="#"><img src="images/statistics.png" alt="" /><?php echo  $l_all; ?></a></li>
-                    <li><a href="#"><img src="images/notes.png"      alt="" /><?php echo  $l_nts; ?></a></li>
-                    <li><a href="#"><img src="images/antivirus.png"  alt="" /><?php echo  $l_psw; ?></a></li>
-                    <li><a href="#"><img src="images/audit.png"      alt="" /><?php echo  $l_det; ?></a></li>
-                  </ul>
-                </li>
+            <li class="menuparent"><a href="#"><div><img src="images/spacer.gif" height="16" width="0">&gt;</div><img src="images/statistics.png" alt="" /><?php echo $l_man; ?></a>
+              <ul>
+                <li><a href="#"><img src="images/statistics.png" alt="" /><?php echo  $l_all; ?></a></li>
+                <li><a href="#"><img src="images/notes.png"      alt="" /><?php echo  $l_nts; ?></a></li>
+                <li><a href="#"><img src="images/antivirus.png"  alt="" /><?php echo  $l_psw; ?></a></li>
+                <li><a href="#"><img src="images/audit.png"      alt="" /><?php echo  $l_det; ?></a></li>
+              </ul>
+            </li>
                         
-                <li class="menuparent"><a href="system_security.php?pc=<?php echo $pc; ?>"><img src="images/security.png" alt="" /><?php echo $l_sec; ?></a>
-                  <ul>
-                    <li><a href="system_security.php?pc=<?php echo $pc; ?>&amp;sub=all"><img src="images/statistics.png" alt="" /><?php echo $l_all; ?></a></li>
-                    <li><a href="system_security.php?pc=<?php echo $pc; ?>&amp;sub=fw"><img src="images/firewall.png" alt="" /><?php echo $l_fir; ?></a></li>
-                    <li><a href="system_security.php?pc=<?php echo $pc; ?>&amp;sub=vi"><img src="images/antivirus.png" alt="" /><?php echo $l_ant; ?></a></li>
-                    <li><a href="system_security.php?pc=<?php echo $pc; ?>&amp;sub=nm"><img src="images/nmap.png" alt="" /><?php echo $l_nmp; ?></a></li>
-                    <li><a href="#"><img src="images/software_2.png" alt="" /><?php echo $l_hfn; ?></a></li>
-                  </ul>
-                </li>
+            <li class="menuparent"><a href="system_security.php?pc=<?php echo $pc; ?>"><div><img src="images/spacer.gif" height="16" width="0">&gt;</div><img src="images/security.png" alt="" /><?php echo $l_sec; ?></a>
+              <ul>
+                <li><a href="system_security.php?pc=<?php echo $pc; ?>&amp;sub=all"><img src="images/statistics.png" alt="" /><?php echo $l_all; ?></a></li>
+                <li><a href="system_security.php?pc=<?php echo $pc; ?>&amp;sub=fw"><img src="images/firewall.png" alt="" /><?php echo $l_fir; ?></a></li>
+                <li><a href="system_security.php?pc=<?php echo $pc; ?>&amp;sub=vi"><img src="images/antivirus.png" alt="" /><?php echo $l_ant; ?></a></li>
+                <li><a href="system_security.php?pc=<?php echo $pc; ?>&amp;sub=nm"><img src="images/nmap.png" alt="" /><?php echo $l_nmp; ?></a></li>
+                <li><a href="#"><img src="images/software_2.png" alt="" /><?php echo $l_hfn; ?></a></li>
+              </ul>
+            </li>
                         
-                <li class="menuparent"><a href="system_users.php?pc=<?php echo $pc; ?>"><img src="images/users_2.png" alt="" /><?php echo $l_uag; ?></a>
-                  <ul>
-                    <li><a href="system_users.php?pc=<?php echo $pc; ?>&amp;sub=all"><img src="images/statistics.png" alt="" /><?php echo $l_all; ?></a></li>
-                    <li><a href="system_users.php?pc=<?php echo $pc; ?>&amp;sub=us"><img src="images/users.png" alt="" /><?php echo $l_usr; ?></a></li>
-                   <li><a href="system_users.php?pc=<?php echo $pc; ?>&amp;sub=gr"><img src="images/groups.png" alt="" /><?php echo $l_grp; ?></a></li>
-                </ul>
-             </li>
+            <li class="menuparent"><a href="system_users.php?pc=<?php echo $pc; ?>"><div><img src="images/spacer.gif" height="16" width="0">&gt;</div><img src="images/users_2.png" alt="" /><?php echo $l_uag; ?></a>
+              <ul>
+                <li><a href="system_users.php?pc=<?php echo $pc; ?>&amp;sub=all"><img src="images/statistics.png" alt="" /><?php echo $l_all; ?></a></li>
+                <li><a href="system_users.php?pc=<?php echo $pc; ?>&amp;sub=us"><img src="images/users.png" alt="" /><?php echo $l_usr; ?></a></li>
+                <li><a href="system_users.php?pc=<?php echo $pc; ?>&amp;sub=gr"><img src="images/groups.png" alt="" /><?php echo $l_grp; ?></a></li>
+              </ul>
+            </li>
 
 <?php
 //<li class="menuparent"><a href="#"><img src="images/action.png" width="16" height="16" border="0" alt="" /> $l_act</a>
@@ -234,7 +234,7 @@ if ($pc > "0") {
 } else {}
 ?>
 
-         <li class="menuparent"><a href="#"><?php echo $l_adm; ?></a>
+         <li class="menuparent"><a href="#"><div>&gt;</div><?php echo $l_adm; ?></a>
            <ul>
              <li><a href="admin_config.php?sub=1"><img src="images/settings.png" alt="" /><?php echo $l_con; ?></a></li>
              <li><a href="setup_audit.php"><img src="images/settings_2.png" alt="" /><?php echo $l_auc; ?></a></li>
@@ -244,7 +244,7 @@ if ($pc > "0") {
            </ul>
          </li>
 
-         <li class="menuparent"><a href="#"><?php echo $l_qry; ?></a>
+         <li class="menuparent"><a href="#"><div>&gt;</div><?php echo $l_qry; ?></a>
            <ul>
              <li><a href="list_all.php"><img src="images/computer.png" alt="" /><?php echo $l_awp; ?></a></li>
              <li><a href="list_servers.php"><img src="images/server.png" alt="" /><?php echo $l_asv; ?></a></li>
@@ -281,7 +281,7 @@ if ($pc > "0") {
 //</li>
 ?>
 
-         <li class="menuparent"><a href="#"><?php echo $l_oth; ?></a>
+         <li class="menuparent"><a href="#"><div>&gt;</div><?php echo $l_oth; ?></a>
            <ul>
              <li><a href="list_printers.php"><img src="images/printer.png" alt="" /><?php echo $l_prn; ?></a></li>
              <li><a href="list_monitors.php"><img src="images/display.png" alt="" /><?php echo $l_mon; ?></a></li>
