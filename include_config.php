@@ -32,6 +32,7 @@ $show_patches_not_detected = 'n';
 $number_patches_not_detected = '5';
 
 $show_detected_servers = 'y';
+$show_detected_xp_av = 'y';
 
 $show_os = 'y';
 $show_date_audited = 'y';

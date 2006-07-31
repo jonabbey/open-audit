@@ -2884,7 +2884,7 @@ if online = "yesxml" then
    Set objHTTP = CreateObject("MSXML2.XMLHTTP")
    Call objHTTP.Open("POST", url, FALSE)
    objHTTP.setRequestHeader "Content-Type","application/x-www-form-urlencoded"
-   objHTTP.Send "add=" + escape(form_total + vbcrlf)
+   objHTTP.Send "add=" + escape(Deconstruct(form_total + vbcrlf))
 '   if verbose = "y" then
 '      WScript.Echo(objHTTP.ResponseText)
 '   end if
@@ -2904,6 +2904,20 @@ end if
 ' database.close conn
 
 End Function
+
+Function Deconstruct(strIn)
+  strOut = ""
+  For x = 1 to Len(strIn)
+    If Asc(Mid(strIn,x,1)) > 128 Then
+      strOut = strOut & "&#" & Asc(Mid(strIn,x,1))
+    Else
+      strOut = strOut & Mid(strIn,x,1)
+    End If
+  Next
+
+  Deconstruct = strOut
+End Function
+
 
 
 

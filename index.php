@@ -1028,7 +1028,8 @@ if ($show_detected_servers == "y"){
 } else {}
 
 
-
+//// XP SP2 without up to date AV
+if ($show_detected_xp_av == "y"){
   $sql = "SELECT system_name, net_ip_address, system_uuid, virus_name, virus_uptodate FROM system WHERE (virus_name = '' OR virus_uptodate = 'False') AND system_service_pack = '2.0' AND system_os_name LIKE 'Microsoft Windows XP%' ORDER BY system_name";
   $result = mysql_query($sql, $db);
   $bgcolor = "#FFFFFF";
@@ -1078,7 +1079,7 @@ if ($show_detected_servers == "y"){
          <tr><td colspan=\"3\"><b>Systems: " . mysql_numrows($result) . "</b></td></tr>
        </table>
      </div>";
-
+} else {}
 
 
 
