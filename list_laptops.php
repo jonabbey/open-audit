@@ -25,14 +25,14 @@ echo " </tr>\n</table>\n";
 
 echo "<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">";
 echo " <tr>\n";
-echo "  <td align=\"center\"><a href=\"list_servers.php?sort=net_ip_address&amp;page_count=" . $page_current . "\">$l_ipa</a></td>\n";
-echo "  <td align=\"center\"><a href=\"list_servers.php?sort=system_name&amp;page_count=" . $page_current . "\">$l_nam</a></td>\n";
-if ($show_os == "y")           { echo "  <td align=\"center\"><a href=\"list_servers.php?sort=system_os_name&amp;page_count=" . $page_current . "\">$l_osa</a></td>\n"; } else {}
-if ($show_date_audited == "y") { echo "  <td align=\"center\"><a href=\"list_servers.php?sort=system_timestamp&amp;page_count=" . $page_current . "\">$l_dau</a></td>\n"; } else {}
-if ($show_type == "y")         { echo "  <td align=\"center\"><a href=\"list_servers.php?sort=system_system_type&amp;page_count=" . $page_current . "\">&nbsp;$l_syu&nbsp;</a></td>\n"; } else {}
-if ($show_description == "y")  { echo "  <td align=\"center\"><a href=\"list_servers.php?sort=system_description&amp;page_count=" . $page_current . "\">&nbsp;$l_syv&nbsp;</a></td>\n"; } else {}
-if ($show_domain == "y")       { echo "  <td align=\"center\"><a href=\"list_servers.php?sort=net_domain\">&nbsp;$l_dom&nbsp;</a></td>\n"; } else {}
-if ($show_service_pack == "y") { echo "  <td align=\"center\"><a href=\"list_servers.php?sort=system_service_pack\">&nbsp;$l_sep&nbsp;</a></td>\n"; } else {}
+echo "  <td align=\"center\"><a href=\"list_laptops.php?sort=net_ip_address&amp;page_count=" . $page_current . "\">$l_ipa</a></td>\n";
+echo "  <td align=\"center\"><a href=\"list_laptops.php?sort=system_name&amp;page_count=" . $page_current . "\">$l_nam</a></td>\n";
+if ($show_os == "y")           { echo "  <td align=\"center\"><a href=\"list_laptops.php?sort=system_os_name&amp;page_count=" . $page_current . "\">$l_osa</a></td>\n"; } else {}
+if ($show_date_audited == "y") { echo "  <td align=\"center\"><a href=\"list_laptops.php?sort=system_timestamp&amp;page_count=" . $page_current . "\">$l_dau</a></td>\n"; } else {}
+if ($show_type == "y")         { echo "  <td align=\"center\"><a href=\"list_laptops.php?sort=system_system_type&amp;page_count=" . $page_current . "\">&nbsp;$l_syu&nbsp;</a></td>\n"; } else {}
+if ($show_description == "y")  { echo "  <td align=\"center\"><a href=\"list_laptops.php?sort=system_description&amp;page_count=" . $page_current . "\">&nbsp;$l_syv&nbsp;</a></td>\n"; } else {}
+if ($show_domain == "y")       { echo "  <td align=\"center\"><a href=\"list_laptops.php?sort=net_domain\">&nbsp;$l_dom&nbsp;</a></td>\n"; } else {}
+if ($show_service_pack == "y") { echo "  <td align=\"center\"><a href=\"list_laptops.php?sort=system_service_pack\">&nbsp;$l_sep&nbsp;</a></td>\n"; } else {}
 echo " </tr>\n";
 $sql = "SELECT * FROM system WHERE (system_system_type = 'Laptop' OR system_system_type = 'Expansion Chassis' OR system_system_type = 'Notebook' or system_system_type = 'Sub Notebook' OR system_system_type = 'Portable' OR system_system_type = 'Docking Station') ORDER BY " . $sort . " LIMIT " . $page_count . "," . $count_system;
 $result = mysql_query($sql, $db);
