@@ -56,6 +56,8 @@ if ($myrow = mysql_fetch_array($result)){
           echo " / <a href='http://www4.itrc.hp.com/service/ewarranty/warrantyResults.do?BODServiceID=NA&&amp;RegisteredPurchaseDate=&&amp;country=GB&&amp;productNumber=&&amp;serialNumber1=" . $myrow["system_id_number"] . "' target=_blank>Warranty Information</a> / <a href='http://h20180.www2.hp.com/apps/Lookup?h_lang=en&h_cc=uk&cc=uk&h_page=hpcom&lang=en&h_client=S-A-R135-1&h_pagetype=s-002&h_query=" . $myrow["system_id_number"] . "' target=_blank>Drivers & Software</a>"; 
         } elseif ($myrow["system_vendor"] == "IBM") { 
           echo " / <a href='http://www-307.ibm.com/pc/support/site.wss/quickPath.do?quickPathEntry=" . $myrow["system_model"] . "' target=_blank>Product Page</a>";
+        } elseif ($myrow["system_vendor"] == "Gateway") {
+          echo " / <a href='http://support.gateway.com/support/allsysteminfo.asp?sn=" . $myrow["system_id_number"] . "' target=_blank>Support Page</a>";
         } else {}
         echo "</td></tr>\n";
         echo "<tr><td>$l_osy:&nbsp;</td><td>" . $myrow["system_os_name"] . "</td></tr>\n";
