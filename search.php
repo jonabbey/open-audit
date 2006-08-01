@@ -54,13 +54,14 @@ if ($myrow = mysql_fetch_array($result)){
   } while ($myrow = mysql_fetch_array($result));
 } else {}
 
-$sql  = "SELECT system_uuid, system_name, net_ip_address, net_domain, system_model, system_primary_owner_name, system_system_type, ";
+$sql  = "SELECT system_uuid, system_name, net_ip_address, net_domain, net_user_name, system_model, system_primary_owner_name, system_system_type, ";
 $sql .= "system_id_number, system_vendor, time_caption, system_os_name, system_country_code, system_description, ";
 $sql .= "system_organisation, system_registered_user, system_serial_number, system_version, system_windows_directory ";
 $sql .= "FROM system WHERE ";
 $sql .= "system_name LIKE '%$search%' OR ";
 $sql .= "net_ip_address LIKE '%$search%' OR ";
 $sql .= "net_domain LIKE '%$search%' OR ";
+$sql .= "net_user_name LIKE '%$search%' OR ";
 $sql .= "system_model LIKE '%$search%' OR ";
 $sql .= "system_primary_owner_name LIKE '%$search%' OR ";
 $sql .= "system_system_type LIKE '%$search%' OR ";
@@ -82,6 +83,7 @@ if ($myrow = mysql_fetch_array($result)){
     if (strpos(strtoupper($myrow["system_name"]), $search) !== false){$search_field = "System Name"; $search_result = $myrow["system_name"];}
     if (strpos(strtoupper($myrow["net_ip_address"]), $search) !== false){$search_field = "IP Address"; $search_result = $myrow["net_ip_address"];}
     if (strpos(strtoupper($myrow["net_domain"]), $search) !== false){$search_field = "Domain"; $search_result = $myrow["net_domain"];}
+    if (strpos(strtoupper($myrow["net_user_name"]), $search) !== false){$search_field = "Network User"; $search_result = $myrow["net_user_name"];}
     if (strpos(strtoupper($myrow["system_model"]), $search) !== false){$search_field = "System Model"; $search_result = $myrow["system_model"];}
     if (strpos(strtoupper($myrow["system_primary_owner_name"]), $search) !== false){$search_field = "Registered Owner"; $search_result = $myrow["system_primary_owner_name"];}
     if (strpos(strtoupper($myrow["system_system_type"]), $search) !== false){$search_field = "System Type"; $search_result = $myrow["system_system_type"];}
