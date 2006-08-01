@@ -2665,7 +2665,9 @@ end if
 
 WinDir = right(WinDir,len(WinDir)-2)
 full_path = "\\" & system_name & "\c$" & WinDir & "\system32\inetsrv\inetinfo.exe"
-Wscript.Echo "IIS Version: " & objFSO.GetFileVersion(full_path)
+if verbose = "y" then
+   Wscript.Echo "IIS Version: " & objFSO.GetFileVersion(full_path)
+end if
 
 On Error Resume Next
 for WebSiteID = 1 to 255
