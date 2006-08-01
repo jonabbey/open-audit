@@ -3201,7 +3201,7 @@ if form_input <> "" then
   if online = "n" then
     objTextFile.WriteLine(form_input)
   end if
-  if online = "yes" or online = "yesxml" then
+  if online = "ie" or online = "yesxml" then
     form_total = form_total + form_input + vbcrlf
   end if  
 end if
