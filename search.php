@@ -53,7 +53,7 @@ if ($myrow = mysql_fetch_array($result)){
     $result_set[] = array($myrow["system_name"], $myrow["system_uuid"], ip_trans($myrow["net_ip_address"]), $search_field, $search_result);
   } while ($myrow = mysql_fetch_array($result));
 } else {}
-
+// Added net_user_name AJH 01 Aug 2006
 $sql  = "SELECT system_uuid, system_name, net_ip_address, net_domain, net_user_name, system_model, system_primary_owner_name, system_system_type, ";
 $sql .= "system_id_number, system_vendor, time_caption, system_os_name, system_country_code, system_description, ";
 $sql .= "system_organisation, system_registered_user, system_serial_number, system_version, system_windows_directory ";
