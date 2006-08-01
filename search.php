@@ -37,6 +37,8 @@ $search = stripslashes($_POST["search_field"]);
 $search = mysql_real_escape_string($search);
 $search = strtoupper($search);
 
+if ($search != "") {
+
 $sql  = "SELECT system_name, system_uuid, net_ip_address, bios_description, bios_manufacturer, bios_serial_number FROM system, bios WHERE ";
 $sql .= "bios_uuid = system_uuid AND ";
 $sql .= "bios_timestamp = system_timestamp AND (";
@@ -164,6 +166,8 @@ if ($myrow = mysql_fetch_array($result)){
     $result_set[] = array($myrow["system_name"], $myrow["system_uuid"], ip_trans($myrow["net_ip_address"]), $search_field, $search_result);
   } while ($myrow = mysql_fetch_array($result));
 } else {}
+
+} else {} // end if search != ""
 
 
 if($result_set) {
