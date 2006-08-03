@@ -27,6 +27,7 @@ $l_aui = "Audit";
 $l_auj = "Audited By";
 $l_aut = "Audit Trail";
 $l_avs = "Active VNC Servers Detected";
+$l_ats = "Active RDP or Terminal Servers Detected";
 $l_awp = "All Audited Systems";
 $l_aws = "All Workstations";
 
@@ -340,6 +341,7 @@ $l_qno = "Q Number";
 $l_qry = "Queries";
 
 $l_ras = "Run at Startup";
+$l_rdp = "RDP or Terminal Servers";
 $l_reb = "Reboot";
 $l_ref = "Refresh Rate";
 $l_reg = "Registered User";

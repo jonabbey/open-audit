@@ -1026,6 +1026,138 @@ if ($show_detected_servers == "y"){
 
 
 } else {}
+//
+
+  //// Terminal Services Servers Detected
+  $count = 0;
+  $bgcolor = "#FFFFFF";
+
+  echo 
+    "<div class=\"main_each\">
+       <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" >
+         <tr>
+           <td class=\"contenthead\" colspan=\"4\"><a href=\"javascript://\" onclick=\"switchUl('f11');\">$l_ats.</a></td>
+           <td align=\"right\"><a href=\"javascript://\" onclick=\"switchUl('f11');\"><img src=\"images/down.png\" width=\"16\" height=\"16\" border=\"0\" alt=\"\" /></a></td>
+         </tr>
+       </table>
+  
+       <div style=\"display:none;\" id=\"f11\">
+         <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" >\n";
+
+  $sql  = "SELECT service_uuid, service_display_name, service_started, system_name, net_ip_address FROM service, system WHERE 
+           service_display_name LIKE '%Terminal Services%' AND service_started = 'True' AND 
+           service_timestamp = system_timestamp AND service_uuid = system_uuid ORDER BY system_name";
+  $result = mysql_query($sql, $db);
+  if ($myrow = mysql_fetch_array($result)){
+    // Service Detected
+    
+    echo 
+      "<tr>
+         <td colspan=\"2\"><b>$l_sev</b></td>
+       </tr>
+    
+       <tr>
+         <td><b>$l_ipa</b></td>
+         <td><b>$l_nam</b></td>
+         <td><b>$l_ser</b></td>
+         <td><b>$l_ruo</b></td>
+       </tr>\n";
+
+    do {
+      $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
+      $count = $count + 1;
+      
+      echo 
+        "<tr bgcolor=\"" . $bgcolor . "\">
+           <td>" . ip_trans($myrow["net_ip_address"]) . "&nbsp;</td>
+           <td><a href=\"system_summary.php?pc=" . $myrow["service_uuid"] . "&amp;sub=1\">" . $myrow["system_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
+           <td>" . $myrow["service_display_name"] . "</td>
+           <td>" . $myrow["service_started"] . "</td>
+         </tr>\n";
+
+    } while ($myrow = mysql_fetch_array($result));
+    
+    echo "<tr><td><br />&nbsp;</td></tr>\n";
+
+  } else {}
+  // Nmap discovered on Audited PC
+  $sql = "select sys.net_ip_address,sys.system_name,sys.system_uuid from system sys, nmap_ports port where port.nmap_port_number = '3389' AND port.nmap_other_id = sys.system_uuid";
+  $result = mysql_query($sql, $db);
+  if ($myrow = mysql_fetch_array($result)){
+  
+    echo
+      "<tr>
+         <td colspan=\"2\"><b>$l_nma</b></td>
+       </tr>
+        
+       <tr>
+         <td width=\"150\"><b>$l_ipa</b></td>
+         <td colspan=\"3\"><b>$l_nam</b></td>
+       </tr>\n";
+
+    do {
+      $count = $count + 1;
+      $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
+      
+        echo
+          "<tr bgcolor=\"" . $bgcolor . "\">
+             <td>" . ip_trans($myrow["net_ip_address"]) . "&nbsp;</td>
+             <td colspan=\"3\"><a href=\"system_summary.php?pc=" . $myrow["system_uuid"] . "&amp;sub=1\">" . $myrow["system_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
+           </tr>\n";
+
+    } while ($myrow = mysql_fetch_array($result));
+    
+    echo "<tr><td><br />&nbsp;</td></tr>\n";
+
+  } else {}
+  // Nmap discovered on Other equipment
+  $sql = "select oth.other_id, oth.other_ip_address, oth.other_network_name, oth.other_mac_address from other oth, nmap_ports port where port.nmap_port_number = '3389' AND port.nmap_other_id = oth.other_mac_address";
+  $result = mysql_query($sql, $db);
+  if ($myrow = mysql_fetch_array($result)){
+    $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
+    
+    echo 
+      "<tr>
+         <td colspan=\"2\"><b>$l_nmb</b></td>
+       </tr>
+    
+       <tr bgcolor=\"" . $bgcolor . "\">
+         <td width=\"150\"><b>$l_ipa</b></td>
+         <td colspan=\"3\"><b>$l_nam</b></td>
+       </tr>\n";
+    
+    do {
+      $count = $count + 1;
+      $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
+
+      echo 
+        "<tr bgcolor=\"" . $bgcolor . "\">
+           <td>" . ip_trans($myrow["other_ip_address"]) . "&nbsp;</td>
+           <td colspan=\"3\"><a href=\"other_summary.php?other=" . $myrow["other_id"] . "&amp;sub=1\">" . $myrow["other_network_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
+         </tr>\n";
+      
+    } while ($myrow = mysql_fetch_array($result));
+    
+    echo "<tr><td><br />&nbsp;</td></tr>\n";
+
+  } else {}
+
+  echo 
+          "</table>
+         </div>
+  
+         <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" >
+           <tr>
+             <td colspan=\"3\"><b>$l_rdp: " . $count . "</b></td>
+           </tr>
+         </table>
+       </div>\n";
+
+
+
+
+//
+
 
 
 //// XP SP2 without up to date AV
@@ -1038,12 +1170,12 @@ if ($show_detected_xp_av == "y"){
     "<div class=\"main_each\">
        <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\"  width=\"100%\">
          <tr>
-           <td class=\"contenthead\" colspan=\"3\"><a href=\"javascript://\" onclick=\"switchUl('f11');\">$l_xps.</a></td>
-           <td align=\"right\"><a href=\"javascript://\" onclick=\"switchUl('f11');\"><img src=\"images/down.png\" width=\"16\" height=\"16\" border=\"0\" alt=\"\" /></a></td>
+           <td class=\"contenthead\" colspan=\"3\"><a href=\"javascript://\" onclick=\"switchUl('f12');\">$l_xps.</a></td>
+           <td align=\"right\"><a href=\"javascript://\" onclick=\"switchUl('f12');\"><img src=\"images/down.png\" width=\"16\" height=\"16\" border=\"0\" alt=\"\" /></a></td>
          </tr>
        </table>
   
-       <div style=\"display:none;\" id=\"f11\">";
+       <div style=\"display:none;\" id=\"f12\">";
         
   if ($myrow = mysql_fetch_array($result)){
   
