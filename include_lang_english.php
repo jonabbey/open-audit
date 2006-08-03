@@ -15,6 +15,7 @@ $l_ant = "AntiVirus";
 $l_anu = "AntiVirus Program";
 $l_anv = "AntiVirus Up To Date";
 $l_app = "Application Name";
+$l_ardp = "Active RDP or Terminal Servers Detected";
 $l_asr = "Add Package";
 $l_ast = "Asset Tag";
 $l_asv = "All Servers";
@@ -27,7 +28,6 @@ $l_aui = "Audit";
 $l_auj = "Audited By";
 $l_aut = "Audit Trail";
 $l_avs = "Active VNC Servers Detected";
-$l_ats = "Active RDP or Terminal Servers Detected";
 $l_awp = "All Audited Systems";
 $l_aws = "All Workstations";
 

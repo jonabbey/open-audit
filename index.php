@@ -900,6 +900,7 @@ if ($show_detected_servers == "y"){
 
 
   //// VNC Servers Detected
+  // if ($show_detected_vnc == "y"){
   $count = 0;
   $bgcolor = "#FFFFFF";
 
@@ -1029,6 +1030,7 @@ if ($show_detected_servers == "y"){
 //
 
   //// Terminal Services Servers Detected
+  if ($show_detected_rdp == "y"){
   $count = 0;
   $bgcolor = "#FFFFFF";
 
@@ -1036,7 +1038,7 @@ if ($show_detected_servers == "y"){
     "<div class=\"main_each\">
        <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" >
          <tr>
-           <td class=\"contenthead\" colspan=\"4\"><a href=\"javascript://\" onclick=\"switchUl('f11');\">$l_ats.</a></td>
+           <td class=\"contenthead\" colspan=\"4\"><a href=\"javascript://\" onclick=\"switchUl('f11');\">$l_ardp.</a></td>
            <td align=\"right\"><a href=\"javascript://\" onclick=\"switchUl('f11');\"><img src=\"images/down.png\" width=\"16\" height=\"16\" border=\"0\" alt=\"\" /></a></td>
          </tr>
        </table>
@@ -1153,7 +1155,7 @@ if ($show_detected_servers == "y"){
          </table>
        </div>\n";
 
-
+} else {}
 
 
 //

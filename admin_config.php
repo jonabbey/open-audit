@@ -34,6 +34,12 @@ if (isset($_POST['days_software_detected_post'])) {$days_software_detected_post 
 if (isset($_POST['show_patches_not_detected_post'])) {$show_patches_not_detected_post = $_POST['show_patches_not_detected_post'];} else { $show_patches_not_detected_post = "n";}
 if (isset($_POST['number_patches_not_detected_post'])) {$number_patches_not_detected_post = $_POST['number_patches_not_detected_post'];} else { $number_patches_not_detected_post = "5";}
 if (isset($_POST['show_detected_servers_post'])) {$show_detected_servers_post = $_POST['show_detected_servers_post'];} else { $show_detected_servers_post = "n";}
+// Added Show missing xp av AJH
+if (isset($_POST['show_detected_xp_av'])) {$show_detected_xp_av = $_POST['show_detected_xp_av'];} else { $show_detected_xp_av = "n";}
+//
+// Added Show Terminal Servers and Remote Desktops AJH
+if (isset($_POST['show_detected_rdp'])) {$show_detected_rdp = $_POST['show_detected_rdp'];} else { $show_detected_rdp = "n";}
+//
 if (isset($_POST['show_os_post']))           {$show_os_post = $_POST['show_os_post'];}                     else { $show_os_post = "n";}
 if (isset($_POST['show_date_audited_post'])) {$show_date_audited_post = $_POST['show_date_audited_post'];} else { $show_date_audited_post = "n";}
 if (isset($_POST['show_type_post']))         {$show_type_post = $_POST['show_type_post'];}                 else { $show_type_post = "n";}
@@ -85,6 +91,12 @@ if (isset($_POST['pic_style_post'])) {$pic_style_post = $_POST['pic_style_post']
   $content .= "\$number_patches_not_detected = '" . $number_patches_not_detected_post . "';\n";
   $content .= "\n";
   $content .= "\$show_detected_servers = '" . $show_detected_servers_post . "';\n";
+  // Added show_detected_xp_av AJH
+  $content .= "\$show_detected_xp_av = '" . $show_detected_xp_av . "';\n";
+  //
+    // Added show_detected_rdp AJH
+  $content .= "\$show_detected_rdp = '" . $show_detected_rdp . "';\n";
+  //
   $content .= "\n";
   $content .= "\$show_os = '" . $show_os_post . "';\n";
   $content .= "\$show_date_audited = '" . $show_date_audited_post . "';\n";
@@ -176,6 +188,16 @@ echo "<td>$l_nop:&nbsp;</td><td><input type=\"text\" name=\"number_patches_not_d
 echo "<tr><td>Show Detected Servers:&nbsp;</td><td><input type=\"checkbox\" name=\"show_detected_servers_post\" value=\"y\"";
   if ($show_detected_servers == "y"){ echo "checked=\"checked\"";}
   echo "/></td>";
+    //Added Show Terminal Servers and RDP Machines AJH
+echo "<tr><td>Show Terminal Servers and Remote Desktops:&nbsp;</td><td><input type=\"checkbox\" name=\"show_detected_rdp\" value=\"y\"";
+  if ($show_detected_rdp == "y"){ echo "checked=\"checked\"";}
+  echo "/></td>";
+  //
+  //Added Show XP  Missing AntiVirus AJH
+echo "<tr><td>Show XP  Missing AntiVirus:&nbsp;</td><td><input type=\"checkbox\" name=\"show_detected_xp_av\" value=\"y\"";
+  if ($show_detected_xp_av == "y"){ echo "checked=\"checked\"";}
+  echo "/></td>";
+  //
 echo "<td><td>";
 echo "<tr><td colspan=\"5\"><hr /></td></tr>";
 echo "<tr><td>$l_dos:&nbsp;</td><td><input type=\"checkbox\" name=\"show_os_post\" value=\"y\"";
