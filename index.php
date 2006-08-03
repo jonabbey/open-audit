@@ -1074,7 +1074,7 @@ if ($show_detected_servers == "y"){
            <td>" . ip_trans($myrow["net_ip_address"]) . "&nbsp;</td>
            <td><a href=\"system_summary.php?pc=" . $myrow["service_uuid"] . "&amp;sub=1\">" . $myrow["system_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
            <td>" . $myrow["service_display_name"] . "</td>
-           <td>" . $myrow["service_started"] . "</td>
+           <td><a href= \"launch_rdp.php?launch=".$myrow["system_name"].".rdp\"/>" . $myrow["service_started"] . "</td>
          </tr>\n";
 
     } while ($myrow = mysql_fetch_array($result));
