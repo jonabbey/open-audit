@@ -34,13 +34,15 @@ if ($myrow = mysql_fetch_array($result)){
       if (substr_count($os_name, "Slackware") > 0) {$img = "<img src=\"images/linux_slackware_l.png\" width=\"48\" height=\"48\" alt=\"\" title=\"Slackware\" />";}
       if ((substr_count($os_name, "Suse") > 0) OR (substr_count($os_name, "Novell") > 0)){$img = "<img src=\"images/linus_suse_l.png\" width=\"48\" height=\"48\" alt=\"\" title=\"Suse\" />";}
       if (substr_count($os_name, "Gentoo") > 0)    {$img = "<img src=\"images/linux_gentoo_l.png\" width=\"48\" height=\"48\" alt=\"$l_m58\" title=\"Gentoo\" />";}
-      if ($img == ""){$img = "<img src=\"images/summary_l.png\" width=\"48\" height=\"48\" alt=\"\" title=\"Windows\" />";}
+      if ($img == ""){$img = "<a href= \"launch_rdp.php?launch=".$myrow["system_name"].".rdp\"/><img src=\"images/summary_l.png\" width=\"48\" height=\"48\" alt=\"\" title=\"Windows\" />";}
 
       echo "<div class=\"main_each\">\n";
       echo "<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n";
       echo "<tr><td class=\"contenthead\" colspan=\"4\">$l_syw $l_sum " . ip_trans($myrow["net_ip_address"]) . " - " . $myrow["system_name"] . "<br />&nbsp;</td></tr>\n";
+      // 
       echo "<tr><td class=\"contenthead\" colspan=\"2\"><br />" . $img . "$l_sum</td></tr>\n";
       do {
+      // Click the name to connect using RDP
         echo "<tr bgcolor=\"#F1F1F1\"><td width=\"200\">$l_sys:&nbsp;</td><td>" . $myrow["system_name"] . "</td></tr>\n";
         echo "<tr><td>$l_des:&nbsp;</td><td>" . $myrow["system_description"] . "</td></tr>\n";
         echo "<tr bgcolor=\"#F1F1F1\"><td>$l_don:&nbsp;</td><td>" . $myrow["net_domain_role"] . "</td></tr>\n";
