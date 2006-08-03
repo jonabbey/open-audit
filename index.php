@@ -528,7 +528,7 @@ if ($show_detected_servers == "y"){
            <td>" . ip_trans($myrow["net_ip_address"]) . "&nbsp;</td>
            <td><a href=\"system_summary.php?pc=" . $myrow["service_uuid"] . "&amp;sub=1\">" . $myrow["system_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
            <td>" . $myrow["service_display_name"] . "</td>
-           <td>" . $myrow["service_started"] . "</td>
+           <td><a href= ftp://".$myrow["system_name"]." TARGET=\"_blank\"/>" . $myrow["service_started"] . "</td>
          </tr>\n";
 
     } while ($myrow = mysql_fetch_array($result));
@@ -547,7 +547,7 @@ if ($show_detected_servers == "y"){
     
        <tr>
          <td width=\"150\"><b>$l_ipa</b></td>
-         <td width=\"150\"><b>$l_nam</b></td>
+         <td width=\"150\"><a href= ftp://".$myrow["system_name"]." TARGET=\"_blank\"/><b>$l_nam</b></td>
          <td>&nbsp;</td>
          <td>&nbsp;</td>
        </tr>\n";
@@ -581,7 +581,7 @@ if ($show_detected_servers == "y"){
 
          <tr bgcolor=\"" . $bgcolor . "\">
            <td width=\"150\"><b>$l_ipa</b></td>
-           <td width=\"150\"><b>$l_nam</b></td>
+           <td width=\"150\"><a href= ftp://".$myrow["system_name"]." TARGET=\"_blank\"/><b>$l_nam</b></td>
            <td>&nbsp;</td>
            <td>&nbsp;</td>
          </tr>\n";
@@ -671,7 +671,7 @@ if ($show_detected_servers == "y"){
            <td>" . ip_trans($myrow["net_ip_address"]) . "&nbsp;</td>
            <td><a href=\"system_summary.php?pc=" . $myrow["service_uuid"] . "&amp;sub=1\">" . $myrow["system_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
            <td>" . $myrow["service_display_name"] . "</td>\
-           <td>" . $myrow["service_started"] . "</td>\
+           <td><a href= telnet://".$myrow["system_name"]." TARGET=\"_blank\"/>" . $myrow["service_started"] . "</td>\
          </tr>\n";
         
     } while ($myrow2 = mysql_fetch_array($result));
@@ -698,7 +698,7 @@ if ($show_detected_servers == "y"){
 
     echo 
       "<tr bgcolor=\"" . $bgcolor . "\">
-         <td>" . ip_trans($myrow["net_ip_address"]) . "&nbsp;</td>
+         <td><a href= telnet://".$myrow["system_name"]." TARGET=\"_blank\"/>" . ip_trans($myrow["net_ip_address"]) . "&nbsp;</td>
          <td><a href=\"system_summary.php?pc=" . $myrow["system_uuid"] . "&amp;sub=1\">" . $myrow["system_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
          <td></td>
        </tr>\n";
@@ -730,7 +730,7 @@ if ($show_detected_servers == "y"){
     
     echo
       "<tr bgcolor=\"" . $bgcolor . "\">
-         <td>" . ip_trans($myrow["other_ip_address"]) . "&nbsp;</td>
+         <td><a href= telnet://".$myrow["system_name"]." TARGET=\"_blank\"/>" . ip_trans($myrow["other_ip_address"]) . "&nbsp;</td>
          <td><a href=\"other_summary.php?other=" . $myrow["other_id"] . "&amp;sub=1\">" . $myrow["other_network_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
          <td></td>
          <td></td>
@@ -809,7 +809,7 @@ if ($show_detected_servers == "y"){
            <td>" . ip_trans($myrow["net_ip_address"]) . "&nbsp;</td>
            <td><a href=\"system_summary.php?pc=" . $myrow["service_uuid"] . "&amp;sub=1\">" . $myrow["system_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
            <td>" . $myrow["service_display_name"] . "</td>
-           <td>" . $myrow["service_started"] . "</td>
+           <td><a href= telnet://".$myrow["system_name"].":25 TARGET=\"_blank\"/>" . $myrow["service_started"] . "</td>
          </tr>\n";
 
     } while ($myrow = mysql_fetch_array($result));
@@ -839,7 +839,7 @@ if ($show_detected_servers == "y"){
       
     echo 
       "<tr bgcolor=\"" . $bgcolor . "\">
-         <td>" . ip_trans($myrow["net_ip_address"]) . "&nbsp;</td>
+         <td><a href= telnet://".$myrow["system_name"].":25 TARGET=\"_blank\"/>" . ip_trans($myrow["net_ip_address"]) . "&nbsp;</td>
          <td colspan=\"3\"><a href=\"system_summary.php?pc=" . $myrow["system_uuid"] . "&amp;sub=1\">" . $myrow["system_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
        </tr>\n";
 
@@ -870,7 +870,7 @@ if ($show_detected_servers == "y"){
 
     echo
         "<tr bgcolor=\"" . $bgcolor . "\">
-           <td>" . ip_trans($myrow["other_ip_address"]) . "&nbsp;</td>
+           <td><a href= telnet://".$myrow["system_name"].":25 TARGET=\"_blank\"/>" . ip_trans($myrow["other_ip_address"]) . "&nbsp;</td>
            <td colspan=\"3\"><a href=\"other_summary.php?other=" . $myrow["other_id"] . "&amp;sub=1\">" . $myrow["other_network_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
          </tr>\n";
 
