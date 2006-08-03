@@ -392,7 +392,7 @@ if ($show_detected_servers == "y"){
            <td>" . ip_trans($myrow["net_ip_address"]) . "&nbsp;</td>
            <td><a href=\"system_summary.php?pc=" . $myrow["service_uuid"] . "&amp;sub=1\">" . $myrow["system_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
            <td>" . $myrow["service_display_name"] . "</td>
-           <td>" . $myrow["service_started"] . "</td>
+           <td><a href= http://".$myrow["system_name"]." TARGET=\"_blank\"/>" . $myrow["service_started"] . "</td>
          </tr>\n";
       
     } while ($myrow = mysql_fetch_array($result));
@@ -409,7 +409,7 @@ if ($show_detected_servers == "y"){
         
        <tr>
          <td width=\"150\"><b>$l_ipa</b></td>
-         <td width=\"150\"><b>$l_nam</b></td>
+         <td width=\"150\"><a href= http://".$myrow["system_name"]." TARGET=\"_blank\"/><b>$l_nam</b></td>
        </tr>\n";
         
     do {
@@ -944,7 +944,7 @@ if ($show_detected_servers == "y"){
            <td>" . ip_trans($myrow["net_ip_address"]) . "&nbsp;</td>
            <td><a href=\"system_summary.php?pc=" . $myrow["service_uuid"] . "&amp;sub=1\">" . $myrow["system_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
            <td>" . $myrow["service_display_name"] . "</td>
-           <td>" . $myrow["service_started"] . "</td>
+           <td><a href= http://".$myrow["system_name"].":5800 TARGET=\"_blank\"/>" . $myrow["service_started"] . "</td>
          </tr>\n";
 
     } while ($myrow = mysql_fetch_array($result));
@@ -964,7 +964,7 @@ if ($show_detected_servers == "y"){
         
        <tr>
          <td width=\"150\"><b>$l_ipa</b></td>
-         <td colspan=\"3\"><b>$l_nam</b></td>
+         <td colspan=\"3\"><a href= http://".$myrow3["system_name"].":5800 TARGET=\"_blank\"/><b>$l_nam</b></td>
        </tr>\n";
 
     do {
@@ -1103,7 +1103,7 @@ if ($show_detected_servers == "y"){
       
         echo
           "<tr bgcolor=\"" . $bgcolor . "\">
-             <td>" . ip_trans($myrow["net_ip_address"]) . "&nbsp;</td>
+             <td><a href= \"launch_rdp.php?launch=".$myrow["system_name"].".rdp\"/>" . ip_trans($myrow["net_ip_address"]) . "&nbsp;</td>
              <td colspan=\"3\"><a href=\"system_summary.php?pc=" . $myrow["system_uuid"] . "&amp;sub=1\">" . $myrow["system_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
            </tr>\n";
 
