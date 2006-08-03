@@ -1,5 +1,5 @@
 #!/bin/bash
-VERSION="0.8 pour Linux"
+
 HOSTNAME=`hostname`
 DATE="`date +%d/%m/%Y``date +%H:%M:%S`"
 ReportFile=$HOSTNAME.txt
