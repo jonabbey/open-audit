@@ -162,7 +162,7 @@ if(!(isset($_POST['submit']))){
   fclose($handle);
   echo "<td>$l_doe.</td><td><img src=\"images/button_ok.png\" width=\"16\" height=\"16\" /></td></tr>\n";
   echo "<tr><td>$l_s15.</td>\n";
-  // mysql_query("CREATE DATABASE /*!32312 IF NOT EXISTS*/ " . $_POST['mysql_data']) or die ("<tr><td><h1>Could not create database.</h1></td></tr>\n");
+  mysql_query("CREATE DATABASE /*!32312 IF NOT EXISTS*/ " . $_POST['mysql_data']) or die ("<tr><td><h1>Could not create database.</h1></td></tr>\n");
   // mysql_query("SET PASSWORD FOR " . $_POST['mysql_user'] . "@localhost = OLD_PASSWORD('" . $_POST['mysql_pass'] . "');") or die ("Could not set password=old");
   // mysql_query("FLUSH PRIVILEGES;") or die ("Could not flush privileges");
   mysql_query("USE " . $_POST['mysql_data']) or die ("Could not USE " . $_POST['mysql_data']);
