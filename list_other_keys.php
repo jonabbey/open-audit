@@ -32,7 +32,7 @@ if ($myrow = mysql_fetch_array($result)){
   echo "  <td align=\"center\"><a href=\"list_other_keys.php?sub=" . $sub . "&amp;sort=ms_keys_cd_key\">$l_cdj</a></td>\n";
   echo " </tr>\n";
   do {
-      $bgcolor = change_row_color($bgcolor,$bg1,$bg2);      echo " <tr bgcolor=\"$bgcolor\">\n";
+      $bgcolor = change_row_color($bgcolor,$bg1,$bg2);      echo " <tr bgcolor=\"$bgcolor\">\n";
       echo "  <td align=\"center\">&nbsp;&nbsp;" . ip_trans($myrow["net_ip_address"]) . "&nbsp;&nbsp;</td>\n";
       echo "  <td align=\"center\">&nbsp;&nbsp;<a href=\"system_summary.php?pc=" . $myrow["system_uuid"] . "&amp;sub=all\">" . $myrow["system_name"] . "</a>&nbsp;&nbsp;</td>\n";
       echo "  <td align=\"center\">&nbsp;&nbsp;" . $myrow["ms_keys_name"]   . "&nbsp;&nbsp;</td>\n";

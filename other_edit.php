@@ -99,7 +99,7 @@ echo "<tr><td class=\"contenthead\" colspan=\"4\">Edit Other Equipment</td></tr>
 } while ($myrow = mysql_fetch_array($result));
 ?>
 <?php
-} else {}
+} else {}
 echo "</div>\n";
 //echo "</table>\n";
 echo "</div>\n";

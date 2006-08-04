@@ -7,7 +7,7 @@ echo "<td valign=\"top\">\n";
 echo "<div class=\"main_each\">";
 echo "<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">";
 echo "<tr><td colspan=\"4\" class=\"contenthead\">$l_del.</td></tr>";
-$SQL = "SELECT * FROM system ORDER BY system_name";
+$SQL = "SELECT * FROM system ORDER BY system_name";
 $result = mysql_query($SQL, $db);
 if ($myrow = mysql_fetch_array($result)){
   echo "<tr><td><b>$l_ipa</b></td><td><b>$l_nam</b></td><td><b>$l_daw</b></td><td></td></tr>"; 
