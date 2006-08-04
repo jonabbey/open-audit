@@ -24,5 +24,7 @@ if (isset($_REQUEST["launch"])) {
 // We should never be here, unless we have beeen launched without a suitable ?launch= parameter.
     echo "No file selected to launch.";
 }
+// Comment out the next line to KEEP the .rdp files in the launcher folder. Default action is now to delete them.
+unlink($file);
 
 ?> 

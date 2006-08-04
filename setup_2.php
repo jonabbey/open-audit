@@ -25,7 +25,7 @@ $result = mysql_query($sql) or die("<tr><td>$l_s20:<br /><font color=\"red\">" .
 //
 //
 //
-$sql = "INSERT INTO config (config_name, config_value) VALUES ('version','06.07.108')";
+$sql = "INSERT INTO config (config_name, config_value) VALUES ('version','06.07.123')";
 $result = mysql_query($sql) or die("<tr><td>$l_s20:<br /><font color=\"red\">" . $sql . "</font></td></tr>\n");
 //echo "<tr><td>" . $sql . "</td></tr>\n";
 

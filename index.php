@@ -730,7 +730,7 @@ if ($show_detected_servers == "y"){
     
     echo
       "<tr bgcolor=\"" . $bgcolor . "\">
-         <td><a href= telnet://".$myrow["system_name"]." TARGET=\"_blank\"/>" . ip_trans($myrow["other_ip_address"]) . "&nbsp;</td>
+         <td><a href= telnet://".$myrow["other_network_name"]." TARGET=\"_blank\"/>" . ip_trans($myrow["other_ip_address"]) . "&nbsp;</td>
          <td><a href=\"other_summary.php?other=" . $myrow["other_id"] . "&amp;sub=1\">" . $myrow["other_network_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
          <td></td>
          <td></td>
@@ -870,7 +870,7 @@ if ($show_detected_servers == "y"){
 
     echo
         "<tr bgcolor=\"" . $bgcolor . "\">
-           <td><a href= telnet://".$myrow["system_name"].":25 TARGET=\"_blank\"/>" . ip_trans($myrow["other_ip_address"]) . "&nbsp;</td>
+           <td><a href= telnet://".$myrow["other_network_name"].":25 TARGET=\"_blank\"/>" . ip_trans($myrow["other_ip_address"]) . "&nbsp;</td>
            <td colspan=\"3\"><a href=\"other_summary.php?other=" . $myrow["other_id"] . "&amp;sub=1\">" . $myrow["other_network_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
          </tr>\n";
 

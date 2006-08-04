@@ -76,7 +76,8 @@ fwrite($file_handle, $password.$crnl);
 
 // echo "You have successfully written data to $full_file_name";   
 fclose($file_handle);  
-
+// Comment out the next line to KEEP the .rdp files in the launcher folder. Default action is now to delete them.
+//unlink($full_file_name);
 
 }
 
