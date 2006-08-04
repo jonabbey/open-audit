@@ -16,15 +16,14 @@ if ($page_prev < 0){ $page_prev = 0; } else {}
 $page_next = $page_count + 1;
 $page_current = $page_count;
 $page_count = $page_count * $count_system;
+?>
 
-echo "<div class=\"main_each\">";
-echo "<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n";
-echo " <tr>\n  <td align=\"left\" class=\"contenthead\" >$l_lid.<br />&nbsp;</td>\n";
-include "include_list_buttons.php";
-echo " </tr>\n</table>\n";
-
-echo "<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">";
-echo " <tr>\n";
+  <div class="main_each">
+  <? include "include_list_buttons_css.php"; ?>
+  <span class="contenthead"><? echo $l_lid; ?></span><br /><br />
+  <table border="0" cellpadding="0" cellspacing="0" width="100%">
+    <tr>
+<?
 echo "  <td align=\"center\"><a href=\"list_desktops.php?sort=net_ip_address&amp;page_count=" . $page_current . "\">$l_ipa</a></td>\n";
 echo "  <td align=\"center\"><a href=\"list_desktops.php?sort=system_name&amp;page_count=" . $page_current . "\">$l_nam</a></td>\n";
 if ($show_os == "y")           { echo "  <td align=\"center\"><a href=\"list_desktops.php?sort=system_os_name&amp;page_count=" . $page_current . "\">$l_osa</a></td>\n"; } else {}

@@ -18,10 +18,8 @@ $page_count = $page_count * $count_system;
 echo "<div class=\"main_each\">";
 
 if ($id == "1"){
-echo "<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n";
-echo "<tr><td align=\"left\" class=\"contenthead\">List All Other Equipment.</td></tr>\n";
-include "include_list_buttons.php";
-echo "</table>\n";
+  include "include_list_buttons_css.php";
+  echo "<span class=\"contenthead\">List All Other Equipment.</span><br /><br />";
 
 echo "<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n";
 echo "<tr>\n";

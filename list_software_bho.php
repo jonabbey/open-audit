@@ -20,11 +20,12 @@ if ($sub <> "sw1"){
 
   $SQL = "SELECT count(bho_program_file) as bho_count, bho_program_file, bho_status, bho_code_base from browser_helper_objects group by bho_program_file, bho_status ORDER BY $sort LIMIT " . $page_count . "," . $count_system;
   $SQL_count = "SELECT DISTINCT bho_program_file from browser_helper_objects";
-  echo "<div class=\"main_each\">\n";
-  echo "<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n";
-  echo " <tr>\n  <td align=\"left\" class=\"contenthead\" colspan=\"4\">$l_lib<br />&nbsp;</td>\n";
-  include "include_list_buttons.php";
-  echo " </tr>\n";
+  ?>
+  <div class="main_each">
+  <? include "include_list_buttons_css.php"; ?>
+  <span class="contenthead"><? echo $l_lib; ?></span><br /><br />
+  <table border="0" cellpadding="0" cellspacing="0" width="100%">
+  <?
   $result = mysql_query($SQL, $db);
   if ($myrow = mysql_fetch_array($result)){
     echo " <tr>\n";
@@ -50,6 +51,7 @@ if ($sub <> "sw1"){
   echo "                                 <b>$l_to5: " . $total_bho_installed . "</b><br />\n";
   echo "                                 <b>$l_to3: " . $num_rows . "</b></td>\n";
   } else {}
+  echo " <tr>\n";
   include "include_list_buttons.php";
   echo " </tr>\n";
 } else {}

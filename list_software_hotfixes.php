@@ -25,12 +25,13 @@ if ($sub <> "sw1"){
   
   $sql = "SELECT count(software_name) AS software_count, software_name, software_version, software_publisher FROM software, system where (software_name LIKE '%hotfix%' OR software_name LIKE '%update%' OR software_name LIKE '%Service Pack%') AND software_uuid = system_uuid AND software_timestamp = system_timestamp GROUP BY software_name, software_version ORDER BY " . $sort . ", software_name, software_version LIMIT " . $page_count . "," . $count_system;
   $result = mysql_query($sql);
+?>
 
-  echo "<div class=\"main_each\">\n";
-  echo "<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n";
-  echo " <tr>\n  <td align=\"left\" class=\"contenthead\" colspan=\"4\">$l_lih<br />&nbsp;</td>\n";
-  include "include_list_buttons.php";
-  echo " </tr>\n";
+  <div class="main_each">
+  <? include "include_list_buttons_css.php"; ?>
+  <span class="contenthead"><? echo $l_lih; ?></span><br /><br />
+  <table border="0" cellpadding="0" cellspacing="0" width="100%">
+<?php
   if ($myrow = mysql_fetch_array($result)){
     echo " <tr>\n";
     echo "  <td align=\"center\"><a href=\"" . $_SERVER["PHP_SELF"] . "?sub=" . $sub . "&amp;page_count=" . $page_current . "&amp;sort=software_count\">$l_cnt</a>&nbsp;</td>\n";

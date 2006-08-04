@@ -167,8 +167,19 @@ if ($myrow = mysql_fetch_array($result)){
   } while ($myrow = mysql_fetch_array($result));
 } else {}
 
+$sql  = "SELECT system_name, system_uuid, net_ip_address, system_man_description, system_man_value, system_man_serial_number FROM system, system_man WHERE ";
+$sql .= "system_man_uuid = system_uuid AND (";
+$sql .= "system_man_description LIKE '%$search%' OR ";
+$sql .= "system_man_serial_number LIKE '%$search%')";
+$result = mysql_query($sql, $db);
+if ($myrow = mysql_fetch_array($result)){
+  do {
+    if (strpos(strtoupper($myrow["system_man_description"]), $search) !== false){$search_field = "Man Description"; $search_result = $myrow["system_man_description"];}
+    if (strpos(strtoupper($myrow["system_man_serial_number"]), $search) !== false){$search_field = "System Serial Number"; $search_result = $myrow["system_man_serial_number"];}
+    $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
+    $result_set[] = array($myrow["system_name"], $myrow["system_uuid"], ip_trans($myrow["net_ip_address"]), $search_field, $search_result);
+  } while ($myrow = mysql_fetch_array($result));
 } else {} // end if search != ""
-
 
 if($result_set) {
   sort($result_set);

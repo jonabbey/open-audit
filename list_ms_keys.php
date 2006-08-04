@@ -16,14 +16,11 @@ if ($page_prev < 0){ $page_prev = 0; } else {}
 $page_next = $page_count + 1;
 $page_current = $page_count;
 $page_count = $page_count * $count_system;
-
-echo "<div class=\"main_each\">\n";
-echo "<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n";
-echo " <tr>\n  <td align=\"left\" class=\"contenthead\" >$l_lce.<br />&nbsp;</td>\n";
-include "include_list_buttons.php";
-echo " </tr>\n</table>\n";
-
-
+?>
+  <div class="main_each">
+  <? include "include_list_buttons_css.php"; ?>
+  <span class="contenthead"><? echo $l_lce; ?></span><br /><br />
+<?
 $sql = "SELECT ms_keys_name, ms_keys_cd_key, system_name, net_ip_address, system_uuid FROM ms_keys, system WHERE ms_keys_key_type LIKE 'windows%' AND ms_keys_uuid = system_uuid AND ms_keys_timestamp = system_timestamp ORDER BY " . $sort . " LIMIT " . $page_count . "," . $count_system;
 $result = mysql_query($sql, $db);
 if ($myrow = mysql_fetch_array($result)){

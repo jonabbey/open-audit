@@ -21,12 +21,12 @@ $count = $myrow["count"];
 $sql  = "SELECT monitor_id, monitor_model, monitor_manufacturer, monitor_serial, ";
 $sql .= "system_name, system_uuid FROM monitor, system WHERE monitor_uuid = system_uuid ";
 $sql .= "AND monitor_timestamp = system_timestamp order by $sort LIMIT " . $page_count . "," . $count_system;
+?>
 
-echo "<div class=\"main_each\">\n";
-echo "<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n";
-echo " <tr>\n  <td align=\"left\" class=\"contenthead\" >List All Monitors.<br />&nbsp;</td>\n";
-include "include_list_buttons.php";
-echo " </tr>\n</table>\n";
+  <div class="main_each">
+  <? include "include_list_buttons_css.php"; ?>
+  <span class="contenthead">List All Monitors.</span><br /><br />
+<?
 echo "<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n";
 $result = mysql_query($sql, $db);
 if ($myrow = mysql_fetch_array($result)){

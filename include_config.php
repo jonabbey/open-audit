@@ -1,5 +1,5 @@
 <?php
-$mysql_server = 'support.cmarine.local';
+$mysql_server = 'localhost';
 $mysql_database = 'openaudit';
 $mysql_user = 'openaudit';
 $mysql_password = 'Password99';

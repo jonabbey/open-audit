@@ -17,12 +17,11 @@ $page_next = $page_count + 1;
 $page_current = $page_count;
 $page_count = $page_count * $count_system;
 
-echo "<div class=\"main_each\">\n";
-echo "<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n";
-echo " <tr>\n  <td align=\"left\" class=\"contenthead\" >$l_lcd.<br />&nbsp;</td>\n";
-include "include_list_buttons.php";
-echo " </tr>\n</table>\n";
-
+?>
+  <div class="main_each">
+  <? include "include_list_buttons_css.php"; ?>
+  <span class="contenthead"><? echo $l_lcd; ?></span><br /><br />
+<?
 
 $sql = "SELECT ms_keys_name, ms_keys_cd_key, system_uuid, system_name, net_ip_address FROM ms_keys, system WHERE ms_keys_key_type LIKE 'office%' AND ms_keys_uuid = system_uuid AND ms_keys_timestamp = system_timestamp ORDER BY " . $sort . " LIMIT " . $page_count . "," . $count_system;
 $result = mysql_query($sql, $db);
@@ -35,7 +34,8 @@ if ($myrow = mysql_fetch_array($result)){
   echo "  <td align=\"center\"><a href=\"list_office_keys.php?sub=" . $sub . "&amp;sort=ms_keys_cd_key\">$l_cdj</a></td>\n";
   echo " </tr>\n";
   do {
-        $bgcolor = change_row_color($bgcolor,$bg1,$bg2);        echo " <tr bgcolor=\"$bgcolor\">\n";
+        $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
+        echo " <tr bgcolor=\"$bgcolor\">\n";
         echo "  <td align=\"center\">&nbsp;&nbsp;" . ip_trans($myrow["net_ip_address"]) . "&nbsp;&nbsp;</td>\n";
         echo "  <td align=\"center\">&nbsp;&nbsp;<a href=\"system_summary.php?pc=" . $myrow["system_uuid"] . "&amp;sub=all\">" . $myrow["system_name"] . "</a>&nbsp;&nbsp;</td>\n";
         echo "  <td align=\"center\">&nbsp;&nbsp;" . $myrow["ms_keys_name"] . "&nbsp;&nbsp;</td>\n";

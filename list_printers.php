@@ -19,12 +19,12 @@ $myrow = mysql_fetch_array($result);
 $count = $myrow["count"];
 
 $sql = "SELECT * FROM other WHERE other_type = 'printer' ORDER by $sort LIMIT " . $page_count . "," . $count_system;
+?>
 
-echo "<div class=\"main_each\">";
-echo "<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n";
-echo " <tr>\n  <td align=\"left\" class=\"contenthead\" >List All Printers.<br />&nbsp;</td>\n";
-include "include_list_buttons.php";
-echo " </tr>\n</table>\n";
+  <div class="main_each">
+  <? include "include_list_buttons_css.php"; ?>
+  <span class="contenthead">List All Printers.</span><br /><br />
+<?
 echo "<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" class=\"content\" width=\"100%\">\n";
   $result = mysql_query($sql, $db);
   if ($myrow = mysql_fetch_array($result)){
