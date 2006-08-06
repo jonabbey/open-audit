@@ -2448,6 +2448,56 @@ strKeyPath = "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Adobe Photosho
   end if
 
 ''''''''''''''''''''''''''''''''
+' Autocad 2004 LT
+''''''''''''''''''''''''''''''''
+strKeyPath = "SOFTWARE\Autodesk\AutoCAD LT\R9\ACLT-201:40A"
+name_xp = "Autocad 2004 LT"
+release_type = ""
+edition_type = ""
+path = strKeyPath
+subKey = "SerialNumber"
+oReg.GetStringValue HKEY_LOCAL_MACHINE,Path,subKey,key
+if IsNull(key) then
+else
+strOffXPRUKey = key
+    form_input = "ms_keys^^^" & name_xp       & "^^^" _
+                              & strOffXPRUKey & "^^^" _
+                              & release_type  & "^^^" _
+                              & edition_type  & "^^^" _
+                              & "autocad_2000" & "^^^"
+    entry form_input,comment,objTextFile,oAdd,oComment
+    strOffXPRUKey = ""
+    release_type = ""
+    edition_type = ""
+    form_input = ""
+end if
+
+''''''''''''''''''''''''''''''''
+' Autocad 2005 LT
+''''''''''''''''''''''''''''''''
+strKeyPath = "SOFTWARE\Autodesk\AutoCAD LT\R10\ACLT-301:409"
+name_xp = "Autocad 2005 LT"
+release_type = ""
+edition_type = ""
+path = strKeyPath
+subKey = "SerialNumber"
+oReg.GetStringValue HKEY_LOCAL_MACHINE,Path,subKey,key
+if IsNull(key) then
+else
+strOffXPRUKey = key
+    form_input = "ms_keys^^^" & name_xp       & "^^^" _
+                              & strOffXPRUKey & "^^^" _
+                              & release_type  & "^^^" _
+                              & edition_type  & "^^^" _
+                              & "autocad_2000" & "^^^"
+    entry form_input,comment,objTextFile,oAdd,oComment
+    strOffXPRUKey = ""
+    release_type = ""
+    edition_type = ""
+    form_input = ""
+end if
+
+''''''''''''''''''''''''''''''''
 '    Adobe Photoshop 7.0       '
 ''''''''''''''''''''''''''''''''
 strKeyPath = "SOFTWARE\Adobe\Photoshop\7.0\Registration"
