@@ -28,10 +28,10 @@ if ($sub <> "sw1"){
 
   ?>
   <div class="main_each">
-  <? include "include_list_buttons_css.php"; ?>
-  <span class="contenthead"><? echo $l_lic; ?></span><br /><br />
+  <?php include "include_list_buttons_css.php"; ?>
+  <span class="contenthead"><?php echo $l_lic; ?></span><br /><br />
   <table border="0" cellpadding="0" cellspacing="0" width="100%">
-  <?
+  <?php
   if ($myrow = mysql_fetch_array($result)){
     echo " <tr>\n";
     echo "  <td align=\"center\"><a href=\"" . $_SERVER["PHP_SELF"] . "?sub=" . $sub . "&amp;page_count=" . $page_current . "&amp;sort=software_count\">$l_cnt</a>&nbsp;</td>\n";

@@ -20,11 +20,11 @@ $page_count = $page_count * $count_system;
 ?>
 
   <div class="main_each">
-  <? include "include_list_buttons_css.php"; ?>
-  <span class="contenthead"><? echo $l_lit; ?></span><br /><br />
+  <?php include "include_list_buttons_css.php"; ?>
+  <span class="contenthead"><?php echo $l_lit; ?></span><br /><br />
   <table border="0" cellpadding="0" cellspacing="0" width="100%">
     <tr>
-<?
+<?php
 echo "  <td align=\"center\"><a href=\"list_servers.php?sort=net_ip_address&amp;page_count=" . $page_current . "\">$l_ipa</a></td>\n";
 echo "  <td align=\"center\"><a href=\"list_servers.php?sort=system_name&amp;page_count=" . $page_current . "\">$l_nam</a></td>\n";
 if ($show_os == "y")           { echo "  <td align=\"center\"><a href=\"list_servers.php?sort=system_os_name&amp;page_count=" . $page_current . "\">$l_osa</a></td>\n"; } else {}

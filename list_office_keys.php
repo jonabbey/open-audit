@@ -19,9 +19,9 @@ $page_count = $page_count * $count_system;
 
 ?>
   <div class="main_each">
-  <? include "include_list_buttons_css.php"; ?>
-  <span class="contenthead"><? echo $l_lcd; ?></span><br /><br />
-<?
+  <?php include "include_list_buttons_css.php"; ?>
+  <span class="contenthead"><?php echo $l_lcd; ?></span><br /><br />
+<?php
 
 $sql = "SELECT ms_keys_name, ms_keys_cd_key, system_uuid, system_name, net_ip_address FROM ms_keys, system WHERE ms_keys_key_type LIKE 'office%' AND ms_keys_uuid = system_uuid AND ms_keys_timestamp = system_timestamp ORDER BY " . $sort . " LIMIT " . $page_count . "," . $count_system;
 $result = mysql_query($sql, $db);

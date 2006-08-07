@@ -22,9 +22,9 @@ $sql = "SELECT * FROM other WHERE other_type = 'printer' ORDER by $sort LIMIT " 
 ?>
 
   <div class="main_each">
-  <? include "include_list_buttons_css.php"; ?>
+  <?php include "include_list_buttons_css.php"; ?>
   <span class="contenthead">List All Printers.</span><br /><br />
-<?
+<?php
 echo "<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" class=\"content\" width=\"100%\">\n";
   $result = mysql_query($sql, $db);
   if ($myrow = mysql_fetch_array($result)){

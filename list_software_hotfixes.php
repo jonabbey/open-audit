@@ -28,8 +28,8 @@ if ($sub <> "sw1"){
 ?>
 
   <div class="main_each">
-  <? include "include_list_buttons_css.php"; ?>
-  <span class="contenthead"><? echo $l_lih; ?></span><br /><br />
+  <?php include "include_list_buttons_css.php"; ?>
+  <span class="contenthead"><?php echo $l_lih; ?></span><br /><br />
   <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <?php
   if ($myrow = mysql_fetch_array($result)){

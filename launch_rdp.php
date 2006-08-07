@@ -1,4 +1,4 @@
-<?
+<?php
 // Include the necessary info to create a suitable .rdp file
 include "include_rdp_config.php";
 

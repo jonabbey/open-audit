@@ -24,9 +24,9 @@ $sql .= "AND monitor_timestamp = system_timestamp order by $sort LIMIT " . $page
 ?>
 
   <div class="main_each">
-  <? include "include_list_buttons_css.php"; ?>
+  <?php include "include_list_buttons_css.php"; ?>
   <span class="contenthead">List All Monitors.</span><br /><br />
-<?
+<?php
 echo "<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n";
 $result = mysql_query($sql, $db);
 if ($myrow = mysql_fetch_array($result)){

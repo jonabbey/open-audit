@@ -22,10 +22,10 @@ if ($sub <> "sw1"){
   $SQL_count = "SELECT DISTINCT bho_program_file from browser_helper_objects";
   ?>
   <div class="main_each">
-  <? include "include_list_buttons_css.php"; ?>
-  <span class="contenthead"><? echo $l_lib; ?></span><br /><br />
+  <?php include "include_list_buttons_css.php"; ?>
+  <span class="contenthead"><?php echo $l_lib; ?></span><br /><br />
   <table border="0" cellpadding="0" cellspacing="0" width="100%">
-  <?
+  <?php
   $result = mysql_query($SQL, $db);
   if ($myrow = mysql_fetch_array($result)){
     echo " <tr>\n";
