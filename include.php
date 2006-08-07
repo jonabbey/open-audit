@@ -238,7 +238,7 @@ if ($pc > "0") {
              <li><a href="setup_audit.php"><img src="images/settings_2.png" alt="" /><?php echo $l_auc; ?></a></li>
              <li><a href="admin_pc_add_1.php?sub=1"><img src="images/add.png" alt="" /><?php echo $l_add; ?></a></li>
              <li><a href="admin_pc_delete.php?sub=1"><img src="images/delete.png" alt="" /><?php echo $l_del; ?></a></li>
-             <li><a href="scripts/audit.vbs"><img src="images/audit.png" alt="" /><?php echo $l_aud; ?></a></li>
+             <!-- <li><a href="scripts/audit.vbs"><img src="images/audit.png" alt="" /><?php echo $l_aud; ?></a></li> -->
            </ul>
          </li>
 
