@@ -41,8 +41,21 @@ if ($use_pass != "n") {
 } else {}
 
 if ($use_https == "y") {
+// Exclude Admin pages bacause they throw a warning when adding using audit.vbs or nmap.vbs and 
+// may also stop us from getting back into the web pages if https is configured in OA but not supported. 
+    $admin_pages = "admin";
+    $is_admin_page = stripos($_SERVER['PHP_SELF'], $admin_pages);
+//    echo $is_admin_page."<td>".$admin_pages;
+    if ($is_admin_page === false){
+
         if ($_SERVER["SERVER_PORT"]!=443){ header("Location: https://".$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF']); exit(); }
-} else { echo $use_https;}
+        } 
+        else 
+        { 
+        if ($_SERVER["SERVER_PORT"]!=80){ header("Location: http://".$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF']); exit(); }
+        }
+
+} else {}
 
 
 ob_start(); 

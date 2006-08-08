@@ -39,7 +39,7 @@ $search = strtoupper($search);
 
 if ($search != "") {
 
-$sql  = "SELECT system_name, system_uuid, net_ip_address, bios_description, bios_manufacturer, bios_serial_number FROM system, bios WHERE ";
+$sql  = "SELECT DISTINCT system_name, system_uuid, net_ip_address, bios_description, bios_manufacturer, bios_serial_number FROM system, bios WHERE ";
 $sql .= "bios_uuid = system_uuid AND ";
 $sql .= "bios_timestamp = system_timestamp AND (";
 $sql .= "bios_description LIKE '%$search%' OR ";
@@ -56,7 +56,7 @@ if ($myrow = mysql_fetch_array($result)){
   } while ($myrow = mysql_fetch_array($result));
 } else {}
 // Added net_user_name AJH 01 Aug 2006
-$sql  = "SELECT system_uuid, system_name, net_ip_address, net_domain, net_user_name, system_model, system_primary_owner_name, system_system_type, ";
+$sql  = "SELECT DISTINCT system_uuid, system_name, net_ip_address, net_domain, net_user_name, system_model, system_primary_owner_name, system_system_type, ";
 $sql .= "system_id_number, system_vendor, time_caption, system_os_name, system_country_code, system_description, ";
 $sql .= "system_organisation, system_registered_user, system_serial_number, system_version, system_windows_directory ";
 $sql .= "FROM system WHERE ";
@@ -107,7 +107,7 @@ if ($myrow = mysql_fetch_array($result)){
 $search_field = "";
 $search_result = "";
 
-$sql  = "SELECT system_name, system_uuid, net_ip_address, monitor_manufacturer, monitor_model, monitor_serial FROM system, monitor WHERE ";
+$sql  = "SELECT DISTINCT system_name, system_uuid, net_ip_address, monitor_manufacturer, monitor_model, monitor_serial FROM system, monitor WHERE ";
 $sql .= "monitor_uuid = system_uuid AND ";
 $sql .= "monitor_timestamp = system_timestamp AND (";
 $sql .= "monitor_manufacturer LIKE '%$search%' OR ";
@@ -124,7 +124,7 @@ if ($myrow = mysql_fetch_array($result)){
   } while ($myrow = mysql_fetch_array($result));
 } else {}
 
-$sql  = "SELECT system_name, system_uuid, net_ip_address, software_name, software_publisher, software_version FROM system, software WHERE ";
+$sql  = "SELECT DISTINCT system_name, system_uuid, net_ip_address, software_name, software_publisher, software_version FROM system, software WHERE ";
 $sql .= "software_uuid = system_uuid AND ";
 $sql .= "software_timestamp = system_timestamp AND (";
 $sql .= "software_name LIKE '%$search%' OR ";
@@ -141,7 +141,7 @@ if ($myrow = mysql_fetch_array($result)){
   } while ($myrow = mysql_fetch_array($result));
 } else {}
 
-$sql  = "SELECT system_name, system_uuid, net_ip_address, usb_description FROM system, usb WHERE ";
+$sql  = "SELECT DISTINCT system_name, system_uuid, net_ip_address, usb_description FROM system, usb WHERE ";
 $sql .= "usb_uuid = system_uuid AND ";
 $sql .= "usb_timestamp = system_timestamp AND (";
 $sql .= "usb_description LIKE '%$search%')";
@@ -154,7 +154,7 @@ if ($myrow = mysql_fetch_array($result)){
   } while ($myrow = mysql_fetch_array($result));
 } else {}
 
-$sql  = "SELECT system_name, system_uuid, net_ip_address, video_description FROM system, video WHERE ";
+$sql  = "SELECT DISTINCT system_name, system_uuid, net_ip_address, video_description FROM system, video WHERE ";
 $sql .= "video_uuid = system_uuid AND ";
 $sql .= "video_timestamp = system_timestamp AND (";
 $sql .= "video_description LIKE '%$search%')";
@@ -167,7 +167,7 @@ if ($myrow = mysql_fetch_array($result)){
   } while ($myrow = mysql_fetch_array($result));
 } else {}
 
-$sql  = "SELECT system_name, system_uuid, net_ip_address, system_man_description, system_man_value, system_man_serial_number FROM system, system_man WHERE ";
+$sql  = "SELECT DISTINCT system_name, system_uuid, net_ip_address, system_man_description, system_man_value, system_man_serial_number FROM system, system_man WHERE ";
 $sql .= "system_man_uuid = system_uuid AND (";
 $sql .= "system_man_description LIKE '%$search%' OR ";
 $sql .= "system_man_serial_number LIKE '%$search%')";
