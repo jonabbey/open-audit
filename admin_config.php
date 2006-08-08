@@ -12,6 +12,7 @@ if ($_POST['mysql_server_post'] == "") {echo "<font color=red>" . $l_yms . ".</f
 if ($_POST['mysql_database_post'] == "") {echo "<font color=red>" . $l_ydb . ".</font>"; $break = "1";} else {}
 if ($_POST['mysql_user_post'] == "") {echo "<font color=red>" . $l_ymu . ".</font>"; $break = "1";} else {}
 if (isset($_POST['mysql_password_post'])) {$mysql_password_post = $_POST['mysql_password_post'];} else { $mysql_password_post = "";}
+if (isset($_POST['use_https_post']))  {$use_https_post = $_POST['use_https_post'];}  else { $use_https_post = "n";}
 if (isset($_POST['iis_passwords_post']))  {$iis_passwords_post = $_POST['iis_passwords_post'];}  else { $iis_passwords_post = "n";}
 if (isset($_POST['username0'])) {$username0 = $_POST['username0'];} else { $username0 = "";}
 if (isset($_POST['password0'])) {$password0 = $_POST['password0'];} else { $password0 = "";}
@@ -60,6 +61,7 @@ if (isset($_POST['pic_style_post'])) {$pic_style_post = $_POST['pic_style_post']
   $content .= "\$mysql_user = '" . $_POST['mysql_user_post'] . "';\n";
   $content .= "\$mysql_password = '" . $mysql_password_post . "';\n";
   $content .= "\n";
+  $content .= "\$use_https = '" . $_POST['use_https_post'] . "';\n";
   $content .= "// An array of allowed users and their passwords\n";
   $content .= "// Make sure to set use_pass = \"n\" if you do not wish to use passwords\n";
   $content .= "\$use_pass = '" . $iis_passwords_post . "';\n";
@@ -152,6 +154,9 @@ echo "<tr><td>" . $l_msu . ":&nbsp;</td><td><input type=\"text\" name=\"mysql_us
 echo "<tr><td>" . $l_msp . ":&nbsp;</td><td><input type=\"password\" name=\"mysql_password_post\" size=\"12\" value=\"" . $mysql_password . "\" class=\"for_forms\" /></td></tr>\n";
 echo "<tr><td>" . $l_msd . ":&nbsp;</td><td><input type=\"text\" name=\"mysql_database_post\" size=\"12\" value=\"" . $mysql_database . "\" class=\"for_forms\" /></td></tr>\n";
 echo "<tr><td colspan=\"5\"><hr /></td></tr>";
+
+echo "<tr><td>" . $l_uhs . ":&nbsp;</td><td><input type=\"checkbox\" name=\"use_https_post\" class=\"for_forms\" value=\"y\""; if ($use_https == "y"){ echo "checked=\"checked\"";}; echo "\" /></td></tr>";
+
 echo "<tr><td>" . $l_upi . ":&nbsp;</td><td><input type=\"checkbox\" name=\"iis_passwords_post\" class=\"for_forms\" value=\"y\""; if ($use_pass == "y"){ echo "checked=\"checked\"";}; echo "\" /></td></tr>";
   $count = 0; 
   while (list($key, $val) = each($users)) { 

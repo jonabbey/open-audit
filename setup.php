@@ -46,6 +46,15 @@ if(!(isset($_POST['submit']))){
   echo "            <td>$l_s05 ?</td>\n";
   echo "            <td><input type=\"text\" size=\"20\" name=\"mysql_data\" value=\"openaudit\" class=\"for_forms\" /></td>\n";
   echo "          </tr>\n";
+
+  echo "          <tr>\n";
+  echo "            <td>$l_s16a ?</td>\n";
+  echo "            <td><select size=\"1\" name=\"use_https\" class=\"for_forms\">\n";
+  echo "                <option value=\"n\" selected=\"selected\">No</option>\n";
+  echo "                <option value=\"y\">Yes</option>\n";
+  echo "                </select></td>\n";
+  echo "          </tr>\n";
+
   echo "          <tr>\n";
   echo "            <td>$l_s17 ?</td>\n";
   echo "            <td><select size=\"1\" name=\"usernames\" class=\"for_forms\">\n";
@@ -90,6 +99,7 @@ if(!(isset($_POST['submit']))){
   $content .= "\$mysql_user = '" . $_POST['mysql_user'] . "'; \r\n";
   $content .= "\$mysql_password = '" . $_POST['mysql_pass'] . "'; \r\n";
   $content .= " \r\n";
+  $content .= "\$use_https = '" . $_POST['use_https'] . "'; \r\n";
   $content .= "// An array of allowed users and their passwords \r\n";
   $content .= "// Make sure to set use_pass = \"n\" if you do not wish to use passwords \r\n";
   $content .= "\$use_pass = '" . $_POST['usernames'] . "'; \r\n";

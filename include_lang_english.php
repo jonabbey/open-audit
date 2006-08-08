@@ -370,6 +370,7 @@ $l_s13 = "Connecting to";
 $l_s14 = "Opening MySQL Dump file and reading contents";
 $l_s15 = "Creating database";
 $l_s16 = "Running SQL upload";
+$l_s16a = "Use HTTPS://";
 $l_s17 = "Do you wish to use usernames";
 $l_s18 = "Setting defaults in the database";
 $l_s19 = "Next we'll configure audit.vbs";
@@ -476,6 +477,7 @@ $l_twi = "The Open-AudIT config has been updated";
 $l_typ = "Type";
 
 $l_unk = "Unknown";
+$l_uhs = "Use HTTPS://";
 $l_upi = "Use Passwords";
 $l_usn = "Username";
 $l_usr = "Users";

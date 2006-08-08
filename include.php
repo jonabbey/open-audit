@@ -40,6 +40,11 @@ if ($use_pass != "n") {
   }
 } else {}
 
+if ($use_https == "y") {
+        if ($_SERVER["SERVER_PORT"]!=443){ header("Location: https://".$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF']); exit(); }
+} else { echo $use_https;}
+
+
 ob_start(); 
 ?>
 
