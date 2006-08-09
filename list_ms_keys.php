@@ -33,7 +33,8 @@ if ($myrow = mysql_fetch_array($result)){
   echo " </tr>\n";
   do {
       $app_name = determine_os($myrow["ms_keys_name"]);
-      $bgcolor = change_row_color($bgcolor,$bg1,$bg2);      echo " <tr bgcolor=\"$bgcolor\">\n";
+      $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
+      echo " <tr bgcolor=\"$bgcolor\">\n";
       echo "  <td align=\"center\">&nbsp;&nbsp;" . ip_trans($myrow["net_ip_address"]) . "&nbsp;&nbsp;</td>\n";
       echo "  <td align=\"center\">&nbsp;&nbsp;<a href=\"system_summary.php?pc=" . $myrow["system_uuid"] . "&amp;sub=all\">" . $myrow["system_name"] . "</a>&nbsp;&nbsp;</td>\n";
       echo "  <td align=\"center\">&nbsp;&nbsp;" . $app_name . "&nbsp;&nbsp;</td>\n";
