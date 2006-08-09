@@ -26,8 +26,10 @@ if(!(isset($_POST['submit']))){
   echo "          <tr>\n";
   echo "            <td>$l_lan ?</td>\n";
   echo "            <td><select size=\"1\" name=\"language\" class=\"for_forms\">\n";
+  echo "                <option value=\"euskera\">Basque</option>\n";
   echo "                <option value=\"english\" selected=\"selected\">English</option>\n";
   echo "                <option value=\"italian\">Italian</option>\n";
+  echo "                <option value=\"spanish\">Spanish</option>\n";
   echo "                </select></td>\n";
   echo "          </tr>\n";
   echo "          <tr>\n";
