@@ -61,9 +61,10 @@ if ($sub <> "sw1"){
 
 
 if ($sub == "sw1"){
+  if (isset($_GET['version'])) { $software_version = $_GET['version']; }
   if (isset($_GET['sort'])){ $sort = $_GET['sort']; } else { $sort = 'system_name';}
-  if ($version <> "no version"){
-    $sql = "SELECT software_name, software_version, software_publisher, net_ip_address, system_uuid, system_name, system_description FROM software, system where software_name = '" . $_GET["name"] . "' AND software_version = '" . $version . "' AND software_uuid = system_uuid AND software_timestamp = system_timestamp ORDER BY " . $sort;
+  if ($software_version <> ""){
+    $sql = "SELECT software_name, software_version, software_publisher, net_ip_address, system_uuid, system_name, system_description FROM software, system where software_name = '" . $_GET["name"] . "' AND software_version = '" . $software_version . "' AND software_uuid = system_uuid AND software_timestamp = system_timestamp ORDER BY " . $sort;
   } else {
     $sql = "SELECT software_name, software_version, software_publisher, net_ip_address, system_uuid, system_name, system_description FROM software, system where software_name = '" . $_GET["name"] . "' AND software_uuid = system_uuid AND software_timestamp = system_timestamp ORDER BY " . $sort;
   }
@@ -71,17 +72,17 @@ if ($sub == "sw1"){
   if ($myrow = mysql_fetch_array($result)){
     echo "<div class=\"main_each\">\n";
     echo "<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n";
-    if ($version <> "no version"){
-      echo " <tr>\n  <td class=\"contenthead\" colspan=\"3\">$l_lsy " . $_GET["name"] . " $l_ver " . $version . " $l_cur.<br />&nbsp;</td>\n </tr>\n";
+    if ($software_version <> ""){
+      echo " <tr>\n  <td class=\"contenthead\" colspan=\"3\">$l_lsy " . $_GET["name"] . " $l_ver " . $software_version . " $l_cur.<br />&nbsp;</td>\n </tr>\n";
     } else {
       echo " <tr>\n  <td class=\"contenthead\" colspan=\"3\">$l_lsy " . $_GET["name"] . " $l_cur.<br />&nbsp;</td>\n </tr>\n";
     }
     echo " <tr>";
-    echo "  <td>&nbsp;&nbsp;<a href=\"list_software_hotfixes.php?sub=sw1&amp;name=" . url_clean($_GET["name"]) . "&amp;version=" . url_clean($version) . "&amp;sort=net_ip_address\">$l_ipa</a></td>\n";
-    echo "  <td>&nbsp;&nbsp;<a href=\"list_software_hotfixes.php?sub=sw1&amp;name=" . url_clean($_GET["name"]) . "&amp;version=" . url_clean($version) . "&amp;sort=system_name\">$l_nam</a></td>\n";
-    echo "  <td>&nbsp;&nbsp;<a href=\"list_software_hotfixes.php?sub=sw1&amp;name=" . url_clean($_GET["name"]) . "&amp;version=" . url_clean($version) . "&amp;sort=system_description\">$l_des</a></td>";
-    if ($version == "no version"){
-      echo "<td>&nbsp;&nbsp;<a href=\"list_software_hotfixes.php?sub=sw1&amp;name=" . url_clean($_GET["name"]) . "&amp;version=" . url_clean($version) . "&amp;sort=software_version\">$l_ver</a></td>";
+    echo "  <td>&nbsp;&nbsp;<a href=\"list_software_hotfixes.php?sub=sw1&amp;name=" . url_clean($_GET["name"]) . "&amp;version=" . url_clean($software_version) . "&amp;sort=net_ip_address\">$l_ipa</a></td>\n";
+    echo "  <td>&nbsp;&nbsp;<a href=\"list_software_hotfixes.php?sub=sw1&amp;name=" . url_clean($_GET["name"]) . "&amp;version=" . url_clean($software_version) . "&amp;sort=system_name\">$l_nam</a></td>\n";
+    echo "  <td>&nbsp;&nbsp;<a href=\"list_software_hotfixes.php?sub=sw1&amp;name=" . url_clean($_GET["name"]) . "&amp;version=" . url_clean($software_version) . "&amp;sort=system_description\">$l_des</a></td>";
+    if ($software_version == ""){
+      echo "<td>&nbsp;&nbsp;<a href=\"list_software_hotfixes.php?sub=sw1&amp;name=" . url_clean($_GET["name"]) . "&amp;version=" . url_clean($software_version) . "&amp;sort=software_version\">$l_ver</a></td>";
     } else {}
     echo "\n </tr>\n";
     do {
@@ -90,7 +91,7 @@ if ($sub == "sw1"){
       echo "  <td>&nbsp;&nbsp;" . ip_trans($myrow["net_ip_address"]) . "</td>\n";
       echo "  <td>&nbsp;&nbsp;<a href=\"system_summary.php?pc=" . $myrow["system_uuid"] . "\">" . $myrow["system_name"] . "</a>&nbsp;&nbsp;</td>\n";
       echo "  <td>&nbsp;&nbsp;" . $myrow["system_description"] . "&nbsp;&nbsp;</td>\n";
-      if ($version == "no version"){
+      if ($software_version == ""){
         echo "  <td>&nbsp;&nbsp;" . $myrow["software_version"] . "&nbsp;&nbsp;</td>\n";
       } else {}
       echo " </tr>\n";
