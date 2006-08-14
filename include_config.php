@@ -4,6 +4,7 @@ $mysql_database = 'openaudit';
 $mysql_user = 'root';
 $mysql_password = '';
 
+$use_https = 'n';
 // An array of allowed users and their passwords
 // Make sure to set use_pass = "n" if you do not wish to use passwords
 $use_pass = 'n';
@@ -26,20 +27,24 @@ $show_partition_usage = 'y';
 $partition_free_space = '1000';
 
 $show_software_detected = 'y';
-$days_software_detected = '1';
+$days_software_detected = '5';
 
-$show_patches_not_detected = 'n';
+$show_patches_not_detected = 'y';
 $number_patches_not_detected = '5';
 
 $show_detected_servers = 'y';
+$show_detected_xp_av = 'n';
+$show_detected_rdp = 'n';
 
 $show_os = 'y';
 $show_date_audited = 'y';
 $show_type = 'y';
-$show_description = 'n';
+$show_description = 'y';
 $show_domain = 'n';
 $show_service_pack = 'n';
 
-$count_system = '30';
+$count_system = '20';
+
+$language = 'english';
 
 ?>
