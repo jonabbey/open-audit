@@ -6,7 +6,7 @@ function return_unknown($something)
   if ($something == NULL) { $something = $l_unk; } else {}
   return $something;
 }
-  
+
 function ip_trans($ip)
 {
   if (($ip <> "") AND (!(is_null($ip)))){
@@ -80,7 +80,7 @@ $timestamp = substr($timestamp, 0, 4) . "-" . substr($timestamp, 4, 2) . "-" . s
 return $timestamp;
 }
 
-function adjustdate($years=0,$months=0,$days=0) 
+function adjustdate($years=0,$months=0,$days=0)
 {
   $todayyear=date('Y');
   $todaymonth=date('m');
@@ -94,5 +94,44 @@ function change_row_color($bgcolor,$bg1,$bg2)
     $bgcolor = $bg2; }
   else { $bgcolor = $bg1; }
   return $bgcolor;
+}
+
+function __($word){
+
+    //Learning-Mode
+    //Only for Developers !!!!
+    $language_learning_mode=0;
+    if($language_learning_mode==1)  {
+        $language_file="./lang/".$GLOBALS["language"].".inc";
+        include($language_file);
+    }
+
+    if($GLOBALS["lang"][$word]!=""){
+        return $GLOBALS["lang"][$word];
+    }else{
+        //Learning-Mode
+        if($language_learning_mode==1 AND $word!="")  {
+            if(is_writable($language_file)){
+
+                //Deleting
+                $handle = fopen($language_file, "r");
+                while (!feof($handle)) {
+                    $line = fgets($handle, 4096);
+                    if(!ereg("\?>",$line)){
+                        $buffer .= $line;
+                    }
+                }
+                fclose ($handle);
+
+                //Writing new Variables
+                $handle = fopen($language_file, "w+");
+                fwrite($handle, $buffer.""."\$GLOBALS[\"lang\"][\"$word\"]=\"$word\";\n?>");
+                fclose($handle);
+            }else{
+                die("Language-Learning-Mode, but $language_file not writeable");
+            }
+        }
+        return $word;
+    }
 }
 ?>
