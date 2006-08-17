@@ -352,9 +352,7 @@ if ($myrow = mysql_fetch_array($result)){
                 }
 
                 if($field["link"]=="y"){
-                    $field_target = "";
-                    if ($get_array["target"] <> "") { $field_target = " target=\"".$get_array["target"]."\""; }
-                    echo "<a href=\"".$link_uri."\"$field_target title=\"".__($get_array["title"])."\" onClick=\"".$get_array["onClick"]."\" $a_misc>";
+                    echo "<a href=\"".$link_uri."\" target=\"".$get_array["target"]."\" title=\"".__($get_array["title"])."\" onClick=\"".$get_array["onClick"]."\" $a_misc>";
                 }
                 if($field["image"]!=""){
                     echo "<img src=\"".$field["image"]."\" border=\"0\" alt=\"\" />";
