@@ -1,6 +1,6 @@
 <?php
 
-$query_array=array("headline"=>"Statistic for Hard Disks",
+$query_array=array("headline"=>__("Statistic for Hard Disks"),
                    "sql"=>"
                            SELECT
                                hard_drive_size,
@@ -22,17 +22,17 @@ $query_array=array("headline"=>"Statistic for Hard Disks",
                    "sort"=>"count_item",
                    "dir"=>"DESC",
                    "fields"=>array("10"=>array("name"=>"hard_drive_size",
-                                               "head"=>"Hard Drive Size",
+                                               "head"=>__("Hard Drive Size"),
                                                "show"=>"y",
                                                "link"=>"n",
                                               ),
                                    "20"=>array("name"=>"count_item",
-                                               "head"=>"Count",
+                                               "head"=>__("Count"),
                                                "show"=>"y",
                                                "link"=>"n",
                                               ),
                                    "30"=>array("name"=>"percentage",
-                                               "head"=>"Percentage",
+                                               "head"=>__("Percentage"),
                                                "show"=>"y",
                                                "link"=>"n",
                                               ),

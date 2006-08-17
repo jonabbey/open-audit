@@ -1,6 +1,6 @@
 <?php
 
-$query_array=array("headline"=>"Statistic for Processors",
+$query_array=array("headline"=>__("Statistic for Processors"),
                    "sql"=>"
                            SELECT
                                processor_name,
@@ -19,17 +19,17 @@ $query_array=array("headline"=>"Statistic for Processors",
                    "sort"=>"count_item",
                    "dir"=>"DESC",
                    "fields"=>array("10"=>array("name"=>"processor_name",
-                                               "head"=>"Processor",
+                                               "head"=>__("Processor"),
                                                "show"=>"y",
                                                "link"=>"n",
                                               ),
                                    "20"=>array("name"=>"count_item",
-                                               "head"=>"Count",
+                                               "head"=>__("Count"),
                                                "show"=>"y",
                                                "link"=>"n",
                                               ),
                                    "30"=>array("name"=>"percentage",
-                                               "head"=>"Percentage",
+                                               "head"=>__("Percentage"),
                                                "show"=>"y",
                                                "link"=>"n",
                                               ),

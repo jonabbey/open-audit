@@ -104,7 +104,7 @@ echo "<form method=\"post\" name=\"form_nav\" action=\"".htmlentities($_SERVER["
 
   echo "<table width=\"100%\" border=\"0\" style=\"height: 70px\"><tr><td>\n";
    echo "<span class=\"contenthead\"><b>";
-   echo __($query_array["headline"])." ".htmlspecialchars($_REQUEST["headline_addition"]);
+   echo $query_array["headline"]." ".htmlspecialchars($_REQUEST["headline_addition"]);
    echo " (".($page_count+1)."-".$show_page_count_to."/".$all_page_count.")</b></span>\n";
   echo "</td><td align=\"right\" nowrap>\n";
 
@@ -130,7 +130,7 @@ echo "<form method=\"post\" name=\"form_nav\" action=\"".htmlentities($_SERVER["
           echo "</a>\n";
       }
   }else{
-      echo "<img src=\"images/go-all-disabled.png\" alt=\"".__("Disabled")."\"border=\"0\" width=\"16\" height=\"16\" />\n";
+      echo "<img src=\"images/go-all-disabled.png\" alt=\"".__("Disabled")."\" title=\"".__("Disabled")."\" border=\"0\" width=\"16\" height=\"16\" />\n";
   }
   //Next
   if(($page_count+$count_system)<=$all_page_count){
@@ -178,9 +178,9 @@ foreach($viewdef_array["fields"] as $field) {
         if ($field["height"] <> "") {$field_height = " height=\"".$field["height"]."\"";}
         $headline_1 .= "<td nowrap style=\"padding-right:10px; font-weight:bold; border-bottom: 1px solid #000000;\">";
         if($field["sort"]!="n"){
-            $headline_1 .= "<a href=\"#\" onClick=\"set_form_field('sort', '".$field["name"]."'); set_form_field('dir', '".$new_dir."'); set_form_field('page_count', '0'); submit_form();\" title=\"".__("Sort by").": ".__($field["head"]).", ".__("Direction").": ".__($new_dir)."\">";
+            $headline_1 .= "<a href=\"#\" onClick=\"set_form_field('sort', '".$field["name"]."'); set_form_field('dir', '".$new_dir."'); set_form_field('page_count', '0'); submit_form();\" title=\"".__("Sort by").": ".$field["head"].", ".__("Direction").": ".__($new_dir)."\">";
         }
-        $headline_1 .= __($field["head"]);
+        $headline_1 .= $field["head"];
         if($field["sort"]!="n"){
             $headline_1 .= "</a>\n";
         }
@@ -202,7 +202,7 @@ foreach($viewdef_array["fields"] as $field) {
 
  //Button to Show and Hide the searchboxes
  $headline_1 .= "<td width=\"20\" style=\"border-bottom: 1px solid #000000;\">";
- $headline_1 .= "<a href=\"#\" onClick=\"show_searchboxes();\" id=\"link_searchboxes\"><img src=\"$image_searchboxes\" id=\"arrows_searchboxes\" border=\"0\" width=\"15\" height=\"21\" alt=\"\" /></a>";
+ $headline_1 .= "<a href=\"#\" onClick=\"show_searchboxes();\" id=\"link_searchboxes\"><img src=\"$image_searchboxes\" id=\"arrows_searchboxes\" border=\"0\" width=\"15\" height=\"21\" alt=\"".__("Search in this View")."\" title=\"".__("Search in this View")."\" /></a>";
  $headline_1 .= "</td>";
 
  $count_searchboxes++;
@@ -343,7 +343,7 @@ if ($myrow = mysql_fetch_array($result)){
                     $a_misc.=" onmouseout=\"document.button" . $myrow["other_id"] . ".src='images/button_delete_out.png'\"";
                 }elseif($field["name"]=="startup_location"){
                     if (substr($myrow[$field["name"]],0,2) == "HK"){
-                        $show_value = "Registry";
+                        $show_value = __("Registry");
                     }
                 }elseif($field["name"]=="percentage"){
                     $show_value=$myrow[$field["name"]]." %";
@@ -352,7 +352,7 @@ if ($myrow = mysql_fetch_array($result)){
                 }
 
                 if($field["link"]=="y"){
-                    echo "<a href=\"".$link_uri."\" target=\"".$get_array["target"]."\" title=\"".__($get_array["title"])."\" onClick=\"".$get_array["onClick"]."\" $a_misc>";
+                    echo "<a href=\"".$link_uri."\" target=\"".$get_array["target"]."\" title=\"".$get_array["title"]."\" onClick=\"".$get_array["onClick"]."\" $a_misc>";
                 }
                 if($field["image"]!=""){
                     echo "<img src=\"".$field["image"]."\" border=\"0\" alt=\"\" />";
@@ -370,7 +370,7 @@ if ($myrow = mysql_fetch_array($result)){
                     }else{
                         $help=$field["help"];
                     }
-                    echo "&nbsp;<a href=\"#\" onClick=\"alert('".addslashes(str_replace("\"","",__($help)))."')\">?</a>";
+                    echo "&nbsp;<a href=\"#\" onClick=\"alert('".addslashes(str_replace("\"","",$help))."')\">?</a>";
                 }
                 echo "</td>\n";
             }

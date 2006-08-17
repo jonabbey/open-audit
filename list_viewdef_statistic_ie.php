@@ -1,6 +1,6 @@
 <?php
 
-$query_array=array("headline"=>"Statistic for Internet Explorer Versions",
+$query_array=array("headline"=>__("Statistic for Internet Explorer Versions"),
                    "sql"=>"
                            SELECT
                                DISTINCT software_version,
@@ -25,17 +25,17 @@ $query_array=array("headline"=>"Statistic for Internet Explorer Versions",
                    "sort"=>"count_item",
                    "dir"=>"DESC",
                    "fields"=>array("10"=>array("name"=>"software_version",
-                                               "head"=>"Version",
+                                               "head"=>__("Version"),
                                                "show"=>"y",
                                                "link"=>"n",
                                               ),
                                    "20"=>array("name"=>"count_item",
-                                               "head"=>"Count",
+                                               "head"=>__("Count"),
                                                "show"=>"y",
                                                "link"=>"n",
                                               ),
                                    "30"=>array("name"=>"percentage",
-                                               "head"=>"Percentage",
+                                               "head"=>__("Percentage"),
                                                "show"=>"y",
                                                "link"=>"n",
                                               ),

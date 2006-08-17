@@ -40,7 +40,7 @@ $menue_array = array(
                                     "70"=>array("name"=>"Keys", "link"=>"list.php?pc=$pc&amp;view=keys_for_system&amp;headline_addition=$name", "image"=>"images/key_2.png", "title"=>"",),
                                     "80"=>array("name"=>"IE BHO's", "link"=>"list.php?pc=$pc&amp;view=ie_bho_for_system&amp;headline_addition=$name", "image"=>"images/browser_bho.png", "title"=>"",),
                                     "90"=>array("name"=>"Codecs", "link"=>"list.php?pc=$pc&amp;view=codecs_for_system&amp;headline_addition=$name", "image"=>"images/audio.png", "title"=>"",),
-                                    "90"=>array("name"=>"Services", "link"=>"list.php?pc=$pc&amp;view=services_for_system&amp;headline_addition=$name", "image"=>"images/services.png", "title"=>"",),
+                                    "100"=>array("name"=>"Services", "link"=>"list.php?pc=$pc&amp;view=services_for_system&amp;headline_addition=$name", "image"=>"images/services.png", "title"=>"",),
                               ),
               ),
       "30" => array("name"=>"OS Settings",
