@@ -288,19 +288,21 @@ if ($myrow = mysql_fetch_array($result)){
                     $field["link"]="n";
                 }
 
-                unset($link_query);
-                @reset ($get_array["var"]);
-                while (list ($varname, $value) = @each ($get_array["var"])) {
-                    if(substr($value,0,1)=="%"){
-                        $value=substr($value,1);
-                        $value2=$$value;
-                    }else{
-                        $value2=$value;
-                    }
-                    $link_query.= $varname."=".urlencode($value2)."&amp;";
-                    //Don't show the link if a GET-variable is empty
-                    if($value2==""){
-                        $field["link"]="n";
+                if($field["link"]=="y"){
+                    unset($link_query);
+                    @reset ($get_array["var"]);
+                    while (list ($varname, $value) = @each ($get_array["var"])) {
+                        if(substr($value,0,1)=="%"){
+                            $value=substr($value,1);
+                            $value2=$$value;
+                        }else{
+                            $value2=$value;
+                        }
+                        $link_query.= $varname."=".urlencode($value2)."&amp;";
+                        //Don't show the link if a GET-variable is empty
+                        if($value2==""){
+                            $field["link"]="n";
+                        }
                     }
                 }
 
@@ -318,6 +320,7 @@ if ($myrow = mysql_fetch_array($result)){
                 $field_align = "";
                 if ($field["align"] <> "") { $field_align = " align=\"".$field["align"]."\""; }
                 echo "  <td bgcolor=\"" . $bgcolor . "\"$field_align style=\"padding-right:10px;\">";
+
                 //Special field-converting
                 if($field["name"]=="system_os_name"){
                     $show_value=determine_os($myrow[$field["name"]]);
