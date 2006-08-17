@@ -79,7 +79,7 @@ if(is_file($include_filename)){
     }
 
     //Executing the Qeuery
-    $sql=$sql_query."\n".$sql_where."\n".$sql_groupby."\n".$sql_sort."\n".$sql_limit;
+echo    $sql=$sql_query."\n".$sql_where."\n".$sql_groupby."\n".$sql_sort."\n".$sql_limit;
     $result = mysql_query($sql, $db);
     if(!$result) {die( "<br>".__("Fatal Error").":<br><br>".$sql."<br><br>".mysql_error()."<br><br>" );};
     $this_page_count = mysql_num_rows($result);
