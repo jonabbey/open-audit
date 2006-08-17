@@ -174,8 +174,8 @@ while (list ($viewname, $viewdef_array) = @each ($query_array["views"])) {
 
 }
 
-echo "</div>\n";
-echo "</td>\n";
+  echo "</div>\n";
+ echo "</td>\n";
 include "include_right_column.php";
 echo "</body>\n";
 echo "</html>\n";
