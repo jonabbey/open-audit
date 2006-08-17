@@ -176,7 +176,7 @@ foreach($viewdef_array["fields"] as $field) {
         $field_height = "";
         if ($field["width"] <> "") {$field_width = " width=\"".$field["width"]."\"";}
         if ($field["height"] <> "") {$field_height = " height=\"".$field["height"]."\"";}
-        $headline_1 .= "<td nowrap style=\"padding-right:10px; font-weight:bold; border-bottom: 1px solid #000000;\"$field_width$field_height>";
+        $headline_1 .= "<td nowrap style=\"padding-right:10px; font-weight:bold; border-bottom: 1px solid #000000;\">";
         if($field["sort"]!="n"){
             $headline_1 .= "<a href=\"#\" onClick=\"set_form_field('sort', '".$field["name"]."'); set_form_field('dir', '".$new_dir."'); set_form_field('page_count', '0'); submit_form();\" title=\"".__("Sort by").": ".__($field["head"]).", ".__("Direction").": ".__($new_dir)."\">";
         }
