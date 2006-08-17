@@ -5,7 +5,7 @@ $software = "";
 $count = 0;
 if (isset($_GET['software'])) {$software = $_GET['software'];} else {}
 if (isset($_GET['sort'])) {$sort = $_GET['sort'];} else {$sort= "system_name";}
-include "include.php"; 
+include "include.php";
 
 echo "<td valign=\"top\">\n";
 echo "<div class=\"main_each\">";
@@ -191,12 +191,12 @@ if($result_set) {
     $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
     echo "<tr bgcolor=\"$bgcolor\">";
     echo "<td align=\"center\">&nbsp;" . $result_set[$i][2] . "&nbsp;</td>";
-    echo "<td align=\"center\">&nbsp;<a href=\"system_summary.php?pc=" . $result_set[$i][1] . "\">" . $result_set[$i][0] . "</a>&nbsp;</td>";
+    echo "<td align=\"center\">&nbsp;<a href=\"system.php?pc=" . $result_set[$i][1] . "&view=summary\">" . $result_set[$i][0] . "</a>&nbsp;</td>";
     echo "<td>&nbsp;" . $result_set[$i][3] . "&nbsp;</td>";
     echo "<td>&nbsp;" . $result_set[$i][4] . "&nbsp;</td>";
     echo "</tr>\n";
   }
-  echo "<tr><td colspan=\"2\"><br /><b>$l_res: " . $count . "</b></td></tr>\n"; 
+  echo "<tr><td colspan=\"2\"><br /><b>$l_res: " . $count . "</b></td></tr>\n";
 }
 else {
   echo "<tr><td colspan=\"4\">No Results.</td></tr>\n";

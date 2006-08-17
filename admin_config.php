@@ -1,13 +1,13 @@
-<?php 
+<?php
 $page = "admin";
-include "include.php"; 
+include "include.php";
 $break = "";
 echo "<td valign=\"top\">\n";
 echo "<div class=\"main_each\">\n";
 echo "<p class=\"contenthead\">" . $l_swi . "</p>";
 
 if(isset($_POST['submit_button'])) {
-if (isset($_POST['language_post'])) {$language_post = $_POST['language_post'];} else { $language_post = "english";}
+if (isset($_POST['language_post'])) {$language_post = $_POST['language_post'];} else { $language_post = "en";}
 if ($_POST['mysql_server_post'] == "") {echo "<font color=red>" . $l_yms . ".</font>"; $break = "1";} else {}
 if ($_POST['mysql_database_post'] == "") {echo "<font color=red>" . $l_ydb . ".</font>"; $break = "1";} else {}
 if ($_POST['mysql_user_post'] == "") {echo "<font color=red>" . $l_ymu . ".</font>"; $break = "1";} else {}
@@ -130,108 +130,110 @@ if (isset($_POST['pic_style_post'])) {$pic_style_post = $_POST['pic_style_post']
     echo $l_tfi . $filename . $l_inw;
   }
   }
-} 
+}
 
 // re include the config so the page displays the updated variables
 include "include_config.php";
-	
+
 echo "<form method=\"post\" action=\"" . $_SERVER["PHP_SELF"] . "\" name=\"admin_config\">";
 echo "<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" class=\"content\">";
 echo "<tr><td colspan=\"5\"><hr /></td></tr>";
 echo "<tr>\n";
-echo "<td>$l_lan ?</td>\n";
+echo "<td>".__("Language").":</td>\n";
 echo "<td><select size=\"1\" name=\"language_post\" class=\"for_forms\">\n";
-echo "                <option value=\"euskera\" ";
-     if ($language == "euskera"){ echo "selected";}
-echo " >Basque</option>\n";
-echo "                <option value=\"english\" ";
-     if ($language == "english"){ echo "selected";}
-echo " >English</option>\n";
-echo "                <option value=\"italian\" ";
-     if ($language == "italian"){ echo "selected";}
-echo " >Italian</option>\n";
-echo "                <option value=\"spanish\" ";
-     if ($language == "spanish"){ echo "selected";}
-echo " >Spanish</option>\n";
+
+$handle=opendir('./lang/');
+while ($file = readdir ($handle)) {
+    if ($file != "." && $file != "..") {
+        if(substr($file,strlen($file)-4)==".inc"){
+            if($language == substr($file,0,strlen($file)-4) ) $selected="selected"; else $selected="";
+            echo "<option $selected>".substr($file,0,strlen($file)-4)."</option>\n";
+        }
+    }
+}
+closedir($handle);
+
 echo "    </select></td>\n";
 echo "</tr>\n";
-echo "<tr><td>" . $l_mss . ":&nbsp;</td><td><input type=\"text\" name=\"mysql_server_post\" size=\"12\" value=\"" . $mysql_server . "\" class=\"for_forms\"/></td></tr>\n";
-echo "<tr><td>" . $l_msu . ":&nbsp;</td><td><input type=\"text\" name=\"mysql_user_post\" size=\"12\" value=\"" . $mysql_user . "\" class=\"for_forms\" /></td></tr>\n";
-echo "<tr><td>" . $l_msp . ":&nbsp;</td><td><input type=\"password\" name=\"mysql_password_post\" size=\"12\" value=\"" . $mysql_password . "\" class=\"for_forms\" /></td></tr>\n";
-echo "<tr><td>" . $l_msd . ":&nbsp;</td><td><input type=\"text\" name=\"mysql_database_post\" size=\"12\" value=\"" . $mysql_database . "\" class=\"for_forms\" /></td></tr>\n";
+echo "<tr><td>MySQL ".__("Server").":&nbsp;</td><td><input type=\"text\" name=\"mysql_server_post\" size=\"12\" value=\"" . $mysql_server . "\" class=\"for_forms\"/></td></tr>\n";
+echo "<tr><td>MySQL ".__("User").":&nbsp;</td><td><input type=\"text\" name=\"mysql_user_post\" size=\"12\" value=\"" . $mysql_user . "\" class=\"for_forms\" /></td></tr>\n";
+echo "<tr><td>MySQL ".__("Password").":&nbsp;</td><td><input type=\"password\" name=\"mysql_password_post\" size=\"12\" value=\"" . $mysql_password . "\" class=\"for_forms\" /></td></tr>\n";
+echo "<tr><td>MySQL ".__("Database").":&nbsp;</td><td><input type=\"text\" name=\"mysql_database_post\" size=\"12\" value=\"" . $mysql_database . "\" class=\"for_forms\" /></td></tr>\n";
 echo "<tr><td colspan=\"5\"><hr /></td></tr>";
 
-echo "<tr><td>" . $l_uhs . ":&nbsp;</td><td><input type=\"checkbox\" name=\"use_https_post\" class=\"for_forms\" value=\"y\""; if ($use_https == "y"){ echo "checked=\"checked\"";}; echo "\" /></td></tr>";
+echo "<tr><td>" . __("Use https://") . ":&nbsp;</td><td><input type=\"checkbox\" name=\"use_https_post\" class=\"for_forms\" value=\"y\""; if ($use_https == "y"){ echo "checked=\"checked\"";}; echo "\" /></td></tr>";
 
-echo "<tr><td>" . $l_upi . ":&nbsp;</td><td><input type=\"checkbox\" name=\"iis_passwords_post\" class=\"for_forms\" value=\"y\""; if ($use_pass == "y"){ echo "checked=\"checked\"";}; echo "\" /></td></tr>";
-  $count = 0; 
-  while (list($key, $val) = each($users)) { 
-  echo "<tr><td></td><td>Username: </td>";
+echo "<tr><td>" . __("Use Passwords") . ":&nbsp;</td><td><input type=\"checkbox\" name=\"iis_passwords_post\" class=\"for_forms\" value=\"y\""; if ($use_pass == "y"){ echo "checked=\"checked\"";}; echo "\" /></td></tr>";
+  $count = 0;
+  while (list($key, $val) = each($users)) {
+  echo "<tr><td></td><td>".__("Username").": </td>";
   echo "<td><input type=\"text\" name=\"username$count\" size=\"12\" value=\"$key\" class=\"for_forms\" /></td>\n";
-  echo "<td>Password: </td>";
-  echo "<td><input type=\"password\" name=\"password$count\" size=\"12\" value=\"$val\" class=\"for_forms\" /></td></tr>\n"; 
+  echo "<td>".__("Password").": </td>";
+  echo "<td><input type=\"password\" name=\"password$count\" size=\"12\" value=\"$val\" class=\"for_forms\" /></td></tr>\n";
   $count = $count + 1;}
+
+//".__("")."
 echo "<tr><td colspan=\"5\"><hr /></td></tr>";
-echo "<tr><td>" . $l_dod . ":&nbsp;</td><td><input type=\"checkbox\" name=\"show_other_discovered_post\"  value=\"y\"";
-  if ($show_other_discovered == "y"){ echo "checked=\"checked\"";} 
+echo "<tr><td>".__("Display 'Other Items Discovered in the last' on homepage").":&nbsp;</td><td><input type=\"checkbox\" name=\"show_other_discovered_post\"  value=\"y\"";
+  if ($show_other_discovered == "y"){ echo "checked=\"checked\"";}
 echo "/></td>";
-echo "<td>" . $l_day . ":&nbsp;</td><td><input type=\"text\" name=\"other_detected_post\" size=\"4\" value=\"$other_detected\" class=\"for_forms\" /></td></tr>";
-echo "<tr><td>$l_dsd:&nbsp;</td><td><input type=\"checkbox\" name=\"show_system_discovered_post\"  value=\"y\"";
+echo "<td>".__("Days").":&nbsp;</td><td><input type=\"text\" name=\"other_detected_post\" size=\"4\" value=\"$other_detected\" class=\"for_forms\" /></td></tr>";
+echo "<tr><td>".__("Display 'Systems discovered in the last' on homepage").":&nbsp;</td><td><input type=\"checkbox\" name=\"show_system_discovered_post\"  value=\"y\"";
   if ($show_system_discovered == "y"){ echo "checked=\"checked\"";}
   echo "/></td>";
-echo "<td>$l_day:&nbsp;</td><td><input type=\"text\" name=\"system_detected_post\" size=\"4\" value=\"$system_detected\" class=\"for_forms\" /></td></tr>";
-echo "<tr><td>$l_dns:&nbsp;</td><td><input type=\"checkbox\" name=\"show_systems_not_audited_post\"  value=\"y\"";
+echo "<td>".__("Days").":&nbsp;</td><td><input type=\"text\" name=\"system_detected_post\" size=\"4\" value=\"$system_detected\" class=\"for_forms\" /></td></tr>";
+echo "<tr><td>".__("Display 'Systems Not Audited' on homepage").":&nbsp;</td><td><input type=\"checkbox\" name=\"show_systems_not_audited_post\"  value=\"y\"";
   if ($show_systems_not_audited == "y"){ echo "checked=\"checked\"";}
   echo "/></td>";
-echo "<td>$l_day:&nbsp;</td><td><input type=\"text\" name=\"days_systems_not_audited_post\" size=\"4\" value=\"$days_systems_not_audited\" class=\"for_forms\" /></td></tr>";
-echo "<tr><td>$l_dpu:&nbsp;</td><td><input type=\"checkbox\" name=\"show_partition_usage_post\"   value=\"y\"";
+echo "<td>".__("Days").":&nbsp;</td><td><input type=\"text\" name=\"days_systems_not_audited_post\" size=\"4\" value=\"$days_systems_not_audited\" class=\"for_forms\" /></td></tr>";
+echo "<tr><td>".__("Display 'Partition Usage' on homepage").":&nbsp;</td><td><input type=\"checkbox\" name=\"show_partition_usage_post\"   value=\"y\"";
   if ($show_partition_usage == "y"){ echo "checked=\"checked\"";}
   echo "/></td>";
-echo "<td>$l_mby:&nbsp;</td><td><input type=\"text\" name=\"partition_free_space_post\" size=\"4\" value=\"$partition_free_space\" class=\"for_forms\" /></td></tr>";
-echo "<tr><td>$l_dso:&nbsp;</td><td><input type=\"checkbox\" name=\"show_software_detected_post\" value=\"y\"";
+echo "<td>".__("MB").":&nbsp;</td><td><input type=\"text\" name=\"partition_free_space_post\" size=\"4\" value=\"$partition_free_space\" class=\"for_forms\" /></td></tr>";
+echo "<tr><td>".__("Display 'New Software' on homepage").":&nbsp;</td><td><input type=\"checkbox\" name=\"show_software_detected_post\" value=\"y\"";
   if ($show_software_detected == "y"){ echo "checked=\"checked\"";}
   echo "/></td>";
-echo "<td>$l_day:&nbsp;</td><td><input type=\"text\" name=\"days_software_detected_post\" size=\"4\" value=\"$days_software_detected\" class=\"for_forms\" /></td></tr>";
-echo "<tr><td>$l_dmp:&nbsp;</td><td><input type=\"checkbox\" name=\"show_patches_not_detected_post\" value=\"y\"";
+echo "<td>".__("Days").":&nbsp;</td><td><input type=\"text\" name=\"days_software_detected_post\" size=\"4\" value=\"$days_software_detected\" class=\"for_forms\" /></td></tr>";
+echo "<tr><td>".__("Display 'Missing Patches' on homepage").":&nbsp;</td><td><input type=\"checkbox\" name=\"show_patches_not_detected_post\" value=\"y\"";
   if ($show_patches_not_detected == "y"){ echo "checked=\"checked\"";}
   echo "/></td>";
-echo "<td>$l_nop:&nbsp;</td><td><input type=\"text\" name=\"number_patches_not_detected_post\" size=\"4\" value=\"$number_patches_not_detected\" class=\"for_forms\" /></td></tr>";
-echo "<tr><td>Show Detected Servers:&nbsp;</td><td><input type=\"checkbox\" name=\"show_detected_servers_post\" value=\"y\"";
+echo "<td>".__("# of Patches").":&nbsp;</td><td><input type=\"text\" name=\"number_patches_not_detected_post\" size=\"4\" value=\"$number_patches_not_detected\" class=\"for_forms\" /></td></tr>";
+echo "<tr><td>".__("Show Detected Servers on homepage").":&nbsp;</td><td><input type=\"checkbox\" name=\"show_detected_servers_post\" value=\"y\"";
   if ($show_detected_servers == "y"){ echo "checked=\"checked\"";}
   echo "/></td>";
     //Added Show Terminal Servers and RDP Machines AJH
-echo "<tr><td>Show Terminal Servers and Remote Desktops:&nbsp;</td><td><input type=\"checkbox\" name=\"show_detected_rdp\" value=\"y\"";
+echo "<tr><td>".__("Show Terminal Servers and Remote Desktops on homepage").":&nbsp;</td><td><input type=\"checkbox\" name=\"show_detected_rdp\" value=\"y\"";
   if ($show_detected_rdp == "y"){ echo "checked=\"checked\"";}
   echo "/></td>";
   //
   //Added Show XP  Missing AntiVirus AJH
-echo "<tr><td>Show XP  Missing AntiVirus:&nbsp;</td><td><input type=\"checkbox\" name=\"show_detected_xp_av\" value=\"y\"";
+echo "<tr><td>".__("Show XP Missing AntiVirus on homepage").":&nbsp;</td><td><input type=\"checkbox\" name=\"show_detected_xp_av\" value=\"y\"";
   if ($show_detected_xp_av == "y"){ echo "checked=\"checked\"";}
   echo "/></td>";
   //
 echo "<td><td>";
 echo "<tr><td colspan=\"5\"><hr /></td></tr>";
-echo "<tr><td>$l_dos:&nbsp;</td><td><input type=\"checkbox\" name=\"show_os_post\" value=\"y\"";
+echo "<tr><td>".__("Display 'OS' column in system list").":&nbsp;</td><td><input type=\"checkbox\" name=\"show_os_post\" value=\"y\"";
   if ($show_os == "y"){ echo "checked=\"checked\"";}
   echo "/></td>\n";
-echo "<tr><td>Display 'Date Audited' column in system list:&nbsp;</td><td><input type=\"checkbox\" name=\"show_date_audited_post\"  value=\"y\"";
+echo "<tr><td>".__("Display 'Date Audited' column in system list").":&nbsp;</td><td><input type=\"checkbox\" name=\"show_date_audited_post\"  value=\"y\"";
   if ($show_date_audited == "y"){ echo "checked=\"checked\"";}
   echo "/></td>\n";
-echo "<tr><td>Display 'Type' column in system list:&nbsp;</td><td><input type=\"checkbox\" name=\"show_type_post\" value=\"y\"";
+echo "<tr><td>".__("Display 'Type' column in system list").":&nbsp;</td><td><input type=\"checkbox\" name=\"show_type_post\" value=\"y\"";
   if ($show_type == "y"){ echo "checked=\"checked\"";}
   echo "/></td>\n";
-echo "<tr><td>Display 'Description' column in system list:&nbsp;</td><td><input type=\"checkbox\" name=\"show_description_post\" value=\"y\"";
+echo "<tr><td>".__("Display 'Description' column in system list").":&nbsp;</td><td><input type=\"checkbox\" name=\"show_description_post\" value=\"y\"";
   if ($show_description == "y"){ echo "checked=\"checked\"";}
   echo "/></td>\n";
-echo "<tr><td>Display 'Domain' column in system list:&nbsp;</td><td><input type=\"checkbox\" name=\"show_domain_post\" value=\"y\"";
+echo "<tr><td>".__("Display 'Domain' column in system list").":&nbsp;</td><td><input type=\"checkbox\" name=\"show_domain_post\" value=\"y\"";
   if ($show_domain == "y"){ echo "checked=\"checked\"";}
   echo "/></td>\n";
-echo "<tr><td>Display 'Service Pack' column in system list:&nbsp;</td><td><input type=\"checkbox\" name=\"show_service_pack_post\" value=\"y\"";
+echo "<tr><td>".__("Display 'Service Pack' column in system list").":&nbsp;</td><td><input type=\"checkbox\" name=\"show_service_pack_post\" value=\"y\"";
   if ($show_service_pack == "y"){ echo "checked=\"checked\"";}
   echo "/></td>\n";
-echo "<tr><td>Number of Systems to display:&nbsp;</td><td><input type=\"text\" name=\"count_system_post\" size=\"12\" value=\"$count_system\" class=\"for_forms\" /></td></tr>";
+echo "<tr><td>".__("Number of Systems to display").":&nbsp;</td><td><input type=\"text\" name=\"count_system_post\" size=\"12\" value=\"$count_system\" class=\"for_forms\" /></td></tr>";
 echo "<tr><td colspan=\"5\"><hr /></td></tr>\n";
-echo "<tr><td><input type=\"submit\" value=\"Submit\" name=\"submit_button\" /></td></tr>\n";
+echo "<tr><td><input type=\"submit\" value=\"".__("Save")."\" name=\"submit_button\" /></td></tr>\n";
 echo "</table>\n";
 echo "</form>\n";
 echo "</div>\n";
@@ -239,4 +241,4 @@ include "include_right_column.php";
 echo "</body>\n";
 echo "</html>\n";
 include "include_png_replace.php";
-?> 
+?>

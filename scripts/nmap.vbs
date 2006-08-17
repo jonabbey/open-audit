@@ -9,13 +9,18 @@
 ''''''''''''''''''''''''''''''''''''
 ' User defined settings below here '
 ''''''''''''''''''''''''''''''''''''
-subnet = "192.168.10."            ' The subnet you wish to scan
-subnet_formatted = "192.168.010."    ' The subnet padded with 0's
-ie_form_page = "http://192.168.10.28/oa/admin_nmap_input.php"
-ie_visible = "n"
-ie_auto_close = "y"
-ip_start = 21
-ip_end = 254
+
+' Below calls the file audit_include.vbs to setup the variables.
+ExecuteGlobal CreateObject("Scripting.FileSystemObject").OpenTextFile("audit.config").ReadAll 
+
+
+'nmap_subnet = "192.168.10."            ' The subnet you wish to scan
+'nmap_subnet_formatted = "192.168.010."    ' The subnet padded with 0's
+'nmap_ie_form_page = "http://192.168.10.28/oa/admin_nmap_input.php"
+'nmap_ie_visible = "n"
+'nmap_ie_auto_close = "y"
+'nmap_ip_start = 21
+'nmap_ip_end = 254
 
 ''''''''''''''''''''''''''''''''''''''''
 ' Don't change the settings below here '
@@ -35,12 +40,12 @@ sTempFile = sTemp & "\" & oFS.GetTempName
 
 sTempFile = "temp.txt"
 
-nmap = "nmap.exe -O -v -oN " & sTempFile & " " & subnet
+nmap = "nmap.exe -O -v -oN " & sTempFile & " " & nmap_subnet
 
 '''''''''''''''''''''''''''''''''''
 ' Script loop starts here         '
 '''''''''''''''''''''''''''''''''''
-for ip = ip_start to ip_end
+for ip = nmap_ip_start to nmap_ip_end
   if ip = 1000 then 
     wscript.echo "bypassing 1000"
   else
@@ -60,9 +65,9 @@ for ip = ip_start to ip_end
     Loop
     objTextFile.Close
     Set ie = CreateObject("InternetExplorer.Application")
-    ie.navigate ie_form_page
+    ie.navigate nmap_ie_form_page
     Do Until IE.readyState = 4 : WScript.sleep(200) : Loop
-    if ie_visible = "y" then
+    if nmap_ie_visible = "y" then
       ie.visible= True
     else
       ie.visible = False
@@ -72,7 +77,7 @@ for ip = ip_start to ip_end
 '    oAdd.value = oAdd.value + strText
     oAdd.value = strText
     IE.Document.All("submit").Click
-    if ie_auto_close = "y" then
+    if nmap_ie_auto_close = "y" then
       Do Until IE.readyState = 4 : WScript.sleep(5000) : Loop
       WScript.sleep(5000)
       ie.Quit
