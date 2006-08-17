@@ -1,15 +1,15 @@
-body { 
-  font: normal 80% verdana, tahoma, arial, Sans ; 
+body {
+  font: normal 80% verdana, tahoma, arial, Sans ;
   text-decoration: none;
-  color: #777; 
+  color: #777;
   margin: 5px;
   padding: 0;
   padding-left: 0px; }
 
-.for_forms { 
-  font: normal 100% verdana, tahoma, arial, Sans ; 
+.for_forms {
+  font: normal 100% verdana, tahoma, arial, Sans ;
   text-decoration: none;
-  color: #777; 
+  color: #777;
   margin: 5px;
   padding: 0;
   }
@@ -89,4 +89,15 @@ ul#primary-nav li a:hover { color: #E2144A; }
 .menuparent span {
   float: right;
   cursor: pointer;
+}
+
+td.views_tablehead{
+  padding-right:10px;
+  font-weight:bold;
+  border-bottom: 1px solid #000000;
+  text-align: left;
+}
+td.searchboxes{
+  padding-top:5px;
+  padding-bottom:5px;
 }

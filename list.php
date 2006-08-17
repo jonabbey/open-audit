@@ -176,7 +176,7 @@ foreach($viewdef_array["fields"] as $field) {
         $field_height = "";
         if ($field["width"] <> "") {$field_width = " width=\"".$field["width"]."\"";}
         if ($field["height"] <> "") {$field_height = " height=\"".$field["height"]."\"";}
-        $headline_1 .= "<td nowrap style=\"padding-right:10px; font-weight:bold; border-bottom: 1px solid #000000;\">";
+        $headline_1 .= "<td nowrap class=\"views_tablehead\">";
         if($field["sort"]!="n"){
             $headline_1 .= "<a href=\"#\" onClick=\"set_form_field('sort', '".$field["name"]."'); set_form_field('dir', '".$new_dir."'); set_form_field('page_count', '0'); submit_form();\" title=\"".__("Sort by").": ".$field["head"].", ".__("Direction").": ".__($new_dir)."\">";
         }
@@ -189,7 +189,7 @@ foreach($viewdef_array["fields"] as $field) {
         }
         $headline_1 .= "</td>\n";
 
-        $headline_2 .= "<td style=\"padding-top:5px; padding-bottom:5px;\">\n";
+        $headline_2 .= "<td class=\"searchboxes\">\n";
          if($field["search"]!="n"){
              $count_searchboxes++;
              $headline_2 .= "<div id=\"searchboxes_".$count_searchboxes."\" style=\"$style_searchboxes\">";
@@ -206,7 +206,7 @@ foreach($viewdef_array["fields"] as $field) {
  $headline_1 .= "</td>";
 
  $count_searchboxes++;
- $headline_2 .= "<td style=\"padding-top:5px; padding-bottom:5px;\">\n";
+ $headline_2 .= "<td class=\"searchboxes\" >\n";
  $headline_2 .= "<div id=\"searchboxes_".$count_searchboxes."\" style=\"$style_searchboxes\">";
  $headline_2 .= "<input type=\"submit\" name=\"filter_submit\" value=\">\" style=\"width:16px;\" onClick=\"set_form_field('page_count', '0');\" />\n";
  $headline_2 .= "</div>";
