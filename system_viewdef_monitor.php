@@ -1,8 +1,8 @@
 <?php
 
-$query_array=array("name"=>"Monitor",
+$query_array=array("name"=>__("Monitor"),
                    "views"=>array("summary"=>array(
-                                                    "headline"=>"Summary",
+                                                    "headline"=>__("Summary"),
                                                     "sql"=>"SELECT * FROM monitor, system WHERE monitor_id = '".$_GET['monitor']."' AND monitor_uuid = system_uuid",
                                                     "image"=>"./images/o_x terminal.png",
                                                     "fields"=>array("10"=>array("name"=>"monitor_model",),

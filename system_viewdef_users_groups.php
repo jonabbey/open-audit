@@ -1,9 +1,9 @@
 <?php
 
-$query_array=array("name"=>"User & Groups",
+$query_array=array("name"=>__("User & Groups"),
                    "image"=>"images/users_l.png",
                    "views"=>array("users"=>array(
-                                                    "headline"=>"Users",
+                                                    "headline"=>__("Users"),
                                                     "sql"=>"SELECT * FROM users WHERE users_uuid = '".$_GET["pc"]."' AND users_timestamp = '".$GLOBAL["system_timestamp"]."' ",
                                                     "image"=>"./images/users_l.png",
                                                     "fields"=>array("10"=>array("name"=>"users_name",),
@@ -15,7 +15,7 @@ $query_array=array("name"=>"User & Groups",
                                                                    ),
                                                     ),
                                    "groups"=>array(
-                                                    "headline"=>"Groups",
+                                                    "headline"=>__("Groups"),
                                                     "sql"=>"SELECT * FROM groups WHERE groups_uuid = '".$_GET["pc"]."' AND groups_timestamp = '".$GLOBAL["system_timestamp"]."' ORDER BY groups_name ",
                                                     "image"=>"images/groups_l.png",
                                                     "fields"=>array("10"=>array("name"=>"groups_name",),

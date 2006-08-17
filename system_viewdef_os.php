@@ -1,9 +1,9 @@
 <?php
 
-$query_array=array("name"=>"OS Information",
+$query_array=array("name"=>__("OS Information"),
                    "image"=>"images/os_l.png",
                    "views"=>array("summary"=>array(
-                                                    "headline"=>"Summary",
+                                                    "headline"=>__("Summary"),
                                                     "sql"=>"SELECT * FROM system WHERE system_uuid = '" . $_GET["pc"] . "' AND system_timestamp = '".$GLOBAL["system_timestamp"]."' ",
                                                     "image"=>"./images/summary_l.png",
                                                     "fields"=>array("10"=>array("name"=>"system_name",),
@@ -16,7 +16,7 @@ $query_array=array("name"=>"OS Information",
                                                                    ),
                                                     ),
                                    "os"=>array(
-                                                    "headline"=>"OS Information",
+                                                    "headline"=>__("OS Information"),
                                                     "sql"=>"SELECT * FROM system WHERE system_uuid = '" . $_GET["pc"] . "' AND system_timestamp = '".$GLOBAL["system_timestamp"]."' ",
                                                     "image"=>"images/os_l.png",
                                                     "fields"=>array("10"=>array("name"=>"system_os_name",),
@@ -33,7 +33,7 @@ $query_array=array("name"=>"OS Information",
                                                                    ),
                                                     ),
                                    "software"=>array(
-                                                    "headline"=>"Software",
+                                                    "headline"=>__("Software"),
                                                     "sql"=>"SELECT software_name, software_version, software_publisher, software_url
                                                             FROM software, system
                                                             WHERE system_uuid = '".$_REQUEST["pc"]."' AND software_uuid = system_uuid AND software_timestamp = system_timestamp
@@ -45,7 +45,7 @@ $query_array=array("name"=>"OS Information",
                                                                    ),
                                                     ),
                                    "network_card"=>array(
-                                                    "headline"=>"Network Card",
+                                                    "headline"=>__("Network Card"),
                                                     "sql"=>"SELECT * FROM network_card WHERE net_uuid = '" . $_GET["pc"] . "' AND net_timestamp = '".$GLOBAL["system_timestamp"]."'",
                                                     "image"=>"images/network_device_l.png",
                                                     "fields"=>array("10"=>array("name"=>"net_adapter_type",),
@@ -63,7 +63,7 @@ $query_array=array("name"=>"OS Information",
                                                                    ),
                                                     ),
                                    "shares"=>array(
-                                                    "headline"=>"Shared Drives",
+                                                    "headline"=>__("Shared Drives"),
                                                     "sql"=>"SELECT * FROM shares WHERE shares_uuid = '".$_REQUEST["pc"]."' AND shares_timestamp = '".$GLOBAL["system_timestamp"]."' ORDER BY shares_path, shares_name",
                                                     "image"=>"images/shared_drive_l.png",
                                                     "fields"=>array("10"=>array("name"=>"shares_name",),

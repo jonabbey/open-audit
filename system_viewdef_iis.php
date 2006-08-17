@@ -1,7 +1,7 @@
 <?php
 
-$query_array=array("views"=>array("iis"=>array(
-                                                   "headline"=>"IIS Settings",
+$query_array=array("views"=>array(__("iis")=>array(
+                                                   "headline"=>__("IIS Settings"),
                                                    "sql"=>"SELECT * FROM iis WHERE iis_uuid = '".$_GET["pc"]."' AND iis_timestamp = '".$GLOBALS["timestamp"]."' ",
                                                    "image"=>"images/browser_l.png",
                                                    "fields"=>array("10"=>array("name"=>"iis_description",),
@@ -15,18 +15,18 @@ $query_array=array("views"=>array("iis"=>array(
                                                                    "90"=>array("name"=>"iis_secure_ip",),
                                                                    "100"=>array("name"=>"iis_secure_port",),
                                                                    "100"=>array("name"=>"IP Settings",
-                                                                                "get"=>array("name"=>"Click me!",
+                                                                                "get"=>array("name"=>__("Click me!"),
                                                                                              "file"=>"list.php",
-                                                                                             "title"=>"Click me!",
+                                                                                             "title"=>__("Click me!"),
                                                                                              "var"=>array("pc"=>"%iis_uuid",
                                                                                                           "view"=>"iis_ips_for_system",
                                                                                                          ),
                                                                                             ),
                                                                                 ),
                                                                    "110"=>array("name"=>"Virtual Hosts",
-                                                                                "get"=>array("name"=>"Click me!",
+                                                                                "get"=>array("name"=>__("Click me!"),
                                                                                              "file"=>"list.php",
-                                                                                             "title"=>"Click me!",
+                                                                                             "title"=>__("Click me!"),
                                                                                              "var"=>array("pc"=>"%iis_uuid",
                                                                                                           "view"=>"iis_vhosts_for_system",
                                                                                                          ),
