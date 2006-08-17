@@ -6,6 +6,7 @@ $query_array=array("headline"=>"Statistic for Physical Memory",
                                COUNT(*) count_item,
                                ( 100 / (SELECT count(*) FROM system WHERE system_memory != '') * COUNT( * ) ) AS percentage
                            FROM system
+                           WHERE (1)
                            GROUP BY system_memory
                            ",
                    "sort"=>"count_item",
