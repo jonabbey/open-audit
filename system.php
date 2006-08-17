@@ -150,7 +150,11 @@ while (list ($viewname, $viewdef_array) = @each ($query_array["views"])) {
                      echo "<td bgcolor=\"" . $bgcolor . "\" align=\"".$field["align"]."\" style=\"padding-right:10px;\">";
                        if(is_array($field["get"])){
                            echo "<a href=\"".$field["get"]["file"]."?".$link_query."\" title=\"".$field["get"]["title"]."\" target=\"".$field["get"]["target"]."\">";
-                           echo $field["get"]["name"];
+                           if($field["get"]["head"]==""){
+                               echo $field["get"]["name"];
+                           }else{
+                               echo $field["get"]["head"];
+                           }
                            echo "</a>";
                        }else{
                            echo $show_value;
