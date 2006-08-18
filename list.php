@@ -25,11 +25,12 @@ if(is_file($include_filename)){
 
 
     //ORDER, SORT and LIMIT
-    if ($_REQUEST['sort']!="") {$sort = $_REQUEST['sort'];} else {$sort = $query_array["sort"];}
-    if ($_REQUEST['dir']!="")  {$dir = $_REQUEST['dir'];} else {$dir = $query_array["dir"];}
-    if ($dir=="ASC")  { $new_dir = "DESC"; }else{ $new_dir = "ASC";}
+    if (isset($_REQUEST['sort']) AND $_REQUEST['sort']!="") {$sort = $_REQUEST['sort'];} else {$sort = $query_array["sort"];}
+    if (isset($_REQUEST['dir']) AND $_REQUEST['dir']!="")  {$dir = $_REQUEST['dir'];} else {$dir = $query_array["dir"];}
+    if (isset($dir) AND $dir=="ASC")  { $new_dir = "DESC"; }else{ $new_dir = "ASC";}
+    if (!isset($_REQUEST["show_all"]))  { $show_all = "0"; }else{ $show_all = $_REQUEST["show_all"]; }
+    if (!isset($_REQUEST["headline_addition"]))  { $headline_addition=" "; }
 
-    if ($_REQUEST["show_all"]!=""){ $count_system = $count_system_max; } else {}
     if (isset($_REQUEST["page_count"])){ $page_count = $_REQUEST["page_count"]; } else { $page_count = 0;}
     $page_prev = $page_count - 1;
     if ($page_prev < 0){ $page_prev = 0; } else {}
@@ -43,13 +44,15 @@ if(is_file($include_filename)){
     //SORT
     $sql_sort=" ORDER BY " . $sort . " " . $dir;
     //LIMIT
-    if($_REQUEST['show_all']!=1){
+    if(isset($show_all) AND $show_all!=1){
         $sql_limit=" LIMIT " . $page_count . "," . $count_system;
     }
     //WHERE
-    if($_REQUEST["filter"]){
+    if(isset($_REQUEST["filter"]) AND $_REQUEST["filter"]){
         if(!preg_match("/WHERE/i",$sql_query)){
-            $sql_where.="WHERE 1 ";
+            $sql_where="WHERE 1 ";
+        }else{
+            $sql_where=" ";
         }
         $sql_where.=" AND ( 1 ";
         @reset($_REQUEST["filter"]);
@@ -69,7 +72,7 @@ if(is_file($include_filename)){
     }
 
     //Show Searchboxes, if search is used on the calling page
-    if($filter_query==1){
+    if(isset($filter_query) AND $filter_query==1){
         $style_searchboxes="display:inline;";
         $image_searchboxes="images/arrows_up.gif";
     }else{
@@ -77,6 +80,10 @@ if(is_file($include_filename)){
         $image_searchboxes="images/arrows_down.gif";
 
     }
+    if(!isset($sql_where))$sql_where=" ";
+    if(!isset($sql_groupby))$sql_groupby=" ";
+    if(!isset($sql_limit))$sql_limit=" ";
+
 
     //Executing the Qeuery
     $sql=$sql_query."\n".$sql_where."\n".$sql_groupby."\n".$sql_sort."\n".$sql_limit;
@@ -104,7 +111,8 @@ echo "<form method=\"post\" name=\"form_nav\" action=\"".htmlentities($_SERVER["
 
   echo "<table width=\"100%\" border=\"0\" style=\"height: 70px\"><tr><td>\n";
    echo "<span class=\"contenthead\"><b>";
-   echo $query_array["headline"]." ".htmlspecialchars($_REQUEST["headline_addition"]);
+   echo $query_array["headline"]." ";
+   if(isset($_REQUEST["headline_addition"])) {echo htmlspecialchars($_REQUEST["headline_addition"]);}
    echo " (".($page_count+1)."-".$show_page_count_to."/".$all_page_count.")</b></span>\n";
   echo "</td><td align=\"right\" nowrap>\n";
 
@@ -112,7 +120,7 @@ echo "<form method=\"post\" name=\"form_nav\" action=\"".htmlentities($_SERVER["
   //Previous
   if($page_count!=0){
       echo "<a href=\"#\" onClick=\"set_form_field('page_count', '".$page_prev."'); submit_form();\">";
-        echo "<img src=\"images/go-prev.png\" alt=\"".__("Previous").": $count_system\" title=\"".__("Previous").": $count_system\" border=\"0\" width=\"16\" height=\"16\" />";
+        echo "<img src=\"images/go-prev.png\" alt=\"".__("Previous")."\" title=\"".__("Previous")."\" border=\"0\" width=\"16\" height=\"16\" />";
       echo "</a>\n";
   }else{
     echo "<img src=\"images/go-prev-disabled.png\" alt=\"".__("Disabled")."\" title=\"".__("Disabled")."\" border=\"0\" width=\"16\" height=\"16\" />\n";
@@ -120,7 +128,7 @@ echo "<form method=\"post\" name=\"form_nav\" action=\"".htmlentities($_SERVER["
 
   //All
   if($all_page_count>=$count_system OR $count_system==$count_system_max ){
-      if($_REQUEST['show_all']!=1){
+      if($show_all!=1){
           echo "<a href=\"#\" onClick=\"set_form_field('show_all', '1'); set_form_field('page_count', '0'); submit_form();\">";
             echo "<img src=\"images/go-all.png\" alt=\"\" title=\"".__("All")."\" border=\"0\" width=\"16\" height=\"16\" />";
           echo "</a>\n";
@@ -135,7 +143,7 @@ echo "<form method=\"post\" name=\"form_nav\" action=\"".htmlentities($_SERVER["
   //Next
   if(($page_count+$count_system)<=$all_page_count){
       echo "<a href=\"#\" onClick=\"set_form_field('page_count', '".$page_next."'); submit_form();\">";
-        echo "<img src=\"images/go-next.png\" alt=\"".__("Next")."$next_page_count\" title=\"".__("Next")."$next_page_count\" border=\"0\" width=\"16\" height=\"16\" />";
+        echo "<img src=\"images/go-next.png\" alt=\"".__("Next")."\" title=\"".__("Next")."\" border=\"0\" width=\"16\" height=\"16\" />";
       echo "</a>\n";
   }else{
     echo "<img src=\"images/go-next-disabled.png\" alt=\"".__("Disabled")."\" title=\"".__("Disabled")."\" border=\"0\" width=\"16\" height=\"16\" />\n";
@@ -154,7 +162,7 @@ echo "<form method=\"post\" name=\"form_nav\" action=\"".htmlentities($_SERVER["
               echo $goto_page;
               echo "</a>";
           }else{
-              if($dots_for_direct_jump_is_sown!=1){
+              if(isset($dots_for_direct_jump_is_sown) AND $dots_for_direct_jump_is_sown!=1){
                   $dots_for_direct_jump_is_sown=1;
                   echo "...";
               }
@@ -170,18 +178,21 @@ echo "<form method=\"post\" name=\"form_nav\" action=\"".htmlentities($_SERVER["
   echo "<div style=\"margin: 5px;\"></div>";
 
 //Table header
+$headline_1=" ";
+$headline_2=" ";
+$count_searchboxes=0;
 foreach($viewdef_array["fields"] as $field) {
     if($field["show"]=="y"){
         $field_width = "";
         $field_height = "";
-        if ($field["width"] <> "") {$field_width = " width=\"".$field["width"]."\"";}
-        if ($field["height"] <> "") {$field_height = " height=\"".$field["height"]."\"";}
+        if ( isset($field["width"]) AND $field["width"] <> "") {$field_width = " width=\"".$field["width"]."\"";}
+        if (isset($field["height"]) AND $field["height"] <> "") {$field_height = " height=\"".$field["height"]."\"";}
         $headline_1 .= "<td nowrap class=\"views_tablehead\">";
-        if($field["sort"]!="n"){
+        if(isset($field["sort"]) AND $field["sort"]!="n"){
             $headline_1 .= "<a href=\"#\" onClick=\"set_form_field('sort', '".$field["name"]."'); set_form_field('dir', '".$new_dir."'); set_form_field('page_count', '0'); submit_form();\" title=\"".__("Sort by").": ".$field["head"].", ".__("Direction").": ".__($new_dir)."\">";
         }
         $headline_1 .= $field["head"];
-        if($field["sort"]!="n"){
+        if(isset($field["sort"]) AND $field["sort"]!="n"){
             $headline_1 .= "</a>\n";
         }
         if($sort==$field["name"]){
@@ -190,10 +201,14 @@ foreach($viewdef_array["fields"] as $field) {
         $headline_1 .= "</td>\n";
 
         $headline_2 .= "<td class=\"searchboxes\">\n";
+
+        if(!isset($field["search"])) $field["search"]="y";
          if($field["search"]!="n"){
              $count_searchboxes++;
              $headline_2 .= "<div id=\"searchboxes_".$count_searchboxes."\" style=\"$style_searchboxes\">";
-             $headline_2 .= "<input type=\"text\" name=\"filter[".$field["name"]."]\" value=\"".$_POST["filter"][$field["name"]]."\" style=\"width:90%;\" />\n";
+             $headline_2 .= "<input type=\"text\" name=\"filter[".$field["name"]."]\" value=\"";
+             if(isset($_POST["filter"][$field["name"]])) $headline_2 .= $_POST["filter"][$field["name"]];
+             $headline_2 .= "\" style=\"width:90%;\" />\n";
              $headline_2 .= "</div>";
          }
         $headline_2 .= "</td>\n";
@@ -241,7 +256,7 @@ echo "</script>\n";
  echo "<input type=\"hidden\" name=\"sort\" value=\"".$sort."\" />\n";
  echo "<input type=\"hidden\" name=\"page_count\" value=\"".$page_count."\" />\n";
  echo "<input type=\"hidden\" name=\"show_all\" value=\"".$show_all."\" />\n";
- echo "<input type=\"hidden\" name=\"headline_addition\" value=\"".$_REQUEST["headline_addition"]."\" />\n";
+ echo "<input type=\"hidden\" name=\"headline_addition\" value=\"".$headline_addition."\" />\n";
 
 echo "<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n";
 
@@ -271,44 +286,59 @@ if ($myrow = mysql_fetch_array($result)){
 
                 //Generating the link
                 //Does the field has an own link? Otherwise take the standard-link of the view
-                if($field["get"]["file"]!=""){
+                if(isset($field["get"]["file"]) AND $field["get"]["file"]!=""){
                     $get_array=$field["get"];
                 }else{
-                    $get_array=$query_array["get"];
+                    if(isset($query_array["get"])){
+                        $get_array=$query_array["get"];
+                    }
                 }
 
-                if(substr($get_array["file"],0,1)=="%"){
-                    $value=substr($get_array["file"],1);
-                    $link_file=$$value;
+                if(!isset($get_array["target"])) $get_array["target"]="_TOP";
+                if(!isset($get_array["onClick"])) $get_array["onClick"]=" ";
+
+                if(isset($get_array["file"])){
+                    if(substr($get_array["file"],0,1)=="%"){
+                        $value=substr($get_array["file"],1);
+                        $link_file=$$value;
+                    }else{
+                        $link_file=$get_array["file"];
+                    }
                 }else{
-                    $link_file=$get_array["file"];
+                    $link_file=FALSE;
                 }
-                //Don't show the link if it's empty
-                if($link_file==""){
+                //Don't show the link if ther's no target-file
+                if($link_file==FALSE){
                     $field["link"]="n";
                 }
 
-                if($field["link"]=="y"){
+                if(isset($field["link"]) AND $field["link"]=="y"){
                     unset($link_query);
                     @reset ($get_array["var"]);
                     while (list ($varname, $value) = @each ($get_array["var"])) {
                         if(substr($value,0,1)=="%"){
                             $value=substr($value,1);
-                            $value2=$$value;
+                            if(isset($$value)){
+                                $value2=$$value;
+                            }
                         }else{
                             $value2=$value;
                         }
-                        $link_query.= $varname."=".urlencode($value2)."&amp;";
-                        //Don't show the link if a GET-variable is empty
+                        if(!isset($link_query)) {
+                            $link_query = $varname."=".urlencode($value2)."&amp;";
+                        }else{
+                            $link_query.= $varname."=".urlencode($value2)."&amp;";
+                        }
+                        //Don't show the link if one GET-variable is empty
                         if($value2==""){
                             $field["link"]="n";
                         }
                     }
                 }
 
-                if($link_query!=""){
+                if(isset($link_query) AND $link_query!=""){
                     $url=parse_url($get_array["file"]);
-                    if($url["query"]!=""){
+                    if(isset($url["query"]) AND $url["query"]!=""){
                         $link_separator="&amp;";
                     }else{
                         $link_separator="?";
@@ -318,8 +348,9 @@ if ($myrow = mysql_fetch_array($result)){
                     $link_uri=$link_file;
                 }
                 $field_align = "";
-                if ($field["align"] <> "") { $field_align = " align=\"".$field["align"]."\""; }
-                echo "  <td bgcolor=\"" . $bgcolor . "\"$field_align style=\"padding-right:10px;\">";
+                echo "  <td bgcolor=\"" . $bgcolor . "\"";
+                 if (isset($field["align"])) { echo "align=\"".$field["align"]."\""; }
+                 echo "style=\"padding-right:10px;\">";
 
                 //Special field-converting
                 if($field["name"]=="system_os_name"){
@@ -348,22 +379,25 @@ if ($myrow = mysql_fetch_array($result)){
                 }elseif($field["name"]=="percentage"){
                     $show_value=$myrow[$field["name"]]." %";
                 }else{
-                    $show_value=$myrow[$field["name"]];
+                    if(isset($myrow[$field["name"]])){
+                        $show_value=$myrow[$field["name"]];
+                    }
                 }
 
-                if($field["link"]=="y"){
+                if(isset($field["link"]) AND $field["link"]=="y"){
+                    if(!isset($get_array["title"])) $get_array["title"]=$show_value;
                     echo "<a href=\"".$link_uri."\" target=\"".$get_array["target"]."\" title=\"".$get_array["title"]."\" onClick=\"".$get_array["onClick"]."\" $a_misc>";
                 }
-                if($field["image"]!=""){
+                if(isset($field["image"]) AND $field["image"]!=""){
                     echo "<img src=\"".$field["image"]."\" border=\"0\" alt=\"\" />";
                 }else{
                     echo $show_value;
                 }
-                if($field["link"]=="y"){
+                if(isset($field["link"]) AND $field["link"]=="y"){
                     echo "</a>\n";
                 }
                 //Is there a help entry?
-                if($field["help"]!=""){
+                if(isset($field["help"]) AND $field["help"]!=""){
                     if(substr($field["help"],0,1)=="%"){
                         $value=substr($field["help"],1);
                         $help=$$value;

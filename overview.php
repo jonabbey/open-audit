@@ -14,6 +14,7 @@ echo "<td valign=\"top\">\n";
   echo "<div class=\"main_each\">";
 
 //Table header
+$view_count=0;
 foreach($query_array as $view_master) {
 
     $view_count++;
@@ -38,26 +39,22 @@ foreach($query_array as $view_master) {
                 $body .= "<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n";
                 $body .= " <tr>\n";
 
-                //Generating Colgroup
-                $i=0;
-                if(isset($view_master["td_width"]) AND is_array($view_master["td_width"])){
-                    $body .= "<colgroup>\n";
-                    foreach($view["fields"] as $field) {
-                        if(isset($view_master["td_width"][$i])) {
-                            $body .= "<col width=\"".$view_master["td_width"][$i]."\">\n";
-                            $i++;
-                        }
-                    }
-                    $body .= "</colgroup>\n";
-                }
 
+                $colgroup .= "<colgroup>\n";
                 foreach($view["fields"] as $field) {
                     if($field["show"]!="n"){
                         $body .= "<td nowrap class=\"views_tablehead\">";
                          $body .= $field["head"];
                         $body .= " </th>\n";;
+                        if(is_array($view_master["td_width"]) AND isset($view_master["td_width"][$i]) AND $view_master["td_width"][$i]!="") {
+                            $body .= "<col width=\"".$view_master["td_width"][$i]."\">\n";
+                            $i++;
+                        }
                     }
                 }
+                $colgroup .= "</colgroup>\n";
+
+
                 $body .= "<td nowrap class=\"views_tablehead\">&nbsp;</th>\n";;
 
                 $body .= " </tr>\n";
@@ -73,7 +70,7 @@ foreach($query_array as $view_master) {
                     $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
                     $body .= " <tr>\n";
                     foreach($view["fields"] as $field) {
-                            if($field["show"]!="n"){
+                            if($field["show"]!="n" AND 1==2){
 
                             //Generating the link
                             //Does the field has an own link? Otherwise take the standard-link of the view

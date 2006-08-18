@@ -1,8 +1,8 @@
 <?php
 
-$application=$_GET["application"];
-$hostname=$_GET["hostname"];
-$ext=$_GET["ext"];
+if(isset($_GET["application"])) $application=$_GET["application"];
+if(isset($_GET["hostname"])) $hostname=$_GET["hostname"];
+if(isset($_GET["ext"])) $ext=$_GET["ext"];
 
 SWITCH($application){
     case "http":
@@ -20,7 +20,6 @@ SWITCH($application){
         //Send to Browser
         header("Content-type: application/force-download");
         header("Content-Transfer-Encoding: Binary");
-        header("Content-length: ".filesize($file));
         header("Content-disposition: attachment; filename=\"".basename($hostname.".".$ext)."\"");
         echo trim($buffer);
     break;
