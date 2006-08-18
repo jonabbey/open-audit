@@ -4,7 +4,7 @@ $query_array=array("name"=>__("Other System"),
                    "image"=>"images/os_l.png",
                    "views"=>array("summary"=>array(
                                                     "headline"=>__("Summary"),
-                                                    "sql"=>"SELECT * FROM other WHERE other_id = '".$_GET['other']."'",
+                                                    "sql"=>"SELECT * FROM other WHERE other_id = '".$_REQUEST['other']."'",
                                                     "image"=>"./images/summary_l.png",
                                                     "fields"=>array(
                                                                     "10"=>array("name"=>"other_description", "head"=>__("Name"),),

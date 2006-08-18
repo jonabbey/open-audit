@@ -29,6 +29,22 @@ $query_array=array("views"=>array("summary"=>array(
                                                                     "210"=>array("name"=>"system_memory", "head"=>__("Memory"),),
                                                                    ),
                                                 ),
+
+                                   "manual"=>array(
+                                                    "headline"=>__("Manual Data"),
+                                                    "sql"=>"SELECT * FROM system_man WHERE system_man_uuid = '" . $_GET["pc"] . "' ",
+                                                    "image"=>"images/notes_l.png",
+                                                    "editable"=>"1",
+                                                    "fields"=>array("10"=>array("name"=>"system_man_id",
+                                                                                "show"=>"n",
+                                                                               ),
+                                                                    "20"=>array("name"=>"system_man_location", "head"=>__("Location"), "editable"=>"1",),
+                                                                    "30"=>array("name"=>"system_man_date_of_purchase", "head"=>__("Date of Purchase"), "editable"=>"1",),
+                                                                    "40"=>array("name"=>"system_man_value", "head"=>__("Dollar Value"), "editable"=>"1",),
+                                                                    "50"=>array("name"=>"system_man_serial_number", "head"=>__("Asset Tag"), "editable"=>"1",),
+                                                                    "60"=>array("name"=>"system_man_description", "head"=>__("Description"), "editable"=>"1", "editable_type"=>"textarea"),
+                                                                   ),
+                                                ),
                                    "management"=>array(
                                                     "headline"=>__("Remote Management"),
                                                     "sql"=>"SELECT system_name FROM system WHERE system_uuid = '" . $_GET["pc"] . "' AND  system_timestamp = '".$GLOBAL["system_timestamp"]."'",

@@ -3,7 +3,7 @@
 $query_array=array("name"=>__("Monitor"),
                    "views"=>array("summary"=>array(
                                                     "headline"=>__("Summary"),
-                                                    "sql"=>"SELECT * FROM monitor, system WHERE monitor_id = '".$_GET['monitor']."' AND monitor_uuid = system_uuid",
+                                                    "sql"=>"SELECT * FROM monitor, system WHERE monitor_id = '".$_REQUEST['other']."' AND monitor_uuid = system_uuid",
                                                     "image"=>"./images/o_x terminal.png",
                                                     "fields"=>array("10"=>array("name"=>"monitor_model", "head"=>__("Model"),),
                                                                     "20"=>array("name"=>"system_name", "head"=>__("Attached Device"),),
