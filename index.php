@@ -52,7 +52,7 @@ if ($show_other_discovered == "y") {
       echo
         "<tr bgcolor=\"" . $bgcolor . "\">
            <td>" . ip_trans($myrow["other_ip_address"]) . "&nbsp;</td>
-           <td><a href=\"system.php?other=" . $myrow["other_id"] . "3&view=other_system\">" . $myrow["other_network_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
+           <td><a href=\"system.php?other=" . $myrow["other_id"] . "&view=other_system\">" . $myrow["other_network_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
            <td>" . $myrow["other_type"] . "&nbsp;</td>
            <td>" . $myrow["other_description"] . "&nbsp;&nbsp;&nbsp;</td>
          </tr>\n";
