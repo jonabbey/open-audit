@@ -179,8 +179,7 @@ while (list ($viewname, $viewdef_array) = @each ($query_array["views"])) {
 
                 }
             }
-            $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
-            echo "<tr><td bgcolor=\"" . $bgcolor . "\" style=\"padding-right:10px;\" colspan=\"2\">&nbsp;</td></tr>\n";
+            echo "<tr><td class=\"system_tablebody_right\" colspan=\"2\">&nbsp;</td></tr>\n";
         }while ($myrow = mysql_fetch_array($result));
     } else {
         echo "<tr>\n";
