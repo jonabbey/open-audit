@@ -25,7 +25,7 @@ foreach($query_array["views"] as $view) {
          echo "<tr\n>";
           echo "<td class=\"contenthead\" width=\"450\">\n";
            echo "<a href=\"javascript://\" onclick=\"switchUl('f".$view_count."');\">\n";
-            echo __($view["headline"])."\n";
+            echo $view["headline"]."\n";
            echo "</a>\n";
           echo "</td\n>";
           echo "<td class=\"contenthead\" width=\"30\" align=\"right\">\n";
@@ -42,7 +42,7 @@ foreach($query_array["views"] as $view) {
         echo " <tr>\n";
         foreach($view["fields"] as $field) {
             echo "<td nowrap style=\"padding-right:10px; font-weight:bold; border-bottom: 1px solid #000000;\">";
-             echo __($field["name"]);
+             echo $field["name"];
             echo " </th>\n";;
         }
         echo " </tr>\n";
@@ -117,7 +117,7 @@ foreach($query_array["views"] as $view) {
                     }
                     echo " <td bgcolor=\"" . $bgcolor . "\" style=\"padding-right:10px;\">\n";
                      if($field["link"]=="y"){
-                         echo "<a href=\"".$link_uri."\"target=\"".$get_array["target"]."\" title=\"".__($get_array["title"])."\" onClick=\"".$get_array["onClick"]."\">\n";
+                         echo "<a href=\"".$link_uri."\"target=\"".$get_array["target"]."\" title=\"".$get_array["title"]."\" onClick=\"".$get_array["onClick"]."\">\n";
                      }
                      echo $myrow[$field["name"]];
                      if($field["link"]=="y"){

@@ -116,6 +116,9 @@ while (list ($viewname, $viewdef_array) = @each ($query_array["views"])) {
                         case "video_current_refresh_rate":
                             $show_value=$myrow[$field["name"]]." Hz";
                         break;
+                        case "monitor_value":
+                            $show_value=$myrow[$field["name"]]." \$";
+                        break;
                         case "firewall_enabled_domain":
                         case "firewall_enabled_standard":
                         case "firewall_disablenotifications_standard":
@@ -145,26 +148,28 @@ while (list ($viewname, $viewdef_array) = @each ($query_array["views"])) {
                     $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
                     echo "<tr>\n";
                      if (!isset($field["align"])) { $field["align"] = "left"; }
-                     echo "<td bgcolor=\"" . $bgcolor . "\" align=\"".$field["align"]."\" style=\"padding-right:10px;\" width=\"200\">";
-                       echo __($field["name"]);
-                       if($field["name"]!=""){
+                     echo "<td bgcolor=\"" . $bgcolor . "\" align=\"".$field["align"]."\" class=\"system_tablebody_left\" >";
+
+                       if(isset($field["head"]) AND $field["head"]!=""){
+                           echo $field["head"];
+                       }else {
+                           echo $field["name"];
+                       }
+                       if($field["name"]!="" OR $field["head"]!=""){
                            echo ":";
                        }else{
                            echo "&nbsp;";
                        }
+
                       echo "</td>\n";
-                     echo "<td bgcolor=\"" . $bgcolor . "\" align=\"".$field["align"]."\" style=\"padding-right:10px;\">";
+                     echo "<td bgcolor=\"" . $bgcolor . "\" align=\"".$field["align"]."\" class=\"system_tablebody_right\">";
                        if(isset($field["get"]) AND is_array($field["get"])){
                            echo "<a href=\"".$field["get"]["file"]."?".$link_query."\" title=\"".$field["get"]["title"]."\"";
                            if(isset($field["get"]["target"])) {
                              echo " target=\"" . $field["get"]["target"] . "\"";
                            }
                            echo ">";
-                           if(isset($field["get"]["name"]) AND (!isset($field["get"]["head"]) OR $field["get"]["head"]=="")){
-                               echo $field["get"]["name"];
-                           }else {
-                               echo $field["get"]["head"];
-                           }
+                           echo $field["get"]["name"];
                            echo "</a>";
                        }else{
                            echo $show_value;

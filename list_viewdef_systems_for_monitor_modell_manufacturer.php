@@ -15,7 +15,7 @@ $query_array=array("headline"=>__("List Systems for Monitormodell/Manufacturer")
                                                "show"=>"n",
                                               ),
                                    "20"=>array("name"=>"system_name",
-                                               "head"=>__("Hostname"),
+                                               "head"=>__("Attached Device"),
                                                "show"=>"y",
                                                "link"=>"y",
                                                "get"=>array("file"=>"system.php",
