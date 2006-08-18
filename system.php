@@ -47,11 +47,11 @@ while (list ($viewname, $viewdef_array) = @each ($query_array["views"])) {
           echo "<img src=\"" .$viewdef_array["image"]. "\" alt=\"\" border=\"0\" width=\"48\" height=\"48\"  />\n";
          echo "</td><td>\n";
           echo "<span class=\"contenthead\">\n";
-          if($_REQUEST["category"]==""){
+          if(isset($_REQUEST["category"]) AND $_REQUEST["category"]==""){
               echo "<a href=\"".$_SERVER["PHP_SELF"]."?pc=".$_REQUEST["pc"]."&amp;view=".$_REQUEST["view"]."&amp;category=".$viewname."\">";
           }
            echo "<b>".__($viewdef_array["headline"])."</b>\n";
-          if($_REQUEST["category"]==""){
+          if(isset($_REQUEST["category"]) AND $_REQUEST["category"]==""){
               echo "</a>";
           }
           echo "</span>\n";
@@ -68,11 +68,12 @@ while (list ($viewname, $viewdef_array) = @each ($query_array["views"])) {
             }
 
             foreach($viewdef_array["fields"] as $field){
-                if($field["show"]!="n"){
+                if(!isset($field["show"]) OR $field["show"]!="n"){
 
                     //Generating the link, if its configured
-                    if(is_array($field["get"]["var"])){
+                    if(isset($field["get"]["var"]) AND is_array($field["get"]["var"])){
                         unset($link_query);
+                        $link_query = "";
                         @reset ($field["get"]["var"]);
                         while (list ($varname, $value) = @each ($field["get"]["var"])) {
                             if(substr($value,0,1)=="%"){
@@ -133,12 +134,17 @@ while (list ($viewname, $viewdef_array) = @each ($query_array["views"])) {
                         break;
                         case "hard_drive_index":
                         default:
+                          if (isset($myrow[$field["name"]])) {
                             $show_value=$myrow[$field["name"]];
+                          } else {
+                            $show_value = "";
+                          }
                         break;
                     }
 
                     $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
                     echo "<tr>\n";
+                     if (!isset($field["align"])) { $field["align"] = "left"; }
                      echo "<td bgcolor=\"" . $bgcolor . "\" align=\"".$field["align"]."\" style=\"padding-right:10px;\" width=\"200\">";
                        echo __($field["name"]);
                        if($field["name"]!=""){
@@ -148,11 +154,15 @@ while (list ($viewname, $viewdef_array) = @each ($query_array["views"])) {
                        }
                       echo "</td>\n";
                      echo "<td bgcolor=\"" . $bgcolor . "\" align=\"".$field["align"]."\" style=\"padding-right:10px;\">";
-                       if(is_array($field["get"])){
-                           echo "<a href=\"".$field["get"]["file"]."?".$link_query."\" title=\"".$field["get"]["title"]."\" target=\"".$field["get"]["target"]."\">";
-                           if($field["get"]["head"]==""){
+                       if(isset($field["get"]) AND is_array($field["get"])){
+                           echo "<a href=\"".$field["get"]["file"]."?".$link_query."\" title=\"".$field["get"]["title"]."\"";
+                           if(isset($field["get"]["target"])) {
+                             echo " target=\"" . $field["get"]["target"] . "\"";
+                           }
+                           echo ">";
+                           if(isset($field["get"]["name"]) AND (!isset($field["get"]["head"]) OR $field["get"]["head"]=="")){
                                echo $field["get"]["name"];
-                           }else{
+                           }else {
                                echo $field["get"]["head"];
                            }
                            echo "</a>";
