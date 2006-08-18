@@ -1,4 +1,5 @@
 <?
+if(!isset($name)) $name = "";
 $menue_array = array(
 
   "machine" => array(

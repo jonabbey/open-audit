@@ -15,7 +15,7 @@ if(is_file($include_filename)){
     die("File does not exists: ". $include_filename);
 }
 //Only one category?
-if($_REQUEST["category"]!=""){
+if(isset($_REQUEST["category"]) AND $_REQUEST["category"]!=""){
     $query_array["views"]=array($query_array["views"][$_REQUEST["category"]]);
 }else{
 }
@@ -24,7 +24,7 @@ if($_REQUEST["category"]!=""){
 echo "<td valign=\"top\">\n";
   echo "<div class=\"main_each\">";
 
-  if($query_array["name"]!=""){
+  if(isset($query_array["name"]) AND $query_array["name"]!=""){
       echo "<table width=\"100%\" border=\"0\" height=\"70\"><tr><td width=\"60;\">\n";
        echo "<span class=\"contenthead\">\n";
         echo "<a href=\"".$_SERVER["PHP_SELF"]."?pc=".$_REQUEST["pc"]."&amp;view=".$_REQUEST["view"]."\">";

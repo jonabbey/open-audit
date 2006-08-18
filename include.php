@@ -84,7 +84,6 @@ ob_start();
       /*]]>*/
     </script>
 
-  <?php if ($page = "") { ?>
     <script type="text/javascript">
       <!--
       function switchUl(id){
@@ -96,7 +95,6 @@ ob_start();
       // -->
     </script>
 
-  <?php } else {} ?>
   </head>
   <body>
 <?php
