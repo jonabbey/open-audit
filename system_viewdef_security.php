@@ -58,8 +58,8 @@ $query_array=array("views"=>array("firewall_xpsp2"=>array(
                                                                    ),
                                                     ),
                                    "nmap"=>array(
-                                                    "headline"=>__("Nmap discovered on Audited PC"),
-                                                    "sql"=>"SELECT * from nmap_ports WHERE nmap_other_id = '" . $_GET["pc"] . "' ",
+                                                    "headline"=>__("Nmap discovered on Audited PC0"),
+                                                    "sql"=>"SELECT COUNT(*) from nmap_ports WHERE nmap_other_id = '" . $_GET["pc"] . "' ",
                                                     "image"=>"./images/nmap_l.png",
                                                     "fields"=>array(
                                                                    "10"=>array("head"=>__("Port Scan"),
