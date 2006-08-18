@@ -106,7 +106,7 @@ function __($word){
         include($language_file);
     }
 
-    if($GLOBALS["lang"][$word]!=""){
+    if(isset($GLOBALS["lang"][$word])){
         return $GLOBALS["lang"][$word];
     }else{
         //Learning-Mode

@@ -27,6 +27,8 @@ if ($show_software_detected == 'y'){ $jscript_count = $jscript_count + 1; }
 if ($show_patches_not_detected == 'y'){ $jscript_count = $jscript_count + 1; }
 if ($show_detected_servers == 'y'){ $jscript_count = $jscript_count + 5; }
 
+if (!isset($page)) { $page = ""; }
+
 if ($page == "add_pc"){$use_pass = "n";}
 
 if ($use_pass != "n") {
@@ -51,9 +53,9 @@ if ($use_pass != "n") {
   }
 } else {}
 
-if ($use_https == "y") {
+if (isset($use_https) AND $use_https == "y") {
         if ($_SERVER["SERVER_PORT"]!=443){ header("Location: https://".$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF']); exit(); }
-} else { echo $use_https;}
+}
 
 
 ob_start();
@@ -82,7 +84,7 @@ ob_start();
       /*]]>*/
     </script>
 
-  <?php if ($page == NULL) { ?>
+  <?php if ($page = "") { ?>
     <script type="text/javascript">
       <!--
       function switchUl(id){
@@ -155,9 +157,13 @@ if ($pc > "0") {
    echo "<ul>\n";
     reset ($menue_array["machine"]);
     while (list ($key_1, $topic_item) = each ($menue_array["machine"])) {
-        echo "<li class=\"".$topic_item["class"]."\">";
+        if (isset($topic_item["class"])) {
+          echo "<li class=\"".$topic_item["class"]."\">";
+        } else {
+          echo "<li>";
+        }
          echo "<a href=\"".$topic_item["link"]."\">";
-         if(is_array($topic_item["childs"])){
+         if(isset($topic_item["childs"]) AND is_array($topic_item["childs"])){
              echo "<span><img src=\"images/spacer.gif\" height=\"16\" width=\"0\" alt=\"\" />&gt;</span>";
          }
          echo "<img src=\"".$topic_item["image"]."\" width=\"16\" height=\"16\" border=\"0\" alt=\"\" />&nbsp;";
@@ -168,7 +174,11 @@ if ($pc > "0") {
          echo "<ul>\n";
          @reset ($topic_item["childs"]);
          while (list ($key_2, $child_item) = @each ($topic_item["childs"])) {
-             echo "<li><a href=\"".$child_item["link"]."\" title=\"".$topic_item["title"]."\"><img src=\"".$child_item["image"]."\"  width=\"16\" height=\"16\" border=\"0\" alt=\"\" />&nbsp;";
+             echo "<li><a href=\"".$child_item["link"]."\"";
+             if (isset($topic_item["title"])) {
+               echo " title=\"".$topic_item["title"]."\"";
+             }
+             echo "><img src=\"".$child_item["image"]."\"  width=\"16\" height=\"16\" border=\"0\" alt=\"\" />&nbsp;";
              echo __($child_item["name"]);
              echo "</a></li>\n";
          }
@@ -185,11 +195,15 @@ if ($pc > "0") {
     reset ($menue_array["misc"]);
     while (list ($key_1, $topic_item) = each ($menue_array["misc"])) {
         echo "<li class=\"".$topic_item["class"]."\">";
-         echo "<a href=\"".$topic_item["link"]."\" title=\"".$topic_item["title"]."\">";
+         echo "<a href=\"".$topic_item["link"]."\"";
+          if(isset($topic_item["title"])) {
+            echo " title=\"".$topic_item["title"]."\"";
+          }
+         echo ">";
           if(is_array($topic_item["childs"])){
               echo "<span>&gt;</span>";
           }
-          if($topic_item["image"]!=""){
+          if(isset($topic_item['image']) AND $topic_item["image"]!=""){
               echo "<img src=\"".$topic_item["image"]."\" width=\"16\" height=\"16\" border=\"0\" alt=\"\" />&nbsp;";
           }
           echo __($topic_item["name"]);
@@ -202,14 +216,14 @@ if ($pc > "0") {
 
                 echo "<li>";
                  echo "<a href=\"".$child_item["link"]."\" title=\"".$child_item["title"]."\">";
-                  if(is_array($child_item["childs"])){
+                  if(isset($child_item["childs"]) AND is_array($child_item["childs"])){
                       echo "<span>&gt;</span>";
                   }
                   echo "<img src=\"".$child_item["image"]."\"  width=\"16\" height=\"16\" border=\"0\" alt=\"\" />&nbsp;";
                   echo __($child_item["name"]);
                  echo "</a>";
 
-                 if(is_array($child_item["childs"])){
+                 if(isset($child_item["childs"]) AND is_array($child_item["childs"])){
                     echo "<ul>\n";
                     @reset ($child_item["childs"]);
                     while (list ($key_3, $child_item_2) = @each ($child_item["childs"])) {
