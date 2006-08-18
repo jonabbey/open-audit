@@ -34,9 +34,7 @@ echo "<td valign=\"top\">\n";
   if(isset($query_array["name"]) AND $query_array["name"]!=""){
       echo "<table width=\"100%\" border=\"0\" height=\"70\"><tr><td width=\"60;\">\n";
        echo "<span class=\"contenthead\">\n";
-        echo "<a href=\"".$_SERVER["PHP_SELF"]."?pc=".$_REQUEST["pc"]."&amp;view=".$_REQUEST["view"]."\">";
          echo "<b>".__($query_array["name"])."</b>\n";
-        echo "</a>";
        echo "</span>\n";
       echo "</td></tr></table>\n";
  }
