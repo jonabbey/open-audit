@@ -103,7 +103,7 @@ echo "<div class=\"main_each\">";
 echo "<form method=\"post\" name=\"form_nav\" action=\"".htmlentities($_SERVER["REQUEST_URI"])."\">\n";
 
   //Calculating the page-count-vars in headline
-  if( ($page_count+$count_system)>$all_page_count ){
+  if( ($page_count+$count_system)>$all_page_count OR (isset($show_all) AND $show_all==1)){
       $show_page_count_to=$all_page_count;
   }else{
       $show_page_count_to=$page_count+$count_system;
