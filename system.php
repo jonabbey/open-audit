@@ -149,13 +149,8 @@ while (list ($viewname, $viewdef_array) = @each ($query_array["views"])) {
                     echo "<tr>\n";
                      if (!isset($field["align"])) { $field["align"] = "left"; }
                      echo "<td bgcolor=\"" . $bgcolor . "\" align=\"".$field["align"]."\" class=\"system_tablebody_left\" >";
-
-                       if(isset($field["head"]) AND $field["head"]!=""){
-                           echo $field["head"];
-                       }else {
-                           echo $field["name"];
-                       }
-                       if($field["name"]!="" OR $field["head"]!=""){
+                       echo $field["head"];
+                       if($field["head"]!=""){
                            echo ":";
                        }else{
                            echo "&nbsp;";
@@ -169,7 +164,7 @@ while (list ($viewname, $viewdef_array) = @each ($query_array["views"])) {
                              echo " target=\"" . $field["get"]["target"] . "\"";
                            }
                            echo ">";
-                           echo $field["get"]["name"];
+                           echo $field["get"]["head"];
                            echo "</a>";
                        }else{
                            echo $show_value;
