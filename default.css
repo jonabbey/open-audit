@@ -97,7 +97,12 @@ td.views_tablehead{
   border-bottom: 1px solid #000000;
   text-align: left;
 }
-td.searchboxes{
-  padding-top:5px;
-  padding-bottom:5px;
+
+td.system_tablebody_left{
+  padding-right:10px;
+  width: 200px;
 }
+td.system_tablebody_right{
+  padding-right:10px;
+}
+
