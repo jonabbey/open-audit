@@ -59,18 +59,11 @@ $query_array=array("views"=>array("firewall_xpsp2"=>array(
                                                     ),
                                    "nmap"=>array(
                                                     "headline"=>__("Nmap discovered on Audited PC"),
-                                                    "sql"=>"SELECT COUNT(*) from nmap_ports WHERE nmap_other_id = '" . $_GET["pc"] . "' ",
+                                                    "sql"=>"SELECT * from nmap_ports WHERE nmap_other_id = '" . $_REQUEST["pc"] . "' ",
+                                                    "table_layout"=>"horizontal",
                                                     "image"=>"./images/nmap_l.png",
-                                                    "fields"=>array(
-                                                                   "10"=>array("head"=>__("Port Scan"),
-                                                                               "get"=>array("head"=>__("Click me!"),
-                                                                                            "file"=>"list.php",
-                                                                                            "title"=>__("Click me!"),
-                                                                                            "var"=>array("pc"=>"%system_uuid",
-                                                                                                         "view"=>"nmap_for_system",
-                                                                                                        ),
-                                                                                           ),
-                                                                               ),
+                                                    "fields"=>array("10"=>array("name"=>"nmap_port_number", "head"=>__("Port"),),
+                                                                    "20"=>array("name"=>"nmap_port_name", "head"=>__("Port-Name"),),
                                                                    ),
                                                     ),
 

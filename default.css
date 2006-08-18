@@ -98,6 +98,10 @@ td.views_tablehead{
   text-align: left;
 }
 
+td.system_tablehead{
+  padding-right:10px;
+  font-weight:bold;
+}
 td.system_tablebody_left{
   padding-right:10px;
   width: 200px;

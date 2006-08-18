@@ -42,6 +42,7 @@ echo "<td valign=\"top\">\n";
 //Show each block
 while (list ($viewname, $viewdef_array) = @each ($query_array["views"])) {
 
+    //Executing Query   
     $sql=$viewdef_array["sql"];
     $result=mysql_query($sql, $db);
     if(!$result) echo $sql;
@@ -63,13 +64,32 @@ while (list ($viewname, $viewdef_array) = @each ($query_array["views"])) {
         echo "</td></tr></table>\n";
 
     echo "<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n";
+
+    //IF Horizontal Table-Layout
+    if(isset($viewdef_array["table_layout"]) AND $viewdef_array["table_layout"]=="horizontal"){
+        echo "<tr>\n";
+        foreach($viewdef_array["fields"] as $field){
+            echo "<td class=\"system_tablehead\">\n";
+             echo $field["head"];
+            echo "</td>\n";
+        }
+        echo "</tr>\n";
+    }
+
+    //Reset Background
+    $bgcolor=$bg2;
+
     if ($myrow = mysql_fetch_array($result)){
         do{
-            //Reset Variables
-            $bgcolor=$bg2;
             //Convert the array-values to local variables
             while (list ($key, $val) = each ($myrow)) {
                 $$key=$val;
+            }
+
+            //IF Horizontal Table-Layout
+            if(isset($viewdef_array["table_layout"]) AND $viewdef_array["table_layout"]=="horizontal"){
+                $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
+                echo "<tr>\n";
             }
 
             foreach($viewdef_array["fields"] as $field){
@@ -150,36 +170,47 @@ while (list ($viewname, $viewdef_array) = @each ($query_array["views"])) {
                         break;
                     }
 
-                    $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
-                    echo "<tr>\n";
-                     if (!isset($field["align"])) { $field["align"] = "left"; }
-                     echo "<td bgcolor=\"" . $bgcolor . "\" align=\"".$field["align"]."\" class=\"system_tablebody_left\" >";
-                       echo $field["head"];
-                       if($field["head"]!=""){
-                           echo ":";
-                       }else{
-                           echo "&nbsp;";
-                       }
-
-                      echo "</td>\n";
-                     echo "<td bgcolor=\"" . $bgcolor . "\" align=\"".$field["align"]."\" class=\"system_tablebody_right\">";
-                       if(isset($field["get"]) AND is_array($field["get"])){
-                           echo "<a href=\"".$field["get"]["file"]."?".$link_query."\" title=\"".$field["get"]["title"]."\"";
-                           if(isset($field["get"]["target"])) {
-                             echo " target=\"" . $field["get"]["target"] . "\"";
+                    //IF Horizontal Table-Layout
+                    if(isset($viewdef_array["table_layout"]) AND $viewdef_array["table_layout"]=="horizontal"){
+                        echo "<td bgcolor=\"" . $bgcolor . "\" align=\"".$field["align"]."\" class=\"system_tablebody_left\" >\n";
+                         echo $show_value;
+                        echo "</td>\n";
+                    }else{
+                        $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
+                        echo "<tr>\n";
+                         if (!isset($field["align"])) { $field["align"] = "left"; }
+                         echo "<td bgcolor=\"" . $bgcolor . "\" align=\"".$field["align"]."\" class=\"system_tablebody_left\" >";
+                           echo $field["head"];
+                           if($field["head"]!=""){
+                               echo ":";
+                           }else{
+                               echo "&nbsp;";
                            }
-                           echo ">";
-                           echo $field["get"]["head"];
-                           echo "</a>";
-                       }else{
-                           echo $show_value;
-                       }
-                     echo "</td>\n";
-                    echo "</tr>\n";
 
+                          echo "</td>\n";
+                         echo "<td bgcolor=\"" . $bgcolor . "\" align=\"".$field["align"]."\" class=\"system_tablebody_right\">";
+                           if(isset($field["get"]) AND is_array($field["get"])){
+                               echo "<a href=\"".$field["get"]["file"]."?".$link_query."\" title=\"".$field["get"]["title"]."\"";
+                               if(isset($field["get"]["target"])) {
+                                 echo " target=\"" . $field["get"]["target"] . "\"";
+                               }
+                               echo ">";
+                               echo $field["get"]["head"];
+                               echo "</a>";
+                           }else{
+                               echo $show_value;
+                           }
+                         echo "</td>\n";
+                        echo "</tr>\n";
+                    }
                 }
             }
-            echo "<tr><td class=\"system_tablebody_right\" colspan=\"2\">&nbsp;</td></tr>\n";
+            //IF Horizontal Table-Layout
+            if(isset($viewdef_array["table_layout"]) AND $viewdef_array["table_layout"]=="horizontal"){
+                echo "</tr>\n";
+            }else{
+                echo "<tr><td class=\"system_tablebody_right\" colspan=\"2\">&nbsp;</td></tr>\n";
+            }
         }while ($myrow = mysql_fetch_array($result));
     } else {
         echo "<tr>\n";
