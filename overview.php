@@ -33,16 +33,33 @@ foreach($query_array as $view_master) {
             if ($myrow = mysql_fetch_array($result)){
 
                 //Table header
+                unset($td_width);
                 $body .= $view["headline"];
                 $body .= "<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n";
                 $body .= " <tr>\n";
+
+                //Generating Colgroup
+                $i=0;
+                if(isset($view_master["td_width"]) AND is_array($view_master["td_width"])){
+                    $body .= "<colgroup>\n";
+                    foreach($view["fields"] as $field) {
+                        if(isset($view_master["td_width"][$i])) {
+                            $body .= "<col width=\"".$view_master["td_width"][$i]."\">\n";
+                            $i++;
+                        }
+                    }
+                    $body .= "</colgroup>\n";
+                }
+
                 foreach($view["fields"] as $field) {
                     if($field["show"]!="n"){
-                        $body .= "<td nowrap style=\"padding-right:10px; font-weight:bold; border-bottom: 1px solid #000000;\">";
+                        $body .= "<td nowrap class=\"views_tablehead\">";
                          $body .= $field["head"];
                         $body .= " </th>\n";;
                     }
                 }
+                $body .= "<td nowrap class=\"views_tablehead\">&nbsp;</th>\n";;
+
                 $body .= " </tr>\n";
 
                 do{
@@ -142,6 +159,7 @@ foreach($query_array as $view_master) {
                             $body .= " </td>\n";
                         }
                     }
+                    $body .= " <td bgcolor=\"" . $bgcolor . "\">&nbsp;</td>\n";
                     $body .= " </tr>\n";
                 }while ($myrow = mysql_fetch_array($result));
 

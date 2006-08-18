@@ -1,5 +1,6 @@
 <?php
 $query_array=array("10"=>array("headline"=>__("Other Items Discovered in the last")." $other_detected ".__("Days"),
+                               "td_width"=>array("130"),
                                "views"=>array(
                                               "10"=>array(
                                                         "sql"=>"
@@ -38,6 +39,7 @@ $query_array=array("10"=>array("headline"=>__("Other Items Discovered in the las
                               ),
 /********************************************************************************************************************************/
                    "20"=>array("headline"=>__("Systems Discovered in the last")." $system_detected ".__("Days"),
+                               "td_width"=>array("130"),
                                "views"=>array(
                                               "10"=>array(
                                                     "sql"=>"
@@ -97,6 +99,7 @@ $query_array=array("10"=>array("headline"=>__("Other Items Discovered in the las
                               ),
 /********************************************************************************************************************************/
                    "30"=>array("headline"=>__("Systems Not Audited in the last")." $days_systems_not_audited ".__("Days"),
+                               "td_width"=>array("130"),
                                "views"=>array(
                                               "10"=>array(
                                                     "sql"=>"
@@ -156,6 +159,7 @@ $query_array=array("10"=>array("headline"=>__("Other Items Discovered in the las
                               ),
 /********************************************************************************************************************************/
                    "40"=>array("headline"=>__("Partition free space less than")." ".$partition_free_space." ".__("MB"),
+                               "td_width"=>array("130"),
                                "views"=>array(
                                               "10"=>array(
                                                     "sql"=>"
@@ -214,7 +218,8 @@ $query_array=array("10"=>array("headline"=>__("Other Items Discovered in the las
                               ),
 /********************************************************************************************************************************/
                    "50"=>array("headline"=>__("Software detected in the last")." ".$days_software_detected." ".__("Days"),
-                                        "views"=>array(
+                               "td_width"=>array("130"),
+                               "views"=>array(
                                               "10"=>array(
                                                     "sql"=>"
                                                             SELECT software_name, software_first_timestamp, system_name, system_uuid, net_ip_address
@@ -269,7 +274,8 @@ $query_array=array("10"=>array("headline"=>__("Other Items Discovered in the las
                    ),
 /********************************************************************************************************************************/
                    "60"=>array("headline"=>__("WEB Servers"),
-                                        "views"=>array(
+                               "td_width"=>array("130"),
+                               "views"=>array(
                                               "10"=>array(
                                                     "headline"=>__("On audited Hosts by Windowsservice"),
                                                     "sql"=>"
@@ -380,7 +386,8 @@ $query_array=array("10"=>array("headline"=>__("Other Items Discovered in the las
                    ),
 /********************************************************************************************************************************/
                    "70"=>array("headline"=>__("FTP Servers"),
-                                        "views"=>array(
+                               "td_width"=>array("130"),
+                               "views"=>array(
                                               "10"=>array(
                                                     "headline"=>__("On audited Hosts by Windowsservice"),
                                                     "sql"=>"
@@ -491,7 +498,8 @@ $query_array=array("10"=>array("headline"=>__("Other Items Discovered in the las
                    ),
 /********************************************************************************************************************************/
                    "80"=>array("headline"=>__("Telnet Servers"),
-                                        "views"=>array(
+                               "td_width"=>array("130"),
+                               "views"=>array(
                                               "10"=>array(
                                                     "headline"=>__("On audited Hosts by Windowsservice"),
                                                     "sql"=>"
@@ -602,7 +610,8 @@ $query_array=array("10"=>array("headline"=>__("Other Items Discovered in the las
                    ),
 /********************************************************************************************************************************/
                    "90"=>array("headline"=>__("Email Servers"),
-                                        "views"=>array(
+                               "td_width"=>array("130"),
+                               "views"=>array(
                                               "10"=>array(
                                                     "headline"=>__("On audited Hosts by Windowsservice"),
                                                     "sql"=>"
@@ -714,7 +723,8 @@ $query_array=array("10"=>array("headline"=>__("Other Items Discovered in the las
                    ),
 /********************************************************************************************************************************/
                    "100"=>array("headline"=>__("Active VNC Servers"),
-                                        "views"=>array(
+                               "td_width"=>array("130"),
+                               "views"=>array(
                                               "10"=>array(
                                                     "headline"=>__("On audited Hosts by Windowsservice"),
                                                     "sql"=>"
@@ -824,7 +834,8 @@ $query_array=array("10"=>array("headline"=>__("Other Items Discovered in the las
                    ),
 /********************************************************************************************************************************/
                    "110"=>array("headline"=>__("Active RDP or Terminal Servers"),
-                                        "views"=>array(
+                               "td_width"=>array("130"),
+                               "views"=>array(
                                               "10"=>array(
                                                     "headline"=>__("On audited Hosts by Windowsservice"),
                                                     "sql"=>"
@@ -935,6 +946,7 @@ $query_array=array("10"=>array("headline"=>__("Other Items Discovered in the las
                    ),
 /********************************************************************************************************************************/
                    "120"=>array("headline"=>__("XP SP2 without up to date AntiVirus"),
+                               "td_width"=>array("130"),
                                "views"=>array(
                                               "10"=>array(
                                                     "sql"=>"
