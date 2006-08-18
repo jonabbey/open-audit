@@ -339,4 +339,5 @@ $GLOBALS["lang"]["Active RDP or Terminal Servers"]="Active RDP or Terminal Serve
 $GLOBALS["lang"]["XP SP2 without up to date AntiVirus"]="XP SP2 without up to date AntiVirus";
 $GLOBALS["lang"]["AntiVirus Program"]="AntiVirus Program";
 $GLOBALS["lang"]["AntiVirus Up To Date"]="AntiVirus Up To Date";
+$GLOBALS["lang"]["Webpage"]="Webpage";
 ?>
