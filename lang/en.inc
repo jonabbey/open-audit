@@ -312,4 +312,12 @@ $GLOBALS["lang"]["Audited User"]="Audited User";
 $GLOBALS["lang"]["ASC"]="ASC";
 $GLOBALS["lang"]["Explorer"]="Explorer";
 $GLOBALS["lang"]["Explorer C"]="Explorer C";
+$GLOBALS["lang"]["Statistic for Operating Systems"]="Statistic for Operating Systems";
+$GLOBALS["lang"]["Percentage"]="Percentage";
+$GLOBALS["lang"]["Statistic for Internet Explorer Versions"]="Statistic for Internet Explorer Versions";
+$GLOBALS["lang"]["Statistic for Physical Memory"]="Statistic for Physical Memory";
+$GLOBALS["lang"]["Physical Memory"]="Physical Memory";
+$GLOBALS["lang"]["Statistic for Processors"]="Statistic for Processors";
+$GLOBALS["lang"]["Statistic for Hard Disks"]="Statistic for Hard Disks";
+$GLOBALS["lang"]["Hard Drive Size"]="Hard Drive Size";
 ?>
