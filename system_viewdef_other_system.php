@@ -6,6 +6,7 @@ $query_array=array("name"=>__("Other System"),
                                                     "headline"=>__("Summary"),
                                                     "sql"=>"SELECT * FROM other, system WHERE system_uuid=other_linked_pc AND other_id = '".$_REQUEST['other']."'",
                                                     "image"=>"./images/summary_l.png",
+                                                    "edit"=>"y",
                                                     "fields"=>array(
 
 

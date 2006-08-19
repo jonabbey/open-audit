@@ -6,6 +6,7 @@ $query_array=array("name"=>__("Printer"),
                                                     "headline"=>__("Summary"),
                                                     "sql"=>"SELECT * FROM other, system WHERE system_uuid=other_linked_pc AND other_id = '".$_REQUEST['other']."'",
                                                     "image"=>"./images/printer_l.png",
+                                                    "edit"=>"y",
                                                     "fields"=>array(
 
                                                                     "10"=>array("name"=>"other_description", "head"=>__("Description"), "edit"=>"y", "edit_type"=>"textarea",),
