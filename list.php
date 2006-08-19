@@ -352,6 +352,7 @@ if ($myrow = mysql_fetch_array($result)){
                  if (isset($field["align"])) { echo "align=\"".$field["align"]."\""; }
                  echo "style=\"padding-right:10px;\">";
 
+                $show_value=" "; 
                 //Special field-converting
                 if($field["name"]=="system_os_name"){
                     $show_value=determine_os($myrow[$field["name"]]);
