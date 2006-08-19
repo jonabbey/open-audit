@@ -27,6 +27,26 @@ if(isset($_REQUEST["category"]) AND $_REQUEST["category"]!=""){
 }else{
 }
 
+//If someone wants to edit Systems Manual-Data, one entry has to created IF there is none
+if(isset($_REQUEST["pc"]) AND
+   isset($_REQUEST["view"]) AND $_REQUEST["view"]=="summary" AND
+   isset($_REQUEST["category"]) AND $_REQUEST["category"]=="manual" AND
+   isset($_REQUEST["edit"]) AND $_REQUEST["edit"]=="1" )
+   {
+
+    $sql_man="SELECT system_man_id FROM `system_man` WHERE `system_man_uuid` = '".$_REQUEST["pc"]."'; ";
+    $result_man=mysql_query($sql_man, $db);
+    $man_count = mysql_num_rows($result_man);
+    if($man_count<1){
+        $sql_man="INSERT INTO `system_man` ( `system_man_id` , `system_man_uuid` ) VALUES ('', '".$_REQUEST["pc"]."' ); ";
+        $result_man=mysql_query($sql_man, $db);
+        if(!$result_man) { echo "<br>".__("Fatal Error").":<br><br>".$sql_man."<br><br>".mysql_error()."<br><br>";
+                       echo "<pre>";
+                       print_r($_REQUEST);
+                       die();
+                     };
+    }
+}
 
 echo "<td valign=\"top\">\n";
   echo "<div class=\"main_each\">";
@@ -45,7 +65,11 @@ while (list ($viewname, $viewdef_array) = @each ($query_array["views"])) {
     //Executing Query
     $sql=$viewdef_array["sql"];
     $result=mysql_query($sql, $db);
-    if(!$result) echo $sql;
+    if(!$result) { echo "<br>".__("Fatal Error").":<br><br>".$sql."<br><br>".mysql_error()."<br><br>";
+                   echo "<pre>";
+                   print_r($_REQUEST);
+                   die();
+                 };
     $this_page_count = mysql_num_rows($result);
 
 
@@ -281,10 +305,6 @@ while (list ($viewname, $viewdef_array) = @each ($query_array["views"])) {
                                }else{
                                    echo $show_value;
                                }
-                               //If one field in this category is editable, show the Edit-Button
-                               if(isset($field["edit"]) AND $field["edit"]=="y"){
-                                   $edit_category=1;
-                               }
                            }
                          echo "</td>\n";
                         echo "</tr>\n";
@@ -297,39 +317,41 @@ while (list ($viewname, $viewdef_array) = @each ($query_array["views"])) {
             }else{
                 echo "<tr><td class=\"system_tablebody_right\" colspan=\"2\">&nbsp;</td></tr>\n";
             }
-
-            //Edit- and Submit-Button
-            if($edit_category=="1"){
-                echo "<tr>\n";
-                 echo "<td>\n";
-                  if(isset($_REQUEST["edit"]) AND $_REQUEST["edit"]==1){
-                      echo "<input type=\"submit\" name=\"save\" value=\"".__("Save")."\" />";
-                  }else{
-                      echo "<input type=\"button\" name=\"edit\" value=\"Edit\"";
-                      echo "onClick=\"window.location.href='".$_SERVER["PHP_SELF"]."?";
-                      if(isset($_REQUEST["pc"])){
-                          echo "pc=".$_REQUEST["pc"]."&";
-                      }elseif(isset($_REQUEST["other"])){
-                          echo "other=".$_REQUEST["other"]."&";
-                      }elseif(isset($_REQUEST["monitor"])){
-                          echo "monitor=".$_REQUEST["monitor"]."&";
-                      }else{
-                          die(__("FATAL: Ther's no ID-variable to identify the item. I.e pc or other"));
-                      }
-                      echo "view=".$_REQUEST["view"]."&category=".$viewname."&edit=1';\" />";
-                  }
-                 echo "</td>\n";
-                echo "</tr>\n";
-           }
-
         }while ($myrow = mysql_fetch_array($result));
     } else {
         echo "<tr>\n";
-         echo "<td bgcolor=\"#F1F1F1\" style=\"padding-right:10px;\" colspan=\"2\">";
+         echo "<td bgcolor=\"$bg1\" style=\"padding-right:10px;\" colspan=\"2\">";
           echo __("No Results");
          echo "</td>\n";
         echo "</tr>\n";
+
+        echo "<tr><td bgcolor=\"$bg2\" style=\"padding-right:10px;\" colspan=\"2\">&nbsp;</td></tr>\n";
     }
+
+     //Edit- and Submit-Button
+     if(isset($viewdef_array["edit"]) AND $viewdef_array["edit"]=="y"){
+         echo "<tr>\n";
+          echo "<td>\n";
+           if(isset($_REQUEST["edit"]) AND $_REQUEST["edit"]==1){
+        echo "<input type=\"submit\" name=\"save\" value=\"".__("Save")."\" />";
+           }else{
+        echo "<input type=\"button\" name=\"edit\" value=\"Edit\"";
+        echo "onClick=\"window.location.href='".$_SERVER["PHP_SELF"]."?";
+        if(isset($_REQUEST["pc"])){
+            echo "pc=".$_REQUEST["pc"]."&";
+        }elseif(isset($_REQUEST["other"])){
+            echo "other=".$_REQUEST["other"]."&";
+        }elseif(isset($_REQUEST["monitor"])){
+            echo "monitor=".$_REQUEST["monitor"]."&";
+        }else{
+            die(__("FATAL: Ther's no ID-variable to identify the item. I.e pc or other"));
+        }
+        echo "view=".$_REQUEST["view"]."&category=".$viewname."&edit=1';\" />";
+           }
+          echo "</td>\n";
+         echo "</tr>\n";
+    }
+
     echo "</table>";
     echo "</form>\n";
 }

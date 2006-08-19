@@ -9,7 +9,7 @@ mysql_select_db($mysql_database) or die("Could not select database");
 if(isset($_REQUEST["view"]) AND isset($_REQUEST["category"])){
 
 
-    //Other-System
+    //Other-System ------------------------------------------------------------------------------
     if($_REQUEST["view"]=="other_system" AND $_REQUEST["category"]=="summary" OR
        $_REQUEST["view"]=="printer" AND $_REQUEST["category"]=="summary"){
 
@@ -30,6 +30,7 @@ if(isset($_REQUEST["view"]) AND isset($_REQUEST["category"])){
 
         $url="./system.php?other=".$_REQUEST["other"]."&view=".$_REQUEST["view"]." ";
 
+    //Monito ------------------------------------------------------------------------------------
     }elseif($_REQUEST["view"]=="monitor" AND $_REQUEST["category"]=="summary"){
 
         $sql  = "UPDATE monitor SET monitor_date_purchased = '" . $_REQUEST['monitor_date_purchased'];
@@ -39,6 +40,19 @@ if(isset($_REQUEST["view"]) AND isset($_REQUEST["category"])){
         $sql .= "' WHERE monitor_id = '" . $_REQUEST['monitor'] . "' ";
 
         $url="./system.php?monitor=".$_REQUEST["monitor"]."&view=".$_REQUEST["view"]." ";
+
+    //System-Manual-Data ------------------------------------------------------------------------
+    }elseif($_REQUEST["view"]=="summary" AND $_REQUEST["category"]=="manual"){
+
+        $sql  = "UPDATE `system_man` SET ";
+        $sql .= "`system_man_value` = '" . $_REQUEST['system_man_value'] . "', ";
+        $sql .= "`system_man_description` = '" . $_REQUEST['system_man_description'] . "', ";
+        $sql .= "`system_man_location` = '" . $_REQUEST['system_man_location'] . "', ";
+        $sql .= "`system_man_serial_number` = '" . $_REQUEST['system_man_serial_number'] . "', ";
+        $sql .= "`system_man_date_of_purchase` = '" . $_REQUEST['system_man_date_of_purchase'] . "'";
+        $sql .= " WHERE `system_man_uuid` = '" . $_REQUEST['pc'] . "' ";
+
+        $url="./system.php?pc=".$_REQUEST["pc"]."&view=".$_REQUEST["view"]." ";
 
     }else{
         die(__("FATAL: There is now method for this view/summary defined"));
