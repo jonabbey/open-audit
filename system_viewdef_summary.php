@@ -42,7 +42,7 @@ $query_array=array("views"=>array("summary"=>array(
                                                                     "30"=>array("name"=>"system_man_date_of_purchase", "head"=>__("Date of Purchase"), "edit"=>"y",),
                                                                     "40"=>array("name"=>"system_man_value", "head"=>__("Dollar Value"), "edit"=>"y",),
                                                                     "50"=>array("name"=>"system_man_serial_number", "head"=>__("Asset Tag"), "edit"=>"y",),
-                                                                    "60"=>array("name"=>"system_man_description", "head"=>__("Description"), "edit"=>"y",),
+                                                                    "60"=>array("name"=>"system_man_description", "head"=>__("Description"), "edit"=>"y","edit_type"=>"textarea",),
                                                                    ),
                                                 ),
                                    "management"=>array(
