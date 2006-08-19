@@ -242,6 +242,10 @@ while (list ($viewname, $viewdef_array) = @each ($query_array["views"])) {
                                 }
                             break;
                         }
+                        //If the Item is editable and the Type is textarea, convert newlines to br in Not-Edit-Mode
+                        if(isset($field["edit_type"]) AND $field["edit_type"]=="textarea" AND !isset($_REQUEST["edit"])){
+                            $show_value=nl2br($show_value);
+                        }
                     }else{
                         if(isset($field["name"]) AND isset($myrow[$field["name"]])) {
                             $show_value=$myrow[$field["name"]];
