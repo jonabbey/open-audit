@@ -48,6 +48,7 @@ $sql .= "bios_serial_number LIKE '%$search%')";
 $result = mysql_query($sql, $db);
 if ($myrow = mysql_fetch_array($result)){
   do {
+    if(!isset($myrow["software_name"])) $myrow["software_name"]=" ";
     if (strpos(strtoupper($myrow["bios_description"]), $search) !== false){$search_field = "Bios Description"; $search_result = $myrow["bios_description"] . " - " . $myrow["software_name"];}
     if (strpos(strtoupper($myrow["bios_manufacturer"]), $search) !== false){$search_field = "Bios Manufacturer"; $search_result = $myrow["bios_manufacturer"];}
     if (strpos(strtoupper($myrow["bios_serial_number"]), $search) !== false){$search_field = "Bios Serial"; $search_result = $myrow["bios_serial_number"];}
@@ -148,6 +149,7 @@ $sql .= "usb_description LIKE '%$search%')";
 $result = mysql_query($sql, $db);
 if ($myrow = mysql_fetch_array($result)){
   do {
+    if(!isset($myrow["software_name"])) $myrow["software_name"]=" ";
     if (strpos(strtoupper($myrow["usb_description"]), $search) !== false){$search_field = "USB Description"; $search_result = $myrow["usb_description"] . " - " . $myrow["software_name"];}
     $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
     $result_set[] = array($myrow["system_name"], $myrow["system_uuid"], ip_trans($myrow["net_ip_address"]), $search_field, $search_result);
@@ -161,6 +163,7 @@ $sql .= "video_description LIKE '%$search%')";
 $result = mysql_query($sql, $db);
 if ($myrow = mysql_fetch_array($result)){
   do {
+    if(!isset($myrow["software_name"])) $myrow["software_name"]=" ";  
     if (strpos(strtoupper($myrow["video_description"]), $search) !== false){$search_field = "Video Description"; $search_result = $myrow["video_description"] . " - " . $myrow["software_name"];}
     $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
     $result_set[] = array($myrow["system_name"], $myrow["system_uuid"], ip_trans($myrow["net_ip_address"]), $search_field, $search_result);
