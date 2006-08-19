@@ -28,12 +28,12 @@ if(isset($_REQUEST["category"]) AND $_REQUEST["category"]!=""){
 }
 
 //If someone wants to edit Systems Manual-Data, one entry has to created IF there is none
+//This is because the fields are only shown, if the sql-guery gets an result
 if(isset($_REQUEST["pc"]) AND
    isset($_REQUEST["view"]) AND $_REQUEST["view"]=="summary" AND
    isset($_REQUEST["category"]) AND $_REQUEST["category"]=="manual" AND
    isset($_REQUEST["edit"]) AND $_REQUEST["edit"]=="1" )
    {
-
     $sql_man="SELECT system_man_id FROM `system_man` WHERE `system_man_uuid` = '".$_REQUEST["pc"]."'; ";
     $result_man=mysql_query($sql_man, $db);
     $man_count = mysql_num_rows($result_man);
