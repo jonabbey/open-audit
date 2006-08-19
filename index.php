@@ -958,7 +958,7 @@ if ($show_detected_servers == "y"){
 
        <tr>
          <td width=\"150\"><b>$l_ipa</b></td>
-         <td colspan=\"3\"><a href= http://".$myrow3["system_name"].":5800 TARGET=\"_blank\"/><b>$l_nam</b></td>
+         <td colspan=\"3\"><b>$l_nam</b></td>
        </tr>\n";
 
     do {

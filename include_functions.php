@@ -13,12 +13,12 @@ function ip_trans($ip)
    $myip = explode(".",$ip);
    $myip[0] = ltrim($myip[0], "0");
    if ($myip[0] == "") { $myip[0] = "0"; }
-   $myip[1] = ltrim($myip[1], "0");
-   if ($myip[1] == "") { $myip[1] = "0"; }
-   $myip[2] = ltrim($myip[2], "0");
-   if ($myip[2] == "") { $myip[2] = "0"; }
-   $myip[3] = ltrim($myip[3], "0");
-   if ($myip[3] == "") { $myip[3] = "0"; }
+   if(isset($myip[1])) $myip[1] = ltrim($myip[1], "0");
+   if (!isset($myip[1]) OR $myip[1] == "") { $myip[1] = "0"; }
+   if(isset($myip[2])) $myip[2] = ltrim($myip[2], "0");
+   if (!isset($myip[2]) OR $myip[2] == "") { $myip[2] = "0"; }
+   if(isset($myip[3])) $myip[3] = ltrim($myip[3], "0");
+   if (!isset($myip[3]) OR $myip[3] == "") { $myip[3] = "0"; }
    $ip = $myip[0] . "." . $myip[1] . "." . $myip[2] . "." . $myip[3];
   } else {
    $ip = " Not-Networked";
