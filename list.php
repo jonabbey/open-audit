@@ -158,7 +158,7 @@ echo "<form method=\"post\" name=\"form_nav\" action=\"".htmlentities($_SERVER["
           if( ($i<=($count_system*4)) OR ($i>=($all_page_count-($count_system*3))) ){
               if($i==$page_count){ $style_for_direct_jump="color:red;";}else{$style_for_direct_jump="";};
               $goto_page=($i/$count_system+1);
-              echo "&nbsp;<a href=\"#\" onClick=\"set_form_field('page_count', '".($i/$count_system)."'); submit_form();\" style=\"$style_for_direct_jump\" title=\"".__("Go to Page")." ".$goto_page."\">";
+              echo "&nbsp;<a href=\"#\" onClick=\"set_form_field('page_count', '".($i/$count_system)."'); set_form_field('show_all', '0'); submit_form();\" style=\"$style_for_direct_jump\" title=\"".__("Go to Page")." ".$goto_page."\">";
               echo $goto_page;
               echo "</a>";
           }else{
