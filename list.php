@@ -118,7 +118,7 @@ echo "<form method=\"post\" name=\"form_nav\" action=\"".htmlentities($_SERVER["
 
   //Navigation-buttons
   //Previous
-  if($page_count!=0){
+  if($page_count!=0 AND (isset($show_all) AND $show_all!=1)){
       echo "<a href=\"#\" onClick=\"set_form_field('page_count', '".$page_prev."'); submit_form();\">";
         echo "<img src=\"images/go-prev.png\" alt=\"".__("Previous")."\" title=\"".__("Previous")."\" border=\"0\" width=\"16\" height=\"16\" />";
       echo "</a>\n";
@@ -141,7 +141,7 @@ echo "<form method=\"post\" name=\"form_nav\" action=\"".htmlentities($_SERVER["
       echo "<img src=\"images/go-all-disabled.png\" alt=\"".__("Disabled")."\" title=\"".__("Disabled")."\" border=\"0\" width=\"16\" height=\"16\" />\n";
   }
   //Next
-  if(($page_count+$count_system)<=$all_page_count){
+  if(($page_count+$count_system)<=$all_page_count AND (isset($show_all) AND $show_all!=1)){
       echo "<a href=\"#\" onClick=\"set_form_field('page_count', '".$page_next."'); submit_form();\">";
         echo "<img src=\"images/go-next.png\" alt=\"".__("Next")."\" title=\"".__("Next")."\" border=\"0\" width=\"16\" height=\"16\" />";
       echo "</a>\n";
