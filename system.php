@@ -42,7 +42,7 @@ echo "<td valign=\"top\">\n";
 //Show each block
 while (list ($viewname, $viewdef_array) = @each ($query_array["views"])) {
 
-    //Executing Query   
+    //Executing Query
     $sql=$viewdef_array["sql"];
     $result=mysql_query($sql, $db);
     if(!$result) echo $sql;
@@ -79,6 +79,24 @@ while (list ($viewname, $viewdef_array) = @each ($query_array["views"])) {
     //Reset Background
     $bgcolor=$bg2;
 
+    echo "<form name=\"".$viewname."\" method=\"POST\" action=\"system_post.php\">\n";
+    if(isset($_REQUEST["pc"])){
+        echo "<input type=\"hidden\" name=\"pc\" value=\"".$_REQUEST["pc"]."\" />";
+    }
+    if(isset($_REQUEST["category"])){
+        echo "<input type=\"hidden\" name=\"category\" value=\"".$_REQUEST["category"]."\" />";
+    }
+    if(isset($_REQUEST["view"])){
+        echo "<input type=\"hidden\" name=\"view\" value=\"".$_REQUEST["view"]."\" />";
+    }
+    if(isset($_REQUEST["other"])){
+        echo "<input type=\"hidden\" name=\"other\" value=\"".$_REQUEST["other"]."\" />";
+    }
+    if(isset($_REQUEST["monitor"])){
+        echo "<input type=\"hidden\" name=\"monitor\" value=\"".$_REQUEST["monitor"]."\" />";
+    }
+
+
     if ($myrow = mysql_fetch_array($result)){
         do{
             //Convert the array-values to local variables
@@ -92,6 +110,7 @@ while (list ($viewname, $viewdef_array) = @each ($query_array["views"])) {
                 echo "<tr>\n";
             }
 
+            $edit_category="0";
             foreach($viewdef_array["fields"] as $field){
                 if(!isset($field["show"]) OR $field["show"]!="n"){
 
@@ -116,62 +135,100 @@ while (list ($viewname, $viewdef_array) = @each ($query_array["views"])) {
                     }
 
                     //Special field-converting
-                    SWITCH($field["name"]){
-                        case "net_dhcp_server":
-                            if($myrow[$field["name"]]=="none"){
-                                $show_value=__("No");
-                            }else{
-                                $show_value=__("Yes")." / ".$myrow[$field["name"]];
-                            }
-                        break;
-                        case "system_first_timestamp":
-                        case "system_timestamp":
-                        case "other_timestamp":
-                            $show_value=return_date_time($myrow[$field["name"]]);
-                        break;
-                        case "system_memory":
-                        case "video_adapter_ram":
-                        case "hard_drive_size":
-                        case "partition_size":
-                            $show_value=number_format($myrow[$field["name"]])." MB";
-                        break;
-                        case "video_current_number_colours":
-                            $show_value=(strlen(decbin($myrow[$field["name"]]))+1)." Bit";
-                        break;
-                        case "video_current_refresh_rate":
-                            $show_value=$myrow[$field["name"]]." Hz";
-                        break;
-                        case "monitor_value":
-                            $show_value=$myrow[$field["name"]]." \$";
-                        break;
-                        case "firewall_enabled_domain":
-                        case "firewall_enabled_standard":
-                        case "firewall_disablenotifications_standard":
-                        case "firewall_donotallowexceptions_standard":
-                        case "firewall_disablenotifications_domain":
-                        case "firewall_donotallowexceptions_domain":
-                            if($myrow[$field["name"]]=="1" OR $myrow[$field["name"]]=="0"){
-                                if($myrow[$field["name"]]=="1"){
-                                    $show_value=__("Yes");
-                                }elseif($myrow[$field["name"]]=="0"){
+                    if(isset($field["name"])){
+                        SWITCH($field["name"]){
+                            case "net_dhcp_server":
+                                if($myrow[$field["name"]]=="none"){
                                     $show_value=__("No");
+                                }else{
+                                    $show_value=__("Yes")." / ".$myrow[$field["name"]];
                                 }
-                            }else{
-                                $show_value="Profile Not Detected";
-                            }
-                        break;
-                        case "hard_drive_index":
-                        default:
-                          if (isset($myrow[$field["name"]])) {
+                            break;
+                            case "system_first_timestamp":
+                            case "system_timestamp":
+                            case "other_first_timestamp":
+                            case "other_timestamp":
+                            case "monitor_first_timestamp":
+                            case "monitor_timestamp":
+                                $show_value=return_date_time($myrow[$field["name"]]);
+                            break;
+                            case "system_memory":
+                            case "video_adapter_ram":
+                            case "hard_drive_size":
+                            case "partition_size":
+                                $show_value=number_format($myrow[$field["name"]])." MB";
+                            break;
+                            case "video_current_number_colours":
+                                $show_value=(strlen(decbin($myrow[$field["name"]]))+1)." Bit";
+                            break;
+                            case "video_current_refresh_rate":
+                                $show_value=$myrow[$field["name"]]." Hz";
+                            break;
+                            case "firewall_enabled_domain":
+                            case "firewall_enabled_standard":
+                            case "firewall_disablenotifications_standard":
+                            case "firewall_donotallowexceptions_standard":
+                            case "firewall_disablenotifications_domain":
+                            case "firewall_donotallowexceptions_domain":
+                                if($myrow[$field["name"]]=="1" OR $myrow[$field["name"]]=="0"){
+                                    if($myrow[$field["name"]]=="1"){
+                                        $show_value=__("Yes");
+                                    }elseif($myrow[$field["name"]]=="0"){
+                                        $show_value=__("No");
+                                    }
+                                }else{
+                                    $show_value="Profile Not Detected";
+                                }
+                            break;
+                            case "other_linked_pc":
+                                if(!isset($_REQUEST["edit"])){
+                                    $result3 = mysql_query("SELECT system_name FROM system WHERE system_uuid='".$myrow[$field["name"]]."' AND system_uuid != '' ", $db);
+                                    if ($myrow3 = mysql_fetch_array($result3)){
+                                        $show_value=$myrow3["system_name"];
+                                    }else{
+                                        $show_value=$myrow[$field["name"]];
+                                    }
+                                }
+                            break;
+                            case "monitor_uuid":
+                                if(!isset($_REQUEST["edit"]) OR
+                                   (isset($_REQUEST["edit"]) AND isset($field["edit"]) AND $field["edit"]=="n"))
+                                    {
+                                    $result3 = mysql_query("SELECT system_name FROM system WHERE system_uuid = '".$myrow[$field["name"]]."' AND system_uuid != '' ", $db);
+                                    if ($myrow3 = mysql_fetch_array($result3)){
+                                        $show_value=$myrow3["system_name"];
+                                    }else{
+                                        $show_value=$myrow[$field["name"]];
+                                    }
+                                }
+                            break;
+                            case "other_ip_address":
+                                if($myrow["other_ip_address"]=="" AND !isset($_REQUEST["edit"])){
+                                    $show_value = "Not-Networked";
+                                }else{
+                                    $show_value = $myrow[$field["name"]];
+                                }
+                            break;
+                            case "hard_drive_index":
+                            default:
+                                if (isset($myrow[$field["name"]])) {
+                                    $show_value=$myrow[$field["name"]];
+                                } else {
+                                    $show_value = "";
+                                }
+                            break;
+                        }
+                    }else{
+                        if(isset($field["name"]) AND isset($myrow[$field["name"]])) {
                             $show_value=$myrow[$field["name"]];
-                          } else {
+                        } else {
                             $show_value = "";
-                          }
-                        break;
+                        }
                     }
 
                     //IF Horizontal Table-Layout
                     if(isset($viewdef_array["table_layout"]) AND $viewdef_array["table_layout"]=="horizontal"){
+                        if(!isset($field["align"])) $field["align"]=" ";
                         echo "<td bgcolor=\"" . $bgcolor . "\" align=\"".$field["align"]."\" class=\"system_tablebody_left\" >\n";
                          echo $show_value;
                         echo "</td>\n";
@@ -198,7 +255,36 @@ while (list ($viewname, $viewdef_array) = @each ($query_array["views"])) {
                                echo $field["get"]["head"];
                                echo "</a>";
                            }else{
-                               echo $show_value;
+                               //Form-Fields
+                               if(isset($field["edit"]) AND $field["edit"]=="y" AND isset($_REQUEST["edit"])){
+                                   if(!isset($field["edit_type"])) $field["edit_type"]="text";
+                                   SWITCH($field["edit_type"]){
+                                       case "textarea":
+                                           echo "<textarea name=\"".$field["name"]."\" style=\"width:300px\">".$show_value."</textarea>\n";
+                                       break;
+                                       case "select":
+                                           echo "<select name=\"".$field["name"]."\" style=\"width:300px\" >\n";
+                                            echo "<option value=\"\">".__("None")."</option>\n";
+                                            $result2 = mysql_query($field["edit_sql"], $db);
+                                            if ($myrow2 = mysql_fetch_array($result2)){
+                                                do {
+                                                    if($myrow2[0]==$myrow[$field["name"]]) $selected="selected"; else $selected=" ";
+                                                    echo "<option value=\"".$myrow2[0]."\" $selected>".$myrow2[1]."</option>\n";
+                                                } while ($myrow2 = mysql_fetch_array($result2));
+                                            }
+                                           echo "</select>\n";
+                                       break;
+                                       case "text":
+                                           echo "<input type=\"text\" style=\"width:300px\" name=\"".$field["name"]."\" value=\"".$show_value."\" />";
+                                       break;
+                                   }
+                               }else{
+                                   echo $show_value;
+                               }
+                               //If one field in this category is editable, show the Edit-Button
+                               if(isset($field["edit"]) AND $field["edit"]=="y"){
+                                   $edit_category=1;
+                               }
                            }
                          echo "</td>\n";
                         echo "</tr>\n";
@@ -211,6 +297,31 @@ while (list ($viewname, $viewdef_array) = @each ($query_array["views"])) {
             }else{
                 echo "<tr><td class=\"system_tablebody_right\" colspan=\"2\">&nbsp;</td></tr>\n";
             }
+
+            //Edit- and Submit-Button
+            if($edit_category=="1"){
+                echo "<tr>\n";
+                 echo "<td>\n";
+                  if(isset($_REQUEST["edit"]) AND $_REQUEST["edit"]==1){
+                      echo "<input type=\"submit\" name=\"save\" value=\"".__("Save")."\" />";
+                  }else{
+                      echo "<input type=\"button\" name=\"edit\" value=\"Edit\"";
+                      echo "onClick=\"window.location.href='".$_SERVER["PHP_SELF"]."?";
+                      if(isset($_REQUEST["pc"])){
+                          echo "pc=".$_REQUEST["pc"]."&";
+                      }elseif(isset($_REQUEST["other"])){
+                          echo "other=".$_REQUEST["other"]."&";
+                      }elseif(isset($_REQUEST["monitor"])){
+                          echo "monitor=".$_REQUEST["monitor"]."&";
+                      }else{
+                          die(__("FATAL: Ther's no ID-variable to identify the item. I.e pc or other"));
+                      }
+                      echo "view=".$_REQUEST["view"]."&category=".$viewname."&edit=1';\" />";
+                  }
+                 echo "</td>\n";
+                echo "</tr>\n";
+           }
+
         }while ($myrow = mysql_fetch_array($result));
     } else {
         echo "<tr>\n";
@@ -220,7 +331,7 @@ while (list ($viewname, $viewdef_array) = @each ($query_array["views"])) {
         echo "</tr>\n";
     }
     echo "</table>";
-
+    echo "</form>\n";
 }
 
   echo "</div>\n";

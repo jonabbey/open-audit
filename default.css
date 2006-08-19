@@ -103,10 +103,12 @@ td.system_tablehead{
   font-weight:bold;
 }
 td.system_tablebody_left{
+  vertical-align:top;
   padding-right:10px;
   width: 200px;
 }
 td.system_tablebody_right{
+  vertical-align:top;
   padding-right:10px;
 }
 
