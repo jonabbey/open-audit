@@ -9,6 +9,19 @@
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
+DROP TABLE IF EXISTS `auth`;
+CREATE TABLE `auth` (
+`auth_id` INT( 10 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,
+`auth_username` VARCHAR( 25 ) NOT NULL ,
+`auth_hash` VARCHAR( 49 ) NOT NULL ,
+`auth_realname` VARCHAR( 255 ) NOT NULL ,
+`auth_enabled` BOOL NOT NULL DEFAULT '1' ,
+`auth_admin` BOOL NOT NULL DEFAULT '0' ,
+UNIQUE (
+`auth_username`
+)
+) ENGINE = MYISAM DEFAULT CHARSET=latin1;
+
 DROP TABLE IF EXISTS `battery`;
 CREATE TABLE `battery` (
   `battery_id` int(10) unsigned NOT NULL auto_increment,
@@ -413,7 +426,7 @@ CREATE TABLE `network_card` (
   `net_id` int(10) unsigned NOT NULL auto_increment,
   `net_mac_address` varchar(17) NOT NULL default '',
   `net_uuid` varchar(100) NOT NULL default '',
-  `net_description` varchar(100) NOT NULL default '',
+  `net_description` varchar(255) NOT NULL default '',
   `net_dhcp_enabled` varchar(100) NOT NULL default '',
   `net_dhcp_server` varchar(30) NOT NULL default '',
   `net_dns_host_name` varchar(100) NOT NULL default '',
@@ -618,7 +631,7 @@ CREATE TABLE `software` (
   `software_name` varchar(100) NOT NULL default '',
   `software_version` varchar(50) NOT NULL default '',
   `software_location` varchar(200) NOT NULL default '',
-  `software_uninstall` varchar(300) NOT NULL default '',
+  `software_uninstall` MEDIUMTEXT NOT NULL default '',
   `software_install_date` varchar(100) NOT NULL default '',
   `software_publisher` varchar(100) NOT NULL default '',
   `software_install_source` varchar(200) NOT NULL default '',
@@ -739,7 +752,7 @@ CREATE TABLE `system` (
   `system_boot_device` varchar(100) NOT NULL default '',
   `system_os_type` varchar(50) NOT NULL default '',
   `system_os_name` varchar(100) NOT NULL default '',
-  `system_country_code` varchar(20) NOT NULL default '',
+  `system_country_code` varchar(50) NOT NULL default '',
   `system_description` varchar(50) NOT NULL default '',
   `system_organisation` varchar(80) NOT NULL default '',
   `system_language` varchar(50) NOT NULL default '',
@@ -928,6 +941,9 @@ CREATE TABLE `video` (
   KEY `id` (`video_uuid`),
   KEY `id2` (`video_timestamp`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+INSERT INTO config (config_name, config_value) VALUES ('version','06.08.20');
+
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;

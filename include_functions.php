@@ -134,4 +134,51 @@ function __($word){
         return $word;
     }
 }
+
+function modify_config($name, $value) {
+  $SQL = "SELECT * FROM config WHERE config_name = '" . $name . "'";
+  $result = mysql_query($SQL);
+
+  if ($myrow = mysql_fetch_array($result)){
+    $SQL = "UPDATE `config` SET `config_value` = '" . $value . "' WHERE CONVERT( `config_name` USING utf8 ) = '" . $name . "' LIMIT 1 ;";
+    $result = mysql_query($SQL);
+  } else {
+    $SQL = "INSERT INTO `config` ( `config_name` , `config_value` )
+            VALUES (
+            '" . $name . "', '" . $value . "'
+            );";
+    $result = mysql_query($SQL);
+  }
+}
+
+function get_config($name) {
+  // check for cached result
+  if(isset($configarray['$name']))
+    return $configarray['$name'];
+
+  $SQL = "SELECT config_value FROM config WHERE config_name = '" . $name . "'";
+  $result = mysql_query($SQL);
+
+  if ($myrow = mysql_fetch_array($result)){
+    $configarray['$name'] = $myrow['config_value'];
+    return $configarray['$name'];
+  }
+
+  // couldn't find that config...
+  return "";
+}
+
+function versionCheck($dbversion, $latestversion) {
+  $ver = explode(".",$dbversion);
+  $lver = explode(".",$latestversion);
+
+  if (($ver[0] < $lver[0]) OR
+      ($ver[0] <= $lver[0] AND $ver[1] < $lver[1]) OR
+      ($ver[0] <= $lver[0] AND $ver[1] <= $lver[1] AND $ver[2] < $lver[2])) {
+    return TRUE;
+  } else {
+    return FALSE;
+  }
+}
+
 ?>
