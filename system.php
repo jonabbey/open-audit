@@ -350,6 +350,13 @@ while (list ($viewname, $viewdef_array) = @each ($query_array["views"])) {
                  echo "</td>\n";
                 echo "</tr>\n";
             }
+
+            //IF NOT Horizontal Table-Layout
+            if(!isset($viewdef_array["table_layout"]) OR $viewdef_array["table_layout"]!="horizontal"){
+                $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
+                echo "<tr><td bgcolor=\"$bgcolor\" class=\"system_tablebody_right\" colspan=\"2\">&nbsp;</td></tr>\n";
+            }
+
         }while ($myrow = mysql_fetch_array($result));
     } else {
         $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
@@ -358,10 +365,10 @@ while (list ($viewname, $viewdef_array) = @each ($query_array["views"])) {
           echo __("No Results");
          echo "</td>\n";
         echo "</tr>\n";
-    }
 
-     $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
-     echo "<tr><td bgcolor=\"$bgcolor\" class=\"system_tablebody_right\" colspan=\"2\">&nbsp;</td></tr>\n";
+        $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
+        echo "<tr><td bgcolor=\"$bgcolor\" class=\"system_tablebody_right\" colspan=\"2\">&nbsp;</td></tr>\n";
+    }
 
      //Edit- and Submit-Button
      if(isset($viewdef_array["edit"]) AND $viewdef_array["edit"]=="y"){
