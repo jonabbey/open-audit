@@ -2,7 +2,7 @@
 
 $query_array=array("views"=>array("summary"=>array(
                                                     "headline"=>__("Summary"),
-                                                    "sql"=>"SELECT * FROM network_card, system WHERE (system_uuid=net_uuid AND system_timestamp=net_timestamp) AND system_uuid = '" . $_GET["pc"] . "' AND  system_timestamp = '".$GLOBAL["system_timestamp"]."' LIMIT 1,1",
+                                                    "sql"=>"SELECT * FROM network_card, system WHERE (system_uuid=net_uuid AND system_timestamp=net_timestamp) AND system_uuid = '" . $_GET["pc"] . "' AND  system_timestamp = '".$GLOBAL["system_timestamp"]."' LIMIT 0,1",
                                                     "image"=>"images/os_l.png",
                                                     "fields"=>array("10"=>array("name"=>"net_uuid",
                                                                                 "show"=>"n",
