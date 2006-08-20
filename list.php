@@ -111,7 +111,7 @@ echo "<form method=\"post\" name=\"form_nav\" action=\"".htmlentities($_SERVER["
 
   echo "<table width=\"100%\" border=\"0\" style=\"height: 70px\"><tr><td>\n";
    echo "<span class=\"contenthead\"><b>";
-   echo $query_array["headline"]." ";
+   echo htmlspecialchars($query_array["headline"])." ";
    if(isset($_REQUEST["headline_addition"])) {echo htmlspecialchars($_REQUEST["headline_addition"]);}
    echo " (".($page_count+1)."-".$show_page_count_to."/".$all_page_count.")</b></span>\n";
   echo "</td><td align=\"right\" nowrap>\n";
