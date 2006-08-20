@@ -29,7 +29,7 @@ if(is_file($include_filename)){
     if (isset($_REQUEST['dir']) AND $_REQUEST['dir']!="")  {$dir = $_REQUEST['dir'];} else {$dir = $query_array["dir"];}
     if (isset($dir) AND $dir=="ASC")  { $new_dir = "DESC"; }else{ $new_dir = "ASC";}
     if (!isset($_REQUEST["show_all"]))  { $show_all = "0"; }else{ $show_all = $_REQUEST["show_all"]; }
-    if (!isset($_REQUEST["headline_addition"]))  { $headline_addition=" "; }
+    if (!isset($_REQUEST["headline_addition"]))  { $headline_addition=" "; } else { $headline_addition = $_REQUEST["headline_addition"]; }
 
     if (isset($_REQUEST["page_count"])){ $page_count = $_REQUEST["page_count"]; } else { $page_count = 0;}
     $page_prev = $page_count - 1;
