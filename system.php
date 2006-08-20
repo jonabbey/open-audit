@@ -345,12 +345,13 @@ while (list ($viewname, $viewdef_array) = @each ($query_array["views"])) {
                      } elseif ($myrow["system_vendor"] == "Gateway") {
                        echo " <a href='http://support.gateway.com/support/allsysteminfo.asp?sn=" . $myrow["system_id_number"] . "' target=_blank>".__("Support Page")."</a>";
                      } else {
-                       echo __("Manufacturer not configured");
+                       echo __("No Links configured for this Manufacturer");
                      }
                  echo "</td>\n";
                 echo "</tr>\n";
             }
-
+            $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
+            echo "<tr><td bgcolor=\"$bgcolor\" class=\"system_tablebody_right\" colspan=\"2\">&nbsp;</td></tr>\n";
         }while ($myrow = mysql_fetch_array($result));
     } else {
         echo "<tr>\n";
@@ -384,8 +385,9 @@ while (list ($viewname, $viewdef_array) = @each ($query_array["views"])) {
            }
           echo "</td>\n";
          echo "</tr>\n";
+
+         echo "<tr><td class=\"system_tablebody_right\" colspan=\"2\">&nbsp;</td></tr>\n";
     }
-    echo "<tr><td class=\"system_tablebody_right\" colspan=\"2\">&nbsp;</td></tr>\n";
 
     echo "</table>";
     echo "</form>\n";
