@@ -321,7 +321,7 @@ while (list ($viewname, $viewdef_array) = @each ($query_array["views"])) {
             }
 
             //Links to Manufacturer
-            if(isset($myrow["system_vendor"]) AND $myrow["system_vendor"]!=""){
+            if(isset($myrow["system_vendor"]) AND $myrow["system_vendor"]!="" AND ($viewname=="summary" OR $viewname=="chassis")){
                 $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
                 echo "<tr>\n";
                  echo "<td bgcolor=\"" . $bgcolor . "\">\n";
