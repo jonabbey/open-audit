@@ -350,18 +350,18 @@ while (list ($viewname, $viewdef_array) = @each ($query_array["views"])) {
                  echo "</td>\n";
                 echo "</tr>\n";
             }
-            $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
-            echo "<tr><td bgcolor=\"$bgcolor\" class=\"system_tablebody_right\" colspan=\"2\">&nbsp;</td></tr>\n";
         }while ($myrow = mysql_fetch_array($result));
     } else {
+        $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
         echo "<tr>\n";
-         echo "<td bgcolor=\"$bg1\" style=\"padding-right:10px;\" colspan=\"2\">";
+         echo "<td bgcolor=\"$bgcolor\" style=\"padding-right:10px;\" colspan=\"2\">";
           echo __("No Results");
          echo "</td>\n";
         echo "</tr>\n";
-
-        echo "<tr><td bgcolor=\"$bg2\" style=\"padding-right:10px;\" colspan=\"2\">&nbsp;</td></tr>\n";
     }
+
+     $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
+     echo "<tr><td bgcolor=\"$bgcolor\" class=\"system_tablebody_right\" colspan=\"2\">&nbsp;</td></tr>\n";
 
      //Edit- and Submit-Button
      if(isset($viewdef_array["edit"]) AND $viewdef_array["edit"]=="y"){
