@@ -5,7 +5,7 @@ $query_array=array("name"=>__("Hardware"),
                    "views"=>array(
                                    "chassis"=>array(
                                                     "headline"=>__("Chassis"),
-                                                    "sql"=>"SELECT * FROM system WHERE system_uuid = '" . $_GET["pc"] . "' AND  system_timestamp = '".$GLOBAL["system_timestamp"]."' ",
+                                                    "sql"=>"SELECT system_vendor, system_model, system_id_number FROM system WHERE system_uuid = '" . $_GET["pc"] . "' AND  system_timestamp = '".$GLOBAL["system_timestamp"]."' ",
                                                     "image"=>"images/o_storage-misc.png",
                                                     "fields"=>array("10"=>array("name"=>"system_vendor", "head"=>__("Manufacturer"),),
                                                                     "20"=>array("name"=>"system_model", "head"=>__("Model #"),),
@@ -14,7 +14,9 @@ $query_array=array("name"=>__("Hardware"),
                                                     ),
                                   "hard_drive"=>array(
                                                     "headline"=>__("Fixed Disks"),
-                                                    "sql"=>"SELECT * FROM hard_drive, system WHERE hard_drive_uuid=system_uuid AND hard_drive_uuid = '" . $_GET["pc"] . "' AND hard_drive_timestamp = '".$GLOBAL["system_timestamp"]."' ORDER BY hard_drive_index",
+                                                    "sql"=>"SELECT hard_drive_index, hard_drive_manufacturer, hard_drive_interface_type, hard_drive_model, hard_drive_partitions, hard_drive_size, hard_drive_scsi_bus, hard_drive_scsi_logical_unit, hard_drive_scsi_port
+                                                            FROM hard_drive, system
+                                                            WHERE hard_drive_uuid=system_uuid AND hard_drive_uuid = '" . $_GET["pc"] . "' AND hard_drive_timestamp = '".$GLOBAL["system_timestamp"]."' ORDER BY hard_drive_index",
                                                     "image"=>"images/harddisk_l.png",
                                                     "fields"=>array("10"=>array("name"=>"hard_drive_index", "head"=>__("Index"),),
                                                                     "20"=>array("name"=>"hard_drive_manufacturer", "head"=>__("Manufacturer"),),
