@@ -163,7 +163,7 @@ $sql .= "video_description LIKE '%$search%')";
 $result = mysql_query($sql, $db);
 if ($myrow = mysql_fetch_array($result)){
   do {
-    if(!isset($myrow["software_name"])) $myrow["software_name"]=" ";  
+    if(!isset($myrow["software_name"])) $myrow["software_name"]=" ";
     if (strpos(strtoupper($myrow["video_description"]), $search) !== false){$search_field = "Video Description"; $search_result = $myrow["video_description"] . " - " . $myrow["software_name"];}
     $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
     $result_set[] = array($myrow["system_name"], $myrow["system_uuid"], ip_trans($myrow["net_ip_address"]), $search_field, $search_result);
@@ -186,7 +186,7 @@ if ($myrow = mysql_fetch_array($result)){
 
 } else {} // end if search != ""
 
-if($result_set) {
+if(isset($result_set) AND $result_set) {
   sort($result_set);
   $count = count ($result_set);
   for ($i=0; $i<$count; $i++){
