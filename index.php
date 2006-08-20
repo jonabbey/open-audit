@@ -4,6 +4,7 @@ $extra = "";
 $software = "";
 $count = 0;
 $total_rows = 0;
+$latest_version = "06.08.20";
 
 
 
@@ -21,6 +22,24 @@ $page_current = $page_count;
 $page_count = $page_count * $count_system;
 
 echo "<td>\n";
+
+/*
+// Check to see if there is an update
+if (versionCheck(get_config("version"), $latest_version)) {
+  echo "<div class=\"main_each\">
+          <div style=\"float: right\">
+            <img src=\"images/emblem_important.png\" height=\"24\" width=\"24\" alt=\"\" />
+          </div>
+          <div style=\"float: left\">
+            <img src=\"images/emblem_important.png\" height=\"24\" width=\"24\" alt=\"\" />
+          </div>
+          <div class=\"contenthead\" align=\"center\">";
+  echo __("An update has been found.");
+  echo " <a href=\"upgrade.php\">";
+  echo __("Click here to upgrade!");
+  echo "</a></div><br /></div>";
+}
+*/
 
 if ($show_other_discovered == "y") {
   $sql  = "SELECT * FROM other WHERE (other_mac_address <> '' AND ";
@@ -52,7 +71,7 @@ if ($show_other_discovered == "y") {
       echo
         "<tr bgcolor=\"" . $bgcolor . "\">
            <td>" . ip_trans($myrow["other_ip_address"]) . "&nbsp;</td>
-           <td><a href=\"system.php?other=" . $myrow["other_id"] . "&view=other_system\">" . $myrow["other_network_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
+           <td><a href=\"system.php?other=" . $myrow["other_id"] . "&amp;view=other_system\">" . $myrow["other_network_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
            <td>" . $myrow["other_type"] . "&nbsp;</td>
            <td>" . $myrow["other_description"] . "&nbsp;&nbsp;&nbsp;</td>
          </tr>\n";
@@ -104,7 +123,7 @@ if ($show_system_discovered == "y") {
       echo
         "<tr bgcolor=\"" . $bgcolor . "\">
            <td>" . ip_trans($myrow["net_ip_address"]) . "</td>
-           <td align=\"center\"><a href=\"system.php?pc=".$myrow["system_uuid"]."&view=summary\">" . $myrow["system_name"] . "</a></td>
+           <td align=\"center\"><a href=\"system.php?pc=".$myrow["system_uuid"]."&amp;view=summary\">" . $myrow["system_name"] . "</a></td>
            <td align=\"center\">" . return_date_time($myrow["system_first_timestamp"]) . "</td>
          </tr>\n";
 
@@ -155,7 +174,7 @@ if ($show_systems_not_audited == "y") {
     echo
       "<tr bgcolor=\"" . $bgcolor . "\">
          <td>" . ip_trans($myrow["net_ip_address"]) . "</td>
-           <td align=\"center\"><a href=\"system.php?pc=".$myrow["system_uuid"]."&view=summary\">" . $myrow["system_name"] . "</a></td>
+           <td align=\"center\"><a href=\"system.php?pc=".$myrow["system_uuid"]."&amp;view=summary\">" . $myrow["system_name"] . "</a></td>
            <td align=\"center\">" . return_date_time($myrow["system_timestamp"]) . "</td>
          </tr>\n";
 
@@ -216,7 +235,7 @@ if ($show_partition_usage == "y") {
         echo
           "<tr bgcolor=\"" . $bgcolor . "\">
              <td>" . ip_trans($myrow["net_ip_address"]) . "</td>
-             <td><a href=\"system.php?pc=" . $myrow["partition_uuid"] . "&view=summary\">" . $myrow["system_name"] . "</a></td>
+             <td><a href=\"system.php?pc=" . $myrow["partition_uuid"] . "&amp;view=summary\">" . $myrow["system_name"] . "</a></td>
              <td>" . $myrow["partition_free_space"] . " Mb</td>
              <td>" . $myrow["partition_size"] . " Mb</td>
              <td>" . $percent_free . " %</td>
@@ -275,7 +294,7 @@ if ($show_software_detected == "y"){
       echo
         "<tr bgcolor=\"" . $bgcolor . "\">
            <td>" . ip_trans($myrow["net_ip_address"]) . "</td>
-           <td><a href=\"system.php?pc=".$myrow["system_uuid"]."&view=summary\">" . $myrow["system_name"] . "</a></td>
+           <td><a href=\"system.php?pc=".$myrow["system_uuid"]."&amp;view=summary\">" . $myrow["system_name"] . "</a></td>
            <td>" . return_date($myrow["software_first_timestamp"]) . "</td>
            <td>" . $myrow["software_name"] . "</td>
          </tr>\n";
@@ -384,7 +403,7 @@ if ($show_detected_servers == "y"){
       echo
         "<tr bgcolor=\"" . $bgcolor . "\">
            <td>" . ip_trans($myrow["net_ip_address"]) . "&nbsp;</td>
-           <td><a href=\"system.php?pc=" . $myrow["service_uuid"] . "&view=summary\">" . $myrow["system_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
+           <td><a href=\"system.php?pc=" . $myrow["service_uuid"] . "&amp;view=summary\">" . $myrow["system_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
            <td>" . $myrow["service_display_name"] . "</td>
            <td><a href= http://".$myrow["system_name"]." TARGET=\"_blank\"/>" . $myrow["service_started"] . "</td>
          </tr>\n";
@@ -413,7 +432,7 @@ if ($show_detected_servers == "y"){
         echo
           "<tr bgcolor=\"" . $bgcolor . "\">
              <td>" . ip_trans($myrow["net_ip_address"]) . "&nbsp;</td>
-             <td><a href=\"system.php?pc=" . $myrow["system_uuid"] . "&view=summary\">" . $myrow["system_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
+             <td><a href=\"system.php?pc=" . $myrow["system_uuid"] . "&amp;view=summary\">" . $myrow["system_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
              <td></td>
              <td></td>
            </tr>\n";
@@ -446,7 +465,7 @@ if ($show_detected_servers == "y"){
     echo
       "<tr bgcolor=\"" . $bgcolor . "\">
          <td>" . ip_trans($myrow["other_ip"]) . "&nbsp;</td>
-         <td><a href=\"system.php?other=" . $myrow["other_id"] . "&view=other_system\">" . $myrow["other_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
+         <td><a href=\"system.php?other=" . $myrow["other_id"] . "&amp;view=other_system\">" . $myrow["other_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
          <td></td>
          <td></td>
        </tr>\n";
@@ -520,7 +539,7 @@ if ($show_detected_servers == "y"){
       echo
         "<tr bgcolor=\"" . $bgcolor . "\">
            <td>" . ip_trans($myrow["net_ip_address"]) . "&nbsp;</td>
-           <td><a href=\"system.php?pc=" . $myrow["service_uuid"] . "&view=summary\">" . $myrow["system_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
+           <td><a href=\"system.php?pc=" . $myrow["service_uuid"] . "&amp;view=summary\">" . $myrow["system_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
            <td>" . $myrow["service_display_name"] . "</td>
            <td><a href= ftp://".$myrow["system_name"]." TARGET=\"_blank\"/>" . $myrow["service_started"] . "</td>
          </tr>\n";
@@ -553,7 +572,7 @@ if ($show_detected_servers == "y"){
         echo
           "<tr bgcolor=\"" . $bgcolor . "\">
              <td>" . ip_trans($myrow["net_ip_address"]) . "&nbsp;</td>
-             <td><a href=\"system.php?pc=" . $myrow["system_uuid"] . "&view=summary\">" . $myrow["system_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
+             <td><a href=\"system.php?pc=" . $myrow["system_uuid"] . "&amp;view=summary\">" . $myrow["system_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
              <td></td>
              <td>&nbsp;</td>
            </tr>\n";
@@ -663,7 +682,7 @@ if ($show_detected_servers == "y"){
       echo
         "<tr bgcolor=\"" . $bgcolor . "\">
            <td>" . ip_trans($myrow["net_ip_address"]) . "&nbsp;</td>
-           <td><a href=\"system.php?pc=" . $myrow["service_uuid"] . "&view=summary\">" . $myrow["system_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
+           <td><a href=\"system.php?pc=" . $myrow["service_uuid"] . "&amp;view=summary\">" . $myrow["system_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
            <td>" . $myrow["service_display_name"] . "</td>\
            <td><a href= telnet://".$myrow["system_name"]." TARGET=\"_blank\"/>" . $myrow["service_started"] . "</td>\
          </tr>\n";
@@ -693,7 +712,7 @@ if ($show_detected_servers == "y"){
     echo
       "<tr bgcolor=\"" . $bgcolor . "\">
          <td><a href= telnet://".$myrow["system_name"]." TARGET=\"_blank\"/>" . ip_trans($myrow["net_ip_address"]) . "&nbsp;</td>
-         <td><a href=\"system.php?pc=" . $myrow["system_uuid"] . "&view=summary\">" . $myrow["system_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
+         <td><a href=\"system.php?pc=" . $myrow["system_uuid"] . "&amp;view=summary\">" . $myrow["system_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
          <td></td>
        </tr>\n";
 
@@ -725,7 +744,7 @@ if ($show_detected_servers == "y"){
     echo
       "<tr bgcolor=\"" . $bgcolor . "\">
          <td><a href= telnet://".$myrow["other_network_name"]." TARGET=\"_blank\"/>" . ip_trans($myrow["other_ip_address"]) . "&nbsp;</td>
-         <td><a href=\"summary.php?other=" . $myrow["other_id"] . "&view_other_system\">" . $myrow["other_network_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
+         <td><a href=\"summary.php?other=" . $myrow["other_id"] . "&amp;view_other_system\">" . $myrow["other_network_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
          <td></td>
          <td></td>
        </tr>\n";
@@ -801,7 +820,7 @@ if ($show_detected_servers == "y"){
       echo
         "<tr bgcolor=\"" . $bgcolor . "\">
            <td>" . ip_trans($myrow["net_ip_address"]) . "&nbsp;</td>
-           <td><a href=\"system.php?pc=" . $myrow["service_uuid"] . "&view=summary\">" . $myrow["system_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
+           <td><a href=\"system.php?pc=" . $myrow["service_uuid"] . "&amp;view=summary\">" . $myrow["system_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
            <td>" . $myrow["service_display_name"] . "</td>
            <td><a href= telnet://".$myrow["system_name"].":25 TARGET=\"_blank\"/>" . $myrow["service_started"] . "</td>
          </tr>\n";
@@ -834,7 +853,7 @@ if ($show_detected_servers == "y"){
     echo
       "<tr bgcolor=\"" . $bgcolor . "\">
          <td><a href= telnet://".$myrow["system_name"].":25 TARGET=\"_blank\"/>" . ip_trans($myrow["net_ip_address"]) . "&nbsp;</td>
-         <td colspan=\"3\"><a href=\"system.php?pc=" . $myrow["system_uuid"] . "&view=summary\">" . $myrow["system_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
+         <td colspan=\"3\"><a href=\"system.php?pc=" . $myrow["system_uuid"] . "&amp;view=summary\">" . $myrow["system_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
        </tr>\n";
 
     } while ($myrow = mysql_fetch_array($result));
@@ -865,7 +884,7 @@ if ($show_detected_servers == "y"){
     echo
         "<tr bgcolor=\"" . $bgcolor . "\">
            <td><a href= telnet://".$myrow["other_network_name"].":25 TARGET=\"_blank\"/>" . ip_trans($myrow["other_ip_address"]) . "&nbsp;</td>
-           <td colspan=\"3\"><a href=\"system.php?other=" . $myrow["other_id"] . "&view=summary\">" . $myrow["other_network_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
+           <td colspan=\"3\"><a href=\"system.php?other=" . $myrow["other_id"] . "&amp;view=summary\">" . $myrow["other_network_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
          </tr>\n";
 
     } while ($myrow = mysql_fetch_array($result));
@@ -936,7 +955,7 @@ if ($show_detected_servers == "y"){
       echo
         "<tr bgcolor=\"" . $bgcolor . "\">
            <td>" . ip_trans($myrow["net_ip_address"]) . "&nbsp;</td>
-           <td><a href=\"system.php?pc=" . $myrow["service_uuid"] . "&view=summary\">" . $myrow["system_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
+           <td><a href=\"system.php?pc=" . $myrow["service_uuid"] . "&amp;view=summary\">" . $myrow["system_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
            <td>" . $myrow["service_display_name"] . "</td>
            <td><a href= http://".$myrow["system_name"].":5800 TARGET=\"_blank\"/>" . $myrow["service_started"] . "</td>
          </tr>\n";
@@ -968,7 +987,7 @@ if ($show_detected_servers == "y"){
         echo
           "<tr bgcolor=\"" . $bgcolor . "\">
              <td>" . ip_trans($myrow["net_ip_address"]) . "&nbsp;</td>
-             <td colspan=\"3\"><a href=\"system.php?pc=" . $myrow["system_uuid"] . "&view=summary\">" . $myrow["system_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
+             <td colspan=\"3\"><a href=\"system.php?pc=" . $myrow["system_uuid"] . "&amp;view=summary\">" . $myrow["system_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
            </tr>\n";
 
     } while ($myrow = mysql_fetch_array($result));
@@ -999,7 +1018,7 @@ if ($show_detected_servers == "y"){
       echo
         "<tr bgcolor=\"" . $bgcolor . "\">
            <td>" . ip_trans($myrow["other_ip_address"]) . "&nbsp;</td>
-           <td colspan=\"3\"><a href=\"system.php?other=" . $myrow["other_id"] . "&view=summary\">" . $myrow["other_network_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
+           <td colspan=\"3\"><a href=\"system.php?other=" . $myrow["other_id"] . "&amp;view=summary\">" . $myrow["other_network_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
          </tr>\n";
 
     } while ($myrow = mysql_fetch_array($result));
@@ -1066,7 +1085,7 @@ if ($show_detected_servers == "y"){
       echo
         "<tr bgcolor=\"" . $bgcolor . "\">
            <td>" . ip_trans($myrow["net_ip_address"]) . "&nbsp;</td>
-           <td><a href=\"system.php?pc=" . $myrow["service_uuid"] . "&view=summary\">" . $myrow["system_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
+           <td><a href=\"system.php?pc=" . $myrow["service_uuid"] . "&amp;view=summary\">" . $myrow["system_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
            <td>" . $myrow["service_display_name"] . "</td>
            <td><a href= \"launch_rdp.php?launch=".$myrow["system_name"].".rdp\"/>" . $myrow["service_started"] . "</td>
          </tr>\n";
@@ -1098,7 +1117,7 @@ if ($show_detected_servers == "y"){
         echo
           "<tr bgcolor=\"" . $bgcolor . "\">
              <td><a href= \"launch_rdp.php?launch=".$myrow["system_name"].".rdp\"/>" . ip_trans($myrow["net_ip_address"]) . "&nbsp;</td>
-             <td colspan=\"3\"><a href=\"system.php?pc=" . $myrow["system_uuid"] . "&view=summary\">" . $myrow["system_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
+             <td colspan=\"3\"><a href=\"system.php?pc=" . $myrow["system_uuid"] . "&amp;view=summary\">" . $myrow["system_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
            </tr>\n";
 
     } while ($myrow = mysql_fetch_array($result));
@@ -1129,7 +1148,7 @@ if ($show_detected_servers == "y"){
       echo
         "<tr bgcolor=\"" . $bgcolor . "\">
            <td>" . ip_trans($myrow["other_ip_address"]) . "&nbsp;</td>
-           <td colspan=\"3\"><a href=\"system.php?other=" . $myrow["other_id"] . "&view=other_system\">" . $myrow["other_network_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
+           <td colspan=\"3\"><a href=\"system.php?other=" . $myrow["other_id"] . "&amp;view=other_system\">" . $myrow["other_network_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
          </tr>\n";
 
     } while ($myrow = mysql_fetch_array($result));
@@ -1190,7 +1209,7 @@ if (isset($show_detected_xp_av) AND $show_detected_xp_av == "y"){
       echo
         "<tr bgcolor=\"" . $bgcolor . "\">
            <td>" . ip_trans($myrow["net_ip_address"]) . "</td>
-           <td align=\"center\"><a href=\"system.php?pc=" . $myrow["system_uuid"] . "&view=summary\">" . $myrow["system_name"] . "</a></td>
+           <td align=\"center\"><a href=\"system.php?pc=" . $myrow["system_uuid"] . "&amp;view=summary\">" . $myrow["system_name"] . "</a></td>
            <td align=\"center\">" . $myrow["virus_name"] . "</td>
            <td align=\"center\">" . $myrow["virus_uptodate"] . "</td>
          </tr>";
