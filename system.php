@@ -120,9 +120,10 @@ while (list ($viewname, $viewdef_array) = @each ($query_array["views"])) {
         echo "<input type=\"hidden\" name=\"monitor\" value=\"".$_REQUEST["monitor"]."\" />";
     }
 
-
+    $count_rows=0;
     if ($myrow = mysql_fetch_array($result)){
         do{
+            $count_rows++;
             //Convert the array-values to local variables
             while (list ($key, $val) = each ($myrow)) {
                 $$key=$val;
@@ -351,8 +352,10 @@ while (list ($viewname, $viewdef_array) = @each ($query_array["views"])) {
                 echo "</tr>\n";
             }
 
+            //Show Spacer-Row
             //IF NOT Horizontal Table-Layout
-            if(!isset($viewdef_array["table_layout"]) OR $viewdef_array["table_layout"]!="horizontal"){
+            //and NOT at the last/single Row
+            if((!isset($viewdef_array["table_layout"]) OR $viewdef_array["table_layout"]!="horizontal") AND $this_page_count!=$count_rows){
                 $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
                 echo "<tr><td bgcolor=\"$bgcolor\" class=\"system_tablebody_right\" colspan=\"2\">&nbsp;</td></tr>\n";
             }
@@ -365,13 +368,13 @@ while (list ($viewname, $viewdef_array) = @each ($query_array["views"])) {
           echo __("No Results");
          echo "</td>\n";
         echo "</tr>\n";
-
-        $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
-        echo "<tr><td bgcolor=\"$bgcolor\" class=\"system_tablebody_right\" colspan=\"2\">&nbsp;</td></tr>\n";
     }
 
      //Edit- and Submit-Button
      if(isset($viewdef_array["edit"]) AND $viewdef_array["edit"]=="y"){
+
+         echo "<tr><td class=\"system_tablebody_right\" colspan=\"2\">&nbsp;</td></tr>\n";
+
          echo "<tr>\n";
           echo "<td>\n";
            if(isset($_REQUEST["edit"]) AND $_REQUEST["edit"]==1){
@@ -393,8 +396,14 @@ while (list ($viewname, $viewdef_array) = @each ($query_array["views"])) {
           echo "</td>\n";
          echo "</tr>\n";
 
-         echo "<tr><td class=\"system_tablebody_right\" colspan=\"2\">&nbsp;</td></tr>\n";
+        echo "<tr><td class=\"system_tablebody_right\" colspan=\"2\">&nbsp;</td></tr>\n";
+
+    }else{
+        //Show Spacer-Row after each Category
+        $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
+        echo "<tr><td bgcolor=\"$bgcolor\" class=\"system_tablebody_right\" colspan=\"2\">&nbsp;</td></tr>\n";
     }
+
 
     echo "</table>";
     echo "</form>\n";
