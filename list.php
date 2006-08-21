@@ -202,7 +202,7 @@ foreach($viewdef_array["fields"] as $field) {
             $headline_1 .= "<a href=\"#\" onClick=\"set_form_field('sort', '".$field["name"]."'); set_form_field('dir', '".$new_dir."'); set_form_field('page_count', '0'); submit_form();\" title=\"".__("Sort by").": ".$field["head"].", ".__("Direction").": ".__($new_dir)."\">";
         }
         $headline_1 .= $field["head"];
-        if(isset($field["sort"]) AND $field["sort"]!="n"){
+        if(!isset($field["sort"]) OR (isset($field["sort"]) AND $field["sort"]!="n")){
             $headline_1 .= "</a>\n";
         }
         if($sort==$field["name"]){
