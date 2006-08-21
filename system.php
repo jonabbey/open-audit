@@ -15,11 +15,20 @@ $count_system_max="10000";
 // -> option: system.php: "Special field-converting"
 
 //Include the view-definition
-$include_filename="system_viewdef_".$_REQUEST["view"].".php";
+if(isset($_REQUEST["view"])) {
+  $include_filename="system_viewdef_".$_REQUEST["view"].".php";
+} else {
+  $include_filename = "system_viewdef_summary.php";
+}
 if(is_file($include_filename)){
     include_once($include_filename);
-}else{
-    die("File does not exists: ". $include_filename);
+} else {
+  $include_filename = "system_viewdef_summary.php";
+  if(is_file($include_filename)){
+    include_once($include_filename);
+  } else {
+    die("Could not find view");
+  }
 }
 //Only one category?
 if(isset($_REQUEST["category"]) AND $_REQUEST["category"]!=""){
@@ -120,10 +129,9 @@ while (list ($viewname, $viewdef_array) = @each ($query_array["views"])) {
         echo "<input type=\"hidden\" name=\"monitor\" value=\"".$_REQUEST["monitor"]."\" />";
     }
 
-    $count_rows=0;
+
     if ($myrow = mysql_fetch_array($result)){
         do{
-            $count_rows++;
             //Convert the array-values to local variables
             while (list ($key, $val) = each ($myrow)) {
                 $$key=$val;
@@ -351,30 +359,21 @@ while (list ($viewname, $viewdef_array) = @each ($query_array["views"])) {
                  echo "</td>\n";
                 echo "</tr>\n";
             }
-
-            //Show Spacer-Row
-            //IF NOT Horizontal Table-Layout
-            //and NOT at the last/single Row
-            if((!isset($viewdef_array["table_layout"]) OR $viewdef_array["table_layout"]!="horizontal") AND $this_page_count!=$count_rows){
-                $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
-                echo "<tr><td bgcolor=\"$bgcolor\" class=\"system_tablebody_right\" colspan=\"2\">&nbsp;</td></tr>\n";
-            }
-
+            $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
+            echo "<tr><td bgcolor=\"$bgcolor\" class=\"system_tablebody_right\" colspan=\"2\">&nbsp;</td></tr>\n";
         }while ($myrow = mysql_fetch_array($result));
     } else {
-        $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
         echo "<tr>\n";
-         echo "<td bgcolor=\"$bgcolor\" style=\"padding-right:10px;\" colspan=\"2\">";
+         echo "<td bgcolor=\"$bg1\" style=\"padding-right:10px;\" colspan=\"2\">";
           echo __("No Results");
          echo "</td>\n";
         echo "</tr>\n";
+
+        echo "<tr><td bgcolor=\"$bg2\" style=\"padding-right:10px;\" colspan=\"2\">&nbsp;</td></tr>\n";
     }
 
      //Edit- and Submit-Button
      if(isset($viewdef_array["edit"]) AND $viewdef_array["edit"]=="y"){
-
-         echo "<tr><td class=\"system_tablebody_right\" colspan=\"2\">&nbsp;</td></tr>\n";
-
          echo "<tr>\n";
           echo "<td>\n";
            if(isset($_REQUEST["edit"]) AND $_REQUEST["edit"]==1){
@@ -396,14 +395,8 @@ while (list ($viewname, $viewdef_array) = @each ($query_array["views"])) {
           echo "</td>\n";
          echo "</tr>\n";
 
-        echo "<tr><td class=\"system_tablebody_right\" colspan=\"2\">&nbsp;</td></tr>\n";
-
-    }else{
-        //Show Spacer-Row after each Category
-        $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
-        echo "<tr><td bgcolor=\"$bgcolor\" class=\"system_tablebody_right\" colspan=\"2\">&nbsp;</td></tr>\n";
+         echo "<tr><td class=\"system_tablebody_right\" colspan=\"2\">&nbsp;</td></tr>\n";
     }
-
 
     echo "</table>";
     echo "</form>\n";

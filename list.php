@@ -15,12 +15,22 @@ $count_system_max="10000";
 // -> option: list.php: "Special field-converting"
 
 //Include the view-definition
-$include_filename="list_viewdef_".$_REQUEST["view"].".php";
+if(isset($_REQUEST["view"])) {
+  $include_filename="list_viewdef_".$_REQUEST["view"].".php";
+} else {
+  $include_filename = "list_viewdef_all_systems.php";
+}
 if(is_file($include_filename)){
     include_once($include_filename);
     $viewdef_array=$query_array;
-}else{
-    die("File does not exists: ". $include_filename);
+} else {
+  $include_filename = "list_viewdef_all_systems.php";
+  if(is_file($include_filename)){
+    include_once($include_filename);
+    $viewdef_array=$query_array;
+  } else {
+    die("Could not find view");
+  }
 }
 
 
