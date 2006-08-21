@@ -62,7 +62,9 @@ if(is_file($include_filename)){
         @reset($_REQUEST["filter"]);
         while (list ($filter_var, $filter_val) = @each ($_REQUEST["filter"])) {
             if($filter_val!=""){
-                $sql_where.= " AND `".$filter_var."` LIKE '".$filter_val."%' ";
+                //Delete all "-" if the Searchbox is a timestamp
+                if(ereg("timestamp",$filter_var)) { $filter_val=str_replace("-","",$filter_val); }
+                $sql_where.= " AND `".$filter_var."` LIKE '%".$filter_val."%' ";
                 $filter_query=1;
             }
         }
