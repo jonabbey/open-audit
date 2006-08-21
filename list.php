@@ -198,7 +198,7 @@ foreach($viewdef_array["fields"] as $field) {
         if ( isset($field["width"]) AND $field["width"] <> "") {$field_width = " width=\"".$field["width"]."\"";}
         if (isset($field["height"]) AND $field["height"] <> "") {$field_height = " height=\"".$field["height"]."\"";}
         $headline_1 .= "<td nowrap class=\"views_tablehead\">";
-        if(isset($field["sort"]) AND $field["sort"]!="n"){
+        if(!isset($field["sort"]) OR (isset($field["sort"]) AND $field["sort"]!="n")){
             $headline_1 .= "<a href=\"#\" onClick=\"set_form_field('sort', '".$field["name"]."'); set_form_field('dir', '".$new_dir."'); set_form_field('page_count', '0'); submit_form();\" title=\"".__("Sort by").": ".$field["head"].", ".__("Direction").": ".__($new_dir)."\">";
         }
         $headline_1 .= $field["head"];
@@ -206,7 +206,7 @@ foreach($viewdef_array["fields"] as $field) {
             $headline_1 .= "</a>\n";
         }
         if($sort==$field["name"]){
-            $headline_1 .= "<img src=\"images/".strtolower($dir).".png\" style=\"padding-bottom:3px;\" alt=\"\" />";
+            $headline_1 .= "<img src=\"images/".strtolower($dir).".png\" style=\"padding-bottom:3px;\" alt=\"\" border=\"0\" />";
         }
         $headline_1 .= "</td>\n";
 

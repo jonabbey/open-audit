@@ -22,7 +22,7 @@ if ($myrow = mysql_fetch_array($result)){
       echo __("Current Free Space") .": " . number_format($myrow2['partition_free_space']) . "&nbsp;MB&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
       $used = number_format($myrow2['partition_size'] - $myrow2['partition_free_space']);
       echo __("Current Disk Used") . ": " . $used . " MB</td></tr>";
-      echo "<tr><td><img src=\"images/graph_side.gif\" />";
+      echo "<tr><td><img src=\"images/graph_side.gif\" alt=\"\" />";
     }
     $disk_percent = $myrow['disk_percent'];
     $disk_time = return_date_time($myrow['disk_timestamp']);

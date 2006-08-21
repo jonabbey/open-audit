@@ -8,7 +8,7 @@ echo __("Version") . " ";
 if(isset($version) AND $version!="") echo $version;
 echo "<br /><br />\n";
 echo "Mark Unwin, 2006.<br /><br />\n";
-echo "<a href=\"http://www.open-audit.org\">Open-AudIT</a>-".__("Webpage").".<br /><br />\n";
+echo "<a href=\"http://www.open-audit.org\">Open-AudIT</a> ".__("Webpage").".<br /><br />\n";
 
 echo "<form action=\"search.php\" method=\"post\">\n";
 echo __("Search") . "<br />\n";

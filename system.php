@@ -63,7 +63,7 @@ echo "<td valign=\"top\">\n";
   if(isset($query_array["name"]) AND $query_array["name"]!=""){
       echo "<table width=\"100%\" border=\"0\" style=\"height: 70px\"><tr><td style=\"width:60px;\">\n";
        echo "<span class=\"contenthead\">\n";
-         echo "<b>".__($query_array["name"])."</b>\n";
+         echo "<b>".htmlspecialchars(__($query_array["name"]))."</b>\n";
        echo "</span>\n";
       echo "</td></tr></table>\n";
  }
@@ -96,7 +96,7 @@ while (list ($viewname, $viewdef_array) = @each ($query_array["views"])) {
           echo "</span>\n";
         echo "</td></tr></table>\n";
 
-    echo "<form name=\"".$viewname."\" method=\"post\" action=\"system_post.php\">\n";
+    echo "<form id=\"v".$viewname."\" method=\"post\" action=\"system_post.php\">\n";
 
     if(isset($_REQUEST["pc"])){
         echo "<input type=\"hidden\" name=\"pc\" value=\"".$_REQUEST["pc"]."\" />";
