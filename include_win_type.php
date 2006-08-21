@@ -2,123 +2,51 @@
 
 function determine_os($os)
 {
-include "include_lang_english.php";
 
-$os_returned = $l_unk;
+$os_returned = __("unknown");
 
-if ($os == $l_m01) {
-  $os_returned = $l_m02; }
-else {}
+$systems=array( "Windows XP"=>"Win XP",
+                "Windows NT"=>"Win NT",
+                "Windows 2000"=>"Win 2000",
+                "Server 2003"=>"2003 Server, Std",
+                "Microsoft(R) Windows(R) Server 2003, Web Edition"=>"2003 Server, Web",
+                "Microsoft(R) Windows(R) Server 2003, Standard Edition"=>"2003 Server, Std",
+                "Microsoft(R) Windows(R) Server 2003, for Small Business Server"=>"2003 Server, SBS",
+                "Microsoft(R) Windows(R) Server 2003, Enterprise Edition"=>"2003 Server, Ent",
+                "Microsoft(R) Windows(R) Server 2003, Data Center Edition"=>"2003 Server, Data",
+                "Microsoft(R) Windows(R) Server 2003 Web Edition"=>"2004 Server, Web",
+                "Microsoft(R) Windows(R) Server 2003 Standard Edition"=>"2004 Server, Std",
+                "Microsoft(R) Windows(R) Server 2003 for Small Business Server"=>"2004 Server, SBS",
+                "Microsoft(R) Windows(R) Server 2003 Enterprise Edition"=>"2004 Server, Ent",
+                "Microsoft(R) Windows(R) Server 2003 Data Center Edition"=>"2004 Server, Data",
+                "Microsoft Windows XP Tablet PC Edition"=>"XP Tablet",
+                "Microsoft Windows XP Starter Edition"=>"XP Starter",
+                "Microsoft Windows XP Professional x64 Edition"=>"XP Pro 64",
+                "Microsoft Windows XP Professional"=>"XP Pro",
+                "Microsoft Windows XP Media Center Edition"=>"XP MCE",
+                "Microsoft Windows XP Home Edition"=>"XP Home",
+                "Microsoft Windows Powered"=>"Windows Powered",
+                "Microsoft Windows NT Workstation"=>"NT Workstation",
+                "Microsoft Windows NT Server"=>"NT Server",
+                "Microsoft Windows NT Enterprise Server"=>"NT Ent Server",
+                "Microsoft Windows Millenium Edition"=>"Win ME",
+                "Microsoft Windows ME"=>"Win ME",
+                "Microsoft Windows 98 Second Edition"=>"Win 98se",
+                "Microsoft Windows 98"=>"Win 98",
+                "Microsoft Windows 95"=>"Win 95",
+                "Microsoft Windows 2000 Server"=>"2000 Server",
+                "Microsoft Windows 2000 Professional"=>"2000 Pro",
+                "Microsoft Windows 2000 Advanced Server"=>"2000 Adv Server");
 
-if ($os == $l_m03) {
-  $os_returned = $l_m04; }
-else {}
-
-if ($os == $l_m05) {
-  $os_returned = $l_m06; }
-else {}
-
-if ($os == $l_m07) {
-  $os_returned = $l_m08; }
-else {}
-
-if ($os == $l_m12) {
-  $os_returned = $l_m13; }
-else {}
-
-if ($os == $l_m14) {
-  $os_returned = $l_m15; }
-else {}
-
-if ($os == $l_m16) {
-  $os_returned = $l_m17; }
-else {}
-
-
-if ($os == $l_m20) {
-  $os_returned = $l_m21; }
-else {}
-
-if ($os == $l_m22) {
-  $os_returned = $l_m23; }
-else {}
-
-if ($os == $l_m24) {
-  $os_returned = $l_m25; }
-else {}
-
-if ($os == $l_m26) {
-  $os_returned = $l_m27; }
-else {}
-
-
-if ($os == $l_m30) {
-  $os_returned = $l_m31; }
-else {}
-
-if ($os == $l_m32) {
-  $os_returned = $l_m33; }
-else {}
-
-if ($os == $l_m34) {
-  $os_returned = $l_m35; }
-else {}
-
-if ($os == $l_m36) {
-  $os_returned = $l_m37; }
-else {}
-
-if ($os == $l_m38) {
-  $os_returned = $l_m39; }
-else {}
-
-if ($os == $l_m40) {
-  $os_returned = $l_m41; }
-else {}
-
-if ($os == $l_m44) {
-  $os_returned = $l_m46; }
-else {}
-
-if ($os == $l_m45) {
-  $os_returned = $l_m46; }
-else {}
-
-if ($os == $l_m47) {
-  $os_returned = $l_m49; }
-else {}
-
-if ($os == $l_m48) {
-  $os_returned = $l_m49; }
-else {}
-
-if ($os == $l_m50) {   
-  $os_returned = $l_m52; }
-else {}
-
-if ($os == $l_m51) {   
-  $os_returned = $l_m52; }
-else {}
-
-if ($os == $l_m53) {
-  $os_returned = $l_m55; }
-else {}
-
-if ($os == $l_m54) {
-  $os_returned = $l_m55; }
-else {}
-
-if ($os == $l_m56) {
-  $os_returned = $l_m58; }
-else {}
-
-if ($os == $l_m57) {
-  $os_returned = $l_m58; }
-else {}
-
+reset ($systems);
+while (list ($key, $val) = each ($systems)) {
+    if($os==$key){
+        $os_returned=$val;
+    }
+}
 if (substr_count($os, "Ubuntu") > 0){
   $os_returned = "Ubuntu"; }
-else {} 
+else {}
 
 return $os_returned;
 }
