@@ -6,6 +6,7 @@ $query_array=array("headline"=>__("Statistic for Operating Systems"),
                                COUNT( system_uuid ) AS count_item,
                                ( 100 / (SELECT count(system_uuid) FROM system  WHERE system_os_name != '') * COUNT( system_uuid ) ) AS percentage
                            FROM system
+                           WHERE (1)
                            GROUP BY system_os_name",
                    "sort"=>"count_item",
                    "dir"=>"DESC",
