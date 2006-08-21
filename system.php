@@ -15,21 +15,20 @@ $count_system_max="10000";
 // -> option: system.php: "Special field-converting"
 
 //Include the view-definition
-if(isset($_REQUEST["view"])) {
-  $include_filename="system_viewdef_".$_REQUEST["view"].".php";
-} else {
-  $include_filename = "system_viewdef_summary.php";
+if(isset($_REQUEST["view"]) AND $_REQUEST["view"]!=""){
+    $include_filename = "system_viewdef_".$_REQUEST["view"].".php";
+}else{
+    $include_filename = "system_viewdef_summary.php";
 }
 if(is_file($include_filename)){
     include_once($include_filename);
-} else {
-  $include_filename = "system_viewdef_summary.php";
-  if(is_file($include_filename)){
-    include_once($include_filename);
-  } else {
-    die("Could not find view");
-  }
+    $viewdef_array=$query_array;
+}else{
+    die("FATAL: Could not find view $include_filename");
 }
+
+
+
 //Only one category?
 if(isset($_REQUEST["category"]) AND $_REQUEST["category"]!=""){
     $query_array["views"]=array($query_array["views"][$_REQUEST["category"]]);

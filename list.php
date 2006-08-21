@@ -15,22 +15,16 @@ $count_system_max="10000";
 // -> option: list.php: "Special field-converting"
 
 //Include the view-definition
-if(isset($_REQUEST["view"])) {
-  $include_filename="list_viewdef_".$_REQUEST["view"].".php";
-} else {
-  $include_filename = "list_viewdef_all_systems.php";
+if(isset($_REQUEST["view"]) AND $_REQUEST["view"]!=""){
+    $include_filename = "list_viewdef_".$_REQUEST["view"].".php";
+}else{
+    $include_filename = "list_viewdef_all_systems.php";
 }
 if(is_file($include_filename)){
     include_once($include_filename);
     $viewdef_array=$query_array;
-} else {
-  $include_filename = "list_viewdef_all_systems.php";
-  if(is_file($include_filename)){
-    include_once($include_filename);
-    $viewdef_array=$query_array;
-  } else {
-    die("Could not find view");
-  }
+}else{
+    die("FATAL: Could not find view $include_filename");
 }
 
 
@@ -362,7 +356,7 @@ if ($myrow = mysql_fetch_array($result)){
                  if (isset($field["align"])) { echo "align=\"".$field["align"]."\""; }
                  echo "style=\"padding-right:10px;\">";
 
-                $show_value=" "; 
+                $show_value=" ";
                 //Special field-converting
                 if($field["name"]=="system_os_name"){
                     $show_value=determine_os($myrow[$field["name"]]);
