@@ -304,7 +304,7 @@ if ($myrow = mysql_fetch_array($result)){
                     }
                 }
 
-                if(!isset($get_array["target"])) $get_array["target"]="_TOP";
+                if(!isset($get_array["target"])) $get_array["target"]="_self";
                 if(!isset($get_array["onClick"])) $get_array["onClick"]=" ";
 
                 if(isset($get_array["file"])){
