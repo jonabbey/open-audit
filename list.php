@@ -227,7 +227,7 @@ foreach($viewdef_array["fields"] as $field) {
  $count_searchboxes++;
  $headline_2 .= "<td class=\"searchboxes\" >\n";
  $headline_2 .= "<div id=\"searchboxes_".$count_searchboxes."\" style=\"$style_searchboxes\">";
- $headline_2 .= "<input type=\"submit\" name=\"filter_submit\" value=\">\" style=\"width:16px;\" onClick=\"set_form_field('page_count', '0');\" />\n";
+ $headline_2 .= "<input type=\"submit\" name=\"filter_submit\" value=\">\" style=\"width:16px;\" title=\"".__("Execute search")."\" onClick=\"set_form_field('page_count', '0');\" />\n";
  $headline_2 .= "</div>";
  $headline_2 .= "</td>\n";
 
