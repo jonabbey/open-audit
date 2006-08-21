@@ -337,23 +337,41 @@ while (list ($viewname, $viewdef_array) = @each ($query_array["views"])) {
                   echo "<a href=\"#\" onClick=\"alert('".__("Regarding to Modell # and Serial #")."');\">?</a>";
                  echo "</td>\n";
                  echo "<td bgcolor=\"" . $bgcolor . "\">\n";
+
                      if ($myrow["system_vendor"] == "Dell Inc." || $myrow["system_vendor"] == "Dell Computer Corporation") {
-                       echo " <a href='http://support.dell.com/support/topics/global.aspx/support/my_systems_info/en/details?c=us&amp;cs=usbsdt1&amp;servicetag=" . $myrow["system_id_number"] . "' target=_blank>".__("Warranty Information")."</a>";
-                       echo " / ";
-                       echo " <a href='http://support.dell.com/support/downloads/index.aspx?c=us&amp;l=en&amp;s=gen&amp;servicetag=" . $myrow["system_id_number"] . "' target=_blank>".__("Drivers &amp; Software")."</a>";
+                       if(isset($myrow["system_id_number"]) AND $myrow["system_id_number"]!=""){
+                           echo " <a href='http://support.dell.com/support/topics/global.aspx/support/my_systems_info/en/details?c=us&amp;cs=usbsdt1&amp;servicetag=" . $myrow["system_id_number"] . "' target=_blank>".__("Warranty Information")."</a>";
+                           echo " / ";
+                           echo " <a href='http://support.dell.com/support/downloads/index.aspx?c=us&amp;l=en&amp;s=gen&amp;servicetag=" . $myrow["system_id_number"] . "' target=_blank>".__("Drivers &amp; Software")."</a>";
+                           $links_to_manu=1;
+                       }
                      } elseif ($myrow["system_vendor"] == "Compaq") {
-                       echo " <a href='http://www4.itrc.hp.com/service/ewarranty/warrantyResults.do?BODServiceID=NA&amp;RegisteredPurchaseDate=&amp;country=GB&amp;productNumber=&amp;serialNumber1=" . $myrow["system_id_number"] . "' target=_blank>".__("Warranty Information")."</a>";
-                       echo " / ";
-                       echo " <a href='http://h20180.www2.hp.com/apps/Lookup?h_lang=en&amp;h_cc=uk&amp;cc=uk&amp;h_page=hpcom&amp;lang=en&amp;h_client=S-A-R135-1&amp;h_pagetype=s-002&amp;h_query=" . $myrow["system_id_number"] . "' target=_blank>".__("Drivers &amp; Software")."</a>";
+                       if(isset($myrow["system_id_number"]) AND $myrow["system_id_number"]!=""){
+                           echo " <a href='http://www4.itrc.hp.com/service/ewarranty/warrantyResults.do?BODServiceID=NA&amp;RegisteredPurchaseDate=&amp;country=GB&amp;productNumber=&amp;serialNumber1=" . $myrow["system_id_number"] . "' target=_blank>".__("Warranty Information")."</a>";
+                           echo " / ";
+                           echo " <a href='http://h20180.www2.hp.com/apps/Lookup?h_lang=en&amp;h_cc=uk&amp;cc=uk&amp;h_page=hpcom&amp;lang=en&amp;h_client=S-A-R135-1&amp;h_pagetype=s-002&amp;h_query=" . $myrow["system_id_number"] . "' target=_blank>".__("Drivers &amp; Software")."</a>";
+                           $links_to_manu=1;
+                       }
                      } elseif ($myrow["system_vendor"] == "IBM") {
-                       echo " <a href='http://www-307.ibm.com/pc/support/site.wss/quickPath.do?quickPathEntry=" . $myrow["system_model"] . "' target=_blank>".__("Product Page")."</a>";
-                       echo " / ";
-                       echo " <a href='http://www-307.ibm.com/pc/support/site.wss/warrantyLookup.do?type=".substr($myrow["system_model"],0,4)."&amp;serial=".$myrow["system_id_number"]."&amp;country=897&amp;iws=off' target=_blank>".__("Warranty Information")."</a>";
+                       if(isset($myrow["system_id_number"]) AND $myrow["system_id_number"]!=""){
+                           echo " <a href='http://www-307.ibm.com/pc/support/site.wss/quickPath.do?quickPathEntry=" . $myrow["system_model"] . "' target=_blank>".__("Product Page")."</a>";
+                           echo " / ";
+                           $links_to_manu=1;
+                       }
+                       if(isset($myrow["system_model"]) AND $myrow["system_model"]!= "" AND isset($myrow["system_id_number"]) AND $myrow["system_id_number"]!=""){
+                           echo " <a href='http://www-307.ibm.com/pc/support/site.wss/warrantyLookup.do?type=".substr($myrow["system_model"],0,4)."&amp;serial=".$myrow["system_id_number"]."&amp;country=897&amp;iws=off' target=_blank>".__("Warranty Information")."</a>";
+                           $links_to_manu=1;
+                       }
                      } elseif ($myrow["system_vendor"] == "Gateway") {
-                       echo " <a href='http://support.gateway.com/support/allsysteminfo.asp?sn=" . $myrow["system_id_number"] . "' target=_blank>".__("Support Page")."</a>";
-                     } else {
+                       if(isset($myrow["system_id_number"]) AND $myrow["system_id_number"]!=""){
+                           echo " <a href='http://support.gateway.com/support/allsysteminfo.asp?sn=" . $myrow["system_id_number"] . "' target=_blank>".__("Support Page")."</a>";
+                           $links_to_manu=1;
+                       }
+                     }
+                     if(!isset($links_to_manu)){
                        echo __("No Links configured for this Manufacturer");
                      }
+
                  echo "</td>\n";
                 echo "</tr>\n";
             }
