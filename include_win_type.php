@@ -36,17 +36,24 @@ $systems=array( "Windows XP"=>"Win XP",
                 "Microsoft Windows 95"=>"Win 95",
                 "Microsoft Windows 2000 Server"=>"2000 Server",
                 "Microsoft Windows 2000 Professional"=>"2000 Pro",
-                "Microsoft Windows 2000 Advanced Server"=>"2000 Adv Server");
-
+                "Microsoft Windows 2000 Advanced Server"=>"2000 Adv Server",
+                "Ubuntu"=>"Ubuntu",
+                "Red Hat"=>"Red Hat",
+                "CentOS"=>"CentOS",
+                "Mandrake"=>"Mandrake",
+                "Mandriva"=>"Mandriva",
+                "Fedora"=>"Fedora",
+                "Debian"=>"Debian",
+                "Slackware"=>"Slackware",
+                "Suse"=>"Suse",
+                "Novell"=>"Novell",
+                "Gentoo"=>"Gentoo"); 
 reset ($systems);
 while (list ($key, $val) = each ($systems)) {
     if($os==$key){
         $os_returned=$val;
     }
 }
-if (substr_count($os, "Ubuntu") > 0){
-  $os_returned = "Ubuntu"; }
-else {}
 
 return $os_returned;
 }

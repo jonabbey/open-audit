@@ -153,6 +153,11 @@ else {}
 if (substr_count($os_name, "Gentoo") > 0) {
   $img = "<img src=\"images/computer.png\" width=\"16\" height=\"16\" alt=\"$l_m58\" title=\"Gentoo\" />";}
 else {}
+
+if (substr_count($os_name, "CentOS") > 0) {
+  $img = "<img src=\"images/linux_centos.png\" width=\"16\" height=\"16\" alt=\"$l_m58\" title=\"CentOS\" />";}
+else {} 
+
 return $img;
 }
 
