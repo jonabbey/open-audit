@@ -129,7 +129,7 @@ if ($page <> "setup"){
   <tr>
     <td width="170" rowspan="12" valign="top">
       <ul id="primary-nav">
-        <li class="menuparent"><a href="index.php"><?php echo __("Home"); ?></a></li>
+        <li><a href="index.php"><?php echo __("Home"); ?></a></li>
 
 
 <?php
@@ -160,27 +160,29 @@ if ($pc > "0") {
         } else {
           echo "<li>";
         }
-         echo "<a href=\"".$topic_item["link"]."\">";
-         if(isset($topic_item["childs"]) AND is_array($topic_item["childs"])){
-             echo "<span><img src=\"images/spacer.gif\" height=\"16\" width=\"0\" alt=\"\" />&gt;</span>";
-         }
-         echo "<img src=\"".$topic_item["image"]."\" width=\"16\" height=\"16\" border=\"0\" alt=\"\" />&nbsp;";
-         echo __($topic_item["name"]);
-         echo "</a>\n";
 
+        echo "<a href=\"".$topic_item["link"]."\">";
+        if(isset($topic_item["childs"]) AND is_array($topic_item["childs"])){
+          echo "<span><img src=\"images/spacer.gif\" height=\"16\" width=\"0\" alt=\"\" />&gt;</span>";
+        }
+        echo "<img src=\"".$topic_item["image"]."\" width=\"16\" height=\"16\" border=\"0\" alt=\"\" />&nbsp;";
+        echo __($topic_item["name"]);
+        echo "</a>\n";
 
-         echo "<ul>\n";
-         @reset ($topic_item["childs"]);
-         while (list ($key_2, $child_item) = @each ($topic_item["childs"])) {
-             echo "<li><a href=\"".$child_item["link"]."\"";
-             if (isset($topic_item["title"])) {
-               echo " title=\"".$topic_item["title"]."\"";
-             }
-             echo "><img src=\"".$child_item["image"]."\"  width=\"16\" height=\"16\" border=\"0\" alt=\"\" />&nbsp;";
-             echo __($child_item["name"]);
-             echo "</a></li>\n";
-         }
-         echo "</ul>\n";
+        if(isset($topic_item["childs"]) AND is_array($topic_item["childs"])){
+          echo "<ul>\n";
+          @reset ($topic_item["childs"]);
+          while (list ($key_2, $child_item) = @each ($topic_item["childs"])) {
+            echo "<li><a href=\"".$child_item["link"]."\"";
+            if (isset($topic_item["title"])) {
+              echo " title=\"".$topic_item["title"]."\"";
+            }
+            echo "><img src=\"".$child_item["image"]."\"  width=\"16\" height=\"16\" border=\"0\" alt=\"\" />&nbsp;";
+            echo __($child_item["name"]);
+            echo "</a></li>\n";
+          }
+          echo "</ul>\n";
+        }
         echo "</li>\n";
     }
    echo "</ul>\n";

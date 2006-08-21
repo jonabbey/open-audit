@@ -61,7 +61,7 @@ echo "<td valign=\"top\">\n";
   echo "<div class=\"main_each\">";
 
   if(isset($query_array["name"]) AND $query_array["name"]!=""){
-      echo "<table width=\"100%\" border=\"0\" height=\"70\"><tr><td width=\"60;\">\n";
+      echo "<table width=\"100%\" border=\"0\" style=\"height: 70px\"><tr><td style=\"width:60px;\">\n";
        echo "<span class=\"contenthead\">\n";
          echo "<b>".__($query_array["name"])."</b>\n";
        echo "</span>\n";
@@ -82,7 +82,7 @@ while (list ($viewname, $viewdef_array) = @each ($query_array["views"])) {
     $this_page_count = mysql_num_rows($result);
 
 
-        echo "<table width=\"100%\" border=\"0\" height=\"70\"><tr><td width=\"60;\">\n";
+        echo "<table width=\"100%\" border=\"0\" style=\"height: 70px\"><tr><td style=\"60px;\">\n";
           echo "<img src=\"" .$viewdef_array["image"]. "\" alt=\"\" border=\"0\" width=\"48\" height=\"48\"  />\n";
          echo "</td><td>\n";
           echo "<span class=\"contenthead\">\n";
@@ -96,23 +96,8 @@ while (list ($viewname, $viewdef_array) = @each ($query_array["views"])) {
           echo "</span>\n";
         echo "</td></tr></table>\n";
 
-    echo "<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n";
+    echo "<form name=\"".$viewname."\" method=\"post\" action=\"system_post.php\">\n";
 
-    //IF Horizontal Table-Layout
-    if(isset($viewdef_array["table_layout"]) AND $viewdef_array["table_layout"]=="horizontal"){
-        echo "<tr>\n";
-        foreach($viewdef_array["fields"] as $field){
-            echo "<td class=\"system_tablehead\">\n";
-             echo $field["head"];
-            echo "</td>\n";
-        }
-        echo "</tr>\n";
-    }
-
-    //Reset Background
-    $bgcolor=$bg2;
-
-    echo "<form name=\"".$viewname."\" method=\"POST\" action=\"system_post.php\">\n";
     if(isset($_REQUEST["pc"])){
         echo "<input type=\"hidden\" name=\"pc\" value=\"".$_REQUEST["pc"]."\" />";
     }
@@ -129,7 +114,21 @@ while (list ($viewname, $viewdef_array) = @each ($query_array["views"])) {
         echo "<input type=\"hidden\" name=\"monitor\" value=\"".$_REQUEST["monitor"]."\" />";
     }
 
+    echo "<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n";
 
+    //IF Horizontal Table-Layout
+    if(isset($viewdef_array["table_layout"]) AND $viewdef_array["table_layout"]=="horizontal"){
+        echo "<tr>\n";
+        foreach($viewdef_array["fields"] as $field){
+            echo "<td class=\"system_tablehead\">\n";
+             echo $field["head"];
+            echo "</td>\n";
+        }
+        echo "</tr>\n";
+    }
+
+    //Reset Background
+    $bgcolor=$bg2;
     if ($myrow = mysql_fetch_array($result)){
         do{
             //Convert the array-values to local variables
@@ -159,7 +158,7 @@ while (list ($viewname, $viewdef_array) = @each ($query_array["views"])) {
                             }else{
                                 $value2=$value;
                             }
-                            $link_query.= $varname."=".urlencode($value2)."&";
+                            $link_query.= $varname."=".urlencode($value2)."&amp;";
                             //Don't show the link if a GET-variable is empty
                             if($value2==""){
                                 unset($field["get"]);
@@ -344,13 +343,13 @@ while (list ($viewname, $viewdef_array) = @each ($query_array["views"])) {
                        echo " / ";
                        echo " <a href='http://support.dell.com/support/downloads/index.aspx?c=us&amp;l=en&amp;s=gen&amp;servicetag=" . $myrow["system_id_number"] . "' target=_blank>".__("Drivers &amp; Software")."</a>";
                      } elseif ($myrow["system_vendor"] == "Compaq") {
-                       echo " <a href='http://www4.itrc.hp.com/service/ewarranty/warrantyResults.do?BODServiceID=NA&&amp;RegisteredPurchaseDate=&&amp;country=GB&&amp;productNumber=&&amp;serialNumber1=" . $myrow["system_id_number"] . "' target=_blank>".__("Warranty Information")."</a>";
+                       echo " <a href='http://www4.itrc.hp.com/service/ewarranty/warrantyResults.do?BODServiceID=NA&amp;RegisteredPurchaseDate=&amp;country=GB&amp;productNumber=&amp;serialNumber1=" . $myrow["system_id_number"] . "' target=_blank>".__("Warranty Information")."</a>";
                        echo " / ";
-                       echo " <a href='http://h20180.www2.hp.com/apps/Lookup?h_lang=en&h_cc=uk&cc=uk&h_page=hpcom&lang=en&h_client=S-A-R135-1&h_pagetype=s-002&h_query=" . $myrow["system_id_number"] . "' target=_blank>".__("Drivers &amp; Software")."</a>";
+                       echo " <a href='http://h20180.www2.hp.com/apps/Lookup?h_lang=en&amp;h_cc=uk&amp;cc=uk&amp;h_page=hpcom&amp;lang=en&amp;h_client=S-A-R135-1&amp;h_pagetype=s-002&amp;h_query=" . $myrow["system_id_number"] . "' target=_blank>".__("Drivers &amp; Software")."</a>";
                      } elseif ($myrow["system_vendor"] == "IBM") {
                        echo " <a href='http://www-307.ibm.com/pc/support/site.wss/quickPath.do?quickPathEntry=" . $myrow["system_model"] . "' target=_blank>".__("Product Page")."</a>";
                        echo " / ";
-                       echo " <a href='http://www-307.ibm.com/pc/support/site.wss/warrantyLookup.do?type=".substr($myrow["system_model"],0,4)."&serial=".$myrow["system_id_number"]."&country=897&iws=off' target=_blank>".__("Warranty Information")."</a>";
+                       echo " <a href='http://www-307.ibm.com/pc/support/site.wss/warrantyLookup.do?type=".substr($myrow["system_model"],0,4)."&amp;serial=".$myrow["system_id_number"]."&amp;country=897&amp;iws=off' target=_blank>".__("Warranty Information")."</a>";
                      } elseif ($myrow["system_vendor"] == "Gateway") {
                        echo " <a href='http://support.gateway.com/support/allsysteminfo.asp?sn=" . $myrow["system_id_number"] . "' target=_blank>".__("Support Page")."</a>";
                      } else {
@@ -382,15 +381,15 @@ while (list ($viewname, $viewdef_array) = @each ($query_array["views"])) {
         echo "<input type=\"button\" name=\"edit\" value=\"Edit\"";
         echo "onClick=\"window.location.href='".$_SERVER["PHP_SELF"]."?";
         if(isset($_REQUEST["pc"])){
-            echo "pc=".$_REQUEST["pc"]."&";
+            echo "pc=".$_REQUEST["pc"]."&amp;";
         }elseif(isset($_REQUEST["other"])){
-            echo "other=".$_REQUEST["other"]."&";
+            echo "other=".$_REQUEST["other"]."&amp;";
         }elseif(isset($_REQUEST["monitor"])){
-            echo "monitor=".$_REQUEST["monitor"]."&";
+            echo "monitor=".$_REQUEST["monitor"]."&amp;";
         }else{
             die(__("FATAL: Ther's no ID-variable to identify the item. I.e pc or other"));
         }
-        echo "view=".$_REQUEST["view"]."&category=".$viewname."&edit=1';\" />";
+        echo "view=".$_REQUEST["view"]."&amp;category=".$viewname."&amp;edit=1';\" />";
            }
           echo "</td>\n";
          echo "</tr>\n";
