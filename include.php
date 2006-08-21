@@ -165,7 +165,7 @@ if ($pc > "0") {
         if(isset($topic_item["childs"]) AND is_array($topic_item["childs"])){
           echo "<span><img src=\"images/spacer.gif\" height=\"16\" width=\"0\" alt=\"\" />&gt;</span>";
         }
-        echo "<img src=\"".$topic_item["image"]."\" width=\"16\" height=\"16\" border=\"0\" alt=\"\" />&nbsp;";
+        echo "<img src=\"".$topic_item["image"]."\" border=\"0\" alt=\"\" />&nbsp;";
         echo __($topic_item["name"]);
         echo "</a>\n";
 
@@ -177,7 +177,7 @@ if ($pc > "0") {
             if (isset($topic_item["title"])) {
               echo " title=\"".$topic_item["title"]."\"";
             }
-            echo "><img src=\"".$child_item["image"]."\"  width=\"16\" height=\"16\" border=\"0\" alt=\"\" />&nbsp;";
+            echo "><img src=\"".$child_item["image"]."\" border=\"0\" alt=\"\" />&nbsp;";
             echo __($child_item["name"]);
             echo "</a></li>\n";
           }
