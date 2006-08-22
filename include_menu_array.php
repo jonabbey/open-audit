@@ -51,8 +51,7 @@ $menue_array = array(
                     "childs"=>array("10"=>array("name"=>"All", "link"=>"system.php?pc=$pc&amp;view=os", "image"=>"images/statistics.png", "title"=>"",),
                                     "20"=>array("name"=>"OS Information", "link"=>"system.php?pc=$pc&amp;view=os&amp;category=os", "image"=>"images/os.png", "title"=>"",),
                                     "30"=>array("name"=>"Software", "link"=>"system.php?pc=$pc&amp;view=os&amp;category=software", "image"=>"images/software.png", "title"=>"",),
-                                    "40"=>array("name"=>"Network Card", "link"=>"system.php?pc=$pc&amp;view=os&amp;category=network_card", "image"=>"images/network_device.png", "title"=>"",),
-                                    "50"=>array("name"=>"Shared Drives", "link"=>"system.php?pc=$pc&amp;view=os&amp;category=shares", "image"=>"images/shared_drive.png", "title"=>"",),
+                                    "40"=>array("name"=>"Shared Drives", "link"=>"system.php?pc=$pc&amp;view=os&amp;category=shares", "image"=>"images/shared_drive.png", "title"=>"",),
 
                               ),
               ),
