@@ -36,24 +36,25 @@ $systems=array( "Windows XP"=>"Win XP",
                 "Microsoft Windows 95"=>"Win 95",
                 "Microsoft Windows 2000 Server"=>"2000 Server",
                 "Microsoft Windows 2000 Professional"=>"2000 Pro",
-                "Microsoft Windows 2000 Advanced Server"=>"2000 Adv Server",
-                "Ubuntu"=>"Ubuntu",
-                "Red Hat"=>"Red Hat",
-                "CentOS"=>"CentOS",
-                "Mandrake"=>"Mandrake",
-                "Mandriva"=>"Mandriva",
-                "Fedora"=>"Fedora",
-                "Debian"=>"Debian",
-                "Slackware"=>"Slackware",
-                "Suse"=>"Suse",
-                "Novell"=>"Novell",
-                "Gentoo"=>"Gentoo"); 
+                "Microsoft Windows 2000 Advanced Server"=>"2000 Adv Server"); 
 reset ($systems);
 while (list ($key, $val) = each ($systems)) {
     if($os==$key){
         $os_returned=$val;
     }
 }
+
+if (substr_count($os, "CentOS") > 0)    {$os_returned = "CentOS";}
+if (substr_count($os, "Debian") > 0)    {$os_returned = "Debian";}
+if (substr_count($os, "Fedora") > 0)    {$os_returned = "Fedora";}
+if (substr_count($os, "Gentoo") > 0)    {$os_returned = "Gentoo";}
+if (substr_count($os, "Mandrake") > 0)  {$os_returned = "Mandrake";}
+if (substr_count($os, "Mandriva") > 0)  {$os_returned = "Mandriva";}
+if (substr_count($os, "Novell") > 0)    {$os_returned = "Novell";}
+if (substr_count($os, "Red Hat") > 0)   {$os_returned = "Red Hat";}
+if (substr_count($os, "Slackware") > 0) {$os_returned = "Slackware";}
+if (substr_count($os, "Suse") > 0)      {$os_returned = "Suse";}
+if (substr_count($os, "Ubuntu") > 0)    {$os_returned = "Ubuntu";}
 
 return $os_returned;
 }
