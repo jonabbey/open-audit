@@ -71,7 +71,7 @@ echo "<td valign=\"top\">\n";
 while (list ($viewname, $viewdef_array) = @each ($query_array["views"])) {
 
     //Executing Query
-    $sql=$viewdef_array["sql"]."WHERE";
+    $sql=$viewdef_array["sql"];
     $result=mysql_query($sql, $db);
     if(!$result) { echo "<br>".__("Fatal Error").":<br><br>".$sql."<br><br>".mysql_error()."<br><br>";
                    echo "<pre>";
