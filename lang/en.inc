@@ -376,5 +376,7 @@ $GLOBALS["lang"]["in the FAQ section"]="in the FAQ section";
 $GLOBALS["lang"]["Query failed. Query was"]="Query failed. Query was";
 $GLOBALS["lang"]["Setting defaults in the database"]="Setting defaults in the database";
 $GLOBALS["lang"]["Setting up data in tables"]="Setting up data in tables";
+$GLOBALS["lang"]["Fatal Error"]="Fatal Error";
+$GLOBALS["lang"]["No definition for this view/category found"]="No definition for this view/category found";
 
 ?>
