@@ -1,56 +1,65 @@
 <?php
 $page = "setup";
-include "include.php"; 
+include "include.php";
 echo "<td valign=\"top\">\n";
 echo "<div class=\"main_each\">\n";
 
 if(!(isset($_POST['submit']))){
-  echo "<p><b>IMPORTANT</b></p>\n";
-  echo "<p>Due to the way MySQL permissions work, I have changed the setup routine.<br />\n";
-  echo "Please do the following BEFORE proceeding - <br />\n";
-  echo " - Create a MySQL user, and assign a password.<br />\n";
-  echo " - Create a database for Open-AudIT (openaudit is a good name).<br />\n";
-  echo " - Assign all rights on that database to the created user.<br />\n";
-  echo " - Make sure the \"Use Old Passwords\" option is set (for PHP4 users).<br />\n";
-  echo "Please do this BEFORE running the next step of this install.<br />\n";
-  echo "If you are not sure how to complete these tasks, please check the <a href=\"http://www.open-audit.org/phpbb2/\">Forums</a> in the FAQ section.<br />\n";
+  echo "<p><b>".__("IMPORTANT")."</b></p>\n";
+  echo "<p>".__("Due to the way MySQL permissions work, the setup routine has changed")."<br />\n";
+  echo __("Please do the following BEFORE proceeding")." - <br />\n";
+  echo " - ".__("Create a MySQL user, and assign a password").".<br />\n";
+  echo " - ".__("Create a database for Open-AudIT (openaudit is a good name)").".<br />\n";
+  echo " - ".__("Assign all rights on that database to the created user").".<br />\n";
+  echo " - ".__("Make sure the 'Use Old Passwords' option is set (for PHP4 users)").".<br />\n";
+  echo __("Please do this BEFORE running the next step of this install").".<br />\n";
+  echo __("If you are not sure how to complete these tasks, please check the")."<a href=\"http://www.open-audit.org/phpbb2/\">".__("Forums")."</a> ".__("in the FAQ section").".<br />\n";
   echo "</p>\n";
   echo "        <form name=\"setup\" action=\"setup.php\" method=\"post\" >\n";
   echo "        <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n";
   echo "          <tr>\n";
-  echo "            <td class=\"contenthead\" colspan=\"2\">$l_s01.</td>\n";
+  echo "            <td class=\"contenthead\" colspan=\"2\">".__("Hi and Welcome to the Open Audit setup page")."</td>\n";
   echo "          </tr>\n";
   echo "          <tr>\n";
   echo "            <td colspan=\"2\"><hr /></td>\n";
   echo "          </tr>\n";
   echo "          <tr>\n";
-  echo "            <td>$l_lan ?</td>\n";
-  echo "            <td><select size=\"1\" name=\"language\" class=\"for_forms\">\n";
-  echo "                <option value=\"euskera\">Basque</option>\n";
-  echo "                <option value=\"english\" selected=\"selected\">English</option>\n";
-  echo "                <option value=\"italian\">Italian</option>\n";
-  echo "                <option value=\"spanish\">Spanish</option>\n";
-  echo "                </select></td>\n";
+  echo "            <td>".__("Language")."?</td>\n";
+
+  if(!isset($language)) $language="en";
+  echo "<td><select size=\"1\" name=\"language\" class=\"for_forms\">\n";
+  $handle=opendir('./lang/');
+  while ($file = readdir ($handle)) {
+      if ($file != "." && $file != "..") {
+          if(substr($file,strlen($file)-4)==".inc"){
+              if($language == substr($file,0,strlen($file)-4) ) $selected="selected"; else $selected="";
+              echo "<option $selected>".substr($file,0,strlen($file)-4)."</option>\n";
+          }
+      }
+  }
+  closedir($handle);
+  echo "    </select></td>\n";
+
   echo "          </tr>\n";
   echo "          <tr>\n";
-  echo "            <td>$l_s02 ?</td>\n";
+  echo "            <td>".__("What is your MySQL host name")." ?</td>\n";
   echo "            <td><input type=\"text\" size=\"20\" name=\"mysql_host\" value=\"localhost\" class=\"for_forms\" /></td>\n";
   echo "          </tr>\n";
   echo "          <tr>\n";
-  echo "            <td>$l_s03 ?</td>\n";
+  echo "            <td>".__("What is your MySQL user name")." ?</td>\n";
   echo "            <td><input type=\"text\" size=\"20\" name=\"mysql_user\" value=\"root\" class=\"for_forms\" /></td>\n";
   echo "          </tr>\n";
   echo "          <tr>\n";
-  echo "            <td>$l_s04 ?</td>\n";
+  echo "            <td>".__("What is your MySQL password")." ?</td>\n";
   echo "            <td><input type=\"password\" size=\"20\" name=\"mysql_pass\" class=\"for_forms\" /></td>\n";
   echo "          </tr>\n";
   echo "          <tr>\n";
-  echo "            <td>$l_s05 ?</td>\n";
+  echo "            <td>".__("What is your MySQL database name")." ?</td>\n";
   echo "            <td><input type=\"text\" size=\"20\" name=\"mysql_data\" value=\"openaudit\" class=\"for_forms\" /></td>\n";
   echo "          </tr>\n";
 
   echo "          <tr>\n";
-  echo "            <td>$l_s16a ?</td>\n";
+  echo "            <td>".__("Use HTTPS://")." ?</td>\n";
   echo "            <td><select size=\"1\" name=\"use_https\" class=\"for_forms\">\n";
   echo "                <option value=\"n\" selected=\"selected\">No</option>\n";
   echo "                <option value=\"y\">Yes</option>\n";
@@ -58,24 +67,24 @@ if(!(isset($_POST['submit']))){
   echo "          </tr>\n";
 
   echo "          <tr>\n";
-  echo "            <td>$l_s17 ?</td>\n";
+  echo "            <td>".__("Do you wish to use authentication")." ?</td>\n";
   echo "            <td><select size=\"1\" name=\"usernames\" class=\"for_forms\">\n";
   echo "                <option value=\"n\" selected=\"selected\">No</option>\n";
   echo "                <option value=\"y\">Yes</option>\n";
   echo "                </select></td>\n";
   echo "          </tr>\n";
   echo "          <tr>\n";
-  echo "            <td>$l_usn:</td>\n";
+  echo "            <td>".__("Username").":</td>\n";
   echo "            <td><input type=\"text\" size=\"20\" name=\"username\" value=\"admin\" class=\"for_forms\" /></td>\n";
   echo "          </tr>\n";
   echo "          <tr>\n";
-  echo "            <td>$l_pas:</td>\n";
+  echo "            <td>".__("Password").":</td>\n";
   echo "            <td><input type=\"password\" size=\"20\" name=\"password\" value=\"Open-AudIT\" class=\"for_forms\" /></td>\n";
   echo "          </tr>\n";
   echo "          <tr><td colspan=\"2\"><hr /></td></tr>\n";
   echo "          <tr>\n";
-  echo "            <td>$l_s06.</td>\n";
-  echo "            <td><input type=\"submit\" name=\"submit\" value=\"$l_sut\" /></td>\n";
+  echo "            <td>".__("Click Submit whem you are done")."</td>\n";
+  echo "            <td><input type=\"submit\" name=\"submit\" value=\"".__("Save")."\" /></td>\n";
   echo "          </tr>\n";
   echo "        </table>\n";
   echo "        </form>\n";
@@ -85,13 +94,13 @@ if(!(isset($_POST['submit']))){
   // New install script
   echo "        <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n";
   echo "          <tr>\n";
-  echo "            <td class=\"contenthead\">$l_s07.</td>\n";
+  echo "            <td class=\"contenthead\">".__("Setting up a new instance of Open Audit").".</td>\n";
   echo "          </tr>\n";
   echo "          <tr>\n";
   echo "            <td colspan=\"3\"><hr /></td>\n";
   echo "          </tr>";
   echo "          <tr>\n";
-  echo "            <td>$l_s08.</td>\n";
+  echo "            <td>".__("Writing Config file.").".</td>\n";
   $filename = 'include_config.php';
   $content = "<";
   $content .= "?";
@@ -149,45 +158,45 @@ if(!(isset($_POST['submit']))){
   $content .= ">";
   if (is_writable($filename)) {
     if (!$handle = fopen($filename, 'w')) {
-      echo "</tr><tr><td><h2>$l_s09 ($filename)</h2></td></tr>";
+      echo "</tr><tr><td><h2>".("Cannot open file")." ($filename)</h2></td></tr>";
       exit;
     }
     if (fwrite($handle, $content) === FALSE) {
-      echo "</tr><tr><td><h2>$l_s10 ($filename)</h2></td></tr>";
+      echo "</tr><tr><td><h2>".__("Cannot write to file")." ($filename)</h2></td></tr>";
       exit;
-    } else { 
-      echo "            <td>$l_suc.</td>\n";
+    } else {
+      echo "            <td>".__("Success").".</td>\n";
       echo "            <td><img src=\"images/button_ok.png\" width=\"16\" height=\"16\" /></td>\n";
       echo "          </tr>\n";
     }
     fclose($handle);
   } else {
-    echo "          </tr><tr><td><h2>$l_s11 $filename $l_s12</h2></td></tr>";
+    echo "          </tr><tr><td><h2>".__("The file")." $filename ".__("is not writable")."</h2></td></tr>";
   }
-  echo "<tr><td>$l_s13 " . $_POST['mysql_host'] . " as " . $_POST['mysql_user'] . ".</td>\n";
-  mysql_connect($_POST['mysql_host'], $_POST['mysql_user'], $_POST['mysql_pass']) or die("Could not connect");
-  echo "<td>$l_cop.</td><td><img src=\"images/button_ok.png\" width=\"16\" height=\"16\" /></td></tr>\n";
-  echo "<tr><td>$l_s14.</td>\n";
+  echo "<tr><td>".__("Connecting to")." " . $_POST['mysql_host'] . " ".__("as")." " . $_POST['mysql_user'] . ".</td>\n";
+  mysql_connect($_POST['mysql_host'], $_POST['mysql_user'], $_POST['mysql_pass']) or die(__("Could not connect"));
+  echo "<td>".__("Connected").".</td><td><img src=\"images/button_ok.png\" width=\"16\" height=\"16\" /></td></tr>\n";
+  echo "<tr><td>".__("Opening MySQL Dump file and reading contents").".</td>\n";
   $filename = "scripts/open_audit.sql";
   $handle = fopen($filename, "rb");
   $contents = fread($handle, filesize($filename));
   fclose($handle);
-  echo "<td>$l_doe.</td><td><img src=\"images/button_ok.png\" width=\"16\" height=\"16\" /></td></tr>\n";
-  echo "<tr><td>$l_s15.</td>\n";
-  mysql_query("CREATE DATABASE /*!32312 IF NOT EXISTS*/ " . $_POST['mysql_data']) or die ("<tr><td><h1>Could not create database.</h1></td></tr>\n");
+  echo "<td>".__("Done").".</td><td><img src=\"images/button_ok.png\" width=\"16\" height=\"16\" /></td></tr>\n";
+  echo "<tr><td>".__("Creating database").".</td>\n";
+  mysql_query("CREATE DATABASE /*!32312 IF NOT EXISTS*/ " . $_POST['mysql_data']) or die ("<tr><td><h1>" .__("Could not create database").".</h1></td></tr>\n");
   // mysql_query("SET PASSWORD FOR " . $_POST['mysql_user'] . "@localhost = OLD_PASSWORD('" . $_POST['mysql_pass'] . "');") or die ("Could not set password=old");
   // mysql_query("FLUSH PRIVILEGES;") or die ("Could not flush privileges");
-  mysql_query("USE " . $_POST['mysql_data']) or die ("Could not USE " . $_POST['mysql_data']);
-  echo "<td>$l_doe.</td><td><img src=\"images/button_ok.png\" width=\"16\" height=\"16\" /></td></tr>\n";
+  mysql_query("USE " . $_POST['mysql_data']) or die (__("Could not USE") ." ". $_POST['mysql_data']);
+  echo "<td>".__("Done").".</td><td><img src=\"images/button_ok.png\" width=\"16\" height=\"16\" /></td></tr>\n";
   $sql = stripslashes($contents);
   $sql2 = explode(";", $sql);
-  echo "<tr><td>$l_s16.</td>";
+  echo "<tr><td>".__("Running SQL upload").".</td>";
   foreach ($sql2 as $sql3) {
   //echo "<tr><td>" . $sql3 . "</td></tr>";
   $result = mysql_query($sql3 . ";");// or die ("</tr><tr><td><font color=\"red\">" . $sql3 . "</font></td></tr><tr><td colspan=\"2\"><h3>MySQL Error:</h3> " . mysql_error() . "</td></tr><tr>\n");
   }
-  echo "<td>$l_doe.</td></tr>\n";
-  echo "<tr><td><br />$l_clk <a href=\"setup_2.php\">$l_her</a> $l_toc.</td></tr>\n";
+  echo "<td>".__("Done").".</td></tr>\n";
+  echo "<tr><td><br />".__("Click")." <a href=\"setup_2.php\">".__("here")."</a> ".__("to continue").".</td></tr>\n";
   echo "</table>\n";
 }
 
