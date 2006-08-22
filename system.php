@@ -27,12 +27,19 @@ if(is_file($include_filename)){
     die("FATAL: Could not find view $include_filename");
 }
 
-
-
 //Only one category?
 if(isset($_REQUEST["category"]) AND $_REQUEST["category"]!=""){
-    $query_array["views"]=array($query_array["views"][$_REQUEST["category"]]);
-}else{
+
+    if(@is_array($query_array["views"][$_REQUEST["category"]])){
+        $query_array["views"]=array($query_array["views"][$_REQUEST["category"]]);
+    }else{
+        echo __("Fatal Error")."<br><br>".__("No definition for this view/category found")."<br>";
+        echo __("Definition").": ".$include_filename;
+        echo "<pre>";
+        print_r($_REQUEST);
+        die();
+    }
+
 }
 
 //If someone wants to edit Systems Manual-Data, one entry has to created IF there is none
