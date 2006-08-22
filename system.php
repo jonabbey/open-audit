@@ -71,11 +71,14 @@ echo "<td valign=\"top\">\n";
 while (list ($viewname, $viewdef_array) = @each ($query_array["views"])) {
 
     //Executing Query
-    $sql=$viewdef_array["sql"];
+    $sql=$viewdef_array["sql"]."WHERE";
     $result=mysql_query($sql, $db);
     if(!$result) { echo "<br>".__("Fatal Error").":<br><br>".$sql."<br><br>".mysql_error()."<br><br>";
                    echo "<pre>";
+                   echo "REQUEST:<br>";
                    print_r($_REQUEST);
+                   echo "VIEWDEF:<br>";
+                   print_r($viewdef_array);
                    die();
                  };
     $this_page_count = mysql_num_rows($result);
