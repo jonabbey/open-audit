@@ -13,7 +13,7 @@ if(!(isset($_POST['submit']))){
   echo " - ".__("Assign all rights on that database to the created user").".<br />\n";
   echo " - ".__("Make sure the 'Use Old Passwords' option is set (for PHP4 users)").".<br />\n";
   echo __("Please do this BEFORE running the next step of this install").".<br />\n";
-  echo __("If you are not sure how to complete these tasks, please check the")."<a href=\"http://www.open-audit.org/phpbb2/\">".__("Forums")."</a> ".__("in the FAQ section").".<br />\n";
+  echo __("If you are not sure how to complete these tasks, please check the")." <a href=\"http://www.open-audit.org/phpbb2/\">".__("Forums")."</a> ".__("in the FAQ section").".<br />\n";
   echo "</p>\n";
   echo "        <form name=\"setup\" action=\"setup.php\" method=\"post\" >\n";
   echo "        <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n";
