@@ -274,9 +274,9 @@ while (list ($viewname, $viewdef_array) = @each ($query_array["views"])) {
 
                     //IF Horizontal Table-Layout
                     if(isset($viewdef_array["table_layout"]) AND $viewdef_array["table_layout"]=="horizontal"){
-                        if(!isset($field["align"])) $field["align"]=" ";
+                        if(!isset($field["align"])) $field["align"]="left";
                         echo "<td bgcolor=\"" . $bgcolor . "\" align=\"".$field["align"]."\" class=\"system_tablebody_left\" >\n";
-                         echo $show_value;
+                         echo htmlspecialchars($show_value);
                         echo "</td>\n";
                     }else{
                         $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
@@ -325,7 +325,7 @@ while (list ($viewname, $viewdef_array) = @each ($query_array["views"])) {
                                        break;
                                    }
                                }else{
-                                   echo $show_value;
+                                   echo htmlspecialchars($show_value);
                                }
                            }
                          echo "</td>\n";
