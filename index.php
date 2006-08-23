@@ -957,7 +957,7 @@ if ($show_detected_servers == "y"){
            <td>" . ip_trans($myrow["net_ip_address"]) . "&nbsp;</td>
            <td><a href=\"system.php?pc=" . $myrow["service_uuid"] . "&amp;view=summary\">" . $myrow["system_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
            <td>" . $myrow["service_display_name"] . "</td>
-           <td><a href= http://".$myrow["system_name"].":5800 TARGET=\"_blank\"/>" . $myrow["service_started"] . "</td>
+           <td><a href= \"launch.php?hostname=".$myrow["system_name"]."&application=vnc&ext=vnc\"/>" . $myrow["service_started"] . "</td>
          </tr>\n";
 
     } while ($myrow = mysql_fetch_array($result));
@@ -1087,7 +1087,7 @@ if ($show_detected_servers == "y"){
            <td>" . ip_trans($myrow["net_ip_address"]) . "&nbsp;</td>
            <td><a href=\"system.php?pc=" . $myrow["service_uuid"] . "&amp;view=summary\">" . $myrow["system_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
            <td>" . $myrow["service_display_name"] . "</td>
-           <td><a href= \"launch_rdp.php?launch=".$myrow["system_name"].".rdp\"/>" . $myrow["service_started"] . "</td>
+           <td><a href= \"launch.php?hostname=".$myrow["system_name"]."&application=rdp&ext=rdp\"/>" . $myrow["service_started"] . "</td>
          </tr>\n";
 
     } while ($myrow = mysql_fetch_array($result));
@@ -1113,12 +1113,11 @@ if ($show_detected_servers == "y"){
     do {
       $count = $count + 1;
       $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
-
         echo
           "<tr bgcolor=\"" . $bgcolor . "\">
-             <td><a href= \"launch_rdp.php?launch=".$myrow["system_name"].".rdp\"/>" . ip_trans($myrow["net_ip_address"]) . "&nbsp;</td>
+             <td><a href= \"launch.php?hostname=".$myrow["system_name"]."&application=rdp&ext=rdp\"/>" . ip_trans($myrow["net_ip_address"]) . "&nbsp;</td>
              <td colspan=\"3\"><a href=\"system.php?pc=" . $myrow["system_uuid"] . "&amp;view=summary\">" . $myrow["system_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
-           </tr>\n";
+            </tr>\n";
 
     } while ($myrow = mysql_fetch_array($result));
 
