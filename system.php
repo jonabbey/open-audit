@@ -27,19 +27,9 @@ if(is_file($include_filename)){
     die("FATAL: Could not find view $include_filename");
 }
 
-//Only one category?
+//Convert GET[category] to an array
 if(isset($_REQUEST["category"]) AND $_REQUEST["category"]!=""){
-
-    if(@is_array($query_array["views"][$_REQUEST["category"]])){
-        $query_array["views"]=array($query_array["views"][$_REQUEST["category"]]);
-    }else{
-        echo __("Fatal Error")."<br><br>".__("No definition for this view/category found")."<br>";
-        echo __("Definition").": ".$include_filename;
-        echo "<pre>";
-        print_r($_REQUEST);
-        die();
-    }
-
+    $array_category=explode(",",$_REQUEST["category"]);
 }
 
 //If someone wants to edit Systems Manual-Data, one entry has to created IF there is none
@@ -74,7 +64,18 @@ echo "<td valign=\"top\">\n";
       echo "</td></tr></table>\n";
  }
 
+//Delete undisplayed categories from $query_array, if a certain category is given
+if(isset($array_category) AND is_array($array_category) AND $_REQUEST["category"]!=""){
+    reset($query_array["views"]);
+    while (list ($viewname, $viewdef_array) = @each ($query_array["views"])) {
+        if(!in_array($viewname, $array_category)){
+            unset($query_array["views"][$viewname]);
+        }
+    }
+}
+
 //Show each Category
+reset($query_array["views"]);
 while (list ($viewname, $viewdef_array) = @each ($query_array["views"])) {
 
     //Executing Query
