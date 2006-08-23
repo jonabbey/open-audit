@@ -3,7 +3,7 @@ desktopwidth:i:1024
 desktopheight:i:768
 session bpp:i:16
 winposstr:s:0,3,0,0,800,600
-full address:s:%hostname%
+full address:s:NAME
 compression:i:1
 keyboardhook:i:2
 audiomode:i:2

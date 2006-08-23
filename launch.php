@@ -15,7 +15,7 @@ SWITCH($application){
         $buffer=file("launch_filedef_".$application.".txt");
         $buffer=implode("",$buffer);
         //Replacing Hostname
-        $buffer=str_replace ( "%hostname%", $hostname, $buffer );
+        $buffer=str_replace ( "NAME", $hostname, $buffer );
 
         //Send to Browser
         header("Content-type: application/force-download");

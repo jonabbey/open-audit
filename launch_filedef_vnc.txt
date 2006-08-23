@@ -1,5 +1,5 @@
 [Connection]
-Host=%hostname%
+Host=NAME
 [Options]
 UseLocalCursor=1
 UseDesktopResize=1
