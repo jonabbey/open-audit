@@ -21,7 +21,7 @@ $menue_array = array(
                                     "110"=>array("name"=>"Video Adapter", "link"=>"system.php?pc=$pc&amp;view=hardware&amp;category=video", "image"=>"images/display.png", "title"=>"",),
                                     "120"=>array("name"=>"Monitor", "link"=>"system.php?pc=$pc&amp;view=hardware&amp;category=monitor", "image"=>"images/display.png", "title"=>"",),
                                     "130"=>array("name"=>"Soundcard", "link"=>"system.php?pc=$pc&amp;view=hardware&amp;category=sound", "image"=>"images/audio.png", "title"=>"",),
-                                    "140"=>array("name"=>"Keyboard", "link"=>"system.php?pc=$pc&amp;view=hardware&amp;category=keyboard", "image"=>"images/keyboard.png", "title"=>"",),
+                                    "140"=>array("name"=>"Keyboard and Mouse", "link"=>"system.php?pc=$pc&amp;view=hardware&amp;category=keyboard,mouse", "image"=>"images/keyboard.png", "title"=>"",),
                                     "150"=>array("name"=>"Modem", "link"=>"system.php?pc=$pc&amp;view=hardware&amp;category=modem", "image"=>"images/modem.png", "title"=>"",),
                                     "160"=>array("name"=>"Battery", "link"=>"system.php?pc=$pc&amp;view=hardware&amp;category=battery", "image"=>"images/battery.png", "title"=>"",),
                                     "170"=>array("name"=>"Printer", "link"=>"system.php?pc=$pc&amp;view=hardware&amp;category=printer", "image"=>"images/printer.png", "title"=>"",),
