@@ -12,6 +12,7 @@ SWITCH($application){
     break;
     default:
         //Reading the template
+        //Supports RDP VNC and UltraVNC
         $buffer=file("launch_filedef_".$application.".txt");
         $buffer=implode("",$buffer);
         //Replacing Hostname
