@@ -43,7 +43,7 @@ if (versionCheck(get_config("version"), $latest_version)) {
 
 if ($show_other_discovered == "y") {
   $sql  = "SELECT * FROM other WHERE (other_mac_address <> '' AND ";
-  $sql .= "other_first_timestamp > '" . adjustdate(0,0,-$other_detected) . "') ORDER BY other_ip_address";
+  $sql .= "other_first_timestamp > '" . adjustdate(0,0,-$other_detected) . "000000') ORDER BY other_ip_address";
   $result = mysql_query($sql, $db);
   $bgcolor = "#FFFFFF";
   echo
