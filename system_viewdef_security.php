@@ -39,7 +39,7 @@ $query_array=array("views"=>array("firewall_xpsp2"=>array(
                                                                    ),
                                                     ),
                                    "antivirus_xp"=>array(
-                                                    "headline"=>__("In Windows registered Antivirus"),
+                                                    "headline"=>__("XP SP2 Registered Antivirus"),
                                                     "sql"=>"SELECT * from system WHERE system_uuid = '" . $_GET["pc"] . "' AND system_timestamp = '".$GLOBAL["system_timestamp"]."'  AND (virus_name <> '' OR virus_manufacturer <> '') ",
                                                     "image"=>"./images/antivirus_l.png",
                                                     "fields"=>array("10"=>array("name"=>"virus_name", "head"=>__("Name"),),
