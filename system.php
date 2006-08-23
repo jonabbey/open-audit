@@ -91,7 +91,7 @@ while (list ($viewname, $viewdef_array) = @each ($query_array["views"])) {
     $this_page_count = mysql_num_rows($result);
 
 
-        echo "<table width=\"100%\" border=\"0\" style=\"height: 70px\"><tr><td style=\"60px;\">\n";
+        echo "<table border=\"0\" style=\"height: 70px\"><tr><td style=\"60px;\">\n";
           echo "<img src=\"" .$viewdef_array["image"]. "\" alt=\"\" border=\"0\" width=\"48\" height=\"48\"  />\n";
          echo "</td><td>\n";
           echo "<span class=\"contenthead\">\n";
