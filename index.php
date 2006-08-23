@@ -380,7 +380,7 @@ if ($show_detected_servers == "y"){
               <td colspan=\"2\"><b>$l_sev</b></td>
             </tr>\n";
 
-  $sql  = "SELECT ser.service_uuid, ser.service_display_name, ser.service_started, sys.system_name, sys.net_ip_address FROM service ser, system sys
+  $sql  = "SELECT DISTINCT ser.service_uuid, ser.service_display_name, ser.service_started, sys.system_name, sys.net_ip_address FROM service ser, system sys
            WHERE (ser.service_display_name LIKE 'IIS Admin%' OR ser.service_display_name LIKE 'Apache%') AND
            ser.service_started = 'True' AND ser.service_uuid = sys.system_uuid AND
            ser.service_timestamp = sys.system_timestamp ORDER BY system_name";
@@ -513,7 +513,7 @@ if ($show_detected_servers == "y"){
         <div style=\"display:none;\" id=\"f7\">
          <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" >\n";
 
-  $sql = "SELECT service_uuid, service_display_name, service_started, system_name, net_ip_address FROM service, system
+  $sql = "SELECT DISTINCT service_uuid, service_display_name, service_started, system_name, net_ip_address FROM service, system
           WHERE service_display_name = 'FTP Publishing Service' AND service_uuid = system_uuid AND service_timestamp = system_timestamp
           ORDER BY system_name";
   $result = mysql_query($sql, $db);
@@ -657,7 +657,7 @@ if ($show_detected_servers == "y"){
        <div style=\"display:none;\" id=\"f8\">
          <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" >\n";
 
-  $sql = "SELECT service_uuid, service_display_name, service_started, system_name, net_ip_address FROM service, system
+  $sql = "SELECT DISTINCT service_uuid, service_display_name, service_started, system_name, net_ip_address FROM service, system
           WHERE service_display_name = 'Telnet' AND service_started = 'True' AND service_timestamp = system_timestamp
           AND service_uuid = system_uuid ORDER BY system_name";
   $result = mysql_query($sql, $db);
@@ -793,7 +793,7 @@ if ($show_detected_servers == "y"){
        <div style=\"display:none;\" id=\"f9\">
          <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" >\n";
 
-  $sql  = "SELECT service_uuid, service_display_name, service_started, system_name, net_ip_address FROM service, system WHERE
+  $sql  = "SELECT DISTINCT service_uuid, service_display_name, service_started, system_name, net_ip_address FROM service, system WHERE
            (service_display_name = 'Microsoft Exchange Information Store' OR
            service_display_name = 'Simple Mail Transport Protocol (SMTP)' OR
            service_display_name = 'Simple Mail Transfer Protocol (SMTP)')
@@ -929,7 +929,7 @@ if ($show_detected_servers == "y"){
        <div style=\"display:none;\" id=\"f10\">
          <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" >\n";
 
-  $sql  = "SELECT service_uuid, service_display_name, service_started, system_name, net_ip_address FROM service, system WHERE
+  $sql  = "SELECT DISTINCT service_uuid, service_display_name, service_started, system_name, net_ip_address FROM service, system WHERE
            service_display_name LIKE '%VNC%' AND service_started = 'True' AND
            service_timestamp = system_timestamp AND service_uuid = system_uuid ORDER BY system_name";
   $result = mysql_query($sql, $db);
@@ -1059,7 +1059,7 @@ if ($show_detected_servers == "y"){
        <div style=\"display:none;\" id=\"f11\">
          <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" >\n";
 
-  $sql  = "SELECT service_uuid, service_display_name, service_started, system_name, net_ip_address FROM service, system WHERE
+  $sql  = "SELECT DISTINCT service_uuid, service_display_name, service_started, system_name, net_ip_address FROM service, system WHERE
            service_display_name LIKE '%Terminal Services%' AND service_started = 'True' AND
            service_timestamp = system_timestamp AND service_uuid = system_uuid ORDER BY system_name";
   $result = mysql_query($sql, $db);
