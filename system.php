@@ -102,11 +102,13 @@ while (list ($viewname, $viewdef_array) = @each ($query_array["views"])) {
 
         echo "<table border=\"0\" style=\"height: 70px\">\n";
          echo "<tr>\n";
+          //Image
           if(isset($viewdef_array["image"]) AND $viewdef_array["image"]!=""){
               echo "<td style=\"width: 60px;\">\n";
                echo "<img src=\"" .$viewdef_array["image"]. "\" alt=\"\" border=\"0\" width=\"48\" height=\"48\"  />\n";
               echo "</td>\n";
           }
+          //Headline
           if(isset($viewdef_array["headline"]) AND $viewdef_array["headline"]!=""){
               echo "<td>\n";
               echo "<span class=\"contenthead\">\n";
