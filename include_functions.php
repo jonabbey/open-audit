@@ -191,7 +191,7 @@ function special_field_converting($myrow, $field, $db, $page){
         $show_value=return_date($myrow[$field["name"]]);
     }elseif($field["name"]=="software_first_timestamp" OR
             $field["name"]=="software_timestamp" OR
-            $field["name"]=="system_audits_timestamp" OR
+            $field["name"]=="system_first_timestamp" OR
             $field["name"]=="system_timestamp" OR
             $field["name"]=="other_first_timestamp" OR
             $field["name"]=="other_timestamp" OR
