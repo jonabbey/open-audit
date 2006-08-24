@@ -91,6 +91,7 @@ function pdf_end($pdf){
 function pdf_draw_headline_1($pdf, $draw, $show_value){
      $pdf->SetFont('Arial','B',$draw["font_size_headline_1"]);
      $pdf->Cell(50,7,$show_value,0,1,'L');
+     $pdf->Ln();
      return $pdf;
 }
 function pdf_draw_headline_2($pdf, $draw, $show_value){
