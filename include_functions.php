@@ -278,11 +278,12 @@ function special_field_converting($myrow, $field, $db, $page){
     }else{
         if(isset($myrow[$field["name"]])){
             $show_value=$myrow[$field["name"]];
-        }else{
-            $show_value="";
         }
     }
 
+    if(!isset($show_value)){
+        $show_value="";
+    }
     return $show_value;
 
   }
