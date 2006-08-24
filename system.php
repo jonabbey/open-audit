@@ -99,17 +99,21 @@ while (list ($viewname, $viewdef_array) = @each ($query_array["views"])) {
                echo "<img src=\"" .$viewdef_array["image"]. "\" alt=\"\" border=\"0\" width=\"48\" height=\"48\"  />\n";
               echo "</td>\n";
           }
-          echo "<td>\n";
-          echo "<span class=\"contenthead\">\n";
-          if(isset($_REQUEST["category"]) AND $_REQUEST["category"]==""){
-              echo "<a href=\"".$_SERVER["PHP_SELF"]."?pc=".$_REQUEST["pc"]."&amp;view=".$_REQUEST["view"]."&amp;category=".$viewname."\">";
+          if(isset($viewdef_array["headline"]) AND $viewdef_array["headline"]!=""){
+              echo "<td>\n";
+              echo "<span class=\"contenthead\">\n";
+              if(isset($_REQUEST["category"]) AND $_REQUEST["category"]==""){
+                  echo "<a href=\"".$_SERVER["PHP_SELF"]."?pc=".$_REQUEST["pc"]."&amp;view=".$_REQUEST["view"]."&amp;category=".$viewname."\">";
+              }
+               echo "<b>".__($viewdef_array["headline"])."</b>\n";
+              if(isset($_REQUEST["category"]) AND $_REQUEST["category"]==""){
+                  echo "</a>";
+              }
+              echo "</span>\n";
+              echo "<td>\n";
           }
-           echo "<b>".__($viewdef_array["headline"])."</b>\n";
-          if(isset($_REQUEST["category"]) AND $_REQUEST["category"]==""){
-              echo "</a>";
-          }
-          echo "</span>\n";
-        echo "</td></tr></table>\n";
+          echo "</tr>\n";
+        echo "</table>\n";
 
     echo "<form id=\"v".$viewname."\" method=\"post\" action=\"system_post.php\">\n";
 
@@ -181,101 +185,7 @@ while (list ($viewname, $viewdef_array) = @each ($query_array["views"])) {
                         }
                     }
 
-                    //Special field-converting
-                    if(isset($field["name"])){
-                        SWITCH($field["name"]){
-                            case "net_dhcp_server":
-                                if($myrow[$field["name"]]=="none"){
-                                    $show_value=__("No");
-                                }else{
-                                    $show_value=__("Yes")." / ".$myrow[$field["name"]];
-                                }
-                            break;
-                            case "system_first_timestamp":
-                            case "system_timestamp":
-                            case "other_first_timestamp":
-                            case "other_timestamp":
-                            case "monitor_first_timestamp":
-                            case "monitor_timestamp":
-                                $show_value=return_date_time($myrow[$field["name"]]);
-                            break;
-                            case "system_memory":
-                            case "video_adapter_ram":
-                            case "hard_drive_size":
-                            case "partition_size":
-                                $show_value=number_format($myrow[$field["name"]])." MB";
-                            break;
-                            case "video_current_number_colours":
-                                $show_value=(strlen(decbin($myrow[$field["name"]]))+1)." Bit";
-                            break;
-                            case "video_current_refresh_rate":
-                                $show_value=$myrow[$field["name"]]." Hz";
-                            break;
-                            case "firewall_enabled_domain":
-                            case "firewall_enabled_standard":
-                            case "firewall_disablenotifications_standard":
-                            case "firewall_donotallowexceptions_standard":
-                            case "firewall_disablenotifications_domain":
-                            case "firewall_donotallowexceptions_domain":
-                                if($myrow[$field["name"]]=="1" OR $myrow[$field["name"]]=="0"){
-                                    if($myrow[$field["name"]]=="1"){
-                                        $show_value=__("Yes");
-                                    }elseif($myrow[$field["name"]]=="0"){
-                                        $show_value=__("No");
-                                    }
-                                }else{
-                                    $show_value="Profile Not Detected";
-                                }
-                            break;
-                            case "other_linked_pc":
-                                if(!isset($_REQUEST["edit"])){
-                                    $result3 = mysql_query("SELECT system_name FROM system WHERE system_uuid='".$myrow[$field["name"]]."' AND system_uuid != '' ", $db);
-                                    if ($myrow3 = mysql_fetch_array($result3)){
-                                        $show_value=$myrow3["system_name"];
-                                    }else{
-                                        $show_value=$myrow[$field["name"]];
-                                    }
-                                }
-                            break;
-                            case "monitor_uuid":
-                                if(!isset($_REQUEST["edit"]) OR
-                                   (isset($_REQUEST["edit"]) AND isset($field["edit"]) AND $field["edit"]=="n"))
-                                    {
-                                    $result3 = mysql_query("SELECT system_name FROM system WHERE system_uuid = '".$myrow[$field["name"]]."' AND system_uuid != '' ", $db);
-                                    if ($myrow3 = mysql_fetch_array($result3)){
-                                        $show_value=$myrow3["system_name"];
-                                    }else{
-                                        $show_value=$myrow[$field["name"]];
-                                    }
-                                }
-                            break;
-                            case "other_ip_address":
-                                if($myrow["other_ip_address"]=="" AND !isset($_REQUEST["edit"])){
-                                    $show_value = "Not-Networked";
-                                }else{
-                                    $show_value = $myrow[$field["name"]];
-                                }
-                            break;
-                            case "hard_drive_index":
-                            default:
-                                if (isset($myrow[$field["name"]])) {
-                                    $show_value=$myrow[$field["name"]];
-                                } else {
-                                    $show_value = "";
-                                }
-                            break;
-                        }
-                        //If the Item is editable and the Type is textarea, convert newlines to br in Not-Edit-Mode
-                        if(isset($field["edit_type"]) AND $field["edit_type"]=="textarea" AND !isset($_REQUEST["edit"])){
-                            $show_value=nl2br($show_value);
-                        }
-                    }else{
-                        if(isset($field["name"]) AND isset($myrow[$field["name"]])) {
-                            $show_value=$myrow[$field["name"]];
-                        } else {
-                            $show_value = "";
-                        }
-                    }
+                    $show_value = special_field_converting($myrow, $field, $db, "system");
 
                     //IF Horizontal Table-Layout
                     if(isset($viewdef_array["table_layout"]) AND $viewdef_array["table_layout"]=="horizontal"){
@@ -391,8 +301,11 @@ while (list ($viewname, $viewdef_array) = @each ($query_array["views"])) {
                  echo "</td>\n";
                 echo "</tr>\n";
             }
-            $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
-            echo "<tr><td bgcolor=\"$bgcolor\" class=\"system_tablebody_right\" colspan=\"2\">&nbsp;</td></tr>\n";
+            //IF Horizontal Table-Layout
+            if(isset($viewdef_array["table_layout"]) AND $viewdef_array["table_layout"]=="horizontal"){}else{
+                $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
+                echo "<tr><td bgcolor=\"$bgcolor\" class=\"system_tablebody_right\" colspan=\"2\">&nbsp;</td></tr>\n";
+            }
         }while ($myrow = mysql_fetch_array($result));
     } else {
         echo "<tr>\n";
@@ -428,6 +341,12 @@ while (list ($viewname, $viewdef_array) = @each ($query_array["views"])) {
          echo "</tr>\n";
 
          echo "<tr><td class=\"system_tablebody_right\" colspan=\"2\">&nbsp;</td></tr>\n";
+    }
+
+    //IF Horizontal Table-Layout
+    if(isset($viewdef_array["table_layout"]) AND $viewdef_array["table_layout"]=="horizontal"){
+        $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
+        echo "<tr><td bgcolor=\"$bgcolor\" class=\"system_tablebody_right\" colspan=\"2\">&nbsp;</td></tr>\n";
     }
 
     echo "</table>";
