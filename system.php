@@ -58,7 +58,10 @@ echo "<td valign=\"top\">\n";
   if(isset($query_array["name"]) AND $query_array["name"]!=""){
       echo "<table width=\"100%\" border=\"0\" style=\"height: 70px\"><tr><td style=\"width:60px;\">\n";
        echo "<span class=\"contenthead\">\n";
-         echo "<b>".htmlspecialchars(__($query_array["name"]))."</b>\n";
+         echo "<b>";
+          echo htmlspecialchars(__($query_array["name"]));
+          if(isset($_REQUEST["headline_addition"])) {echo htmlspecialchars($_REQUEST["headline_addition"]);}
+         echo "</b>\n";
        echo "</span>\n";
       echo "</td></tr></table>\n";
  }
