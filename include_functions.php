@@ -181,4 +181,112 @@ function versionCheck($dbversion, $latestversion) {
   }
 }
 
+//Converts values from database to human-readable fields
+function special_field_converting($myrow, $field, $db, $page){
+
+  if(isset($field["name"])){
+    if($field["name"]=="system_os_name"){
+        $show_value=determine_os($myrow[$field["name"]]);
+    }elseif($field["name"]=="system_timestamp"){
+        $show_value=return_date($myrow[$field["name"]]);
+    }elseif($field["name"]=="software_first_timestamp" OR
+            $field["name"]=="software_timestamp" OR
+            $field["name"]=="system_audits_timestamp" OR
+            $field["name"]=="system_timestamp" OR
+            $field["name"]=="other_first_timestamp" OR
+            $field["name"]=="other_timestamp" OR
+            $field["name"]=="monitor_first_timestamp" OR
+            $field["name"]=="monitor_timestamp")
+    {
+        $show_value=return_date_time($myrow[$field["name"]]);
+    }elseif($field["name"]=="system_system_type" AND $page=="list"){
+        $show_value=determine_img($myrow["system_os_name"],$myrow[$field["name"]]);
+    }elseif($field["name"]=="other_type" AND $page=="list"){
+        $show_value="<img src=\"images/o_" .str_replace(" ","_",$myrow[$field["name"]]). ".png\" alt=\"\" border=\"0\" width=\"16\" height=\"16\"  />";
+    }elseif($field["name"]=="other_ip_address"){
+        $show_value=ip_trans($myrow[$field["name"]]);
+    }elseif($field["name"]=="delete"){
+        $show_value="<img src=\"images/button_delete_out.png\" name=\"button" . $myrow["other_id"] . "\" width=\"58\" height=\"22\" border=\"0\" alt=\"\" />";
+        $a_misc=" onmouseover=\"document.button" . $myrow["other_id"] . ".src='images/button_delete_over.png'\" ";
+        $a_misc.=" onmousedown=\"document.button" . $myrow["other_id"] . ".src='images/button_delete_down.png'\"";
+        $a_misc.=" onmouseout=\"document.button" . $myrow["other_id"] . ".src='images/button_delete_out.png'\"";
+    }elseif($field["name"]=="startup_location"){
+        if (substr($myrow[$field["name"]],0,2) == "HK"){
+            $show_value = __("Registry");
+        }
+    }elseif($field["name"]=="percentage"){
+        $show_value=$myrow[$field["name"]]." %";
+    }elseif($field["name"]=="system_memory" OR
+            $field["name"]=="video_adapter_ram" OR
+            $field["name"]=="hard_drive_size" OR
+            $field["name"]=="partition_size")
+    {
+        $show_value=number_format($myrow[$field["name"]])." MB";
+    }elseif($field["name"]=="video_current_number_colours"){
+        $show_value=(strlen(decbin($myrow[$field["name"]]))+1)." Bit";
+    }elseif($field["name"]=="video_current_refresh_rate"){
+        $show_value=$myrow[$field["name"]]." Hz";
+
+    }elseif($field["name"]=="firewall_enabled_domain" OR
+            $field["name"]=="firewall_enabled_standard" OR
+            $field["name"]=="firewall_disablenotifications_standard" OR
+            $field["name"]=="firewall_donotallowexceptions_standard" OR
+            $field["name"]=="firewall_disablenotifications_domain" OR
+            $field["name"]=="firewall_donotallowexceptions_domain")
+    {
+        if($myrow[$field["name"]]=="1" OR $myrow[$field["name"]]=="0"){
+            if($myrow[$field["name"]]=="1"){
+                $show_value=__("Yes");
+            }elseif($myrow[$field["name"]]=="0"){
+                $show_value=__("No");
+            }
+        }else{
+            $show_value="Profile Not Detected";
+        }
+    }elseif($field["name"]=="other_linked_pc"){
+        if(!isset($_REQUEST["edit"])){
+            $result3 = mysql_query("SELECT system_name FROM system WHERE system_uuid='".$myrow[$field["name"]]."' AND system_uuid != '' ", $db);
+            if ($myrow3 = mysql_fetch_array($result3)){
+                $show_value=$myrow3["system_name"];
+            }else{
+                $show_value=$myrow[$field["name"]];
+            }
+        }
+    }elseif($field["name"]=="monitor_uuid"){
+        if(!isset($_REQUEST["edit"]) OR
+           (isset($_REQUEST["edit"]) AND isset($field["edit"]) AND $field["edit"]=="n"))
+            {
+            $result3 = mysql_query("SELECT system_name FROM system WHERE system_uuid = '".$myrow[$field["name"]]."' AND system_uuid != '' ", $db);
+            if ($myrow3 = mysql_fetch_array($result3)){
+                $show_value=$myrow3["system_name"];
+            }else{
+                $show_value=$myrow[$field["name"]];
+            }
+        }
+    }elseif($field["name"]=="other_ip_address"){
+        if($myrow["other_ip_address"]=="" AND !isset($_REQUEST["edit"])){
+            $show_value = "Not-Networked";
+        }else{
+            $show_value = $myrow[$field["name"]];
+        }
+    }elseif($field["name"]=="net_dhcp_server"){
+        if($myrow[$field["name"]]=="none"){
+            $show_value=__("No");
+        }else{
+            $show_value=__("Yes")." / ".$myrow[$field["name"]];
+        }
+    }else{
+        if(isset($myrow[$field["name"]])){
+            $show_value=$myrow[$field["name"]];
+        }else{
+            $show_value="";
+        }
+    }
+
+    return $show_value;
+
+  }
+
+}
+
 ?>

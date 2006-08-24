@@ -22,7 +22,7 @@ foreach($query_array as $view_master) {
     $count_items_category=0;;
     foreach($view_master["views"] as $view) {
 
-        if($view["show"]=="y"){
+        if(isset($view["show"]) AND $view["show"]=="y"){
 
             //Executing the Qeuery
             $sql=$view["sql"]."ORDER BY ".$view["sort"];
@@ -31,33 +31,35 @@ foreach($query_array as $view_master) {
             $this_page_count = mysql_num_rows($result);
 
             //Table body
+            $body=" ";
+            $i=0;
             if ($myrow = mysql_fetch_array($result)){
 
                 //Table header
                 unset($td_width);
-                $body .= $view["headline"];
+                if(isset($view["headline"])){
+                    $body .= $view["headline"];
+                }
                 $body .= "<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n";
                 $body .= " <tr>\n";
 
-
-                $colgroup .= "<colgroup>\n";
+                $colgroup = "<colgroup>\n";
                 foreach($view["fields"] as $field) {
-                    if($field["show"]!="n"){
+                    if(!isset($field["show"]) OR $field["show"]=="y"){
                         $body .= "<td nowrap class=\"views_tablehead\">";
                          $body .= $field["head"];
                         $body .= " </th>\n";;
                         if(is_array($view_master["td_width"]) AND isset($view_master["td_width"][$i]) AND $view_master["td_width"][$i]!="") {
-                            $body .= "<col width=\"".$view_master["td_width"][$i]."\">\n";
+                            $colgroup .= "<col width=\"".$view_master["td_width"][$i]."\">\n";
                             $i++;
                         }
                     }
                 }
                 $colgroup .= "</colgroup>\n";
 
-
                 $body .= "<td nowrap class=\"views_tablehead\">&nbsp;</th>\n";;
-
                 $body .= " </tr>\n";
+                $body .= $colgroup;
 
                 do{
                     $count_items_category++;
@@ -70,11 +72,12 @@ foreach($query_array as $view_master) {
                     $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
                     $body .= " <tr>\n";
                     foreach($view["fields"] as $field) {
-                            if($field["show"]!="n" AND 1==2){
+
+                        if(!isset($field["show"]) OR $field["show"]=="y"){
 
                             //Generating the link
                             //Does the field has an own link? Otherwise take the standard-link of the view
-                            if($field["get"]["file"]!=""){
+                            if(isset($field["get"]) AND $field["get"]["file"]!=""){
                                 $get_array=$field["get"];
                             }else{
                                 $get_array=$view["get"];
@@ -90,7 +93,7 @@ foreach($query_array as $view_master) {
                             if($link_file==""){
                                 $field["link"]="n";
                             }
-                            if($field["link"]=="y"){
+                            if(isset($field["link"]) AND $field["link"]=="y"){
                                 unset($link_query);
                                 @reset ($get_array["var"]);
                                 while (list ($varname, $value) = @each ($get_array["var"])) {
@@ -100,7 +103,11 @@ foreach($query_array as $view_master) {
                                     }else{
                                         $value2=$value;
                                     }
-                                    $link_query.= $varname."=".urlencode($value2)."&amp;";
+                                    if(!isset($link_query)) {
+                                        $link_query = $varname."=".urlencode($value2)."&amp;";
+                                    }else{
+                                        $link_query.= $varname."=".urlencode($value2)."&amp;";
+                                    }
                                     //Don't show the link if a GET-variable is empty
                                     if($value2==""){
                                         $field["link"]="n";
@@ -109,7 +116,7 @@ foreach($query_array as $view_master) {
                             }
                             if($link_query!=""){
                                 $url=parse_url($get_array["file"]);
-                                if($url["query"]!=""){
+                                if(isset($url["query"]) AND $url["query"]!=""){
                                     $link_separator="&amp;";
                                 }else{
                                     $link_separator="?";
@@ -145,12 +152,16 @@ foreach($query_array as $view_master) {
                                 $show_value=$myrow[$field["name"]];
                             }
 
+                            if(!isset($field["align"])) $field["align"]=" ";
                             $body .= " <td bgcolor=\"" . $bgcolor . "\" style=\"padding-right:10px;\" align=\"".$field["align"]."\">\n";
-                             if($field["link"]=="y"){
+                             if(isset($field["link"]) AND $field["link"]=="y"){
+                                 if(!isset($get_array["target"])) $get_array["target"]="_TOP";
+                                 if(!isset($get_array["title"])) $get_array["title"]=" ";
+                                 if(!isset($get_array["onClick"])) $get_array["onClick"]=" ";
                                  $body .= "<a href=\"".$link_uri."\"target=\"".$get_array["target"]."\" title=\"".$get_array["title"]."\" onClick=\"".$get_array["onClick"]."\">\n";
                              }
                              $body .= $show_value;
-                             if($field["link"]=="y"){
+                             if(isset($field["link"]) AND $field["link"]=="y"){
                                  $body .= " </a>\n";
                              }
                             $body .= " </td>\n";
@@ -158,9 +169,11 @@ foreach($query_array as $view_master) {
                     }
                     $body .= " <td bgcolor=\"" . $bgcolor . "\">&nbsp;</td>\n";
                     $body .= " </tr>\n";
+
                 }while ($myrow = mysql_fetch_array($result));
 
                 $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
+                if(!isset($field_align)) $field_align=" ";
                 $body .= "<tr>\n";
                  $body .= "<td bgcolor=\"" . $bgcolor . "\" $field_align style=\"padding-right:10px;\" colspan=\"10\">\n";
                   $body .= "&nbsp;";
@@ -169,6 +182,7 @@ foreach($query_array as $view_master) {
                 $body .= "</table>\n";
             }
         }
+
     }
 
     //Headline

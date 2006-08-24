@@ -360,36 +360,8 @@ if ($myrow = mysql_fetch_array($result)){
 
                 $show_value=" ";
                 //Special field-converting
-                if($field["name"]=="system_os_name"){
-                    $show_value=determine_os($myrow[$field["name"]]);
-                }elseif($field["name"]=="system_timestamp"){
-                    $show_value=return_date($myrow[$field["name"]]);
-                }elseif($field["name"]=="software_first_timestamp" OR
-                        $field["name"]=="software_timestamp" OR
-                        $field["name"]=="system_audits_timestamp"){
-                    $show_value=return_date_time($myrow[$field["name"]]);
-                }elseif($field["name"]=="system_system_type"){
-                    $show_value=determine_img($myrow["system_os_name"],$myrow[$field["name"]]);
-                }elseif($field["name"]=="other_type"){
-                    $show_value="<img src=\"images/o_" .str_replace(" ","_",$myrow[$field["name"]]). ".png\" alt=\"\" border=\"0\" width=\"16\" height=\"16\"  />";
-                }elseif($field["name"]=="other_ip_address"){
-                    $show_value=ip_trans($myrow[$field["name"]]);
-                }elseif($field["name"]=="delete"){
-                    $show_value="<img src=\"images/button_delete_out.png\" name=\"button" . $myrow["other_id"] . "\" width=\"58\" height=\"22\" border=\"0\" alt=\"\" />";
-                    $a_misc=" onmouseover=\"document.button" . $myrow["other_id"] . ".src='images/button_delete_over.png'\" ";
-                    $a_misc.=" onmousedown=\"document.button" . $myrow["other_id"] . ".src='images/button_delete_down.png'\"";
-                    $a_misc.=" onmouseout=\"document.button" . $myrow["other_id"] . ".src='images/button_delete_out.png'\"";
-                }elseif($field["name"]=="startup_location"){
-                    if (substr($myrow[$field["name"]],0,2) == "HK"){
-                        $show_value = __("Registry");
-                    }
-                }elseif($field["name"]=="percentage"){
-                    $show_value=$myrow[$field["name"]]." %";
-                }else{
-                    if(isset($myrow[$field["name"]])){
-                        $show_value=$myrow[$field["name"]];
-                    }
-                }
+
+                $show_value = special_field_converting($myrow, $field, $db, "list");
 
                 if(isset($field["link"]) AND $field["link"]=="y"){
                     if(!isset($get_array["title"])) $get_array["title"]=$show_value;
