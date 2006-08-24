@@ -92,9 +92,14 @@ while (list ($viewname, $viewdef_array) = @each ($query_array["views"])) {
     $this_page_count = mysql_num_rows($result);
 
 
-        echo "<table border=\"0\" style=\"height: 70px\"><tr><td style=\"60px;\">\n";
-          echo "<img src=\"" .$viewdef_array["image"]. "\" alt=\"\" border=\"0\" width=\"48\" height=\"48\"  />\n";
-         echo "</td><td>\n";
+        echo "<table border=\"0\" style=\"height: 70px\">\n";
+         echo "<tr>\n";
+          if(isset($viewdef_array["image"]) AND $viewdef_array["image"]!=""){
+              echo "<td style=\"width: 60px;\">\n";
+               echo "<img src=\"" .$viewdef_array["image"]. "\" alt=\"\" border=\"0\" width=\"48\" height=\"48\"  />\n";
+              echo "</td>\n";
+          }
+          echo "<td>\n";
           echo "<span class=\"contenthead\">\n";
           if(isset($_REQUEST["category"]) AND $_REQUEST["category"]==""){
               echo "<a href=\"".$_SERVER["PHP_SELF"]."?pc=".$_REQUEST["pc"]."&amp;view=".$_REQUEST["view"]."&amp;category=".$viewname."\">";
