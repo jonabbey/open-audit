@@ -729,7 +729,7 @@ comment = "Memory Info"
 if verbose = "y" then
    wscript.echo comment
 end if
-Set colItems = objWMIService.ExecQuery("Select MemoryDevices FROM Win32_PhysicalMemoryArray",,48)
+Set colItems = objWMIService.ExecQuery("Select MemoryDevices FROM Win32_PhysicalMemoryArray WHERE Use = '3'",,48)
 For Each objItem in colItems
    system_memory_banks = objItem.MemoryDevices
 Next
