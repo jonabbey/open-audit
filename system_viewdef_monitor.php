@@ -4,7 +4,7 @@ $query_array=array("name"=>__("Monitor"),
                    "views"=>array("summary"=>array(
                                                     "headline"=>__("Summary"),
                                                     "sql"=>"SELECT * FROM monitor WHERE monitor_id = '".$_REQUEST['monitor']."' ",
-                                                    "image"=>"./images/o_x terminal.png",
+                                                    "image"=>"./images/o_x_terminal.png",
                                                     "edit"=>"y",
                                                     "fields"=>array("10"=>array("name"=>"monitor_model", "head"=>__("Model"), "edit"=>"n",),
                                                                     "20"=>array("name"=>"monitor_serial", "head"=>__("Serial"), "edit"=>"n",),
