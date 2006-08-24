@@ -28,7 +28,7 @@ if(is_file($include_filename)){
 
 if(isset($_GET["pc"]) AND $_GET["pc"]!=""){
     $pc=$_GET["pc"];
-}else{
+}else if (!isset($_GET["other"])) {
     die("FATAL: No pc given");
 }
 
