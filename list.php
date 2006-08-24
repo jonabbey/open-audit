@@ -371,7 +371,7 @@ if ($myrow = mysql_fetch_array($result)){
                 }elseif($field["name"]=="system_system_type"){
                     $show_value=determine_img($myrow["system_os_name"],$myrow[$field["name"]]);
                 }elseif($field["name"]=="other_type"){
-                    $show_value="<img src=\"images/o_" .$myrow[$field["name"]]. ".png\" alt=\"\" border=\"0\" width=\"16\" height=\"16\"  />";
+                    $show_value="<img src=\"images/o_" .str_replace(" ","_",$myrow[$field["name"]]). ".png\" alt=\"\" border=\"0\" width=\"16\" height=\"16\"  />";
                 }elseif($field["name"]=="other_ip_address"){
                     $show_value=ip_trans($myrow[$field["name"]]);
                 }elseif($field["name"]=="delete"){
