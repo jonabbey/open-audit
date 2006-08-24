@@ -23,8 +23,15 @@ if(is_file($include_filename)){
     include_once($include_filename);
     $viewdef_array=$query_array;
 }else{
-    die("FATAL: Could not find view $include_filename");
+    die(__("FATAL: Could not find view")." ".$include_filename);
 }
+
+if(isset($_GET["pc"]) AND $_GET["pc"]!=""){
+    $pc=$_GET["pc"];
+}else{
+    die("FATAL: No pc given");
+}
+
 
 //Convert GET[category] to an array
 if(isset($_REQUEST["category"]) AND $_REQUEST["category"]!=""){
