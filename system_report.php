@@ -139,31 +139,31 @@ echo "  <tr><td width=\"250\">$l_bio $l_man: </td><td>" .  $bios['bios_manufactu
 echo "  <tr bgcolor=\"#F1F1F1\"><td>$l_bio $l_ver: </td><td>" .  $bios['bios_version'] . "</td></tr>\n";
 
 if (($processor = mysql_fetch_array($result4))){
-  do { 
+  do {
     echo "<tr><td width=\"250\">$l_pro: </td><td>" . $processor['processor_name'] . "</td></tr>";
     echo "<tr bgcolor=\"#F1F1F1\"><td>$l_pro $l_spd: </td><td>" . number_format($processor['processor_max_clock_speed']) . " Mhz</td></tr>";
   } while ($processor = mysql_fetch_array($result4));
 } else {}
 echo "<tr><td>$l_mem: </td><td>" . number_format($myrow['system_memory']) . " MB</td></tr>";
 if (($video = mysql_fetch_array($result5))){
-  do { 
+  do {
     echo "<tr bgcolor=\"#F1F1F1\"><td>$l_vid &amp; $l_mem: </td><td>" . $video['video_caption'] . " - " . $video['video_adapter_ram'] . " MB</td></tr>";
     echo "<tr><td>$l_vdr $l_dat &amp; $l_ver: </td><td>" . $video['video_driver_date'] . " - " . $video['video_driver_version'] . "</td></tr>";
   } while ($video = mysql_fetch_array($result5));
 } else {}
 if (($monitor = mysql_fetch_array($result6))){
-  do { 
+  do {
     echo "<tr bgcolor=\"#F1F1F1\"><td>$l_moo $l_mam: </td><td>" . $monitor['monitor_manufacturer'] . "</td></tr>";
     echo "<tr><td>$l_moo $l_mdl: </td><td>" . $monitor['monitor_model'] . "</td></tr>";
   } while ($monitor = mysql_fetch_array($result6));
 } else {}
 if (($hard_drive = mysql_fetch_array($result7))){
-  do { 
+  do {
     echo "<tr bgcolor=\"#F1F1F1\"><td>$l_hde &amp; $l_mdl: </td><td>" . $hard_drive['hard_drive_interface_type'] . " - " . $hard_drive['hard_drive_model'] . "</td></tr>";
     echo "<tr><td>$l_hde $l_siz &amp $l_pau: </td><td>" . number_format($hard_drive['hard_drive_size']) . " MB - " . $hard_drive['hard_drive_partitions'] . "</td></tr>";
     $sql_partition = "SELECT * FROM partition WHERE (partition_uuid = '$pc' && partition_timestamp = '" . $myrow['system_timestamp'] . "' && partition_disk_index = '" . $hard_drive["hard_drive_index"] . "') ORDER BY partition_caption ";
     $sql_partition_result = mysql_query($sql_partition, $db);
-    if ($partition = mysql_fetch_array($sql_partition_result)){ 
+    if ($partition = mysql_fetch_array($sql_partition_result)){
       do {
         echo "<tr bgcolor=\"#F1F1F1\"><td>$l_pau $l_drv &amp; $l_fmt: </td><td>" . $partition['partition_caption'] . " - " . $partition['partition_file_system'] . "</td></tr>";
         echo "<tr><td>$l_pau $l_siz &amp; $l_fre: </td><td>" . number_format($partition['partition_size']) . " MB - ". number_format($partition['partition_free_space']) . " MB</td></tr>";
