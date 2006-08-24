@@ -12,7 +12,7 @@ $count_system_max="10000";
 // If you would like to have a new View, you have to modify 3 parts:
 // -> include_menu_array.php: $menue_array
 // -> list_viewdef_X.php: "Table and fields to select and show"
-// -> option: list.php: "Special field-converting"
+// -> option: include_functions.php: special_field_converting()
 
 //Include the view-definition
 if(isset($_REQUEST["view"]) AND $_REQUEST["view"]!=""){
