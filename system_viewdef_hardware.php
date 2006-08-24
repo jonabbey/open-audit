@@ -148,14 +148,22 @@ $query_array=array("name"=>__("Hardware"),
                                                                     "80"=>array("name"=>"video_driver_date", "head"=>__("Driver Date"),),
                                                                    ),
                                                     ),
+
                                    "monitor"=>array(
                                                     "headline"=>__("Monitor"),
                                                     "sql"=>"SELECT * FROM monitor WHERE monitor_uuid = '" . $_GET["pc"] . "' AND monitor_timestamp = '".$GLOBAL["system_timestamp"]."'",
                                                     "image"=>"images/display_l.png",
-                                                    "fields"=>array("10"=>array("name"=>"monitor_manufacturer", "head"=>__("Manufacturer"),),
-                                                                    "20"=>array("name"=>"monitor_model", "head"=>__("Model"),),
-                                                                    "30"=>array("name"=>"monitor_serial", "head"=>__("Serial"),),
-                                                                    "40"=>array("name"=>"monitor_manufacture_date", "head"=>__("Date of Manufacture"),),
+
+
+                                                    "fields"=>array("10"=>array("name"=>"monitor_model", "head"=>__("Model"), "edit"=>"n",),
+                                                                    "20"=>array("name"=>"monitor_serial", "head"=>__("Serial"), "edit"=>"n",),
+                                                                    "40"=>array("name"=>"","head"=>__("")),
+                                                                    "50"=>array("name"=>"monitor_manufacturer", "head"=>__("Manufacturer"), "edit"=>"n",),
+                                                                    "60"=>array("name"=>"monitor_manufacture_date", "head"=>__("Date of Manufacture"), "edit"=>"n",),
+                                                                    "70"=>array("name"=>"monitor_date_purchased", "head"=>__("Date of Purchase"), "edit"=>"n",),
+                                                                    "80"=>array("name"=>"monitor_purchase_order_number", "head"=>__("Purchase Order Number"), "edit"=>"n",),
+                                                                    "90"=>array("name"=>"monitor_value", "head"=>__("Dollar Value"), "edit"=>"n",),
+                                                                    "100"=>array("name"=>"monitor_description", "head"=>__("Description"), "edit"=>"n",),
                                                                    ),
                                                     ),
                                    "sound"=>array(
