@@ -32,7 +32,6 @@ if(isset($_GET["pc"]) AND $_GET["pc"]!=""){
     die("FATAL: No pc given");
 }
 
-
 //Convert GET[category] to an array
 if(isset($_REQUEST["category"]) AND $_REQUEST["category"]!=""){
     $array_category=explode(",",$_REQUEST["category"]);
@@ -66,7 +65,7 @@ echo "<td valign=\"top\">\n";
       echo "<table width=\"100%\" border=\"0\" style=\"height: 70px\"><tr><td style=\"width:60px;\">\n";
        echo "<span class=\"contenthead\">\n";
          echo "<b>";
-          echo htmlspecialchars(__($query_array["name"]));
+          echo htmlspecialchars($query_array["name"]);
           if(isset($_REQUEST["headline_addition"])) {echo htmlspecialchars($_REQUEST["headline_addition"]);}
          echo "</b>\n";
        echo "</span>\n";
@@ -114,7 +113,7 @@ while (list ($viewname, $viewdef_array) = @each ($query_array["views"])) {
               if(isset($_REQUEST["category"]) AND $_REQUEST["category"]==""){
                   echo "<a href=\"".$_SERVER["PHP_SELF"]."?pc=".$_REQUEST["pc"]."&amp;view=".$_REQUEST["view"]."&amp;category=".$viewname."\">";
               }
-               echo "<b>".__($viewdef_array["headline"])."</b>\n";
+               echo "<b>".$viewdef_array["headline"]."</b>\n";
               if(isset($_REQUEST["category"]) AND $_REQUEST["category"]==""){
                   echo "</a>";
               }
