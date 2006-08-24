@@ -7,7 +7,6 @@ function microtime_float()
 $time_start = microtime_float();
 
 include_once("include.php");
-$count_system_max="10000";
 
 // If you would like to have a new View, you have to modify 3 parts:
 // -> include_menu_array.php: $menue_array
