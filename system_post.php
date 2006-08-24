@@ -30,14 +30,16 @@ if(isset($_REQUEST["view"]) AND isset($_REQUEST["category"])){
 
         $url="./system.php?other=".$_REQUEST["other"]."&view=".$_REQUEST["view"]." ";
 
-    //Monito ------------------------------------------------------------------------------------
+    //Monitor ------------------------------------------------------------------------------------
     }elseif($_REQUEST["view"]=="monitor" AND $_REQUEST["category"]=="summary"){
 
-        $sql  = "UPDATE monitor SET monitor_date_purchased = '" . $_REQUEST['monitor_date_purchased'];
-        $sql .= "', monitor_purchase_order_number = '" . $_REQUEST['monitor_purchase_order_number'];
-        $sql .= "', monitor_value = '" . $_REQUEST['monitor_value'];
-        $sql .= "', monitor_description = '" . $_REQUEST['monitor_description'];
-        $sql .= "' WHERE monitor_id = '" . $_REQUEST['monitor'] . "' ";
+        $sql  = "UPDATE monitor SET ";
+        $sql .= " monitor_uuid = '" . $_REQUEST['monitor_uuid'] . "', ";
+        $sql .= " monitor_date_purchased = '" . $_REQUEST['monitor_date_purchased'] . "', ";
+        $sql .= " monitor_purchase_order_number = '" . $_REQUEST['monitor_purchase_order_number'] . "', ";
+        $sql .= " monitor_value = '" . $_REQUEST['monitor_value'] . "', ";
+        $sql .= " monitor_description = '" . $_REQUEST['monitor_description'] . "' ";
+        $sql .= " WHERE monitor_id = '" . $_REQUEST['monitor'] . "' ";
 
         $url="./system.php?monitor=".$_REQUEST["monitor"]."&view=".$_REQUEST["view"]." ";
 
