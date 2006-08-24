@@ -48,7 +48,7 @@ if(isset($_REQUEST["pc"]) AND
     $result_man=mysql_query($sql_man, $db);
     $man_count = mysql_num_rows($result_man);
     if($man_count<1){
-        $sql_man="INSERT INTO `system_man` ( `system_man_id` , `system_man_uuid` ) VALUES ('', '".$_REQUEST["pc"]."' ); ";
+        $sql_man="INSERT INTO `system_man` ( `system_man_uuid` ) VALUES ( '".$_REQUEST["pc"]."' ); ";
         $result_man=mysql_query($sql_man, $db);
         if(!$result_man) { echo "<br>".__("Fatal Error").":<br><br>".$sql_man."<br><br>".mysql_error()."<br><br>";
                        echo "<pre>";
