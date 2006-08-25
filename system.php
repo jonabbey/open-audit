@@ -229,10 +229,10 @@ while (list ($viewname, $viewdef_array) = @each ($query_array["views"])) {
                                    if(!isset($field["edit_type"])) $field["edit_type"]="text";
                                    SWITCH($field["edit_type"]){
                                        case "textarea":
-                                           echo "<textarea name=\"".$field["name"]."\" style=\"width:300px\">".$show_value."</textarea>\n";
+                                           echo "<textarea name=\"".$field["name"]."\" style=\"width:300px\" class=\"for_forms\">".$show_value."</textarea>\n";
                                        break;
                                        case "select":
-                                           echo "<select name=\"".$field["name"]."\" style=\"width:300px\" >\n";
+                                           echo "<select name=\"".$field["name"]."\" style=\"width:300px\" class=\"for_forms\">\n";
                                             echo "<option value=\"\">".__("None")."</option>\n";
                                             $result2 = mysql_query($field["edit_sql"], $db);
                                             if ($myrow2 = mysql_fetch_array($result2)){
@@ -244,7 +244,7 @@ while (list ($viewname, $viewdef_array) = @each ($query_array["views"])) {
                                            echo "</select>\n";
                                        break;
                                        case "text":
-                                           echo "<input type=\"text\" style=\"width:300px\" name=\"".$field["name"]."\" value=\"".$show_value."\" />";
+                                           echo "<input type=\"text\" style=\"width:300px\" name=\"".$field["name"]."\" value=\"".$show_value."\" class=\"for_forms\" />";
                                        break;
                                    }
                                }else{
