@@ -52,6 +52,7 @@ $query_array=array("views"=>array("summary"=>array(
                                                     "headline"=>__("Remote Management"),
                                                     "sql"=>"SELECT system_name FROM system WHERE system_uuid = '" . $_GET["pc"] . "' AND  system_timestamp = '".$GLOBAL["system_timestamp"]."'",
                                                     "image"=>"./images/display_l.png",
+                                                    "print"=>"n",
                                                     "fields"=>array("10"=>array("name"=>"Explorer C",
                                                                                 "head"=>__("Explorer C"),
                                                                                 "get"=>array("head"=>"Explorer"." \\\\Client\\C\$-Session",
