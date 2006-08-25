@@ -23,7 +23,6 @@ $page_count = $page_count * $count_system;
 
 echo "<td>\n";
 
-/*
 // Check to see if there is an update
 if (versionCheck(get_config("version"), $latest_version)) {
   echo "<div class=\"main_each\">
@@ -39,7 +38,6 @@ if (versionCheck(get_config("version"), $latest_version)) {
   echo __("Click here to upgrade!");
   echo "</a></div><br /></div>";
 }
-*/
 
 if ($show_other_discovered == "y") {
   $sql  = "SELECT * FROM other WHERE (other_mac_address <> '' AND ";

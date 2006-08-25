@@ -49,7 +49,7 @@ upgrade($version, "06.08.20", $sql);
 <?php
 function upgrade($version, $latestversion, $sql) {
   if (versionCheck($version, $latestversion)) {
-    echo "Upgrading to " . $latestversion;
+    echo __("Upgrading to") . " " . $latestversion;
 
     $sql2 = explode(";", $sql);
     foreach ($sql2 as $sql3) {
