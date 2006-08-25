@@ -34,7 +34,7 @@ $query_array=array("name"=>__("Printer"),
                                                                    ),
                                                     ),
                                    "nmap"=>array(
-                                                    "headline"=>__("Nmap discovered on Audited PC"),
+                                                    "headline"=>__("Nmap discovered on Host"),
                                                     "sql"=>"SELECT * from nmap_ports WHERE nmap_other_id = '" . $_REQUEST["other"] . "' ",
                                                     "table_layout"=>"horizontal",
                                                     "image"=>"./images/nmap_l.png",
