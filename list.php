@@ -155,14 +155,11 @@ echo "<form method=\"post\" name=\"form_nav\" action=\"".htmlentities($_SERVER["
     echo "<img src=\"images/go-next-disabled.png\" alt=\"".__("Disabled")."\" title=\"".__("Disabled")."\" border=\"0\" width=\"16\" height=\"16\" />\n";
   }
 
-
   echo "</td></tr><tr><td align=\"right\" nowrap height=\"50%\">\n";
 
-//  echo "<p style=\"height:10px; margin:0px;\"></p>";
-
   //Direct jumping to pages
+  //Don't show if there is only one-page or show_all==1
   if( ($all_page_count>=$count_system OR $count_system==$count_system_max) AND (isset($show_all) AND $show_all!=1) ){
-//  if($all_page_count>$count_system){
       for ($i = 0; $i <= $all_page_count; $i=$i+$count_system) {
 
           if( ($i<=($count_system*4)) OR ($i>=($all_page_count-($count_system*3))) ){
