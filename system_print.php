@@ -109,7 +109,7 @@ if(isset($_GET["pc"]) AND $_GET["pc"]!=""){
       }while ($myrow = mysql_fetch_array($result));
   }
 }else{
-    $systems_array=array("pc"=>$_REQUEST["pc"],"system_timestamp"=>"",);
+    $systems_array[0]=array("pc"=>"","system_timestamp"=>"",);
 }
 
 //Start PDF
@@ -199,6 +199,7 @@ foreach($systems_array as $system){
                     if(!isset($field["show"]) OR $field["show"]!="n"){
 
                         $show_value = special_field_converting($myrow, $field, $db, "system");
+                        $show_value = html_entity_decode ($show_value);
                         $pdf=pdf_draw_row($pdf, $draw, $field["head"].":", $show_value);
                     }
                 }
