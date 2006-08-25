@@ -181,7 +181,7 @@ foreach($systems_array as $system){
 
             //Add new page, if there is not enought space to display the next category
             $needed_height=count($viewdef_array["fields"]) * $this_page_count * ($draw["col_height_1"]/10) + $pdf->GetY();
-            if($needed_height>260){
+            if($needed_height>240){
                 $pdf=pdf_draw_footer($pdf, $draw);
                 $pdf=pdf_draw_new_page($pdf, $draw);
                 $pdf=pdf_draw_headline_1($pdf, $draw, "");
