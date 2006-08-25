@@ -115,12 +115,12 @@ echo "<form method=\"post\" name=\"form_nav\" action=\"".htmlentities($_SERVER["
       $show_page_count_to=$page_count+$count_system;
   }
 
-  echo "<table width=\"100%\" border=\"0\" style=\"height: 70px\"><tr><td>\n";
+  echo "<table width=\"100%\" border=\"0\" style=\"height: 70px\"><tr><td rowspan=\"2\">\n";
    echo "<span class=\"contenthead\"><b>";
    echo htmlspecialchars($query_array["headline"])." ";
    if(isset($_REQUEST["headline_addition"])) {echo htmlspecialchars($_REQUEST["headline_addition"]);}
    echo " (".($page_count+1)."-".$show_page_count_to."/".$all_page_count.")</b></span>\n";
-  echo "</td><td align=\"right\" nowrap>\n";
+  echo "</td><td align=\"right\" nowrap height=\"50%\">\n";
 
   //Navigation-buttons
   //Previous
@@ -155,10 +155,14 @@ echo "<form method=\"post\" name=\"form_nav\" action=\"".htmlentities($_SERVER["
     echo "<img src=\"images/go-next-disabled.png\" alt=\"".__("Disabled")."\" title=\"".__("Disabled")."\" border=\"0\" width=\"16\" height=\"16\" />\n";
   }
 
-  echo "<p style=\"height:10px; margin:0px;\"></p>";
+
+  echo "</td></tr><tr><td align=\"right\" nowrap height=\"50%\">\n";
+
+//  echo "<p style=\"height:10px; margin:0px;\"></p>";
 
   //Direct jumping to pages
-  if($all_page_count>$count_system){
+  if( ($all_page_count>=$count_system OR $count_system==$count_system_max) AND (isset($show_all) AND $show_all!=1) ){
+//  if($all_page_count>$count_system){
       for ($i = 0; $i <= $all_page_count; $i=$i+$count_system) {
 
           if( ($i<=($count_system*4)) OR ($i>=($all_page_count-($count_system*3))) ){
@@ -175,12 +179,12 @@ echo "<form method=\"post\" name=\"form_nav\" action=\"".htmlentities($_SERVER["
           }
       }
       unset($style_for_direct_jump);
+      echo "&nbsp;&nbsp;\n";
+      echo "<input type=\"text\" name=\"page_count_tmp\" value=\"".($page_current+1)."\" style=\"width:16px;\" />\n";
+      echo "<input type=\"button\" name=\"tmp_submit\" value=\">\" style=\"width:16px;\" onClick=\"set_form_field('page_count', (document.forms['form_nav'].elements['page_count_tmp'].value-1)); submit_form();\" />\n";
   }
-  echo "&nbsp;&nbsp;\n";
-  echo "<input type=\"text\" name=\"page_count_tmp\" value=\"".($page_current+1)."\" style=\"width:16px;\" />\n";
-  echo "<input type=\"button\" name=\"tmp_submit\" value=\">\" style=\"width:16px;\" onClick=\"set_form_field('page_count', (document.forms['form_nav'].elements['page_count_tmp'].value-1)); submit_form();\" />\n";
-  echo "</td></tr></table>\n";
 
+  echo "</td></tr></table>\n";
   echo "<div style=\"margin: 5px;\"></div>";
 
 //Table header
