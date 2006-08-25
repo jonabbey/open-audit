@@ -156,57 +156,59 @@ foreach($systems_array as $system){
 
      //Create new Page
      $pdf=pdf_draw_new_page($pdf, $draw);
-     //Headline on the first Page
-     $pdf=pdf_draw_headline_1($pdf, $draw, $query_array["name"]." ".$headline_addition);
+     if(isset($query_array["name"]) AND $query_array["name"]!=""){
+         //Headline on the first Page
+         $pdf=pdf_draw_headline_1($pdf, $draw, $query_array["name"]." ".$headline_addition);
+     }
 
     //Show each Category
     reset($query_array["views"]);
     while (list ($viewname, $viewdef_array) = @each ($query_array["views"])) {
+        if(!isset($viewdef_array["print"]) OR $viewdef_array["print"]!="n"){
 
-        //Executing Query
-        $sql=$viewdef_array["sql"];
-        $result=mysql_query($sql, $db);
-        if(!$result) { echo "<br>".__("Fatal Error").":<br><br>".$sql."<br><br>".mysql_error()."<br><br>";
-                       echo "<pre>";
-                       echo "REQUEST:<br>";
-                       print_r($_REQUEST);
-                       echo "VIEWDEF:<br>";
-                       print_r($viewdef_array);
-                       die();
-                     };
-        $this_page_count = mysql_num_rows($result);
+            //Executing Query
+            $sql=$viewdef_array["sql"];
+            $result=mysql_query($sql, $db);
+            if(!$result) { echo "<br>".__("Fatal Error").":<br><br>".$sql."<br><br>".mysql_error()."<br><br>";
+                           echo "<pre>";
+                           echo "REQUEST:<br>";
+                           print_r($_REQUEST);
+                           echo "VIEWDEF:<br>";
+                           print_r($viewdef_array);
+                           die();
+                         };
+            $this_page_count = mysql_num_rows($result);
 
-        //Add new page, if there is not enought space to display the next category
-        $needed_height=count($viewdef_array["fields"]) * $this_page_count * ($draw["col_height_1"]/10) + $pdf->GetY();
-        if($needed_height>260){
-            $pdf=pdf_draw_footer($pdf, $draw);
-            $pdf=pdf_draw_new_page($pdf, $draw);
-            $pdf=pdf_draw_headline_1($pdf, $draw, "");
-        }
+            //Add new page, if there is not enought space to display the next category
+            $needed_height=count($viewdef_array["fields"]) * $this_page_count * ($draw["col_height_1"]/10) + $pdf->GetY();
+            if($needed_height>260){
+                $pdf=pdf_draw_footer($pdf, $draw);
+                $pdf=pdf_draw_new_page($pdf, $draw);
+                $pdf=pdf_draw_headline_1($pdf, $draw, "");
+            }
 
-        //Headline of each category
-        if(isset($viewdef_array["headline"]) AND $viewdef_array["headline"]!=""){
-            $pdf=pdf_draw_headline_2($pdf, $draw, $viewdef_array["headline"]);
-        }
+            //Headline of each category
+            if(isset($viewdef_array["headline"]) AND $viewdef_array["headline"]!=""){
+                $pdf=pdf_draw_headline_2($pdf, $draw, $viewdef_array["headline"]);
+            }
 
-        //Body
-        $pdf->SetFont('Arial','',8);
-        $pdf->SetDrawColor(200,200,200);
-        if ($myrow = mysql_fetch_array($result)){
-            do{
-
-                foreach($viewdef_array["fields"] as $field){
-                    if(!isset($field["show"]) OR $field["show"]!="n"){
-
-                        $show_value = special_field_converting($myrow, $field, $db, "system");
-                        $show_value = html_entity_decode ($show_value);
-                        $pdf=pdf_draw_row($pdf, $draw, $field["head"].":", $show_value);
+            //Body
+            $pdf->SetFont('Arial','',8);
+            $pdf->SetDrawColor(200,200,200);
+            if ($myrow = mysql_fetch_array($result)){
+                do{
+                    foreach($viewdef_array["fields"] as $field){
+                        if( (!isset($field["show"]) OR $field["show"]!="n") AND (!isset($field["print"]) OR $field["print"]="n") ){
+                            $show_value = special_field_converting($myrow, $field, $db, "system");
+                            $show_value = html_entity_decode ($show_value);
+                            $pdf=pdf_draw_row($pdf, $draw, $field["head"].":", $show_value);
+                        }
                     }
-                }
-                $pdf=pdf_draw_ln($pdf);
-            }while ($myrow = mysql_fetch_array($result));
-        }else{
-            $pdf=pdf_draw_row($pdf, $draw, __("No Results"), "");
+                    $pdf=pdf_draw_ln($pdf);
+                }while ($myrow = mysql_fetch_array($result));
+            }else{
+                $pdf=pdf_draw_row($pdf, $draw, __("No Results"), "");
+            }
         }
     }
 }
