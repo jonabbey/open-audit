@@ -93,7 +93,7 @@ function pdf_draw_ln($pdf){
     return $pdf;
 }
 
-//Get $_GLOBAL["system_timestamp"]
+//Get the pc's to display, actually only one
 if(isset($_GET["pc"]) AND $_GET["pc"]!=""){
   $pc=$_REQUEST["pc"];
   $sql = "SELECT system_uuid, system_timestamp, system_name FROM system WHERE system_uuid = '$pc' OR system_name = '$pc' ";
