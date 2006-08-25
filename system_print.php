@@ -23,39 +23,6 @@ require('./lib/fpdf/fpdf.php');
 $db = mysql_connect($mysql_server,$mysql_user,$mysql_password) or die('Could not connect: ' . mysql_error());
 mysql_select_db($mysql_database,$db);
 
-//Include the view-definition
-if(isset($_REQUEST["view"]) AND $_REQUEST["view"]!=""){
-    $include_filename = "system_viewdef_".$_REQUEST["view"].".php";
-}else{
-    $include_filename = "system_viewdef_summary.php";
-}
-if(is_file($include_filename)){
-    include_once($include_filename);
-    $viewdef_array=$query_array;
-}else{
-    die("FATAL: Could not find view $include_filename");
-}
-
-//Set GET[pc] to a local variable
-if(isset($_GET["pc"]) AND $_GET["pc"]!=""){
-    $pc=$_GET["pc"];
-}
-
-//Convert GET[category] to an array
-if(isset($_REQUEST["category"]) AND $_REQUEST["category"]!=""){
-    $array_category=explode(",",$_REQUEST["category"]);
-}
-
-//Delete undisplayed categories from $query_array, if a certain category is given
-if(isset($array_category) AND is_array($array_category) AND $_REQUEST["category"]!=""){
-    reset($query_array["views"]);
-    while (list ($viewname, $viewdef_array) = @each ($query_array["views"])) {
-        if(!in_array($viewname, $array_category)){
-            unset($query_array["views"][$viewname]);
-        }
-    }
-}
-
 //Col-Width and Hight
 $draw["col_width_1"]=40;
 $draw["col_width_2"]=130;
@@ -125,10 +92,63 @@ function pdf_draw_ln($pdf){
     $pdf->Ln();
     return $pdf;
 }
+
+//Get $_GLOBAL["system_timestamp"]
+if(isset($_GET["pc"]) AND $_GET["pc"]!=""){
+  $pc=$_REQUEST["pc"];
+  $sql = "SELECT system_uuid, system_timestamp, system_name FROM system WHERE system_uuid = '$pc' OR system_name = '$pc' ";
+  $result = mysql_query($sql, $db);
+
+  $i=0;
+  if ($myrow = mysql_fetch_array($result)){
+      do{
+          $systems_array[$i]=array("pc"=>$myrow["system_uuid"],
+                               "system_timestamp"=>$myrow["system_timestamp"],
+                              );
+          $i++;
+      }while ($myrow = mysql_fetch_array($result));
+  }
+}else{
+    $systems_array=array("pc"=>$_REQUEST["pc"],"system_timestamp"=>"",);
+}
+
 //Start PDF
 $pdf=pdf_start();
 
-if(1==1){
+foreach($systems_array as $system){
+
+    //Workaround to get the queries in the viewdef-array get worked
+    $_REQUEST["pc"]=$system["pc"];
+    $_GET["pc"]=$system["pc"];
+    $pc=$system["pc"];
+    $GLOBAL["system_timestamp"]=$system["system_timestamp"];
+
+    //Include the view-definition
+    if(isset($_REQUEST["view"]) AND $_REQUEST["view"]!=""){
+        $include_filename = "system_viewdef_".$_REQUEST["view"].".php";
+    }else{
+        $include_filename = "system_viewdef_summary.php";
+    }
+    if(is_file($include_filename)){
+        include($include_filename);
+        $viewdef_array=$query_array;
+    }else{
+        die("FATAL: Could not find view $include_filename");
+    }
+    //Convert GET[category] to an array
+    if(isset($_REQUEST["category"]) AND $_REQUEST["category"]!=""){
+        $array_category=explode(",",$_REQUEST["category"]);
+    }
+
+    //Delete undisplayed categories from $query_array, if a certain category is given
+    if(isset($array_category) AND is_array($array_category) AND $_REQUEST["category"]!=""){
+        reset($query_array["views"]);
+        while (list ($viewname, $viewdef_array) = @each ($query_array["views"])) {
+            if(!in_array($viewname, $array_category)){
+                unset($query_array["views"][$viewname]);
+            }
+        }
+    }
 
      if(!isset($headline_addition) OR $headline_addition==""){
          $headline_addition="";
