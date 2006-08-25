@@ -275,6 +275,7 @@ $GLOBALS["lang"]["In Windows registered Antivirus"]="In Windows registered Antiv
 $GLOBALS["lang"]["Up-to-date"]="Up-to-date";
 $GLOBALS["lang"]["Other Antivirus"]="Other Antivirus";
 $GLOBALS["lang"]["Nmap discovered on Audited PC"]="Nmap discovered on Audited PC";
+$GLOBALS["lang"]["Nmap discovered on Host"]="Nmap discovered on Host";
 $GLOBALS["lang"]["List Port-Exceptions for Host"]="List Port-Exceptions for Host";
 $GLOBALS["lang"]["Profile"]="Profile";
 $GLOBALS["lang"]["Protocol"]="Protocol";
