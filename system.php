@@ -341,7 +341,7 @@ while (list ($viewname, $viewdef_array) = @each ($query_array["views"])) {
         }elseif(isset($_REQUEST["monitor"])){
             echo "monitor=".$_REQUEST["monitor"]."&amp;";
         }else{
-            die(__("FATAL: Ther's no ID-variable to identify the item. I.e pc or other"));
+            die(__("FATAL: There's no ID-variable to identify the item. I.e pc or other"));
         }
         echo "view=".$_REQUEST["view"]."&amp;category=".$viewname."&amp;edit=1';\" />";
            }
