@@ -363,7 +363,7 @@ while (list ($viewname, $viewdef_array) = @each ($query_array["views"])) {
 
   echo "</div>\n";
 
-  echo __("This Page was generated in")." ".number_format((microtime_float()-$time_start),2)." ". __("Seconds").".";
+  echo __("This Page was generated in")." ".number_format((microtime_float()-$time_start),2)." ". __("seconds").".";
 
  echo "</td>\n";
 include "include_right_column.php";
