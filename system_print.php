@@ -76,7 +76,8 @@ function pdf_draw_footer($pdf, $draw){
     //Print Footer
     $pdf->SetFont('Arial','B',$draw["font_size_footer"]);
     $pdf->SetY(-15);
-    $pdf->Write(5,date("Y-m-d, H:i"),0,0,'L');
+    $url = $_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']; 
+    $pdf->Write(5,date('l dS \of F Y h:i:s A'),$url,0,'L');
     $pdf->SetX(100);
     $pdf->Write(5,$pdf->PageNo());
     $pdf->SetX(170);
