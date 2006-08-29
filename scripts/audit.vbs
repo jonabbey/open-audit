@@ -1479,7 +1479,7 @@ else
      wscript.echo comment
   end if
   On Error Resume Next
-  Set colItems = objWMIService.ExecQuery("Select * from Win32_Group where LocalAccount= 'TRUE' ",,48)
+  Set colItems = objWMIService.ExecQuery("Select * from Win32_Group where Domain = '" & system_name & "'",,48)
   For Each objItem in colItems
     users = ""
     Set colGroups = GetObject("WinNT://" & strComputer & "")
@@ -1520,7 +1520,7 @@ else
     wscript.echo comment
   end if
   On Error Resume Next
-  Set colItems = objWMIService.ExecQuery("Select * from Win32_UserAccount where LocalAccount= 'TRUE' ",,48)
+  Set colItems = objWMIService.ExecQuery("Select * from Win32_UserAccount where Domain = '" & system_name & "'",,48)
   For Each objItem in colItems
     form_input = "l_user^^^" & clean(objItem.Description)        & "^^^" _
                              & clean(objItem.Disabled)           & "^^^" _
