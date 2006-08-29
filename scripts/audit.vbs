@@ -377,8 +377,10 @@ For Each objItem in colItems
    net_dhcp_enabled = objItem.DHCPEnabled
    net_dhcp_server = objItem.DHCPServer
    net_dns_host_name = objItem.DNSHostName
-   net_dns_server = objItem.DNSServerSearchOrder(0)
-   net_dns_server_2 = objItem.DNSServerSearchOrder(1)
+   if isarray(objItem.DNSServerSearchOrder) then
+     net_dns_server = objItem.DNSServerSearchOrder(0)
+     net_dns_server_2 = objItem.DNSServerSearchOrder(1)
+   end if
    net_ip_subnet = objItem.IPSubnet(0)
    net_wins_primary = objItem.WINSPrimaryServer
    net_wins_secondary = objItem.WINSSecondaryServer
