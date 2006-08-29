@@ -1,4 +1,4 @@
 set shell = CreateObject ("Shell.Application")
 set wshshell = CreateObject ("WScript.Shell")
-Path = "\\%hostname%\C$"
+Path = "\\NAME\C$"
 shell.Explore Path
