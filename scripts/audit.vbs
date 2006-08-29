@@ -23,7 +23,7 @@ Dim net_mac_uuid
 form_total = ""
 
 ' Below calls the file audit_include.vbs to setup the variables.
-ExecuteGlobal CreateObject("Scripting.FileSystemObject").OpenTextFile("audit.config").ReadAll
+ExecuteGlobal CreateObject("Scripting.FileSystemObject").OpenTextFile("audit.config").ReadAll 
 
 ' If any command line args given - use the first one as strComputer
 If Wscript.Arguments.Count > 0 Then
@@ -144,9 +144,9 @@ if audit_local_domain = "y" then
   objConnection.Provider = "ADsDSOObject"
   objConnection.Open "Active Directory Provider"
   Set objCOmmand.ActiveConnection = objConnection
-  objCommand.CommandText = "Select Name, Location from '" & local_domain & "' Where objectClass='computer'"
+  objCommand.CommandText = "Select Name, Location from '" & local_domain & "' Where objectClass='computer'"  
   objCommand.Properties("Page Size") = 1000
-  objCommand.Properties("Searchscope") = ADS_SCOPE_SUBTREE
+  objCommand.Properties("Searchscope") = ADS_SCOPE_SUBTREE 
   objCommand.Properties("Sort On") = "name"
   Set objRecordSet = objCommand.Execute
   objRecordSet.MoveFirst
@@ -171,7 +171,7 @@ if audit_local_domain = "y" then
     On Error Resume Next
     strComputer = objRecordSet.Fields("Name").Value
     comparray(count) = strComputer ' Feed computers into array
-    count = count + 1
+    count = count + 1 
     if verbose = "y" then
       wscript.echo "Computer Name from ldap: " & strComputer
     end if
@@ -207,7 +207,7 @@ if audit_local_domain = "y" then
       set sh1 = nothing
       num_running = HowMany
     end if
-  Next
+  Next  
 end if
 
 
@@ -275,7 +275,7 @@ wscript.Sleep 6000
 Set objFile = objFSO.OpenTextFile("failed_audits.txt", 1)
 email_failed = objFile.ReadAll
 objFile.Close
-
+  
 ''''''''''''''''''''''''''''''''''
 ' Send an email of failed audits '
 ' if there are any               '
@@ -284,10 +284,10 @@ if email_failed <> "" then
   Set objEmail = CreateObject("CDO.Message")
   objEmail.From = email_from
   objEmail.To   = email_to
-  objEmail.Subject = "Failed Open Audits."
+  objEmail.Subject = "Failed Open Audits." 
   objEmail.Textbody = "The following systems failed to audit: " & vbCRLF & email_failed
   objEmail.Configuration.Fields.Item ("http://schemas.microsoft.com/cdo/configuration/sendusing") = 2
-  objEmail.Configuration.Fields.Item ("http://schemas.microsoft.com/cdo/configuration/smtpserver") = email_server
+  objEmail.Configuration.Fields.Item ("http://schemas.microsoft.com/cdo/configuration/smtpserver") = email_server 
   objEmail.Configuration.Fields.Item ("http://schemas.microsoft.com/cdo/configuration/smtpserverport") = 25
   objEmail.Configuration.Fields.Update
   objEmail.Send
@@ -313,7 +313,7 @@ Next
 Set colItems = objWMIService.ExecQuery("Select IPAddress from Win32_networkadapterconfiguration WHERE IPEnabled='TRUE'",,48)
 For Each objItem in colItems
    system_ip = objItem.IPAddress(0)
-Next
+Next 
 Set wshNetwork = WScript.CreateObject( "WScript.Network" )
 user_name = wshNetwork.userName
 Set colItems = objWMIService.ExecQuery("Select * from Win32_ComputerSystemProduct",,48)
@@ -366,7 +366,7 @@ On Error Resume Next
 Set colItems = objWMIService.ExecQuery("select * from win32_networkadapterconfiguration WHERE IPEnabled='TRUE' " _
    & "AND ServiceName<>'AsyncMac' AND ServiceName<>'VMnetx' " _
    & "AND ServiceName<>'VMnetadapter' AND ServiceName<>'Rasl2tp' " _
-   & "AND ServiceName<>'msloop' " _
+   & "AND ServiceName<>'msloop' " _ 
    & "AND ServiceName<>'PptpMiniport' AND ServiceName<>'Raspti' " _
    & "AND ServiceName<>'NDISWan' AND ServiceName<>'NdisWan4' AND ServiceName<>'RasPppoe' " _
    & "AND ServiceName<>'NdisIP' AND ServiceName<>'' AND Description<>'PPP Adapter.'",,48)
@@ -377,8 +377,10 @@ For Each objItem in colItems
    net_dhcp_enabled = objItem.DHCPEnabled
    net_dhcp_server = objItem.DHCPServer
    net_dns_host_name = objItem.DNSHostName
-   net_dns_server = objItem.DNSServerSearchOrder(0)
-   net_dns_server_2 = objItem.DNSServerSearchOrder(1)
+   if isarray(objItem.DNSServerSearchOrder) then
+     net_dns_server = objItem.DNSServerSearchOrder(0)
+     net_dns_server_2 = objItem.DNSServerSearchOrder(1)
+   end if 
    net_ip_subnet = objItem.IPSubnet(0)
    net_wins_primary = objItem.WINSPrimaryServer
    net_wins_secondary = objItem.WINSSecondaryServer
@@ -658,7 +660,7 @@ if online = "p" then
     oIE.document.WriteLn "<tr bgcolor=""#F1F1F1""><td>Service Pack: </td><td>" & OSSerPack & "</td></tr>"
     oIE.document.WriteLn "<tr><td>Windows Directory: </td><td>" & Country & "</td></tr>"
     oIE.document.WriteLn "</table></div>"
-    oIE.document.WriteLn "<br style=""page-break-before:always;"" />"
+    oIE.document.WriteLn "<br style=""page-break-before:always;"" />" 
     oIE.document.WriteLn "<div id=""content"">"
     oIE.document.WriteLn "<table border=""0"" cellpadding=""2"" cellspacing=""0"" class=""content"">"
     oIE.document.WriteLn "<tr><td colspan=""2""><b>Hardware</b></td></tr>"
@@ -676,7 +678,7 @@ On Error Resume Next
 Set colSMBIOS = objWMIService.ExecQuery ("Select * from Win32_SystemEnclosure",,48)
 For Each objSMBIOS in colSMBIOS
 bios_asset = objSMBIOS.SMBIOSAssetTag
-Next
+Next 
 
 Set colItems = objWMIService.ExecQuery("Select * from Win32_BIOS",,48)
 For Each objItem in colItems
@@ -723,7 +725,7 @@ For Each objItem in colItems
 Next
 
 '''''''''''''''''''''''''''
-'   Memory Information
+'   Memory Information   
 '''''''''''''''''''''''''''
 comment = "Memory Info"
 if verbose = "y" then
@@ -972,7 +974,7 @@ tmpctr=0
     Else
       tmpser=trim(tmp)
     end If
-    if left(tmpser,1)=chr(0) Then
+    if left(tmpser,1)=chr(0) Then 
       tmpser=right(tmpser,len(tmpser)-1)
     Else
       tmpser="Serial Number Not Found in EDID data"
@@ -983,7 +985,7 @@ tmpctr=0
     Else
       tmpmdl=trim(tmp)
     end If
-    if left(tmpmdl,1)=chr(0) Then
+    if left(tmpmdl,1)=chr(0) Then 
       tmpmdl=right(tmpmdl,len(tmpmdl)-1)
     Else
       tmpmdl="Model Descriptor Not Found in EDID data"
@@ -1101,7 +1103,7 @@ For Each objDevice in colDevices
         form_input = ""
       end if
     end if
-  Next
+  Next  
 Next
 
 '''''''''''''''''''''''''''
@@ -1151,7 +1153,7 @@ For Each LocalDrive in LocalDrives
      partition_primary_partition = objItem.PrimaryPartition
    Next
    On Error Resume Next
-   Set colItems = objWMIService.ExecQuery("Select * from Win32_LogicalDisk WHERE caption='" & LocalDrive &"'",,48)
+   Set colItems = objWMIService.ExecQuery("Select * from Win32_LogicalDisk WHERE caption='" & LocalDrive &"' AND NOT drivetype=<2",,48)
    For Each objItem in colItems
      partition_caption = objItem.Caption
      partition_file_system = objItem.FileSystem
@@ -1452,7 +1454,7 @@ if audit_location = "l" then
     wscript.echo comment
   end if
   On Error Resume Next
-  Set colItems = objWMIService.ExecQuery("Select * from Win32_LogicalDisk",,48)
+  Set colItems = objWMIService.ExecQuery("Select * from Win32_LogicalDisk where NOT drivetype=<2",,48)
   For Each objItem in colItems
     if Left(objItem.ProviderName,2)="\\" then
       form_input = "mapped^^^" & clean(objItem.DeviceID)                            & "^^^" _
@@ -1549,7 +1551,7 @@ if hfnet = "y" then
   Set oFS = CreateObject("Scripting.FileSystemObject")
   sTemp = oShell.ExpandEnvironmentStrings("%TEMP%")
   sTempFile = sTemp & "\" & oFS.GetTempName
-  if (strUser <> "" AND strPass <>"") then
+  if (strUser <> "" AND strPass <>"") then 
     hfnetchk = "hfnetchk.exe -h " & system_name & " -u " & strUser & " -p " & strPass & " -nosum -vv -x mssecure.xml -o tab -f " & sTempFile
   else
     hfnetchk = "hfnetchk.exe -h " & system_name & " -vv -x mssecure.xml -nosum -o tab -f " & sTempFile
@@ -1579,7 +1581,7 @@ if hfnet = "y" then
       '                              & clean(MyArray(5)) & "^^^"
       'entry form_input,comment,objTextFile,oAdd,oComment
       'form_input = ""
-
+      
       'sql = "INSERT INTO system_security (ss_name, ss_product, ss_qno, ss_reason, ss_status) VALUES ('" _
       '& hf_name(0) & "','" & clean(MyArray(1)) & "','" & qno & "','" & clean(MyArray(6)) & "','" & clean(MyArray(8)) & "')"
       'create_sql sql, objTextFile, database
@@ -1593,7 +1595,7 @@ if hfnet = "y" then
                               & clean(MyArray(5)) & "^^^"
       entry form_input,comment,objTextFile,oAdd,oComment
       form_input = ""
-
+      
     end if
   Loop
   objTextFile2.Close
@@ -1640,7 +1642,7 @@ On Error Resume Next
 Set colItems = objWMIService.ExecQuery("Select * from Win32_StartupCommand",,48)
 For Each objItem in colItems
   'if objItem.Command <> "desktop.ini" then
-  if objItem.Location <> "Startup" AND (objItem.User <> ".DEFAULT" OR objItem.User <> "NT AUTHORITY\SYSTEM") then
+  if objItem.Location <> "Startup" AND (objItem.User <> ".DEFAULT" OR objItem.User <> "NT AUTHORITY\SYSTEM") then 
     form_input = "startup^^^" & objItem.Caption     & " ^^^" _
                               & objItem.Command     & " ^^^" _
                               & objItem.Description & " ^^^" _
@@ -1733,47 +1735,47 @@ For Each subkey In arrSubKeys
      oReg.GetStringValue HKEY_LOCAL_MACHINE, newpath, newkey, strValue
      version = strValue
      if (isnull(version)) then version = "" end if
-
+     
      newkey = "UninstallString"
      oReg.GetStringValue HKEY_LOCAL_MACHINE, newpath, newkey, strValue
      uninstall_string = strValue
      if (isnull(uninstall_string)) then uninstall_string = "" end if
-
+     
      newkey = "InstallDate"
      oReg.GetStringValue HKEY_LOCAL_MACHINE, newpath, newkey, strValue
      install_date = strValue
      if (isnull(install_date)) then install_date = "" end if
-
+     
      newkey = "Publisher"
      oReg.GetStringValue HKEY_LOCAL_MACHINE, newpath, newkey, strValue
      publisher = strValue
      if (isnull(publisher)) then publisher = "" end if
-
+     
      newkey = "InstallSource"
      oReg.GetStringValue HKEY_LOCAL_MACHINE, newpath, newkey, strValue
      install_source = strValue
      if (isnull(install_source)) then install_source = "" end if
-
+     
      newkey = "InstallLocation"
      oReg.GetStringValue HKEY_LOCAL_MACHINE, newpath, newkey, strValue
      install_location = strValue
      if (isnull(install_location)) then install_location = "" end if
-
+     
      newkey = "SystemComponent"
      oReg.GetDWORDValue HKEY_LOCAL_MACHINE, newpath, newkey, strValue
      system_component = strValue
      if (isnull(system_component)) then system_component = "" end if
-
+     
      newkey = "URLInfoAbout"
      oReg.GetStringValue HKEY_LOCAL_MACHINE, newpath, newkey, strValue
      software_url = strValue
      if (isnull(software_url)) then software_url = "" end if
-
+     
      newkey = "Comments"
      oReg.GetStringValue HKEY_LOCAL_MACHINE, newpath, newkey, strValue
      software_comments = strValue
      if (isnull(software_comments)) then software_comments = " " end if
-
+     
      if online = "p" then
        software = software & display_name & vbcrlf
      end if
@@ -1925,7 +1927,7 @@ if online = "p" then
       split_software(n) = temp
     end if
   Next
- Next
+ Next 
  for g = 1 to ubound(split_software)
   oIE.document.WriteLn "<tr><td>Package Name: </td><td>" & split_software(g) & "</td></tr>"
  next
@@ -2294,17 +2296,17 @@ if (IsOSXP2K2K3 > 0) then
     edition_type = ""
     form_input = ""
   end if
-end if
+end if 
 
 ''''''''''''''''''''''''''''''''
 '   MS CD Keys for Windows NT  '
 ''''''''''''''''''''''''''''''''
-if InStr(OSName, "Windows NT") then
+if InStr(OSName, "Windows NT") then 
   path = "SOFTWARE\Microsoft\Windows NT\CurrentVersion"
   subKey = "ProductId"
   oReg.GetStringValue HKEY_LOCAL_MACHINE,path,subKey,key
   if IsNull(Key) then
-  else
+  else 
   form_input = "ms_keys^^^" & OSName            & "^^^" _
                             & Key               & "^^^" _
                             & SystemBuildNumber & "^^^" _
@@ -2321,12 +2323,12 @@ end if
 ''''''''''''''''''''''''''''''''
 '   MS CD Keys for Windows 98  '
 ''''''''''''''''''''''''''''''''
-if (InStr(OSName, "Windows 98") Or InStr(OSName, "Windows ME")) then
+if (InStr(OSName, "Windows 98") Or InStr(OSName, "Windows ME")) then 
   path = "Software\Microsoft\Windows\CurrentVersion"
   subKey = "ProductKey"
   oReg.GetStringValue HKEY_LOCAL_MACHINE,path,subKey,key
   if IsNull(Key) then
-  else
+  else 
   form_input = "ms_keys^^^" & OSName            & "^^^" _
                             & Key               & "^^^" _
                             & SystemBuildNumber & "^^^" _
@@ -2979,7 +2981,7 @@ End Function
 Function HostDrives(sHost)
 CONST LOCAL_DISK = 3
 Dim Disks, Disk, aTmp(), i
-Set Disks = objWMIService.ExecQuery ("Select * from Win32_LogicalDisk where DriveType=" & LOCAL_DISK)
+Set Disks = objWMIService.ExecQuery ("Select * from Win32_LogicalDisk where not drivetype=<2 and DriveType=" & LOCAL_DISK)
 ReDim aTmp(Disks.Count - 1)
 i = -1
 For Each Disk in Disks
@@ -3009,16 +3011,16 @@ Const rpkOffset=52:i=28
 szPossibleChars="BCDFGHJKMPQRTVWXY2346789"
 Do 'Rep1
   dwAccumulator=0 : j=14
-  Do
-    dwAccumulator=dwAccumulator*256
+  Do 
+    dwAccumulator=dwAccumulator*256 
     dwAccumulator=rpk(j+rpkOffset)+dwAccumulator
-    rpk(j+rpkOffset)=(dwAccumulator\24) and 255
+    rpk(j+rpkOffset)=(dwAccumulator\24) and 255 
     dwAccumulator=dwAccumulator Mod 24
     j=j-1
   Loop While j>=0
-  i=i-1 :
+  i=i-1 : 
   szProductKey=mid(szPossibleChars,dwAccumulator+1,1)&szProductKey
-  if (((29-i) Mod 6)=0) and (i<>-1) then
+  if (((29-i) Mod 6)=0) and (i<>-1) then 
     i=i-1 : szProductKey="-"&szProductKey
   End If
 Loop While i>=0 'Goto Rep1
@@ -3030,7 +3032,7 @@ End Function
 Function IsConnectible(sHost,iPings,iTO)
  if sHost = "." then
    IsConnectible = True
- else
+ else 
    If iPings = "" Then iPings = 2
    If iTO = "" Then iTO = 750
     Set oShell = CreateObject("WScript.Shell")
@@ -3256,6 +3258,8 @@ if form_input <> "" then
   end if
   if online = "ie" or online = "yesxml" then
     form_total = form_total + form_input + vbcrlf
-  end if
+  end if  
 end if
 end sub
+
+
