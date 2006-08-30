@@ -835,6 +835,7 @@ CREATE TABLE `system_man` (
   `system_man_phone_number` varchar(45) NOT NULL default '',
   `system_man_date_of_purchase` date NOT NULL default '0000-00-00',
   `system_man_terminal_number` int(10) unsigned NOT NULL default '0',
+  `system_man_picture` varchar(100) NOT NULL default '',
   PRIMARY KEY  (`system_man_id`),
   KEY `id` (`system_man_uuid`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
@@ -942,7 +943,7 @@ CREATE TABLE `video` (
   KEY `id2` (`video_timestamp`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
-INSERT INTO config (config_name, config_value) VALUES ('version','06.08.20');
+INSERT INTO config (config_name, config_value) VALUES ('version','06.08.30');
 
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
