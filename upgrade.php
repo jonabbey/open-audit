@@ -24,6 +24,7 @@ $sql = "ALTER TABLE `system` CHANGE `system_country_code` `system_country_code` 
         ALTER TABLE `software` CHANGE `software_uninstall` `software_uninstall` MEDIUMTEXT CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL; 
         ALTER TABLE `other` CHANGE `other_p_port_name` `other_p_port_name` VARCHAR( 100 ) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL;
         ALTER TABLE `software` CHANGE `software_install_date` `software_install_date` VARCHAR( 100 ) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL;
+        ALTER TABLE `system_man` ADD COLUMN `system_man_picture` varchar(100)  NOT NULL DEFAULT '' AFTER `system_man_terminal_number`;
         DROP TABLE IF EXISTS `auth`;
         CREATE TABLE `auth` (
         `auth_id` INT( 10 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,
@@ -37,7 +38,7 @@ $sql = "ALTER TABLE `system` CHANGE `system_country_code` `system_country_code` 
         )
         ) ENGINE = MYISAM DEFAULT CHARSET=latin1;";
 
-upgrade($version, "06.08.20", $sql);
+upgrade($version, "06.08.30", $sql);
 
 
 ?>

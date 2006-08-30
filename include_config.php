@@ -2,7 +2,7 @@
 $mysql_server = 'localhost';
 $mysql_database = 'openaudit';
 $mysql_user = 'root';
-$mysql_password = '';
+$mysql_password = '301170';
 
 $use_https = '';
 // An array of allowed users and their passwords
