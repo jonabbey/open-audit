@@ -80,13 +80,13 @@ endwhile;
 if (is_writable($backup_filename)) {
 
    if (!$handle = fopen($backup_filename, 'w+')) {
-         echo "<tr><td>".__("Could not open file (").$filename.")</td></tr>";
+         echo "<tr><td>".__("Could not open file (").$backup_filename.")</td></tr>";
          exit;
    }
 
    // Write $somecontent to our opened file.
    if (fwrite($handle, $backup) === FALSE) {
-       echo "<tr><td>".__("Could not write to file (").$filename.")</td></tr>";
+       echo "<tr><td>".__("Could not write to file (").$backup_filename.")</td></tr>";
        exit;
    }
   $database_length = strlen($backup);
@@ -96,10 +96,10 @@ if (is_writable($backup_filename)) {
    fclose($handle);
    echo "<tr><td>".__("Backup Completed")."</td></tr>";
 } else {
-   echo "<tr><td>".__("The file $filename is not writable")."</td></tr>";
+   echo "<tr><td>".__("The file $backup_filename is not writable")."</td></tr>";
 }
 
-//echo "</td>\n";
+echo "</tr></td></table>\n";
 
 include "include_right_column.php";
 
