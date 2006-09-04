@@ -15,7 +15,8 @@ echo "<table border=\"0\" cellpadding=\"2\" cellspacing=\"0\" width=\"100%\" >\n
 echo "  <tr><td class=\"contenthead\">".__("Backing up the Database")."</td></tr>";
 echo "  <tr><td colspan=\"3\"><hr /></td></tr>";
 echo "<tr><td>".__("The following tables were found")."</td><td>".__("Length")."</td><td>".__("Connectable")."</td></tr>";
-$today = date("GisdmY");
+echo "  <tr><td colspan=\"3\"><hr /></td></tr>";
+$today = date("dmYGis");
 $backup_dir = '.\\backup\\';
 
 if (!file_exists($backup_dir)) {
@@ -95,8 +96,9 @@ if (is_writable($backup_filename)) {
    echo "<tr bgcolor=\"" . $bgcolor . "\"><td class=\"contenthead\">".__("Success, wrote ").$database_length." ".__("bytes to file").$backup_filename."</td><td></td><td></td></tr>";
   
    fclose($handle);
-     $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
-   echo "<tr bgcolor=\"" . $bgcolor . "\"><td>".__("Backup Completed")."</td><td></td><td></td></tr>";
+   
+//     $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
+   echo "<tr bgcolor=\"" . $bgcolor . "\"><td class=\"contenthead\">".__("Backup Completed")."</td><td></td><td></td></tr>";
 } else {
    echo "<tr><td>".__("The file $backup_filename is not writable")."</td></tr>";
 }
