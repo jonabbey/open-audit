@@ -91,11 +91,12 @@ if (is_writable($backup_filename)) {
    }
   $database_length = strlen($backup);
 //      $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
-   echo "<tr bgcolor=\"" . $bgcolor . "\"><td>".__("Success, wrote ").$database_length." ".__("bytes to file").$backup_filename."</td></tr>";
+   echo "  <tr><td colspan=\"3\"><hr /></td></tr>";
+   echo "<tr bgcolor=\"" . $bgcolor . "\"><td class=\"contenthead\">".__("Success, wrote ").$database_length." ".__("bytes to file").$backup_filename."</td><td></td><td></td></tr>";
   
    fclose($handle);
      $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
-   echo "<tr bgcolor=\"" . $bgcolor . "\"><td>".__("Backup Completed")."</td></tr>";
+   echo "<tr bgcolor=\"" . $bgcolor . "\"><td>".__("Backup Completed")."</td><td></td><td></td></tr>";
 } else {
    echo "<tr><td>".__("The file $backup_filename is not writable")."</td></tr>";
 }
