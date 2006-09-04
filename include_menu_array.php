@@ -153,6 +153,8 @@ $menue_array = array(
                                     "30"=>array("name"=>"Add a System", "link"=>"admin_pc_add_1.php?sub=1", "image"=>"images/add.png", "title"=>"",),
                                     "40"=>array("name"=>"Delete a System", "link"=>"admin_pc_delete.php?sub=1", "image"=>"images/delete.png", "title"=>"",),
                                     "50"=>array("name"=>"Audit My Machine", "link"=>"scripts/audit.vbs", "image"=>"images/audit.png", "title"=>"",),
+                                    "60"=>array("name"=>"Backup Database", "link"=>"database_backup.php", "image"=>"images/tape.png", "title"=>"",),
+                                    "70"=>array("name"=>"Restore Database", "link"=>"database_restore.php", "image"=>"images/tape.png", "title"=>"",),
                               ),
               ),
   ),
