@@ -41,6 +41,7 @@ $url = $_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
 
 $backup .= "-- ----------  $date_time   -----------$newline";
 $backup .= "-- ----------  ".__("Open Audit Database Backup")."  -----------$newline";
+$backup .= "-- ----".$mysql_database."----";
 $backup .= "-- $url --$newline";
 $backup .= "-- --------------------------------------------------------$newline";
 
@@ -72,9 +73,9 @@ while($tabs = mysql_fetch_row($tables)):
        endfor;
        $backup .= ");".$newline;
    endwhile;
-   $backup .= $newline."-- --------------------------------------------------------".$newline.$newline;
+   $backup .= $newline."-- ----------------".__("End of table")."----------------------------".$newline;
 endwhile;
-
+$backup .= $newline."-- ----------------".__("End of backup")."----------------------------".$newline.$newline;
 // Let's make sure the file exists and is writable first.
 
 if (is_writable($backup_filename)) {
