@@ -8,7 +8,7 @@
 function replacePngTags($x){
     // make sure that we are only replacing for the Windows versions of Internet 
     // Explorer 5+, and not Opera identified as MSIE 
-    $msie='/msie\s([5-9])\.?[0-9]*.*(win)/i'; 
+    $msie='/msie\s([5-6])\.?[0-9]*.*(win)/i'; 
     $opera='/opera\s+[0-9]+/i'; 
     $arr2 = '';
     $images = '';
