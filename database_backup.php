@@ -4,14 +4,15 @@
 include "include.php";
 
 //
+$newline = "\r\n";
 $page = "database_backup.php";
 $bgcolor = "#FFFFFF";
 set_time_limit(240);
 
 
-echo "<td valign=\"top\">\n";
-echo "<div class=\"main_each\">\n";
-echo "<table border=\"0\" cellpadding=\"2\" cellspacing=\"0\" width=\"100%\" >\n";
+echo "<td valign=\"top\">$newline";
+echo "<div class=\"main_each\">$newline";
+echo "<table border=\"0\" cellpadding=\"2\" cellspacing=\"0\" width=\"100%\" >$newline";
 echo "  <tr><td class=\"contenthead\">".__("Backing up the Database")."</td></tr>";
 echo "  <tr><td colspan=\"3\"><hr /></td></tr>";
 echo "<tr><td>".__("The following tables were found")."</td><td>".__("Length")."</td><td>".__("Connectable")."</td></tr>";
@@ -38,15 +39,15 @@ $date_time = date('l dS \of F Y h:i:s A');
 
 $url = $_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
 
-$backup .= "\n-- ----------  $date_time   -----------\n\n";
-$backup .= "\n-- ----------  ".__("Open Audit Database Backup")."  -----------\n\n";
-$backup .= "\n-- $url --\n\n";
-$backup .= "\n-- --------------------------------------------------------\n\n";
+$backup .= "-- ----------  $date_time   -----------$newline";
+$backup .= "-- ----------  ".__("Open Audit Database Backup")."  -----------$newline";
+$backup .= "-- $url --$newline";
+$backup .= "-- --------------------------------------------------------$newline";
 
 $file_len=strlen($backup);
 
 while($tabs = mysql_fetch_row($tables)):
-   $backup .= "--\n-- ".__("Table structure for")." `$tabs[0]`\n--\n\nDROP IF EXISTS TABLE `$tabs[0]`\nCREATE TABLE IF NOT EXISTS `$tabs[0]` (&nbsp;";
+   $backup .= "--$newline-- ".__("Table structure for")." `$tabs[0]`".$newline."--".$newline."DROP TABLE IF EXISTS `$tabs[0]`;".$newline."CREATE TABLE IF NOT EXISTS `$tabs[0]` (".$newline;
    
    $res = mysql_query("SHOW CREATE TABLE $tabs[0]");
    //echo "<tr><td>". __($tabs[0])."</td><td>$tabs[0]</td></tr>";
@@ -57,26 +58,24 @@ while($tabs = mysql_fetch_row($tables)):
    $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
    while($all = mysql_fetch_assoc($res)):
        $str = str_replace("CREATE TABLE `$tabs[0]` (", "", $all['Create Table']);
-       $str = str_replace(",", ",&nbsp;", $str);
-       $str2 = str_replace("`) ) TYPE=MyISAM ", "`)\n ) TYPE=MyISAM ", $str);
-       $backup .= $str2." AUTO_INCREMENT=".$tbl_stat[$tabs[0]].";\n\n";
+       $str = str_replace(",", ", $newline", $str);
+       $str2 = str_replace("`) ) TYPE=MyISAM ", "`)".$newline." ) TYPE=MyISAM ", $str);
+       $backup .= $str2.";".$newline;
+       //" AUTO_INCREMENT=".$tbl_stat[$tabs[0]].";".$newline.$newline;
    endwhile;
-   $backup .= "--\n-- ".__("All Data from table")." `$tabs[0]`\n--\n\n";
+   $backup .= "--$newline-- ".__("All Data from table")." `$tabs[0]`".$newline."--".$newline.$newline;
    $data = mysql_query("SELECT * FROM $tabs[0]");
    while($dt = mysql_fetch_row($data)):
        $backup .= "INSERT INTO `$tabs[0]` VALUES('$dt[0]'";
        for($i=1; $i<sizeof($dt); $i++):
            $backup .= ", '$dt[$i]'";
        endfor;
-       $backup .= ");\n";
+       $backup .= ");".$newline;
    endwhile;
-   $backup .= "\n-- --------------------------------------------------------\n\n";
+   $backup .= $newline."-- --------------------------------------------------------".$newline.$newline;
 endwhile;
 
-
 // Let's make sure the file exists and is writable first.
-
-
 
 if (is_writable($backup_filename)) {
 
