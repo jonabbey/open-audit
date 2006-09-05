@@ -34,7 +34,7 @@ while($all = mysql_fetch_assoc($tab_status)):
    $tbl_stat[$all[Name]] = $all[Auto_increment];
 endwhile;
 unset($backup);
-$tables = mysql_list_tables('openaudit');
+$tables = mysql_list_tables($mysql_database);
 $date_time = date('l dS \of F Y h:i:s A');
 
 $url = $_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
