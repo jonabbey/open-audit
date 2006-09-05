@@ -120,6 +120,13 @@ $iis_ip_timestamp = NULL;
 
 $count = 0;
 
+# <HACK>
+# The following turns off strict checking so incorrect 
+# datatypes can be inserted into fields!
+$sql = "SET @@session.sql_mode=''";
+$result = mysql_query($sql);
+# </HACK>
+
 // Get the timestamp of the last audit
 $sql = "SELECT MAX(system_audits_timestamp) AS timestamp FROM system_audits WHERE system_audits_uuid = '$uuid'";
 if ($verbose == "y"){echo $sql . "<br />\n\n";}
