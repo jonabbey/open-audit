@@ -354,7 +354,7 @@ while (list ($viewname, $viewdef_array) = @each ($query_array["views"])) {
     //IF Horizontal Table-Layout
     if(isset($viewdef_array["table_layout"]) AND $viewdef_array["table_layout"]=="horizontal"){
         $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
-        echo "<tr><td bgcolor=\"$bgcolor\" class=\"system_tablebody_right\" colspan=\"2\">&nbsp;</td></tr>\n";
+        echo "<tr><td bgcolor=\"$bgcolor\" class=\"system_tablebody_right\" colspan=\"10\">&nbsp;</td></tr>\n";
     }
 
     echo "</table>";
