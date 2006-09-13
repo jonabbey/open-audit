@@ -361,6 +361,21 @@ while (list ($viewname, $viewdef_array) = @each ($query_array["views"])) {
     echo "</form>\n";
 }
 
+    echo "<form method=\"post\" name=\"form_export\" action=\"system_export.php\">\n";
+    echo "<input type=\"hidden\" name=\"view\" value=\"".$_REQUEST["view"]."\" />\n";
+    if(isset($_REQUEST["pc"])){
+        echo "<input type=\"hidden\" name=\"pc\" value=\"".$_REQUEST["pc"]."\" />\n";
+    }
+    if(isset($_REQUEST["other"])){
+        echo "<input type=\"hidden\" name=\"other\" value=\"".$_REQUEST["other"]."\" />\n";
+    }
+    if(isset($_REQUEST["monitor"])){
+        echo "<input type=\"hidden\" name=\"monitor\" value=\"".$_REQUEST["monitor"]."\" />\n";
+    }
+    echo "<br><a href=\"#\" onClick=\"document.form_export.submit();\">".__("Export this Page to PDF")." (BETA)</a>\n";
+    echo "</form>\n";
+
+
   echo "</div>\n";
 
   echo __("This Page was generated in")." ".number_format((microtime_float()-$time_start),2)." ". __("seconds").".";

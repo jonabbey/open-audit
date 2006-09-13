@@ -112,8 +112,9 @@ function pdf_draw_line($pdf, $draw){
 
 //Get the pc's to display
 //actually only one
-if(isset($_GET["pc"]) AND $_GET["pc"]!=""){
+if(isset($_REQUEST["pc"]) AND $_REQUEST["pc"]!=""){
   $pc=$_REQUEST["pc"];
+  $_GET["pc"]=$_REQUEST["pc"];
   $sql = "SELECT system_uuid, system_timestamp, system_name FROM system WHERE system_uuid = '$pc' OR system_name = '$pc' ";
   $result = mysql_query($sql, $db);
 
@@ -137,7 +138,6 @@ foreach($systems_array as $system){
 
     //Workaround to get the queries in the viewdef-array get worked
     $_REQUEST["pc"]=$system["pc"];
-    $_GET["pc"]=$system["pc"];
     $pc=$system["pc"];
     $GLOBAL["system_timestamp"]=$system["system_timestamp"];
 
