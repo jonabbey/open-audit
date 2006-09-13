@@ -1,6 +1,6 @@
 <?php
 
-$query_array=array("name"=>__("IIS"),
+$query_array=array("name"=>__("IIS Settings"),
                    "views"=>array(__("iis")=>array(
                                                    "headline"=>__("IIS Settings"),
                                                    "sql"=>"SELECT * FROM iis WHERE iis_uuid = '".$_GET["pc"]."' AND iis_timestamp = '".$GLOBALS["timestamp"]."' ",
