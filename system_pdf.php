@@ -23,15 +23,21 @@ require('./lib/fpdf/fpdf.php');
 $db = mysql_connect($mysql_server,$mysql_user,$mysql_password) or die('Could not connect: ' . mysql_error());
 mysql_select_db($mysql_database,$db);
 
-//Col-Width and Hight
-$draw["col_width_1"]=40;
-$draw["col_width_2"]=130;
+//Col-Width and Height
+$draw["col_width"][0]=50;
+$draw["col_width"][1]=130;
+$draw["col_width_horizontal"]=30;
 $draw["col_height_1"]=4;
+$draw["margin-left"]=15;
+$draw["margin-top"]=10;
+$draw["margin-right"]=10;
+$draw["line-width"]=180;
 $draw["font_size_headline_1"]=14;
 $draw["font_size_headline_2"]=10;
 $draw["font_size_body"]=10;
 $draw["font_size_footer"]=6;
 
+//Functions, for a better handling
 function pdf_start(){
     //Create PDF
     $pdf=new FPDF();
@@ -69,32 +75,43 @@ function pdf_draw_headline_2($pdf, $draw, $show_value){
 //Start new Page
 function pdf_draw_new_page($pdf, $draw){
     $pdf->AddPage('P');
-    $pdf->SetMargins(15,10,0);
+    $pdf->SetMargins($draw["margin-left"],$draw["margin-top"],$draw["margin-left"]);
     return $pdf;
 }
 function pdf_draw_footer($pdf, $draw){
     //Print Footer
     $pdf->SetFont('Arial','B',$draw["font_size_footer"]);
     $pdf->SetY(-15);
-    $url = $_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']; 
-    $pdf->Write(5,date('l dS \of F Y h:i:s A'),$url,0,'L');
+    $url = $_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
+    $pdf->Write(5,date('l, dS \of F Y, h:i:s A'),$url,0,'L');
     $pdf->SetX(100);
     $pdf->Write(5,$pdf->PageNo());
     $pdf->SetX(170);
     $pdf->Write(5,'www.open-audit.org','http://www.open-audit.org');
     return $pdf;
 }
-function pdf_draw_row($pdf, $draw, $show_value_1, $show_value_2){
-    $pdf->Cell($draw["col_width_1"],$draw["col_height_1"],$show_value_1,'B',0,'L');
-    $pdf->Cell($draw["col_width_2"],$draw["col_height_1"],$show_value_2,'B',1,'L');
+function pdf_draw_row($pdf, $draw, $show_value, $width=0){
+    $i=0;
+    foreach($show_value as $value){
+        if(isset($width) AND $width>0){
+            $draw["col_width"][$i]=$draw["col_width_horizontal"];
+        }
+        $pdf->Cell($draw["col_width"][$i],$draw["col_height_1"],$value, '0', 0, 'L');
+        $i++;
+    }
     return $pdf;
 }
-function pdf_draw_ln($pdf){
+function pdf_draw_nl($pdf){
     $pdf->Ln();
     return $pdf;
 }
+function pdf_draw_line($pdf, $draw){
+    $pdf->Line($draw["margin-left"], $pdf->GetY(), ($draw["margin-left"]+$draw["line-width"]), $pdf->GetY());
+    return $pdf;
+}
 
-//Get the pc's to display, actually only one
+//Get the pc's to display
+//actually only one
 if(isset($_GET["pc"]) AND $_GET["pc"]!=""){
   $pc=$_REQUEST["pc"];
   $sql = "SELECT system_uuid, system_timestamp, system_name FROM system WHERE system_uuid = '$pc' OR system_name = '$pc' ";
@@ -196,19 +213,52 @@ foreach($systems_array as $system){
             //Body
             $pdf->SetFont('Arial','',8);
             $pdf->SetDrawColor(200,200,200);
+
+            //IF Horizontal Table-Layout
+            if(isset($viewdef_array["table_layout"]) AND $viewdef_array["table_layout"]=="horizontal"){
+                $pdf->SetFont('Arial','B',8);
+                foreach($viewdef_array["fields"] as $field){
+                    $pdf=pdf_draw_row($pdf, $draw, array($field["head"]), $draw["col_width_horizontal"]);
+                }
+                $pdf=pdf_draw_nl($pdf);
+                $pdf->SetFont('Arial','',8);
+            }
+
             if ($myrow = mysql_fetch_array($result)){
                 do{
                     foreach($viewdef_array["fields"] as $field){
                         if( (!isset($field["show"]) OR $field["show"]!="n") AND (!isset($field["print"]) OR $field["print"]="n") ){
-                            $show_value = special_field_converting($myrow, $field, $db, "system");
-                            $show_value = html_entity_decode ($show_value);
-                            $pdf=pdf_draw_row($pdf, $draw, $field["head"].":", $show_value);
+                            $show_value_2 = special_field_converting($myrow, $field, $db, "system");
+                            $show_value_2 = html_entity_decode ($show_value_2);
+                            $show_value_1 = $field["head"];
+
+                            //IF Horizontal Table-Layout
+                            if(isset($viewdef_array["table_layout"]) AND $viewdef_array["table_layout"]=="horizontal"){
+                                $pdf=pdf_draw_row($pdf, $draw, array($show_value_2), $draw["col_width_horizontal"]);
+                                $pdf=pdf_draw_line($pdf, $draw);
+                            }else{
+                                if(isset($field["head"]) AND $field["head"]!="") {$show_value_1.=":";}
+                                $pdf=pdf_draw_row($pdf, $draw, array($show_value_1, $show_value_2));
+                                $pdf=pdf_draw_line($pdf, $draw);
+                                $pdf=pdf_draw_nl($pdf);
+                            }
                         }
                     }
-                    $pdf=pdf_draw_ln($pdf);
+                    $pdf=pdf_draw_line($pdf, $draw);
+                    $pdf=pdf_draw_nl($pdf);
                 }while ($myrow = mysql_fetch_array($result));
+
+                //IF Horizontal Table-Layout
+                if(isset($viewdef_array["table_layout"]) AND $viewdef_array["table_layout"]=="horizontal"){
+                    $pdf=pdf_draw_line($pdf, $draw);
+                    $pdf=pdf_draw_nl($pdf);
+                }
             }else{
-                $pdf=pdf_draw_row($pdf, $draw, __("No Results"), "");
+                $pdf=pdf_draw_row($pdf, $draw, array(__("No Results"), ""));
+                $pdf=pdf_draw_line($pdf, $draw);
+                $pdf=pdf_draw_nl($pdf);
+                $pdf=pdf_draw_line($pdf, $draw);
+                $pdf=pdf_draw_nl($pdf);
             }
         }
     }
