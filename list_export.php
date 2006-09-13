@@ -27,9 +27,17 @@ if(is_file($include_filename)){
     $this_page_count = mysql_num_rows($result);
 
 
-//Table body
 header("Content-Type: application/vnd.ms-excel");
 header("Content-Disposition: inline; filename=\"export.xls\"");
+
+//Table head
+foreach($viewdef_array["fields"] as $field) {
+    echo $field["head"];
+    echo "\t";
+}
+echo "\r\n";
+
+//Table body
 if ($myrow = mysql_fetch_array($result)){
     do{
         foreach($query_array["fields"] as $field){
