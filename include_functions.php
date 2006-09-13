@@ -196,7 +196,8 @@ function special_field_converting($myrow, $field, $db, $page){
             $field["name"]=="other_first_timestamp" OR
             $field["name"]=="other_timestamp" OR
             $field["name"]=="monitor_first_timestamp" OR
-            $field["name"]=="monitor_timestamp")
+            $field["name"]=="monitor_timestamp" OR
+            $field["name"]=="system_audits_timestamp")
     {
         $show_value=return_date_time($myrow[$field["name"]]);
     }elseif($field["name"]=="system_system_type" AND $page=="list"){
