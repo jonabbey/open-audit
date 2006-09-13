@@ -175,9 +175,11 @@ foreach($systems_array as $system){
      //Create new Page
      $pdf=pdf_draw_new_page($pdf, $draw);
      if(isset($query_array["name"]) AND $query_array["name"]!=""){
-         //Headline on the first Page
-         $pdf=pdf_draw_headline_1($pdf, $draw, $query_array["name"]." ".$headline_addition);
+     }else{
+         $query_array["name"]="";
      }
+     //Headline on the first Page
+     $pdf=pdf_draw_headline_1($pdf, $draw, $query_array["name"]." ".$headline_addition);
 
     //Show each Category
     reset($query_array["views"]);
