@@ -1,6 +1,6 @@
 <?php
 
-$query_array=array("name"=>__("OS Summary"),
+$query_array=array("name"=>__("OS Settings"),
                    "image"=>"images/os_l.png",
                    "views"=>array( "os"=>array(
                                                     "headline"=>__("OS"),
