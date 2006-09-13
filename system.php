@@ -363,6 +363,9 @@ while (list ($viewname, $viewdef_array) = @each ($query_array["views"])) {
 
     echo "<form method=\"post\" name=\"form_export\" action=\"system_export.php\">\n";
     echo "<input type=\"hidden\" name=\"view\" value=\"".$_REQUEST["view"]."\" />\n";
+    if(isset($_REQUEST["category"])){
+        echo "<input type=\"hidden\" name=\"category\" value=\"".$_REQUEST["category"]."\" />\n";
+    }
     if(isset($_REQUEST["pc"])){
         echo "<input type=\"hidden\" name=\"pc\" value=\"".$_REQUEST["pc"]."\" />\n";
     }
