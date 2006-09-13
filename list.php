@@ -398,7 +398,15 @@ if ($myrow = mysql_fetch_array($result)){
     echo "<form method=\"post\" name=\"form_export\" action=\"list_export.php\">\n";
     echo "<input type=\"hidden\" name=\"sql\" value=\"".urlencode($sql)."\" />\n";
     echo "<input type=\"hidden\" name=\"view\" value=\"".$_REQUEST["view"]."\" />\n";
-    echo "<input type=\"hidden\" name=\"pc\" value=\"".$_REQUEST["pc"]."\" />\n";
+    if(isset($_REQUEST["pc"])){
+        echo "<input type=\"hidden\" name=\"pc\" value=\"".$_REQUEST["pc"]."\" />\n";
+    }
+    if(isset($_REQUEST["other"])){
+        echo "<input type=\"hidden\" name=\"other\" value=\"".$_REQUEST["other"]."\" />\n";
+    }
+    if(isset($_REQUEST["monitor"])){
+        echo "<input type=\"hidden\" name=\"monitor\" value=\"".$_REQUEST["monitor"]."\" />\n";
+    }
     echo "<tr><td colspan=\"4\"><br><a href=\"#\" onClick=\"document.form_export.submit();\">".__("Export this View to CSV")." (BETA)</a></td></tr>\n";
     echo "</form>\n";
 
