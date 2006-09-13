@@ -379,5 +379,5 @@ $GLOBALS["lang"]["Setting defaults in the database"]="Setting defaults in the da
 $GLOBALS["lang"]["Setting up data in tables"]="Setting up data in tables";
 $GLOBALS["lang"]["Fatal Error"]="Fatal Error";
 $GLOBALS["lang"]["No definition for this view/category found"]="No definition for this view/category found";
-
+$GLOBALS["lang"]["Export this View to CSV"]="Export this View to CSV";
 ?>

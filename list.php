@@ -275,6 +275,7 @@ echo "</tr>\n";
    echo $headline_2;
   echo "</tr>\n";
 
+echo "</form>\n";
 
 //Table body
 if ($myrow = mysql_fetch_array($result)){
@@ -360,8 +361,8 @@ if ($myrow = mysql_fetch_array($result)){
                  echo "style=\"padding-right:10px;\">";
 
                 $show_value=" ";
-                //Special field-converting
 
+                //Special field-converting
                 $show_value = special_field_converting($myrow, $field, $db, "list");
 
                 if(isset($field["link"]) AND $field["link"]=="y"){
@@ -394,13 +395,20 @@ if ($myrow = mysql_fetch_array($result)){
         echo " </tr>\n";
     }while ($myrow = mysql_fetch_array($result));
 
+    echo "<form method=\"post\" name=\"form_export\" action=\"list_export.php\">\n";
+    echo "<input type=\"hidden\" name=\"sql\" value=\"".urlencode($sql)."\" />\n";
+    echo "<input type=\"hidden\" name=\"view\" value=\"".$_REQUEST["view"]."\" />\n";
+    echo "<input type=\"hidden\" name=\"pc\" value=\"".$_REQUEST["pc"]."\" />\n";
+    echo "<tr><td colspan=\"4\"><br><a href=\"#\" onClick=\"document.form_export.submit();\">".__("Export this View to CSV")." (BETA)</a></td></tr>\n";
+    echo "</form>\n";
+
+
 } else {
   echo "<tr><td colspan=\"4\">".__("No Results")."</td></tr>\n";
 }
 
 echo "</table>\n";
 
-echo "</form>\n";
 echo "</div>\n";
 
 echo __("This Page was generated in")." ".number_format((microtime_float()-$time_start),2)." ". __("Seconds").".";
