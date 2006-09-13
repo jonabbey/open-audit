@@ -1,6 +1,7 @@
 <?php
 
-$query_array=array("views"=>array("summary"=>array(
+$query_array=array("name"=>__("System"),
+                   "views"=>array("summary"=>array(
                                                     "headline"=>__("Summary"),
                                                     "sql"=>"SELECT * FROM system
                                                             LEFT JOIN network_card ON (system_uuid=net_uuid AND system_timestamp=net_timestamp)

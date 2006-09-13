@@ -19,9 +19,15 @@ body {
   padding: 5px;
   border: 1px solid #ccc; }
 
+
 .contenthead {
   font-size: 120%;
   color: #555}
+.contentsubtitle {
+  font-size: 100%;
+  color: #555;
+  font-weight:bold;}
+
 .navarrows {
   float: right;
   padding-right: 5px;

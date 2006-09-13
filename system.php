@@ -62,10 +62,10 @@ echo "<td valign=\"top\">\n";
   if(isset($query_array["name"]) AND $query_array["name"]!=""){
       echo "<table width=\"100%\" border=\"0\" style=\"height: 70px\"><tr><td style=\"width:60px;\">\n";
        echo "<span class=\"contenthead\">\n";
-         echo "<b>";
+         echo "<span class=\"contenthead\">\n";
           echo htmlspecialchars($query_array["name"]);
           if(isset($_REQUEST["headline_addition"])) {echo htmlspecialchars($_REQUEST["headline_addition"]);}
-         echo "</b>\n";
+         echo "</span>\n";
        echo "</span>\n";
       echo "</td></tr></table>\n";
  }
@@ -109,11 +109,11 @@ while (list ($viewname, $viewdef_array) = @each ($query_array["views"])) {
           //Headline
           if(isset($viewdef_array["headline"]) AND $viewdef_array["headline"]!=""){
               echo "<td>\n";
-              echo "<span class=\"contenthead\">\n";
+              echo "<span class=\"contentsubtitle\">\n";
               if(isset($_REQUEST["category"]) AND $_REQUEST["category"]==""){
                   echo "<a href=\"".$_SERVER["PHP_SELF"]."?pc=".$_REQUEST["pc"]."&amp;view=".$_REQUEST["view"]."&amp;category=".$viewname."\">";
               }
-               echo "<b>".$viewdef_array["headline"]."</b>\n";
+               echo $viewdef_array["headline"]."\n";
               if(isset($_REQUEST["category"]) AND $_REQUEST["category"]==""){
                   echo "</a>";
               }

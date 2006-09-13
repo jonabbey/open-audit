@@ -1,6 +1,7 @@
 <?php
 
-$query_array=array("views"=>array(__("iis")=>array(
+$query_array=array("name"=>__("IIS"),
+                   "views"=>array(__("iis")=>array(
                                                    "headline"=>__("IIS Settings"),
                                                    "sql"=>"SELECT * FROM iis WHERE iis_uuid = '".$_GET["pc"]."' AND iis_timestamp = '".$GLOBALS["timestamp"]."' ",
                                                    "image"=>"images/browser_l.png",

@@ -1,6 +1,7 @@
 <?php
 
-$query_array=array("views"=>array("firewall_xpsp2"=>array(
+$query_array=array("name"=>__("Security"),
+                   "views"=>array("firewall_xpsp2"=>array(
                                                     "headline"=>__("XP SP2 Firewall"),
                                                     "sql"=>"SELECT * FROM system WHERE system_uuid = '" . $_GET["pc"] . "' AND system_timestamp = '".$GLOBAL["system_timestamp"]."' ",
                                                     "image"=>"./images/firewall_l.png",
