@@ -131,11 +131,12 @@ $menue_array = array(
                     "class"=>"menuparent",
                     "childs"=>array("10"=>array("name"=>"OS Type", "link"=>"./list.php?view=statistic_os", "image"=>"images/os.png", "title"=>"OS Type",),
                                     "20"=>array("name"=>"IE Versions", "link"=>"./list.php?view=statistic_ie", "image"=>"images/browser.png", "title"=>"Internet Explorer Versions",),
+                                    "25"=>array("name"=>"Firefox Versions", "link"=>"./list.php?view=statistic_firefox", "image"=>"images/browser_ff.png", "title"=>"Mozilla Firefox Versions",),
                                     "30"=>array("name"=>"Memory Size", "link"=>"./list.php?view=statistic_memory", "image"=>"images/memory.png", "title"=>"Memory Size",),
                                     "40"=>array("name"=>"Processor Types", "link"=>"./list.php?view=statistic_processor", "image"=>"images/processor.png", "title"=>"Processor Types",),
 
                                     "50"=>array("name"=>"Hard Drive", "link"=>"./list.php?view=statistic_harddrive", "image"=>"images/harddisk.png", "title"=>"Hard Drive",),
-                                    "60"=>array("name"=>"Keys", "link"=>"./list.php?view=statistic_keys", "image"=>"images/key_2.png", "title"=>"Keys",), 
+                                    "60"=>array("name"=>"Keys", "link"=>"./list.php?view=statistic_keys", "image"=>"images/key_2.png", "title"=>"Keys",),
 /*                                  This next bit wont work, we need a Parameter for each choice FIXME
                                     "70"=>array("name"=>"AllByOSType", "link"=>"statistics.php?sub=s12", "image"=>"images/o_specialized.png", "title"=>"",),
                                     "80"=>array("name"=>"AllByIeVersions", "link"=>"statistics.php?sub=s13", "image"=>"images/browser_l.png", "title"=>"",),
