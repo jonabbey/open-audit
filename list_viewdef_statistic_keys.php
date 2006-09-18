@@ -11,13 +11,14 @@ $query_array=array("headline"=>__("Statistic for Software Keys"),
                                            ms_keys_uuid = system_uuid AND ms_keys_uuid = system_uuid AND ms_keys_timestamp = system_timestamp
                                        )
                                  * COUNT( * )
-                               ) AS percentage,ms_keys_name
+                               ) AS percentage,ms_keys_name,ms_keys_release
                                FROM
                                    ms_keys, system
                                WHERE
                                     ms_keys_uuid = system_uuid AND
-                           ms_keys_uuid = system_uuid AND
-                           ms_keys_timestamp = system_timestamp
+                                    ms_keys_uuid = system_uuid AND
+                                    ms_keys_timestamp = system_timestamp AND
+                                    ms_keys_cd_key != ''
                                GROUP BY ms_keys_cd_key
                                ",
                    "sort"=>"count_item",
@@ -27,7 +28,7 @@ $query_array=array("headline"=>__("Statistic for Software Keys"),
                                                "show"=>"y",
                                                "link"=>"n",
                                               ),
-                           "20"=>array("name"=>"ms_keys_name",
+                                   "20"=>array("name"=>"ms_keys_name",
                                                "head"=>__("Name"),
                                                "show"=>"y",
                                                "link"=>"n",
