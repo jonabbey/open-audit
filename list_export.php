@@ -1,4 +1,4 @@
-<?
+<?php
 include_once("include_config.php");
 include_once("include_functions.php");
 include_once("include_win_type.php");
