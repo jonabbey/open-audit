@@ -63,7 +63,18 @@ echo "<td valign=\"top\">\n";
       echo "<table width=\"100%\" border=\"0\" style=\"height: 70px\"><tr><td style=\"width:60px;\">\n";
        echo "<span class=\"contenthead\">\n";
          echo "<span class=\"contenthead\">\n";
-          echo htmlspecialchars($query_array["name"]);
+
+         //Is the headline a sql-query?
+         if(isset($query_array["name"]) AND is_array($query_array["name"])){
+             echo htmlspecialchars($query_array["name"]["name"]);
+             echo " - ";
+             $result_headline=mysql_query($query_array["name"]["sql"], $db);
+             if ($myrow = mysql_fetch_array($result_headline)){
+                 echo $myrow["system_name"];
+             }
+         }else{
+              echo htmlspecialchars($query_array["name"]);
+         }
           if(isset($_REQUEST["headline_addition"])) {echo htmlspecialchars($_REQUEST["headline_addition"]);}
          echo "</span>\n";
        echo "</span>\n";

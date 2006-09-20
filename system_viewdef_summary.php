@@ -1,11 +1,13 @@
 <?php
 
-$query_array=array("name"=>__("System"),
+$query_array=array("name"=>array("name"=>__("Summary"),
+                                 "sql"=>__("SELECT `system_name` FROM `system` WHERE `system_uuid` = '" . $_GET["pc"] . "'"),
+                                ),
                    "views"=>array("summary"=>array(
-                                                    "headline"=>__("Summary"),
+                                                    "headline"=>__("System"),
                                                     "sql"=>"SELECT * FROM system
                                                             LEFT JOIN network_card ON (system_uuid=net_uuid AND system_timestamp=net_timestamp)
-                                                            WHERE system_uuid = '" . $_GET["pc"] . "' AND  system_timestamp = '".$GLOBAL["system_timestamp"]."'
+                                                            WHERE system_uuid = '" . $_REQUEST["pc"] . "' AND  system_timestamp = '".$GLOBAL["system_timestamp"]."'
                                                             LIMIT 0,1",
                                                     "image"=>"images/os_l.png",
                                                     "fields"=>array("10"=>array("name"=>"net_uuid",

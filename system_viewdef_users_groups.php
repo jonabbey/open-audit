@@ -1,6 +1,8 @@
 <?php
 
-$query_array=array("name"=>__("User & Groups"),
+$query_array=array("name"=>array("name"=>__("Users & Groups"),
+                                 "sql"=>__("SELECT `system_name` FROM `system` WHERE `system_uuid` = '" . $_GET["pc"] . "'"),
+                                ),
                    "image"=>"images/users_l.png",
                    "views"=>array("users"=>array(
                                                     "headline"=>__("Users"),

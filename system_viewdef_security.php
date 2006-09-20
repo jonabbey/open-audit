@@ -1,6 +1,8 @@
 <?php
 
-$query_array=array("name"=>__("Security"),
+$query_array=array("name"=>array("name"=>__("Security"),
+                                 "sql"=>__("SELECT `system_name` FROM `system` WHERE `system_uuid` = '" . $_GET["pc"] . "'"),
+                                ),
                    "views"=>array("firewall_xpsp2"=>array(
                                                     "headline"=>__("XP SP2 Firewall"),
                                                     "sql"=>"SELECT * FROM system WHERE system_uuid = '" . $_GET["pc"] . "' AND system_timestamp = '".$GLOBAL["system_timestamp"]."' ",

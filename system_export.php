@@ -176,10 +176,22 @@ foreach($systems_array as $system){
      $pdf=pdf_draw_new_page($pdf, $draw);
      if(isset($query_array["name"]) AND $query_array["name"]!=""){
      }else{
-         $query_array["name"]="";
+         $top_headline = "";
      }
      //Headline on the first Page
-     $pdf=pdf_draw_headline_1($pdf, $draw, $query_array["name"]." ".$headline_addition);
+
+     //Is the headline a sql-query?
+     if(isset($query_array["name"]) AND is_array($query_array["name"])){
+         $top_headline = $query_array["name"]["name"];
+         $top_headline .= " - ";
+         $result_headline=mysql_query($query_array["name"]["sql"], $db);
+         if ($myrow = mysql_fetch_array($result_headline)){
+             $top_headline .= $myrow["system_name"];
+         }
+     }else{
+          $top_headline = $query_array["name"];
+     }
+     $pdf=pdf_draw_headline_1($pdf, $draw, $top_headline." ".$headline_addition);
 
     //Show each Category
     reset($query_array["views"]);

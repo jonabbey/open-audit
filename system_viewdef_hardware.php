@@ -1,6 +1,8 @@
 <?php
 
-$query_array=array("name"=>__("Hardware"),
+$query_array=array("name"=>array("name"=>__("Hardware"),
+                                 "sql"=>__("SELECT `system_name` FROM `system` WHERE `system_uuid` = '" . $_GET["pc"] . "'"),
+                                ),
                    "image"=>"images/os_l.png",
                    "views"=>array(
                                    "chassis"=>array(

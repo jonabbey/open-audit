@@ -1,6 +1,8 @@
 <?php
 
-$query_array=array("name"=>__("IIS Settings"),
+$query_array=array("name"=>array("name"=>__("IIS Settings"),
+                                 "sql"=>__("SELECT `system_name` FROM `system` WHERE `system_uuid` = '" . $_GET["pc"] . "'"),
+                                ),
                    "views"=>array(__("iis")=>array(
                                                    "headline"=>__("IIS Settings"),
                                                    "sql"=>"SELECT * FROM iis WHERE iis_uuid = '".$_GET["pc"]."' AND iis_timestamp = '".$GLOBAL["system_timestamp"]."' ",
