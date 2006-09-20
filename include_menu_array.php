@@ -106,6 +106,7 @@ $menue_array = array(
                                     "30"=>array("name"=>"All Win-Workstations", "link"=>"./list.php?view=all_win_workstations", "image"=>"images/computer_2.png", "title"=>"All Win-Workstations",),
                                     "40"=>array("name"=>"All Laptops", "link"=>"./list.php?view=all_laptops", "image"=>"images/laptop.png", "title"=>"All Laptops",),
                                     "50"=>array("name"=>"All Software", "link"=>"./list.php?view=all_software", "image"=>"images/software_2.png", "title"=>" All Software",),
+                                    "55"=>array("name"=>"All Software with Hosts", "link"=>"./list.php?view=all_software_hosts", "image"=>"images/software_2.png", "title"=>" All Software",),
                                     "60"=>array("name"=>"All Hotfixes &amp; Patches", "link"=>"./list.php?view=all_hotfixes_patches", "image"=>"images/software.png", "title"=>"All Hotfixes &amp; Patches",),
                                     "70"=>array("name"=>"All IE BHO's", "link"=>"./list.php?view=all_ie_bho", "image"=>"images/browser_bho.png", "title"=>"All IE Browser-Helper-Objects",),
                                     "80"=>array("name"=>"All Services", "link"=>"./list.php?view=all_services", "image"=>"images/services.png", "title"=>"All Services",),
