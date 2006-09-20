@@ -1,6 +1,6 @@
 <?php
 
-$query_array=array("headline"=>array("name"=>__("Audit-Trail for Software "),
+$query_array=array("headline"=>array("name"=>__("Audit-Trail for Software"),
                                      "sql"=>"SELECT `system_name` FROM `system` WHERE `system_uuid` = '" . $_REQUEST["pc"] . "'",
                                      ),
                    "sql"=>"
