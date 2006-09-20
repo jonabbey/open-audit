@@ -61,7 +61,7 @@ $query_array=array("name"=>array("name"=>__("Security"),
                                                                    ),
                                                     ),
                                    "nmap"=>array(
-                                                    "headline"=>__("Nmap discovered on Audited PC"),
+                                                    "headline"=>__("Open Ports discovered by Nmap"),
                                                     "sql"=>"SELECT * from nmap_ports WHERE nmap_other_id = '" . $_REQUEST["pc"] . "' ",
                                                     "table_layout"=>"horizontal",
                                                     "image"=>"./images/nmap_l.png",
