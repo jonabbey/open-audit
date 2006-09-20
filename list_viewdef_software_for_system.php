@@ -1,6 +1,8 @@
 <?php
 
-$query_array=array("headline"=>__("List Software on Host"),
+$query_array=array("headline"=>array("name"=>__("Installed Software"),
+                                     "sql"=>"SELECT `system_name` FROM `system` WHERE `system_uuid` = '" . $_REQUEST["pc"] . "'",
+                                     ),
                    "sql"=>"SELECT software_name, software_version, software_publisher, software_url FROM software, system WHERE system_uuid = '".$_REQUEST["pc"]."' AND software_name NOT LIKE '%hotfix%' AND software_name NOT LIKE '%update%' AND software_name NOT LIKE '%Service Pack%' AND software_uuid = system_uuid AND software_timestamp = system_timestamp GROUP BY software_name, software_version ",
                    "sort"=>"software_name",
                    "dir"=>"ASC",

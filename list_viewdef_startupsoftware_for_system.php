@@ -1,6 +1,8 @@
 <?php
 
-$query_array=array("headline"=>__("List Startup-Software on Host"),
+$query_array=array("headline"=>array("name"=>__("Startup-Software"),
+                                     "sql"=>"SELECT `system_name` FROM `system` WHERE `system_uuid` = '" . $_REQUEST["pc"] . "'",
+                                     ),
                    "sql"=>"SELECT * FROM startup WHERE startup_uuid = '".$_REQUEST["pc"]."' AND startup_timestamp = '".$GLOBALS["timestamp"]."' ",
                    "sort"=>"startup_caption",
                    "dir"=>"ASC",

@@ -1,6 +1,8 @@
 <?php
 
-$query_array=array("headline"=>__("List all Codecs for Host"),
+$query_array=array("headline"=>array("name"=>__("Codecs"),
+                                     "sql"=>"SELECT `system_name` FROM `system` WHERE `system_uuid` = '" . $_REQUEST["pc"] . "'",
+                                     ),
                    "sql"=>"SELECT software_name, software_version, software_publisher, software_url FROM software, system WHERE system_uuid = '".$_REQUEST["pc"]."' AND software_name LIKE 'Codec%' AND software_uuid = system_uuid AND software_timestamp = system_timestamp ",
                    "sort"=>"software_name",
                    "dir"=>"ASC",

@@ -1,6 +1,8 @@
 <?php
 
-$query_array=array("headline"=>__("List IE BHO's for Host"),
+$query_array=array("headline"=>array("name"=>__("IE BHO's"),
+                                     "sql"=>"SELECT `system_name` FROM `system` WHERE `system_uuid` = '" . $_REQUEST["pc"] . "'",
+                                     ),
                    "sql"=>"SELECT * FROM browser_helper_objects, system WHERE system_uuid = '".urldecode($_GET["pc"])."' AND bho_uuid = system_uuid AND bho_timestamp = system_timestamp",
                    "sort"=>"bho_program_file",
                    "dir"=>"ASC",

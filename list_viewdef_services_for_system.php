@@ -1,6 +1,8 @@
 <?php
 
-$query_array=array("headline"=>__("List Services for Host"),
+$query_array=array("headline"=>array("name"=>__("Services"),
+                                     "sql"=>"SELECT `system_name` FROM `system` WHERE `system_uuid` = '" . $_REQUEST["pc"] . "'",
+                                     ),
                    "sql"=>"SELECT * FROM service, service_details WHERE sd_display_name = service_display_name AND service_uuid = '".$_REQUEST["pc"]."' AND service_timestamp = '".$GLOBALS["timestamp"]."' ",
                    "sort"=>"service_display_name",
                    "dir"=>"ASC",

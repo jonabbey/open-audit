@@ -1,6 +1,8 @@
 <?php
 
-$query_array=array("headline"=>__("List Audit-Trail for Software on Host"),
+$query_array=array("headline"=>array("name"=>__("Audit-Trail for Software "),
+                                     "sql"=>"SELECT `system_name` FROM `system` WHERE `system_uuid` = '" . $_REQUEST["pc"] . "'",
+                                     ),
                    "sql"=>"
                           SELECT software_name, software_version, software_first_timestamp, system_name, system_uuid, net_ip_address
                           FROM software, system
