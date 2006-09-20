@@ -1,6 +1,8 @@
 <?php
 
-$query_array=array("name"=>__("Other System"),
+$query_array=array("name"=>array("name"=>__("Other System"),
+                                 "sql"=>"SELECT `other_description` FROM `other` WHERE `other_id` = '".$_REQUEST['other']."' ",
+                                ),
                    "image"=>"images/os_l.png",
                    "views"=>array("summary"=>array(
                                                     "headline"=>__("Summary"),
@@ -8,6 +10,7 @@ $query_array=array("name"=>__("Other System"),
                                                     "image"=>"./images/summary_l.png",
                                                     "edit"=>"y",
                                                     "fields"=>array(
+                                                                    "05"=>array("name"=>"other_description", "head"=>__("Description"), "edit"=>"y",),
                                                                     "10"=>array("name"=>"other_network_name", "head"=>__("Name"), "edit"=>"y",),
                                                                     "20"=>array("name"=>"other_type", "head"=>__("Type"), "edit"=>"y",),
                                                                     "30"=>array("name"=>"other_linked_pc",
@@ -28,7 +31,6 @@ $query_array=array("name"=>__("Other System"),
                                                                     "110"=>array("name"=>"other_location", "head"=>__("Location"), "edit"=>"y",),
                                                                     "120"=>array("name"=>"other_date_purchased", "head"=>__("Date of Purchase"), "edit"=>"y",),
                                                                     "130"=>array("name"=>"other_value", "head"=>__("Dollar Value"), "edit"=>"y",),
-                                                                    "140"=>array("name"=>"other_description", "head"=>__("Description"), "edit"=>"y",),
                                                                     "150"=>array("name"=>"other_p_port_name", "head"=>__("Port-Name"), "edit"=>"y",),
                                                                    ),
                                                     ),

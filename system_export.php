@@ -186,7 +186,7 @@ foreach($systems_array as $system){
          $top_headline .= " - ";
          $result_headline=mysql_query($query_array["name"]["sql"], $db);
          if ($myrow = mysql_fetch_array($result_headline)){
-             $top_headline .= $myrow["system_name"];
+             $top_headline .= $myrow[0];
          }
      }else{
           $top_headline = $query_array["name"];

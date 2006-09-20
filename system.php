@@ -70,7 +70,7 @@ echo "<td valign=\"top\">\n";
              echo " - ";
              $result_headline=mysql_query($query_array["name"]["sql"], $db);
              if ($myrow = mysql_fetch_array($result_headline)){
-                 echo $myrow["system_name"];
+                 echo $myrow[0];
              }
          }else{
               echo htmlspecialchars($query_array["name"]);

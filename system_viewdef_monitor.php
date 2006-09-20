@@ -1,6 +1,8 @@
 <?php
 
-$query_array=array("name"=>__("Monitor"),
+$query_array=array("name"=>array("name"=>__("Monitor"),
+                                 "sql"=>"SELECT `monitor_model` FROM `monitor` WHERE `monitor_id` = '".$_REQUEST['monitor']."' ",
+                                ),
                    "views"=>array("summary"=>array(
                                                     "headline"=>__("Summary"),
                                                     "sql"=>"SELECT * FROM monitor WHERE monitor_id = '".$_REQUEST['monitor']."' ",

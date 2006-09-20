@@ -1,10 +1,12 @@
 <?php
 
-$query_array=array("name"=>__("Printer"),
+$query_array=array("name"=>array("name"=>__("Printer"),
+                                 "sql"=>"SELECT `other_description` FROM `other` WHERE `other_id` = '" . $_REQUEST['other'] . "'",
+                                ),
                    "image"=>"images/os_l.png",
                    "views"=>array("summary"=>array(
                                                     "headline"=>__("Summary"),
-                                                    "sql"=>"SELECT * FROM other WHERE other_id = '".$_REQUEST['other']."'",
+                                                    "sql"=>"SELECT * FROM other WHERE other_id = '" . $_REQUEST['other'] . "'",
                                                     "image"=>"./images/printer_l.png",
                                                     "edit"=>"y",
                                                     "fields"=>array(

@@ -1,7 +1,7 @@
 <?php
 
 $query_array=array("name"=>array("name"=>__("IIS Settings"),
-                                 "sql"=>__("SELECT `system_name` FROM `system` WHERE `system_uuid` = '" . $_GET["pc"] . "'"),
+                                 "sql"=>"SELECT `system_name` FROM `system` WHERE `system_uuid` = '" . $_GET["pc"] . "'",
                                 ),
                    "views"=>array(__("iis")=>array(
                                                    "headline"=>__("IIS Settings"),
