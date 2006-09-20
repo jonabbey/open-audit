@@ -18,24 +18,24 @@ $verbose = "";
 //Create one value for start time
     $mtime = $mtime[1] + $mtime[0];
 //Write start time into a variable
-    $tstart = $mtime; 
+    $tstart = $mtime;
 ?>
 
-<style type="text/css"> 
+<style type="text/css">
 
 H1 {
-  FONT-SIZE: 12pt; 
+  FONT-SIZE: 12pt;
   COLOR: #000000;
-  LINE-HEIGHT: 16pt; 
+  LINE-HEIGHT: 16pt;
   FONT-FAMILY: "Trebuchet MS", Trebuchet, Arial, Helvetica, sans-serif
 }
 
 body {
-  FONT-SIZE: 9pt; 
-  COLOR: #000000; 
-  LINE-HEIGHT: 12pt; 
-  FONT-FAMILY: Verdana, Geneva, Arial, Helvetica, sans-serif; 
-  TEXT-ALIGN: left; 
+  FONT-SIZE: 9pt;
+  COLOR: #000000;
+  LINE-HEIGHT: 12pt;
+  FONT-FAMILY: Verdana, Geneva, Arial, Helvetica, sans-serif;
+  TEXT-ALIGN: left;
   TEXT-DECORATION: none;
 }
 </style>
@@ -121,7 +121,7 @@ $iis_ip_timestamp = NULL;
 $count = 0;
 
 # <HACK>
-# The following turns off strict checking so incorrect 
+# The following turns off strict checking so incorrect
 # datatypes can be inserted into fields!
 $sql = "SET @@session.sql_mode=''";
 $result = mysql_query($sql);
@@ -259,7 +259,7 @@ foreach ($input as $split) {
 
 
 }
-  
+
 function insert_network ($split) {
     global $timestamp, $uuid, $verbose, $net_timestamp;
     $extended = explode('^^^',$split);
@@ -529,16 +529,16 @@ function insert_video ($split){
     global $timestamp, $uuid, $verbose, $video_timestamp;
     $extended = explode('^^^',$split);
     if ($verbose == "y"){echo "<h2>Video</h2><br />";}
-    $video_adapter_ram = trim($extended[1]);    
-    $video_caption = trim($extended[2]);    
-    $video_current_horizontal_res = trim($extended[3]);    
-    $video_current_number_colours = trim($extended[4]);    
-    $video_current_refresh_rate = trim($extended[5]);    
-    $video_current_vertical_res = trim($extended[6]);    
-    $video_description = trim($extended[7]);    
-    $video_driver_date = trim($extended[8]);    
-    $video_driver_version = trim($extended[9]);    
-    $video_max_refresh_rate = trim($extended[10]);    
+    $video_adapter_ram = trim($extended[1]);
+    $video_caption = trim($extended[2]);
+    $video_current_horizontal_res = trim($extended[3]);
+    $video_current_number_colours = trim($extended[4]);
+    $video_current_refresh_rate = trim($extended[5]);
+    $video_current_vertical_res = trim($extended[6]);
+    $video_description = trim($extended[7]);
+    $video_driver_date = trim($extended[8]);
+    $video_driver_version = trim($extended[9]);
+    $video_max_refresh_rate = trim($extended[10]);
     $video_min_refresh_rate = trim($extended[11]);
     $video_device_id = trim($extended[12]);
     if (is_null($video_timestamp)){
@@ -1183,19 +1183,19 @@ function insert_printer ($split){
     $printer_location = trim($extended[7]);
     $printer_name = NULL;
     //if (strpos($printer_system_name,'\\\\') !== false ) { $printer_system_name = substr($printer_system_name, 2); }
-    
+
     if ((strpos($printer_caption,'PDF') !== false) OR (strpos($printer_caption,'__') !== false)){
     // A pdf or Terminal Server printer - not physical, not inserted.
     } else {
     // A physical printer - insert
-    
+
     if (strpos($printer_port_name,'IP_') !== false ) {
       // Network Printer
       echo "Network Printer<br />\n";
       if (strpos($printer_caption,'\\') !== false ) { $printer_name = substr($printer_caption, 2); }
       $printer_ip = ip_trans_to(substr($printer_port_name, 3));
       $printer_network_name = $printer_ip;
- //     $printer_network_name = nslookup(substr($printer_port_name, 3)); 
+ //     $printer_network_name = nslookup(substr($printer_port_name, 3));
       if ($printer_network_name == ""){ $printer_network_name = $printer_ip; }
       if (strpos($printer_network_name,'\\') !== false ) { $printer_network_name = substr($printer_network_name, 2);}
       $sql = "SELECT count(other_ip_address) AS count FROM other WHERE other_ip_address = '" . ip_trans_to($printer_ip) . "'";
@@ -1211,7 +1211,7 @@ function insert_printer ($split){
         $sql .= "'$printer_network_name', '$printer_port_name', '$printer_shared', '$printer_share_name', ";
         $sql .= "'$timestamp', '$timestamp')";
         if ($verbose == "y"){echo $sql . "<br />\n\n";}
-        $result = mysql_query($sql) or die ('Insert Failed: ' . mysql_error() . '<br />' . $sql);        
+        $result = mysql_query($sql) or die ('Insert Failed: ' . mysql_error() . '<br />' . $sql);
       } else {
         // Update
        $sql  = "UPDATE other SET other_timestamp = '$timestamp', other_p_port_name = '$printer_host_name', ";
@@ -1225,12 +1225,12 @@ function insert_printer ($split){
       // If not, the audit of the PC $printer_system_name will be relied
       // upon to detect and insert the printer.
       echo "Local Printer<br />\n";
-      if (($printer_system_name == $system_name) AND 
-          ($printer_port_name !== "FILE:") AND 
-          ($printer_port_name !== "MSFAX:") AND 
-          ($printer_port_name !== "SHRFAX:") AND 
-          ($printer_port_name !== "BIPORT") AND 
-          (substr($printer_port_name,0,2) !== "TS") AND 
+      if (($printer_system_name == $system_name) AND
+          ($printer_port_name !== "FILE:") AND
+          ($printer_port_name !== "MSFAX:") AND
+          ($printer_port_name !== "SHRFAX:") AND
+          ($printer_port_name !== "BIPORT") AND
+          (substr($printer_port_name,0,2) !== "TS") AND
           ($printer_port_name !== "SmarThruFaxPort")) {
         $printer_timestamp = $old_timestamp;
         $sql  = "SELECT count(other_linked_pc) AS count FROM other WHERE other_linked_pc = '$uuid' AND ";
@@ -1265,7 +1265,7 @@ function insert_printer ($split){
     } // End of pdf printer
   }
 
- 
+
 function insert_shares ($split) {
     global $timestamp, $uuid, $verbose, $shares_timestamp;
     if ($verbose == "y"){echo "<h2>Share</h2><br />";}
@@ -1453,10 +1453,10 @@ function insert_hfnet ($split) {
     $sql = "SELECT count(software_uuid) AS count FROM software WHERE software_name LIKE '%KB" . $ss_qno . "' AND software_uuid = '" . $uuid . "'";
     $result = mysql_query($sql) or die ('Insert Failed: ' . mysql_error() . '<br />' . $sql);
     $myrow = mysql_fetch_array($result);
-    if ($myrow["count"] <> "0") { 
+    if ($myrow["count"] <> "0") {
       if ($verbose == "y"){ echo "Hotfix present in software table. <br />"; } else {}
     } else {
-    
+
     if (is_null($hfnet_timestamp)){
       $sql = "SELECT MAX(ss_timestamp) FROM system_security WHERE ss_uuid = '$uuid'";
       if ($verbose == "y"){echo $sql . "<br />\n\n";}
@@ -1489,7 +1489,7 @@ function insert_hfnet ($split) {
     $sql .= "'$ssb_bulletin', '$ss_qno', '$ssb_url')";
     if ($verbose == "y"){echo $sql . "<br />\n\n";}
     $result = mysql_query($sql) or die ('Insert Failed: ' . mysql_error() . '<br />' . $sql);
-    
+
     } //End of hotfix in software table check.
   } // End of function
 
@@ -1649,7 +1649,8 @@ function insert_software ($split) {
     $software_comments = trim($extended[10]);
     $sql  = "UPDATE software SET ";
     $sql .= "software_timestamp = '$timestamp', ";
-    $sql .= "software_count = '$count' ";
+    $sql .= "software_count = '$count', ";
+    $sql .= "software_version = '$software_version' ";
     $sql .= "WHERE software_uuid = '$uuid' AND ";
     $sql .= "software_name = '$software_name' AND ";
     $sql .= "(software_timestamp = '$software_timestamp' OR software_timestamp = '$timestamp')";
@@ -1736,7 +1737,7 @@ function insert_fire_app ($split) {
     }
   }
 
- 
+
 function insert_fire_port ($split) {
     global $timestamp, $uuid, $verbose, $port_timestamp;
     if ($verbose == "y"){echo "<h2>Firewall Port</h2><br />";}
