@@ -16,97 +16,59 @@ include_once("include_functions.php");
 include_once("include_win_type.php");
 
 //Include PDF-Libaries
-define('FPDF_FONTPATH','./lib/fpdf/font/');
-require('./lib/fpdf/fpdf.php');
+/////////////////////////////////////////////////////////////////////////////////
+define('FPDF_FONTPATH','./lib/ezpdf/fonts/');
+require('./lib/ezpdf/class.ezpdf.php');
+//Create PDF-Instance
+$pdf =& new Cezpdf();
 
 //MySQL-Connect
 $db = mysql_connect($mysql_server,$mysql_user,$mysql_password) or die('Could not connect: ' . mysql_error());
 mysql_select_db($mysql_database,$db);
 
-//Col-Width and Height
-$draw["col_width"][0]=50;
-$draw["col_width"][1]=130;
-$draw["col_width_horizontal"]=30;
-$draw["col_height_1"]=4;
-$draw["margin-left"]=15;
-$draw["margin-top"]=10;
-$draw["margin-right"]=10;
-$draw["line-width"]=180;
-$draw["font_size_headline_1"]=14;
-$draw["font_size_headline_2"]=10;
-$draw["font_size_body"]=10;
-$draw["font_size_footer"]=6;
+//Some Config fcr Layout
+$GLOBALS["col_height"]=20;
+$GLOBALS["headline_1_height"]=18;
+$GLOBALS["headline_2_height"]=12;
+$GLOBALS["table_body_height"]=10;
+$GLOBALS["footer_height"]=8;
 
-//Functions, for a better handling
-function pdf_start(){
-    //Create PDF
-    $pdf=new FPDF();
-    $pdf->Open();
-    $pdf->SetCompression( TRUE );
-    //Font-Color
-    $pdf->SetTextColor(0,0,0);
-    //Creator
-    $pdf->SetCreator('Open-AudIT');
-    //Display-Mode
-    //$pdf->SetDisplayMode('fullpage');
-    //Title
-    $pdf->SetTitle('Report');
-    //Auto-Page-Break
-    $pdf->SetAutoPageBreak( TRUE );
-    return $pdf;
-}
-function pdf_end($pdf){
-    //Send PDF
-    $pdf->Output();
-    $pdf->Close();
-    return $pdf;
-}
-function pdf_draw_headline_1($pdf, $draw, $show_value){
-     $pdf->SetFont('Arial','B',$draw["font_size_headline_1"]);
-     $pdf->Cell(50,7,$show_value,0,1,'L');
-     $pdf->Ln();
-     return $pdf;
-}
-function pdf_draw_headline_2($pdf, $draw, $show_value){
-    $pdf->SetFont('Arial','B',$draw["font_size_headline_2"]);
-    $pdf->Cell(50,7,$show_value,0,1,'L');
-    return $pdf;
-}
-//Start new Page
-function pdf_draw_new_page($pdf, $draw){
-    $pdf->AddPage('P');
-    $pdf->SetMargins($draw["margin-left"],$draw["margin-top"],$draw["margin-left"]);
-    return $pdf;
-}
-function pdf_draw_footer($pdf, $draw){
-    //Print Footer
-    $pdf->SetFont('Arial','B',$draw["font_size_footer"]);
-    $pdf->SetY(-15);
-    $url = $_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
-    $pdf->Write(5,date('l, dS \of F Y, h:i:s A'),$url,0,'L');
-    $pdf->SetX(100);
-    $pdf->Write(5,$pdf->PageNo());
-    $pdf->SetX(170);
-    $pdf->Write(5,'www.open-audit.org','http://www.open-audit.org');
-    return $pdf;
-}
-function pdf_draw_row($pdf, $draw, $show_value, $width=0){
-    $i=0;
-    foreach($show_value as $value){
-        if(isset($width) AND $width>0){
-            $draw["col_width"][$i]=$draw["col_width_horizontal"];
-        }
-        $pdf->Cell($draw["col_width"][$i],$draw["col_height_1"],$value, '0', 0, 'L');
-        $i++;
-    }
-    return $pdf;
-}
-function pdf_draw_nl($pdf){
-    $pdf->Ln();
-    return $pdf;
-}
-function pdf_draw_line($pdf, $draw){
-    $pdf->Line($draw["margin-left"], $pdf->GetY(), ($draw["margin-left"]+$draw["line-width"]), $pdf->GetY());
+$GLOBALS["table_layout_vertical"]=array(
+                                            'xPos'=>45,
+                                            'width'=>($pdf->ez['pageWidth']-80),
+                                            'xOrientation'=>'right',
+                                            'showHeadings'=>0,
+                                            'shaded'=>2,
+                                            'shadeCol'=>array(1,1,1),
+                                            'shadeCol2'=>array(0.9,0.9,0.9),
+                                            'showLines'=>0,
+                                            'fontSize'=>$GLOBALS["table_body_height"],
+                                            'leading'=>"20",
+                                            'cols'=>array(
+                                                         '0'=>array('width'=>150),
+                                                         ),
+                                            );
+$GLOBALS["table_layout_horizontal"]=array(
+                                            'xPos'=>45,
+                                            'width'=>($pdf->ez['pageWidth']-80),
+                                            'xOrientation'=>'right',
+                                            'showHeadings'=>1,
+                                            'shaded'=>2,
+                                            'shadeCol'=>array(1,1,1),
+                                            'shadeCol2'=>array(0.9,0.9,0.9),
+                                            'showLines'=>0,
+                                            'fontSize'=>$GLOBALS["table_body_height"],
+                                            'leading'=>"20",
+                                            );
+
+function header_footer($pdf){
+    $pdf->addText(30,25,$GLOBALS["footer_height"],date('l, dS \of F Y, h:i:s A'));
+    $pdf->addText(470,25,$GLOBALS["footer_height"],'http://www.open-audit.org');
+
+    $im=imagecreatefrompng("./images/logo.png");
+    $pdf->addImage($im,380,($pdf->ez['pageHeight']-58),200);
+    $pdf->addLink("http://www.open-audit.org",375,($pdf->ez['pageHeight']-60),575,($pdf->ez['pageHeight']-10));
+
     return $pdf;
 }
 
@@ -132,7 +94,13 @@ if(isset($_REQUEST["pc"]) AND $_REQUEST["pc"]!=""){
 }
 
 //Start PDF
-$pdf=pdf_start();
+/////////////////////////////////////////////////////////////////////////////////
+$pdf->ezSetMargins('30','30','30','30');
+$pdf->selectFont(FPDF_FONTPATH.'Helvetica.afm');
+$pdf->ezStartPageNumbers(300,25,$GLOBALS["footer_height"],'','',1);
+//Footer
+$pdf=header_footer($pdf);
+
 
 foreach($systems_array as $system){
 
@@ -167,37 +135,35 @@ foreach($systems_array as $system){
             }
         }
     }
+    if(!isset($headline_addition) OR $headline_addition==""){
+        $headline_addition="";
+    }
 
-     if(!isset($headline_addition) OR $headline_addition==""){
-         $headline_addition="";
-     }
+    //Headline on the first Page
+    //Is the headline a sql-query?
+    if(isset($query_array["name"]) AND is_array($query_array["name"])){
+        $top_headline = $query_array["name"]["name"];
+        $top_headline .= " - ";
+        $result_headline=mysql_query($query_array["name"]["sql"], $db);
+        if ($myrow = mysql_fetch_array($result_headline)){
+            $top_headline .= $myrow[0];
+        }
+    }else{
+         $top_headline = $query_array["name"];
+    }
+    $top_headline.= " ".$GLOBALS["headline_1_height"];
 
-     //Create new Page
-     $pdf=pdf_draw_new_page($pdf, $draw);
-     if(isset($query_array["name"]) AND $query_array["name"]!=""){
-     }else{
-         $top_headline = "";
-     }
-     //Headline on the first Page
-
-     //Is the headline a sql-query?
-     if(isset($query_array["name"]) AND is_array($query_array["name"])){
-         $top_headline = $query_array["name"]["name"];
-         $top_headline .= " - ";
-         $result_headline=mysql_query($query_array["name"]["sql"], $db);
-         if ($myrow = mysql_fetch_array($result_headline)){
-             $top_headline .= $myrow[0];
-         }
-     }else{
-          $top_headline = $query_array["name"];
-     }
-     $pdf=pdf_draw_headline_1($pdf, $draw, $top_headline." ".$headline_addition);
+    //Draw Headline on the first Page
+    /////////////////////////////////////////////////////////////////////////////////
+    $pdf->ezText("<b>".$top_headline."</b>",$GLOBALS["headline_1_height"]);
+    $pdf->ezText("");
 
     //Show each Category
+    $cat_count=0;
     reset($query_array["views"]);
     while (list ($viewname, $viewdef_array) = @each ($query_array["views"])) {
         if(!isset($viewdef_array["print"]) OR $viewdef_array["print"]!="n"){
-
+            $cat_count++;
             //Executing Query
             $sql=$viewdef_array["sql"];
             $result=mysql_query($sql, $db);
@@ -212,73 +178,93 @@ foreach($systems_array as $system){
             $this_page_count = mysql_num_rows($result);
 
             //Add new page, if there is not enought space to display the next category
-            $needed_height=count($viewdef_array["fields"]) * $this_page_count * ($draw["col_height_1"]/10) + $pdf->GetY();
-            if($needed_height>240){
-                $pdf=pdf_draw_footer($pdf, $draw);
-                $pdf=pdf_draw_new_page($pdf, $draw);
-                $pdf=pdf_draw_headline_1($pdf, $draw, "");
+            //At this time, it's only working correct for vertical tables
+            $h1=$pdf->getFontHeight($GLOBALS["headline_2_height"]);
+            $h2=count($viewdef_array["fields"])*$pdf->getFontHeight($GLOBALS["table_body_height"]);
+            $needed_height=$h1+$h2+50;
+
+            if( $needed_height > $pdf->y AND $cat_count>0){
+                $pdf->ezNewPage();
+                $pdf=header_footer($pdf);
+                //$pdf->ezSetY($GLOBALS["start_height"]);
+                $pdf->ezText("<b>".$top_headline."</b>",$GLOBALS["headline_1_height"]);
+                $pdf->ezText("");
             }
 
             //Headline of each category
             if(isset($viewdef_array["headline"]) AND $viewdef_array["headline"]!=""){
-                $pdf=pdf_draw_headline_2($pdf, $draw, $viewdef_array["headline"]);
+                //Draw Headline of each category
+                /////////////////////////////////////////////////////////////////////////////////
+                $pdf->ezText($viewdef_array["headline"],$GLOBALS["headline_2_height"]);
+                $pdf->ezText("");
             }
-
-            //Body
-            $pdf->SetFont('Arial','',8);
-            $pdf->SetDrawColor(200,200,200);
 
             //IF Horizontal Table-Layout
             if(isset($viewdef_array["table_layout"]) AND $viewdef_array["table_layout"]=="horizontal"){
-                $pdf->SetFont('Arial','B',8);
+                $col_count=0;
                 foreach($viewdef_array["fields"] as $field){
-                    $pdf=pdf_draw_row($pdf, $draw, array($field["head"]), $draw["col_width_horizontal"]);
+                    $col_count++;
+                    $table_head[$col_count]="<b>".$field["head"]."</b>";
                 }
-                $pdf=pdf_draw_nl($pdf);
-                $pdf->SetFont('Arial','',8);
+            }else{
+                $table_head="";
             }
 
+            $row_count=0;
+            if(isset($table_body)){
+                unset($table_body);
+            }
             if ($myrow = mysql_fetch_array($result)){
                 do{
+                    $row_count++;
+                    $col_count=0;
                     foreach($viewdef_array["fields"] as $field){
                         if( (!isset($field["show"]) OR $field["show"]!="n") AND (!isset($field["print"]) OR $field["print"]="n") ){
+                            $col_count++;
                             $show_value_2 = special_field_converting($myrow, $field, $db, "system");
-                            $show_value_2 = html_entity_decode ($show_value_2);
+                            //$show_value_2 = html_entity_decode ($show_value_2); /* >PHP 4.3 */
                             $show_value_1 = $field["head"];
 
                             //IF Horizontal Table-Layout
                             if(isset($viewdef_array["table_layout"]) AND $viewdef_array["table_layout"]=="horizontal"){
-                                $pdf=pdf_draw_row($pdf, $draw, array($show_value_2), $draw["col_width_horizontal"]);
-                                $pdf=pdf_draw_line($pdf, $draw);
+                                $table_body[$row_count][$col_count]=$show_value_2;
                             }else{
-                                if(isset($field["head"]) AND $field["head"]!="") {$show_value_1.=":";}
-                                $pdf=pdf_draw_row($pdf, $draw, array($show_value_1, $show_value_2));
-                                $pdf=pdf_draw_line($pdf, $draw);
-                                $pdf=pdf_draw_nl($pdf);
+                                $table_body[]=array($show_value_1, $show_value_2);
                             }
                         }
                     }
-                    $pdf=pdf_draw_line($pdf, $draw);
-                    $pdf=pdf_draw_nl($pdf);
-                }while ($myrow = mysql_fetch_array($result));
 
-                //IF Horizontal Table-Layout
-                if(isset($viewdef_array["table_layout"]) AND $viewdef_array["table_layout"]=="horizontal"){
-                    $pdf=pdf_draw_line($pdf, $draw);
-                    $pdf=pdf_draw_nl($pdf);
-                }
+                 }while ($myrow = mysql_fetch_array($result));
+
+                    if(isset($table_body) AND is_array($table_body)){
+                        if(isset($viewdef_array["table_layout"]) AND $viewdef_array["table_layout"]=="horizontal"){
+                            $table_layout=$GLOBALS["table_layout_horizontal"];
+                        }else{
+                            $table_layout=$GLOBALS["table_layout_vertical"];
+                        }
+                    }
+
+
+                    //Draw Table
+                    /////////////////////////////////////////////////////////////////////////////////
+                    $pdf->ezTable($table_body,$table_head,'',$table_layout);
+                    $pdf->ezText("");
+
             }else{
-                $pdf=pdf_draw_row($pdf, $draw, array(__("No Results"), ""));
-                $pdf=pdf_draw_line($pdf, $draw);
-                $pdf=pdf_draw_nl($pdf);
-                $pdf=pdf_draw_line($pdf, $draw);
-                $pdf=pdf_draw_nl($pdf);
+                $table_body[]=array("0"=>__("No Results"), "");
+                $table_layout=$GLOBALS["table_layout_vertical"];
+
+                //Draw Table
+                /////////////////////////////////////////////////////////////////////////////////
+                $pdf->ezTable($table_body,$table_head,'',$table_layout);
+                $pdf->ezText("");
             }
         }
     }
 }
 
-//Print Footer of last Page
-$pdf=pdf_draw_footer($pdf, $draw);
-$pdf=pdf_end($pdf);
+//Draw End
+/////////////////////////////////////////////////////////////////////////////////
+$pdf->ezStream();
+$pdf->ezStopPageNumbers();
 ?>
