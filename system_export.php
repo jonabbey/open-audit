@@ -151,7 +151,7 @@ foreach($systems_array as $system){
     }else{
          $top_headline = $query_array["name"];
     }
-    $top_headline.= " ".$GLOBALS["headline_1_height"];
+    $top_headline.= " ";
 
     //Draw Headline on the first Page
     /////////////////////////////////////////////////////////////////////////////////
