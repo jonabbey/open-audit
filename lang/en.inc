@@ -384,4 +384,6 @@ $GLOBALS["lang"]["Export this Page to PDF"]="Export this Page to PDF";
 $GLOBALS["lang"]["Audit-Trail for Software"]="Audit-Trail for Software";
 $GLOBALS["lang"]["Startup-Software"]="Startup-Software";
 $GLOBALS["lang"]["Hotfixes & Patches"]="Hotfixes & Patches";
+$GLOBALS["lang"]["Max Speed MHz"]="Max Speed MHz";
+$GLOBALS["lang"]["Current Speed MHz"]="Current Speed MHz";
 ?>
