@@ -251,7 +251,13 @@ foreach($systems_array as $system){
                     $pdf->ezText("");
 
             }else{
-                $table_body[]=array("0"=>__("No Results"), "");
+
+                //IF Horizontal Table-Layout
+                if(isset($viewdef_array["table_layout"]) AND $viewdef_array["table_layout"]=="horizontal"){
+                    $table_body[]=array("0"=>__("No Results"),"1"=>__("No Results"), "");
+                }else{
+                    $table_body[]=array("0"=>__("No Results"),"1"=>"");
+                }
                 $table_layout=$GLOBALS["table_layout_vertical"];
 
                 //Draw Table
