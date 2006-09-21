@@ -67,10 +67,20 @@ function header_footer($pdf){
 
     $im=imagecreatefrompng("./images/logo.png");
     $pdf->addImage($im,380,($pdf->ez['pageHeight']-58),200);
-    $pdf->addLink("http://www.open-audit.org",375,($pdf->ez['pageHeight']-60),575,($pdf->ez['pageHeight']-10));
+    $pdf->addLink("http://www.open-audit.org",375,($pdf->ez['pageHeight']-60),575,($pdf->ez['pageHeight']-20));
 
     return $pdf;
 }
+
+
+//Start PDF
+/////////////////////////////////////////////////////////////////////////////////
+$pdf->ezSetMargins('30','40','30','30');
+$pdf->selectFont(FPDF_FONTPATH.'Helvetica.afm');
+$pdf->ezStartPageNumbers(300,25,$GLOBALS["footer_height"],'','',1);
+//Footer
+$pdf=header_footer($pdf);
+
 
 //Get the pc's to display
 //actually only one
@@ -93,15 +103,7 @@ if(isset($_REQUEST["pc"]) AND $_REQUEST["pc"]!=""){
     $systems_array[0]=array("pc"=>"","system_timestamp"=>"",);
 }
 
-//Start PDF
-/////////////////////////////////////////////////////////////////////////////////
-$pdf->ezSetMargins('30','30','30','30');
-$pdf->selectFont(FPDF_FONTPATH.'Helvetica.afm');
-$pdf->ezStartPageNumbers(300,25,$GLOBALS["footer_height"],'','',1);
-//Footer
-$pdf=header_footer($pdf);
-
-
+//Walk througt the systems
 foreach($systems_array as $system){
 
     //Workaround to get the queries in the viewdef-array get worked
