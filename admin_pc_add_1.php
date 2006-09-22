@@ -1,6 +1,6 @@
 <?php
 $page = "add_pc";
-include "include.php"; 
+include "include.php";
 
 echo "<td valign=\"top\">\n";
 echo "<div class=\"main_each\">";
@@ -18,7 +18,7 @@ echo "<div class=\"main_each\">";
 //echo "<tr>\n";
 //echo "<td valign=\"top\">\n";
 //echo "<div class=\"main_each\">\n";
-echo "<p class=\"contenthead\">Add a PC.</p>\n";
+echo "<p class=\"contenthead\">".__("Add a PC.")."</p>\n";
 echo "<form action=\"admin_pc_add_2.php\" method=\"post\">\n";
 echo "<table>\n";
 //echo "<tr><td>System Name:&nbsp;</td><td><input type=\"text\" name=\"systemname\" size=\"30\" /></td></tr>\n";
@@ -29,7 +29,7 @@ echo "<table>\n";
 //echo "<tr><td>Verbose on Submit&nbsp;</td><td><input type=\"text\" name=\"verbose\" size=\"10\"><br />";
 //echo "<tr><td>Software Audit&nbsp;</td><td><input type=\"text\" name=\"software_audit\" size=\"10\"><br />";
 echo "<tr><td colspan=\"2\"><textarea rows=\"20\" name=\"add\" cols=\"90\" class=\"for_forms\"></textarea></td></tr>\n";
-echo "<tr><td colspan=\"2\"><input name=\"submit\" value=\"$l_sut\" type=\"submit\" /></td></tr>\n";
+echo "<tr><td colspan=\"2\"><input name=\"submit\" value=\"".__("Save")."\" type=\"submit\" /></td></tr>\n";
 echo "</table>\n";
 echo "</form>\n";
 echo "</div>\n";

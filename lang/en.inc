@@ -414,7 +414,6 @@ $GLOBALS["lang"]["Remember you must have hfnetchk downloaded."]="Remember you mu
 $GLOBALS["lang"]["Click Submit whem you are done."]="Click Submit whem you are done.";
 $GLOBALS["lang"]["MAC-Adress"]="MAC-Adress";
 $GLOBALS["lang"]["System Name & Domain"]="System Name & Domain";
-
 $GLOBALS["lang"]["Cannot open file"]="Cannot open file";
 $GLOBALS["lang"]["Cannot write to file"]="Cannot write to file";
 $GLOBALS["lang"]["The file"]="The file";
@@ -426,6 +425,10 @@ $GLOBALS["lang"]["Extract the pstools .exe's and put them in your web root."]="E
 $GLOBALS["lang"]["Install NMap, and make sure it's in your command path."]="Install NMap, and make sure it's in your command path.";
 $GLOBALS["lang"]["Install WinPcap (for NMap to use)"]="Install WinPcap (for NMap to use)";
 $GLOBALS["lang"]["START AUDITING !!!"]="START AUDITING !!!";
+$GLOBALS["lang"]["Add a PC."]="Add a PC.";
+$GLOBALS["lang"][""]="";
+$GLOBALS["lang"][""]="";
+$GLOBALS["lang"][""]="";
 $GLOBALS["lang"][""]="";
 
 
