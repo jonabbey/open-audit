@@ -207,10 +207,14 @@ function special_field_converting($myrow, $field, $db, $page){
     }elseif($field["name"]=="other_ip_address"){
         $show_value=ip_trans($myrow[$field["name"]]);
     }elseif($field["name"]=="delete"){
-        $show_value="<img src=\"images/button_delete_out.png\" name=\"button" . $myrow["other_id"] . "\" width=\"58\" height=\"22\" border=\"0\" alt=\"\" />";
-        $a_misc=" onmouseover=\"document.button" . $myrow["other_id"] . ".src='images/button_delete_over.png'\" ";
-        $a_misc.=" onmousedown=\"document.button" . $myrow["other_id"] . ".src='images/button_delete_down.png'\"";
-        $a_misc.=" onmouseout=\"document.button" . $myrow["other_id"] . ".src='images/button_delete_out.png'\"";
+        /*
+        $misc =" onMouseOver=\" document.getElementById('button".$random."').src='images/button_delete_over.png'\" ";
+        $misc.=" onMouseDown=\"document.getElementById('button".$random."').src='images/button_delete_down.png'\" ";
+        $misc.=" onMouseout=\"document.getElementById('button".$random."').src='images/button_delete_out.png'\" ";
+        */
+        $misc = "";
+        $random=rand(0,999999999);
+        $show_value="<img src=\"images/button_delete_out.png\" id=\"button" . $random . "\" width=\"58\" height=\"22\" border=\"0\" alt=\"\" $misc />";
     }elseif($field["name"]=="startup_location"){
         if (substr($myrow[$field["name"]],0,2) == "HK"){
             $show_value = __("Registry");

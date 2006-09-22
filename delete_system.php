@@ -1,8 +1,8 @@
 <?php
-    
+
 include "include_config.php";
 
-    if ($_GET['confirm']=1) {
+  if (isset($_GET['pc'])) {
 
     $link = mysql_connect($mysql_server, $mysql_user, $mysql_password) or die("Could not connect");
     mysql_select_db("$mysql_database") or die("Could not select database");
@@ -13,19 +13,19 @@ include "include_config.php";
 
     $query = "DELETE FROM battery WHERE battery_uuid = '" . $_GET['pc'] . "'";
     $result = mysql_query($query)  or die("Query failed at insert stage. battery");
-    
+
     $query = "DELETE FROM bios WHERE bios_uuid = '" . $_GET['pc'] . "'";
     $result = mysql_query($query)  or die("Query failed at insert stage. browser_helper_objects");
 
     $query = "DELETE FROM browser_helper_objects WHERE bho_uuid = '" . $_GET['pc'] . "'";
     $result = mysql_query($query)  or die("Query failed at insert stage. browser_helper_objects");
-    
+
     $query = "DELETE FROM firewall_auth_app WHERE firewall_app_uuid = '" . $_GET['pc'] . "'";
-    $result = mysql_query($query)  or die("Query failed at insert stage. firewall_auth_app");    
-    
+    $result = mysql_query($query)  or die("Query failed at insert stage. firewall_auth_app");
+
     $query = "DELETE FROM firewall_ports WHERE port_uuid = '" . $_GET['pc'] . "'";
     $result = mysql_query($query)  or die("Query failed at insert stage. firewall_ports");
-    
+
     $query = "DELETE FROM firewire WHERE fw_uuid = '" . $_GET['pc'] . "'";
     $result = mysql_query($query)  or die("Query failed at insert stage. firewire");
 
@@ -144,9 +144,9 @@ include "include_config.php";
     $result = mysql_query($query)  or die("Query failed at insert stage. users");
 
     $query = "DELETE FROM video WHERE video_uuid = '" . $_GET['pc'] . "'";
-    $result = mysql_query($query)  or die("Query failed at insert stage. video");    
-    
-    header("Location: index.php");
-    } else {}
+    $result = mysql_query($query)  or die("Query failed at insert stage. video");
+
+    header("Location: ./list.php?view=delete_system");
+  } else {}
 
 ?>

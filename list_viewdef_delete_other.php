@@ -1,6 +1,6 @@
 <?php
 
-$query_array=array("headline"=>__("List all Other Equipment"),
+$query_array=array("headline"=>__("Delete Other Equipment"),
                    "sql"=>"SELECT other_id, other_ip_address, other_network_name, other_type, other_description, other_linked_pc FROM other WHERE other_ip_address <> ' Not-Networked'",
                    "sort"=>"other_ip_address",
                    "dir"=>"ASC",
@@ -17,8 +17,8 @@ $query_array=array("headline"=>__("List all Other Equipment"),
                                                "link"=>"y",
                                                "sort"=>"n",
                                                "search"=>"n",
-                                               "get"=>array("file"=>"other_delete_2.php",
-                                                            "title"=>__("Delete System"),
+                                               "get"=>array("file"=>"delete_other.php",
+                                                            "title"=>__("Delete Other Equipment"),
                                                             "onClick"=>"return confirm('".__("Do you really want to DELETE this item?")."');",
                                                             "var"=>array("other"=>"%other_id",
                                                                         ),
