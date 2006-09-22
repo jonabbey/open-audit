@@ -60,10 +60,7 @@ echo "<td valign=\"top\">\n";
   echo "<div class=\"main_each\">";
 
   if(isset($query_array["name"]) AND $query_array["name"]!=""){
-      echo "<table width=\"100%\" border=\"0\" style=\"height: 70px\"><tr><td style=\"width:60px;\">\n";
-       echo "<span class=\"contenthead\">\n";
-         echo "<span class=\"contenthead\">\n";
-
+      echo "<table width=\"100%\" border=\"0\" style=\"height: 70px\"><tr><td class=\"contenthead\">\n";
          //Is the headline a sql-query?
          if(isset($query_array["name"]) AND is_array($query_array["name"])){
              echo htmlspecialchars($query_array["name"]["name"]);
@@ -76,8 +73,6 @@ echo "<td valign=\"top\">\n";
               echo htmlspecialchars($query_array["name"]);
          }
           if(isset($_REQUEST["headline_addition"])) {echo htmlspecialchars($_REQUEST["headline_addition"]);}
-         echo "</span>\n";
-       echo "</span>\n";
       echo "</td></tr></table>\n";
  }
 
@@ -113,14 +108,13 @@ while (list ($viewname, $viewdef_array) = @each ($query_array["views"])) {
          echo "<tr>\n";
           //Image
           if(isset($viewdef_array["image"]) AND $viewdef_array["image"]!=""){
-              echo "<td style=\"width: 60px;\">\n";
+              echo "<td class=\"contentsubtitle\" style=\"width: 60px;\">\n";
                echo "<img src=\"" .$viewdef_array["image"]. "\" alt=\"\" border=\"0\" width=\"48\" height=\"48\"  />\n";
               echo "</td>\n";
           }
           //Headline
           if(isset($viewdef_array["headline"]) AND $viewdef_array["headline"]!=""){
-              echo "<td>\n";
-              echo "<span class=\"contentsubtitle\">\n";
+              echo "<td class=\"contentsubtitle\">\n";
               if(isset($_REQUEST["category"]) AND $_REQUEST["category"]==""){
                   echo "<a href=\"".$_SERVER["PHP_SELF"]."?pc=".$_REQUEST["pc"]."&amp;view=".$_REQUEST["view"]."&amp;category=".$viewname."\">";
               }
@@ -128,7 +122,6 @@ while (list ($viewname, $viewdef_array) = @each ($query_array["views"])) {
               if(isset($_REQUEST["category"]) AND $_REQUEST["category"]==""){
                   echo "</a>";
               }
-              echo "</span>\n";
               echo "<td>\n";
           }
           echo "</tr>\n";

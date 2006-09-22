@@ -20,10 +20,13 @@ body {
   border: 1px solid #ccc; }
 
 
-.contenthead {
+td.contenthead {
+  font-weight:bold;
+  vertical-align:top;
+  padding-top:20px;
   font-size: 120%;
   color: #555}
-.contentsubtitle {
+td.contentsubtitle {
   font-size: 100%;
   color: #555;
   font-weight:bold;}

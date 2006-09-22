@@ -106,7 +106,7 @@ if(is_file($include_filename)){
 echo "<td valign=\"top\">\n";
 echo "<div class=\"main_each\">";
 
-echo "<form method=\"post\" name=\"form_nav\" action=\"".htmlentities($_SERVER["REQUEST_URI"])."\">\n";
+echo "<form method=\"post\" name=\"form_nav\" action=\"".htmlentities($_SERVER["REQUEST_URI"])."\" style=\"margin:0px;\">\n";
 
   //Calculating the page-count-vars in headline
   if( ($page_count+$count_system)>$all_page_count OR (isset($show_all) AND $show_all==1)){
@@ -115,8 +115,7 @@ echo "<form method=\"post\" name=\"form_nav\" action=\"".htmlentities($_SERVER["
       $show_page_count_to=$page_count+$count_system;
   }
 
-  echo "<table width=\"100%\" border=\"0\" style=\"height: 70px\"><tr><td rowspan=\"2\">\n";
-   echo "<span class=\"contenthead\"><b>";
+  echo "<table width=\"100%\" border=\"0\" style=\"height: 70px\"><tr><td rowspan=\"2\" class=\"contenthead\">\n";
 
      //Is the headline a sql-query?
      if(isset($query_array["headline"]) AND is_array($query_array["headline"])){
@@ -130,8 +129,8 @@ echo "<form method=\"post\" name=\"form_nav\" action=\"".htmlentities($_SERVER["
          echo htmlspecialchars($query_array["headline"])." ";
      }
 
-   if(isset($_REQUEST["headline_addition"])) {echo htmlspecialchars(stripslashes($_REQUEST["headline_addition"]));}
-   echo " (".($page_count+1)."-".$show_page_count_to."/".$all_page_count.")</b></span>\n";
+     if(isset($_REQUEST["headline_addition"])) {echo htmlspecialchars(stripslashes($_REQUEST["headline_addition"]));}
+     echo " (".($page_count+1)."-".$show_page_count_to."/".$all_page_count.")\n";
   echo "</td><td align=\"right\" nowrap height=\"50%\">\n";
 
   //Navigation-buttons
