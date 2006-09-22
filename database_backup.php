@@ -2,7 +2,8 @@
 //    Open Audit Backup Database
 //    backup to folder with current timestamp. 
 include "include.php";
-
+//$this_page="https://".$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF']; 
+//echo "<meta name=\"refresh\" content=\"10;".$this_page."\">";
 //
 $newline = "\r\n";
 $page = "database_backup.php";

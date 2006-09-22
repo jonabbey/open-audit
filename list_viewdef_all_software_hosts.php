@@ -1,7 +1,7 @@
 <?php
 
 $query_array=array("headline"=>__("List all Software with Hosts"),
-                   "sql"=>"SELECT software_name, software_version, software_publisher, system_name, system_uuid FROM software, system where software_name NOT LIKE '%hotfix%' AND software_name NOT LIKE '%update%' AND software_name NOT LIKE '%Service Pack%' AND software_uuid = system_uuid AND software_timestamp = system_timestamp ",
+                   "sql"=>"SELECT software_name, software_version, software_publisher, system_name, net_user_name, system_uuid FROM software, system where software_name NOT LIKE '%hotfix%' AND software_name NOT LIKE '%update%' AND software_name NOT LIKE '%Service Pack%' AND software_uuid = system_uuid AND software_timestamp = system_timestamp ",
                    "sort"=>"software_name",
                    "dir"=>"ASC",
                    "get"=>array("file"=>"list.php",
@@ -43,6 +43,11 @@ $query_array=array("headline"=>__("List all Software with Hosts"),
                                                                          "view"=>"summary",
                                                                         ),
                                                            ),
+                                              ),
+                                    "50"=>array("name"=>"net_user_name",
+                                               "head"=>__("Network User"),
+                                               "show"=>"y",
+                                               "link"=>"y",
                                               ),
                                   ),
                   );
