@@ -386,4 +386,47 @@ $GLOBALS["lang"]["Startup-Software"]="Startup-Software";
 $GLOBALS["lang"]["Hotfixes & Patches"]="Hotfixes & Patches";
 $GLOBALS["lang"]["Max Speed MHz"]="Max Speed MHz";
 $GLOBALS["lang"]["Current Speed MHz"]="Current Speed MHz";
+$GLOBALS["lang"]["Setup Open-AudIT"]="Setup Open-AudIT";
+
+
+$GLOBALS["lang"]["Audit.vbs Configuration"]="Audit.vbs Configuration";
+$GLOBALS["lang"]["Verbose Console Output ?"]="Verbose Console Output ?";
+$GLOBALS["lang"]["Use what for the unique identifier (UUID)"]="Use what for the unique identifier (UUID)";
+$GLOBALS["lang"]["Do you wish IE to be visible when running audits ?"]="Do you wish IE to be visible when running audits ?";
+$GLOBALS["lang"]["Should the form data be auto-submitted ?"]="Should the form data be auto-submitted ?";
+$GLOBALS["lang"]["Verbose IE output ?"]="Verbose IE output ?";
+$GLOBALS["lang"]["What is the name of the server and directory to submit to ?"]="What is the name of the server and directory to submit to ?";
+$GLOBALS["lang"]["NOTE - If you are running this audit from remote machines, your server name should NOT be localhost."]="NOTE - If you are running this audit from remote machines, your server name should NOT be localhost.";
+$GLOBALS["lang"]["Do you wish to have a default system to audit ?"]="Do you wish to have a default system to audit ?";
+$GLOBALS["lang"]["If no command line arguement is given, audit.vbs audits the local machine ?"]="If no command line arguement is given, audit.vbs audits the local machine ?";
+$GLOBALS["lang"]["Do you wish to audit the domain ?"]="Do you wish to audit the domain ?";
+$GLOBALS["lang"]["What is the name of the AD-Domain ?"]="What is the name of the AD-Domain ?";
+$GLOBALS["lang"]["What is the name of the text file for non-domain PCs (if any) ?"]="What is the name of the text file for non-domain PCs (if any) ?";
+$GLOBALS["lang"]["Make sure to remove this if you don't use it."]="Make sure to remove this if you don't use it.";
+$GLOBALS["lang"]["A sample is in pc_list_file.txt in the scripts directory"]="A sample is in pc_list_file.txt in the scripts directory";
+$GLOBALS["lang"]["How many simultaneous audits do you wish to run ?"]="How many simultaneous audits do you wish to run ?";
+$GLOBALS["lang"]["When you run a domain audit, or use a pc list text file."]="When you run a domain audit, or use a pc list text file.";
+$GLOBALS["lang"]["Who should get an email of failed audits ?"]="Who should get an email of failed audits ?";
+$GLOBALS["lang"]["Who should the email come from ?"]="Who should the email come from ?";
+$GLOBALS["lang"]["What is the email server address ?"]="What is the email server address ?";
+$GLOBALS["lang"]["Do you wish run hfnetchk ?"]="Do you wish run hfnetchk ?";
+$GLOBALS["lang"]["Remember you must have hfnetchk downloaded."]="Remember you must have hfnetchk downloaded.";
+$GLOBALS["lang"]["Click Submit whem you are done."]="Click Submit whem you are done.";
+$GLOBALS["lang"]["MAC-Adress"]="MAC-Adress";
+$GLOBALS["lang"]["System Name & Domain"]="System Name & Domain";
+
+$GLOBALS["lang"]["Cannot open file"]="Cannot open file";
+$GLOBALS["lang"]["Cannot write to file"]="Cannot write to file";
+$GLOBALS["lang"]["The file"]="The file";
+$GLOBALS["lang"]["is not writable"]="is not writable";
+$GLOBALS["lang"]["Now make sure you go and download the following:"]="Now make sure you go and download the following:";
+$GLOBALS["lang"]["Extract hfnetchk.exe and put it in your scripts directory."]="Extract hfnetchk.exe and put it in your scripts directory.";
+$GLOBALS["lang"]["Extract MSSecure.XML from mssecure.cab, and put it in your scripts directory."]="Extract MSSecure.XML from mssecure.cab, and put it in your scripts directory.";
+$GLOBALS["lang"]["Extract the pstools .exe's and put them in your web root."]="Extract the pstools .exe's and put them in your web root.";
+$GLOBALS["lang"]["Install NMap, and make sure it's in your command path."]="Install NMap, and make sure it's in your command path.";
+$GLOBALS["lang"]["Install WinPcap (for NMap to use)"]="Install WinPcap (for NMap to use)";
+$GLOBALS["lang"]["START AUDITING !!!"]="START AUDITING !!!";
+$GLOBALS["lang"][""]="";
+
+
 ?>
