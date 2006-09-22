@@ -4,7 +4,7 @@ include "include.php";
 $break = "";
 echo "<td valign=\"top\">\n";
 echo "<div class=\"main_each\">\n";
-echo "<p class=\"contenthead\">" . $l_swi . "</p>";
+echo "<p class=\"contenthead\">" . __("Setup Open-AudIT") . "</p>";
 
 if(isset($_POST['submit_button'])) {
 if (isset($_POST['language_post'])) {$language_post = $_POST['language_post'];} else { $language_post = "en";}
