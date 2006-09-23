@@ -2,8 +2,8 @@
 
 function return_unknown($something)
 {
-  if ($something == "") { $something = $l_unk; } else {}
-  if ($something == NULL) { $something = $l_unk; } else {}
+  if ($something == "") { $something = ""; } else {}
+  if ($something == NULL) { $something = ""; } else {}
   return $something;
 }
 
