@@ -21,16 +21,16 @@ $page_current = $page_count;
 $page_count = $page_count * $count_system;
 
 echo "<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n";
-echo " <tr>\n  <td align=\"left\" class=\"contenthead\" >$l_syc $l_res.<br />&nbsp;</td>\n";
+echo " <tr>\n  <td align=\"left\" class=\"contenthead\" >".__("System Search Results")."<br />&nbsp;</td>\n";
 //include "include_list_buttons.php";
 echo " </tr>\n</table>\n";
 
 echo "<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">";
 echo "<tr>\n";
-echo "  <td align=\"center\"><b>$l_ipa</b></td>\n";
-echo "  <td align=\"center\"><b>$l_sys</b></td>\n";
-echo "  <td width=\"150\"><b>&nbsp;$l_fld</b></td>\n";
-echo "  <td><b>&nbsp;$l_res</b></td>\n";
+echo "  <td width=\"150\"><b>&nbsp;".__("IP Address")."</b></td>\n";
+echo "  <td width=\"130\"><b>&nbsp;".__("Hostname")."</b></td>\n";
+echo "  <td width=\"150\"><b>&nbsp;".__("Field")."</b></td>\n";
+echo "  <td><b>&nbsp;".__("Result")."</b></td>\n";
 echo "</tr>";
 
 $search = stripslashes($_POST["search_field"]);
@@ -193,8 +193,8 @@ if(isset($result_set) AND $result_set) {
     $countmore=count($result_set[0]);
     $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
     echo "<tr bgcolor=\"$bgcolor\">";
-    echo "<td align=\"center\">&nbsp;" . $result_set[$i][2] . "&nbsp;</td>";
-    echo "<td align=\"center\">&nbsp;<a href=\"system.php?pc=" . $result_set[$i][1] . "&view=summary\">" . $result_set[$i][0] . "</a>&nbsp;</td>";
+    echo "<td>&nbsp;" . $result_set[$i][2] . "&nbsp;</td>";
+    echo "<td>&nbsp;<a href=\"system.php?pc=" . $result_set[$i][1] . "&view=summary\">" . $result_set[$i][0] . "</a>&nbsp;</td>";
     echo "<td>&nbsp;" . $result_set[$i][3] . "&nbsp;</td>";
     echo "<td>&nbsp;" . $result_set[$i][4] . "&nbsp;</td>";
     echo "</tr>\n";
