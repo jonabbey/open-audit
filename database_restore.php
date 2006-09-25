@@ -29,7 +29,7 @@ if (!file_exists($backup_dir)) {
 
 // Start of restore section
 
-echo "<form method=\"post\" action=\"database_restore_sql.php\" name=\"database_restore\">";
+echo "<form method=\"GET\" action=\"database_restore_sql.php\" name=\"database_restore\">";
 echo "<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" class=\"content\">";
 //echo "<tr><td colspan=\"1\"><hr /></td></tr>";
 echo "<tr>\n";
