@@ -12,7 +12,7 @@ echo "  <tr><td colspan=\"3\"><hr /></td></tr>";
 echo "  <tr><td>".__("Connecting to")." " . $mysql_server . " ".__("as")." " . $mysql_user . ".</td>\n";
 
 //$sql = "SET PASSWORD FOR '" . $mysql_user . "'@'%' = OLD_PASSWORD('" . $mysql_password . "')";
-//$result = mysql_query($sql) or die("<tr><td>$l_s20:<br /><font color=\"red\">" . $sql . "</font></td></tr>\n");
+//$result = mysql_query($sql) or die("<tr><td>".__("Query failed. Query was").":<br /><font color=\"red\">" . $sql . "</font></td></tr>\n");
 //
 mysql_connect($mysql_server, $mysql_user, $mysql_password) or die("<td>".__("Could not connect").".</td><td><img src=\"images/button_fail.png\" width=\"16\" height=\"16\" /></td></tr>\n");
 //
@@ -28,9 +28,7 @@ $result = mysql_query($sql) or die("<tr><td>".__("Query failed. Query was").":<b
 //echo "<tr><td>" . $sql . "</td></tr>\n";
 
 //echo "<tr><td>" . $sql . "</td></tr>\n";
-echo "<td>Done.</td><td><img src=\"images/button_success.png\" width=\"16\" height=\"16\" /></td></tr>\n";
-echo "<tr><td>$l_s19. <br />&nbsp;</td></tr>";
-echo "<tr><td>$l_clk <a href=\"setup_audit.php\">$l_her</a> $l_toc.<br /></td></tr>";
+echo "<td>".__("Done")."</td><td><img src=\"images/button_success.png\" width=\"16\" height=\"16\" /></td></tr>\n";
 echo "</table>";
 echo "</td>\n";
 include "include_right_column.php";
