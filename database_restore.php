@@ -27,17 +27,6 @@ if (!file_exists($backup_dir)) {
 } 
  
 
-$backup_filename = $backup_dir.'backup'.$today.'.sql';
-$handle = fopen($backup_filename, "w");
-$table_len=strlen($backup);
-
-$tab_status = mysql_query("SHOW TABLE STATUS");
-while($all = mysql_fetch_assoc($tab_status)):
-   $tbl_stat[$all[Name]] = $all[Auto_increment];
-endwhile;
-unset($backup);
-$tables = mysql_list_tables($mysql_database);
-$date_time = date('l dS \of F Y h:i:s A');
 // Start of restore section
 
 echo "<form method=\"post\" action=\"database_restore_sql.php\" name=\"database_restore\">";
