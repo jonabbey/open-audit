@@ -150,7 +150,7 @@ $menue_array = array(
                     "link"=>"#",
                     "class"=>"menuparent",
                     "childs"=>array("10"=>array("name"=>"Config", "link"=>"admin_config.php?sub=1", "image"=>"images/settings.png", "title"=>"",),
-                                    "20"=>array("name"=>"Audit Config", "link"=>"setup_audit.php", "image"=>"images/settings_2.png", "title"=>"",),
+//                                    "20"=>array("name"=>"Audit Config", "link"=>"setup_audit.php", "image"=>"images/settings_2.png", "title"=>"",),
                                     "30"=>array("name"=>"Add a System", "link"=>"admin_pc_add_1.php?sub=1", "image"=>"images/add.png", "title"=>"",),
                                     "40"=>array("name"=>"Delete System", "link"=>"./list.php?view=delete_system", "image"=>"images/delete.png", "title"=>"",),
                                     "50"=>array("name"=>"Delete Other", "link"=>"./list.php?view=delete_other", "image"=>"images/delete.png", "title"=>"",),
