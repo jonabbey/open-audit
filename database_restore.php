@@ -40,7 +40,7 @@ $tables = mysql_list_tables($mysql_database);
 $date_time = date('l dS \of F Y h:i:s A');
 // Start of restore section
 
-echo "<form method=\"post\" action=\"" . $_SERVER["PHP_SELF"] . "\" name=\"database_restore\">";
+echo "<form method=\"post\" action=\"database_restore_sql.php\" name=\"database_restore\">";
 echo "<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" class=\"content\">";
 //echo "<tr><td colspan=\"2\"><hr /></td></tr>";
 echo "<tr>\n";
