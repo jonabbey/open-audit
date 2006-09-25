@@ -199,10 +199,10 @@ if(isset($result_set) AND $result_set) {
     echo "<td>&nbsp;" . $result_set[$i][4] . "&nbsp;</td>";
     echo "</tr>\n";
   }
-  echo "<tr><td colspan=\"2\"><br /><b>$l_res: " . $count . "</b></td></tr>\n";
+  echo "<tr><td colspan=\"2\"><br /><b>".__("Results").": " . $count . "</b></td></tr>\n";
 }
 else {
-  echo "<tr><td colspan=\"4\">No Results.</td></tr>\n";
+  echo "<tr><td colspan=\"4\">".__("No Results")."</td></tr>\n";
 }
 
 echo "</table>\n";
