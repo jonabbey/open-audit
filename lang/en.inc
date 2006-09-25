@@ -430,6 +430,7 @@ $GLOBALS["lang"]["Delete Other"]="Delete Other";
 $GLOBALS["lang"]["System Search Results"]="System Search Results";
 $GLOBALS["lang"]["Result"]="Result";
 $GLOBALS["lang"]["Field"]="Field";
+$GLOBALS["lang"]["Results"]="Results";
 
 
 ?>
