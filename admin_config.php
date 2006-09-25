@@ -8,9 +8,9 @@ echo "<p class=\"contenthead\">" . __("Setup Open-AudIT") . "</p>";
 
 if(isset($_POST['submit_button'])) {
 if (isset($_POST['language_post'])) {$language_post = $_POST['language_post'];} else { $language_post = "en";}
-if ($_POST['mysql_server_post'] == "") {echo "<font color=red>" . $l_yms . ".</font>"; $break = "1";} else {}
-if ($_POST['mysql_database_post'] == "") {echo "<font color=red>" . $l_ydb . ".</font>"; $break = "1";} else {}
-if ($_POST['mysql_user_post'] == "") {echo "<font color=red>" . $l_ymu . ".</font>"; $break = "1";} else {}
+if ($_POST['mysql_server_post'] == "") {echo "<font color=red>" . __("You must declare a MySQL Server") . ".</font>"; $break = "1";} else {}
+if ($_POST['mysql_database_post'] == "") {echo "<font color=red>" . __("You must declare a MySQL Database") . ".</font>"; $break = "1";} else {}
+if ($_POST['mysql_user_post'] == "") {echo "<font color=red>" . __("You must declare a MySQL Username") . ".</font>"; $break = "1";} else {}
 if (isset($_POST['mysql_password_post'])) {$mysql_password_post = $_POST['mysql_password_post'];} else { $mysql_password_post = "";}
 if (isset($_POST['use_https_post']))  {$use_https_post = $_POST['use_https_post'];}  else { $use_https_post = "n";}
 if (isset($_POST['iis_passwords_post']))  {$iis_passwords_post = $_POST['iis_passwords_post'];}  else { $iis_passwords_post = "n";}
@@ -124,10 +124,10 @@ if (isset($_POST['pic_style_post'])) {$pic_style_post = $_POST['pic_style_post']
       echo "Cannot write to file ($filename)";
       exit;
     }
-    echo "<font color=blue>" . $l_twi . ".</font>";
+    echo "<font color=blue>" . __("The Open-AudIT config has been updated") . ".</font>";
     fclose($handle);
   } else {
-    echo $l_tfi . $filename . $l_inw;
+    echo __("The file") . $filename . __("is not writable");
   }
   }
 }
