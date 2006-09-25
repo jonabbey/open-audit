@@ -427,9 +427,9 @@ $GLOBALS["lang"]["Install WinPcap (for NMap to use)"]="Install WinPcap (for NMap
 $GLOBALS["lang"]["START AUDITING !!!"]="START AUDITING !!!";
 $GLOBALS["lang"]["Add a PC."]="Add a PC.";
 $GLOBALS["lang"]["Delete Other"]="Delete Other";
-$GLOBALS["lang"][""]="";
-$GLOBALS["lang"][""]="";
-$GLOBALS["lang"][""]="";
+$GLOBALS["lang"]["System Search Results"]="System Search Results";
+$GLOBALS["lang"]["Result"]="Result";
+$GLOBALS["lang"]["Field"]="Field";
 
 
 ?>
