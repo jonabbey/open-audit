@@ -425,7 +425,7 @@ $GLOBALS["lang"]["Extract the pstools .exe's and put them in your web root."]="E
 $GLOBALS["lang"]["Install NMap, and make sure it's in your command path."]="Install NMap, and make sure it's in your command path.";
 $GLOBALS["lang"]["Install WinPcap (for NMap to use)"]="Install WinPcap (for NMap to use)";
 $GLOBALS["lang"]["START AUDITING !!!"]="START AUDITING !!!";
-$GLOBALS["lang"]["Add a PC."]="Add a PC.";
+$GLOBALS["lang"]["Add a PC"]="Add a PC";
 $GLOBALS["lang"]["Delete Other"]="Delete Other";
 $GLOBALS["lang"]["System Search Results"]="System Search Results";
 $GLOBALS["lang"]["Result"]="Result";
@@ -435,5 +435,6 @@ $GLOBALS["lang"]["You must declare a MySQL Database"]="You must declare a MySQL 
 $GLOBALS["lang"]["You must declare a MySQL Server"]="You must declare a MySQL Server";
 $GLOBALS["lang"]["You must declare a MySQL Username"]="You must declare a MySQL Username";
 $GLOBALS["lang"]["The Open-AudIT config has been updated"]="The Open-AudIT config has been updated";
+$GLOBALS["lang"]["Uploading files from Uploads directory"]="Uploading files from Uploads directory";
 
 ?>
