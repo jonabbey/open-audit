@@ -18,7 +18,7 @@ echo "  <tr><td class=\"contenthead\">".__("Backing up the Database")."</td></tr
 echo "  <tr><td colspan=\"3\"><hr /></td></tr>";
 echo "<tr><td>".__("The following tables were found")."</td><td>".__("Length")."</td><td>".__("Connectable")."</td></tr>";
 echo "  <tr><td colspan=\"3\"><hr /></td></tr>";
-$today = date("dmYGis");
+$today = date("d-m-Y-G.i.s");
 $backup_dir = '.\\backup\\';
 
 if (!file_exists($backup_dir)) {
