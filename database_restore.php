@@ -16,9 +16,9 @@ echo "<td valign=\"top\">$newline";
 echo "<div class=\"main_each\">$newline";
 echo "<table border=\"0\" cellpadding=\"2\" cellspacing=\"0\" width=\"100%\" >$newline";
 echo "  <tr><td class=\"contenthead\">".__("Restore the Database")."</td></tr>";
-echo "  <tr><td colspan=\"3\"><hr /></td></tr>";
+echo "  <tr><td colspan=\"1\"><hr /></td></tr>";
 echo "<tr><td>".__("Select a backup")."</td>";
-//echo "  <tr><td colspan=\"3\"><hr /></td></tr>";
+//echo "  <tr><td colspan=\"1\"><hr /></td></tr>";
 $today = date("dmYGis");
 $backup_dir = '.\\backup\\';
 
@@ -31,7 +31,7 @@ if (!file_exists($backup_dir)) {
 
 echo "<form method=\"post\" action=\"database_restore_sql.php\" name=\"database_restore\">";
 echo "<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" class=\"content\">";
-//echo "<tr><td colspan=\"2\"><hr /></td></tr>";
+//echo "<tr><td colspan=\"1\"><hr /></td></tr>";
 echo "<tr>\n";
 echo "<td>".__("Database").":</td>\n";
 echo "<td><select size=\"1\" name=\"database_post\" class=\"for_forms\">\n";
