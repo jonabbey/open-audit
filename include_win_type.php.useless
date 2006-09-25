@@ -36,7 +36,7 @@ $systems=array( "Windows XP"=>"Win XP",
                 "Microsoft Windows 95"=>"Win 95",
                 "Microsoft Windows 2000 Server"=>"2000 Server",
                 "Microsoft Windows 2000 Professional"=>"2000 Pro",
-                "Microsoft Windows 2000 Advanced Server"=>"2000 Adv Server"); 
+                "Microsoft Windows 2000 Advanced Server"=>"2000 Adv Server");
 reset ($systems);
 while (list ($key, $val) = each ($systems)) {
     if($os==$key){

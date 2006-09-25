@@ -13,8 +13,6 @@ if(is_file($language_file)){
 include "include_lang_english.php";
 
 //if ($language <> "english"){ include "include_lang_" . $language . ".php"; }
-include_once "include_win_type.php";
-include_once "include_win_img.php";
 include_once "include_functions.php";
 include_once "include_col_scheme.php";
 
