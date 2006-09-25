@@ -18,7 +18,7 @@ echo "<div class=\"main_each\">";
 //echo "<tr>\n";
 //echo "<td valign=\"top\">\n";
 //echo "<div class=\"main_each\">\n";
-echo "<p class=\"contenthead\">".__("Add a PC.")."</p>\n";
+echo "<p class=\"contenthead\">".__("Add a PC")."</p>\n";
 echo "<form action=\"admin_pc_add_2.php\" method=\"post\">\n";
 echo "<table>\n";
 //echo "<tr><td>System Name:&nbsp;</td><td><input type=\"text\" name=\"systemname\" size=\"30\" /></td></tr>\n";

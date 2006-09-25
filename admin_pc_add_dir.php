@@ -9,13 +9,13 @@ set_time_limit(200);
 //Create one value for start time
     $mtime = $mtime[1] + $mtime[0];
 //Write start time into a variable
-    $tstart = $mtime; 
+    $tstart = $mtime;
 
 include "include.php";
 echo "<td valign=\"top\">\n";
 echo "<div class=\"main_each\">";
 echo "<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n";
-echo " <tr>\n  <td align=\"left\" class=\"contenthead\" >$l_upl.<br />&nbsp;</td>\n";
+echo " <tr>\n  <td align=\"left\" class=\"contenthead\" >".__("Uploading files from Uploads directory").".<br />&nbsp;</td>\n";
 $count = 0;
 $dir = "uploads/";
 // Open a known directory, and proceed to read its contents
@@ -29,7 +29,7 @@ if (is_dir($dir)) {
    }
 }
 foreach ($files as $file_name){
-echo "<tr><td>$l_upf: " . $file_name . "</td></tr>";
+echo "<tr><td>".__("File").": " . $file_name . "</td></tr>";
 echo "<tr><td>\n";
 
 $filename = "uploads/" . $file_name;
@@ -508,16 +508,16 @@ function insert_video ($split){
     global $timestamp, $uuid, $verbose, $video_timestamp;
     $extended = explode('^^^',$split);
     if ($verbose == "y"){echo "<h2>Video</h2><br />";}
-    $video_adapter_ram = trim($extended[1]);    
-    $video_caption = trim($extended[2]);    
-    $video_current_horizontal_res = trim($extended[3]);    
-    $video_current_number_colours = trim($extended[4]);    
-    $video_current_refresh_rate = trim($extended[5]);    
-    $video_current_vertical_res = trim($extended[6]);    
-    $video_description = trim($extended[7]);    
-    $video_driver_date = trim($extended[8]);    
-    $video_driver_version = trim($extended[9]);    
-    $video_max_refresh_rate = trim($extended[10]);    
+    $video_adapter_ram = trim($extended[1]);
+    $video_caption = trim($extended[2]);
+    $video_current_horizontal_res = trim($extended[3]);
+    $video_current_number_colours = trim($extended[4]);
+    $video_current_refresh_rate = trim($extended[5]);
+    $video_current_vertical_res = trim($extended[6]);
+    $video_description = trim($extended[7]);
+    $video_driver_date = trim($extended[8]);
+    $video_driver_version = trim($extended[9]);
+    $video_max_refresh_rate = trim($extended[10]);
     $video_min_refresh_rate = trim($extended[11]);
     $video_device_id = trim($extended[12]);
     if (is_null($video_timestamp)){
@@ -1161,7 +1161,7 @@ function insert_printer ($split){
     $printer_system_name = trim($extended[6]);
     $printer_location = trim($extended[7]);
     $printer_name = NULL;
-    
+
     if (strpos($printer_port_name,'IP_') !== false ) {
       // Network Printer
       if (strpos($printer_caption,'\\'  ) !== false ) { $printer_name = explode("\\", $printer_caption); }
@@ -1177,7 +1177,7 @@ function insert_printer ($split){
         $sql  = "INSERT INTO printer (printer_ip, printer_caption, printer_location, printer_system_name, printer_timestamp, printer_first_timestamp) VALUES (";
         $sql .= "'$printer_ip', '$printer_caption', '$printer_location', '$printer_host_name', '$timestamp', '$timestamp')";
         if ($verbose == "y"){echo $sql . "<br />\n\n";}
-        $result = mysql_query($sql) or die ('Insert Failed: ' . mysql_error() . '<br />' . $sql);;        
+        $result = mysql_query($sql) or die ('Insert Failed: ' . mysql_error() . '<br />' . $sql);;
       } else {
         // Update
        $sql  = "UPDATE printer SET printer_timestamp = '$timestamp', printer_system_name = '$printer_host_name', ";
@@ -1186,7 +1186,7 @@ function insert_printer ($split){
        $result = mysql_query($sql) or die ('Insert Failed: ' . mysql_error() . '<br />' . $sql);;
       }
     } else {}
-    
+
     if ($printer_port_name == "LPT1:" OR strpos($printer_port_name,'USB') !== false OR strpos($printer_port_name,'DOT') !== false ) {
     // Locally Attached Printer
     $printer_timestamp = $old_timestamp;
@@ -1220,7 +1220,7 @@ function insert_printer ($split){
     } // End of IP detection in printer_port
   }
 
- 
+
 function insert_shares ($split) {
     global $timestamp, $uuid, $verbose, $shares_timestamp;
     if ($verbose == "y"){echo "<h2>Share</h2><br />";}
@@ -1408,10 +1408,10 @@ function insert_hfnet ($split) {
     $sql = "SELECT count(software_uuid) AS count FROM software WHERE software_name LIKE '%KB" . $ss_qno . "' AND software_uuid = '" . $uuid . "'";
      $result = mysql_query($sql) or die ('Insert Failed: ' . mysql_error() . '<br />' . $sql);
     $myrow = mysql_fetch_array($result);
-    if ($myrow["count"] <> "0") { 
+    if ($myrow["count"] <> "0") {
       if ($verbose == "y"){ echo "Hotfix present in software table. <br />"; } else {}
     } else {
-    
+
     if (is_null($hfnet_timestamp)){
       $sql = "SELECT MAX(ss_timestamp) FROM system_security WHERE ss_uuid = '$uuid'";
       if ($verbose == "y"){echo $sql . "<br />\n\n";}
@@ -1444,7 +1444,7 @@ function insert_hfnet ($split) {
     $sql .= "'$ssb_bulletin', '$ss_qno', '$ssb_url')";
     if ($verbose == "y"){echo $sql . "<br />\n\n";}
      $result = mysql_query($sql) or die ('Insert Failed: ' . mysql_error() . '<br />' . $sql);
-    
+
     } //End of hotfix in software table check.
   } // End of function
 
@@ -1689,7 +1689,7 @@ function insert_fire_app ($split) {
     }
   }
 
- 
+
 function insert_fire_port ($split) {
     global $timestamp, $uuid, $verbose, $port_timestamp;
     if ($verbose == "y"){echo "<h2>Firewall Port</h2><br />";}

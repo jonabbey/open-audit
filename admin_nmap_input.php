@@ -1,8 +1,10 @@
 <?php
-include "include.php"; 
+include "include.php";
 echo "<td valign=\"top\">\n";
 echo "<div class=\"main_each\">";
-echo "<p class=\"contenthead\">$l_nmp.</p>\n";
+
+echo "<p class=\"contenthead\">".__("NMap")."</p>\n";
+
 $timestamp = date("YmdHis");
 $uuid = "";
 $process = "";
@@ -11,7 +13,7 @@ if (isset($_POST["submit"])){
   $input = explode("\n", $input);
 
   foreach ($input as $split) {
-    if (substr($split, 0, 12) == "MAC Address:") { 
+    if (substr($split, 0, 12) == "MAC Address:") {
       // OK - we have a hit.
       $mac = substr($split,13,17);
       echo "Mac Address: " . $mac . "<br />";
@@ -19,20 +21,20 @@ if (isset($_POST["submit"])){
       $manufacturer = $temp[0];
       echo "Manufacturer: " . $manufacturer . "<br />";
     }
-    if (substr($split, 0, 12) == "Device type:") { 
+    if (substr($split, 0, 12) == "Device type:") {
       // OK - we have a hit.
       $temp = explode(":", $split);
       $temp2 = explode("|",$temp[1]);
       $device_type = ltrim(rtrim($temp2[0]));
       echo "Device Type: " . $device_type . "<br />";
     }
-    if (substr($split, 0, 8) == "Running:") { 
+    if (substr($split, 0, 8) == "Running:") {
       // OK - we have a hit.
       $temp = explode(":", $split);
       $running = ltrim(rtrim($temp[1]));
       echo "Running: " . $running . "<br />";
     }
-    if (substr($split, 0, 20) == "Interesting ports on") { 
+    if (substr($split, 0, 20) == "Interesting ports on") {
       // OK - we have a hit.
       if (strpos($split, ")") !== false){
         $temp = explode(")",substr($split, strpos($split, "(")+1));
@@ -59,7 +61,7 @@ if (isset($_POST["submit"])){
         $ip_address = $ip_explode[0] . "." . $ip_explode[1] . "." . $ip_explode[2] . "." . $ip_explode[3];
         echo "IP Address: " . $ip_address . "<br />";
         $name = $ip_address;
-        echo "Name: " . $name . "<br />"; 
+        echo "Name: " . $name . "<br />";
       }
     }
   } // End of for each
@@ -131,7 +133,7 @@ if (isset($_POST["submit"])){
     $process = "new_other";
     echo $sql . "<br />";
   } else {}
-    
+
   if ($process == "other_mac"){
     $sql  = "UPDATE other SET other_ip_address = '". ip_trans_to($ip_address) . "', ";
     $sql .= "other_mac_address = '$mac', other_timestamp = '$timestamp' ";
@@ -178,7 +180,7 @@ echo "<br />" .$sql . "<br />";
   echo "<form action=\"admin_nmap_input.php\" method=\"post\">\n";
   echo "<table>\n";
   echo "<tr><td colspan=\"2\"><textarea rows=\"20\" name=\"add\" cols=\"90\" class=\"for_forms\"></textarea></td></tr>\n";
-  echo "<tr><td colspan=\"2\"><input name=\"submit\" value=\"$l_sut\" type=\"submit\" /></td></tr>\n";
+  echo "<tr><td colspan=\"2\"><input name=\"submit\" value=\"".__("Save")."\" type=\"submit\" /></td></tr>\n";
   echo "</table>\n";
   echo "</form>\n";
 
