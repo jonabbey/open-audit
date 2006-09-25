@@ -431,6 +431,9 @@ $GLOBALS["lang"]["System Search Results"]="System Search Results";
 $GLOBALS["lang"]["Result"]="Result";
 $GLOBALS["lang"]["Field"]="Field";
 $GLOBALS["lang"]["Results"]="Results";
-
+$GLOBALS["lang"]["You must declare a MySQL Database"]="You must declare a MySQL Database";
+$GLOBALS["lang"]["You must declare a MySQL Server"]="You must declare a MySQL Server";
+$GLOBALS["lang"]["You must declare a MySQL Username"]="You must declare a MySQL Username";
+$GLOBALS["lang"]["The Open-AudIT config has been updated"]="The Open-AudIT config has been updated";
 
 ?>
