@@ -32,7 +32,7 @@ if (versionCheck(get_config("version"), $latest_version)) {
           <div style=\"float: left\">
             <img src=\"images/emblem_important.png\" height=\"24\" width=\"24\" alt=\"\" />
           </div>
-          <div class=\"contenthead\" align=\"center\">";
+          <div class=\"indexheadlines\" align=\"center\">";
   echo __("An update has been found.");
   echo " <a href=\"upgrade.php\">";
   echo __("Click here to upgrade!");
@@ -48,7 +48,7 @@ if ($show_other_discovered == "y") {
     "<div class=\"main_each\">
       <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" >
         <tr>
-          <td class=\"contenthead\" colspan=\"4\"><a href=\"javascript://\" onclick=\"switchUl('f0');\">$l_oti $other_detected $l_day.</a></td>
+          <td class=\"indexheadlines\" colspan=\"4\"><a href=\"javascript://\" onclick=\"switchUl('f0');\">$l_oti $other_detected $l_day.</a></td>
           <td align=\"right\"><a href=\"javascript://\" onclick=\"switchUl('f0');\"><img src=\"images/down.png\" width=\"16\" height=\"16\" border=\"0\" alt=\"\" /></a></td>
         </tr>
       </table>
@@ -99,7 +99,7 @@ if ($show_system_discovered == "y") {
     "<div class=\"main_each\">
        <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">
          <tr>
-           <td class=\"contenthead\" colspan=\"3\"><a href=\"javascript://\" onclick=\"switchUl('f1');\">$l_syd $system_detected $l_day.</a></td>
+           <td class=\"indexheadlines\" colspan=\"3\"><a href=\"javascript://\" onclick=\"switchUl('f1');\">$l_syd $system_detected $l_day.</a></td>
            <td align=\"right\"><a href=\"javascript://\" onclick=\"switchUl('f1');\"><img src=\"images/down.png\" width=\"16\" height=\"16\" border=\"0\" alt=\"\" /></a></td>
           </tr>
        </table>
@@ -149,7 +149,7 @@ if ($show_systems_not_audited == "y") {
     "<div class=\"main_each\">
        <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\"  width=\"100%\">
          <tr>
-           <td class=\"contenthead\" colspan=\"3\"><a href=\"javascript://\" onclick=\"switchUl('f2');\">$l_syn $days_systems_not_audited $l_day.</a></td>
+           <td class=\"indexheadlines\" colspan=\"3\"><a href=\"javascript://\" onclick=\"switchUl('f2');\">$l_syn $days_systems_not_audited $l_day.</a></td>
            <td align=\"right\"><a href=\"javascript://\" onclick=\"switchUl('f2');\"><img src=\"images/down.png\" width=\"16\" height=\"16\" border=\"0\" alt=\"\" /></a></td>
          </tr>
        </table>
@@ -203,7 +203,7 @@ if ($show_partition_usage == "y") {
       "<div class=\"main_each\">
          <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" >
            <tr>
-             <td class=\"contenthead\"><a href=\"javascript://\" onclick=\"switchUl('f3');\">$l_par $partition_free_space MB.</a></td>
+             <td class=\"indexheadlines\"><a href=\"javascript://\" onclick=\"switchUl('f3');\">$l_par $partition_free_space MB.</a></td>
              <td align=\"right\"><a href=\"javascript://\" onclick=\"switchUl('f3');\"><img src=\"images/down.png\" width=\"16\" height=\"16\" border=\"0\" alt=\"\" /></a></td>
            </tr>
          </table>
@@ -270,7 +270,7 @@ if ($show_software_detected == "y"){
     "<div class=\"main_each\">
        <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" >
          <tr>
-           <td class=\"contenthead\"><a href=\"javascript://\" onclick=\"switchUl('f4');\">$l_sof $days_software_detected $l_day.</a></td>
+           <td class=\"indexheadlines\"><a href=\"javascript://\" onclick=\"switchUl('f4');\">$l_sof $days_software_detected $l_day.</a></td>
            <td align=\"right\"><a href=\"javascript://\" onclick=\"switchUl('f4');\"><img src=\"images/down.png\" width=\"16\" height=\"16\" border=\"0\" alt=\"\" /></a></td>
          </tr>
        </table>
@@ -323,7 +323,7 @@ if (1 != 1){
     "<div class=\"main_each\">
        <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" >
          <tr>
-           <td class=\"contenthead\"><a href=\"javascript://\" onclick=\"switchUl('f5');\">$l_top  $number_patches_not_detected $l_mis.</a></td>
+           <td class=\"indexheadlines\"><a href=\"javascript://\" onclick=\"switchUl('f5');\">$l_top  $number_patches_not_detected $l_mis.</a></td>
            <td align=\"right\"><a href=\"javascript://\" onclick=\"switchUl('f5');\"><img src=\"images/down.png\" width=\"16\" height=\"16\" border=\"0\" alt=\"\" /></a></td>
          </tr>
        </table>
@@ -367,7 +367,7 @@ if ($show_detected_servers == "y"){
     "<div class=\"main_each\">
        <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" >
           <tr>
-            <td class=\"contenthead\" colspan=\"4\"><a href=\"javascript://\" onclick=\"switchUl('f6');\">$l_web.</a></td>
+            <td class=\"indexheadlines\" colspan=\"4\"><a href=\"javascript://\" onclick=\"switchUl('f6');\">$l_web.</a></td>
             <td align=\"right\"><a href=\"javascript://\" onclick=\"switchUl('f6');\"><img src=\"images/down.png\" width=\"16\" height=\"16\" border=\"0\" alt=\"\" /></a></td>
           </tr>
         </table>
@@ -503,7 +503,7 @@ if ($show_detected_servers == "y"){
     "<div class=\"main_each\">
        <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" >
          <tr>
-           <td class=\"contenthead\" colspan=\"4\"><a href=\"javascript://\" onclick=\"switchUl('f7');\">$l_ftp.</a></td>
+           <td class=\"indexheadlines\" colspan=\"4\"><a href=\"javascript://\" onclick=\"switchUl('f7');\">$l_ftp.</a></td>
            <td align=\"right\"><a href=\"javascript://\" onclick=\"switchUl('f7');\"><img src=\"images/down.png\" width=\"16\" height=\"16\" border=\"0\" alt=\"\" /></a></td>
          </tr>
         </table>
@@ -647,7 +647,7 @@ if ($show_detected_servers == "y"){
     "<div class=\"main_each\">
        <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" >
          <tr>
-           <td class=\"contenthead\" colspan=\"4\"><a href=\"javascript://\" onclick=\"switchUl('f8');\">$l_ats.</a></td>
+           <td class=\"indexheadlines\" colspan=\"4\"><a href=\"javascript://\" onclick=\"switchUl('f8');\">$l_ats.</a></td>
            <td align=\"right\"><a href=\"javascript://\" onclick=\"switchUl('f8');\"><img src=\"images/down.png\" width=\"16\" height=\"16\" border=\"0\" alt=\"\" /></a></td>
          </tr>
        </table>
@@ -783,7 +783,7 @@ if ($show_detected_servers == "y"){
     "<div class=\"main_each\">
        <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" >
          <tr>
-           <td class=\"contenthead\" colspan=\"4\"><a href=\"javascript://\" onclick=\"switchUl('f9');\">$l_eml.</a></td>
+           <td class=\"indexheadlines\" colspan=\"4\"><a href=\"javascript://\" onclick=\"switchUl('f9');\">$l_eml.</a></td>
            <td align=\"right\"><a href=\"javascript://\" onclick=\"switchUl('f9');\"><img src=\"images/down.png\" width=\"16\" height=\"16\" border=\"0\" alt=\"\" /></a></td>
          </tr>
        </table>
@@ -919,7 +919,7 @@ if ($show_detected_servers == "y"){
     "<div class=\"main_each\">
        <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" >
          <tr>
-           <td class=\"contenthead\" colspan=\"4\"><a href=\"javascript://\" onclick=\"switchUl('f10');\">$l_avs.</a></td>
+           <td class=\"indexheadlines\" colspan=\"4\"><a href=\"javascript://\" onclick=\"switchUl('f10');\">$l_avs.</a></td>
            <td align=\"right\"><a href=\"javascript://\" onclick=\"switchUl('f10');\"><img src=\"images/down.png\" width=\"16\" height=\"16\" border=\"0\" alt=\"\" /></a></td>
          </tr>
        </table>
@@ -1049,7 +1049,7 @@ if ($show_detected_servers == "y"){
     "<div class=\"main_each\">
        <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" >
          <tr>
-           <td class=\"contenthead\" colspan=\"4\"><a href=\"javascript://\" onclick=\"switchUl('f11');\">$l_ardp.</a></td>
+           <td class=\"indexheadlines\" colspan=\"4\"><a href=\"javascript://\" onclick=\"switchUl('f11');\">$l_ardp.</a></td>
            <td align=\"right\"><a href=\"javascript://\" onclick=\"switchUl('f11');\"><img src=\"images/down.png\" width=\"16\" height=\"16\" border=\"0\" alt=\"\" /></a></td>
          </tr>
        </table>
@@ -1182,7 +1182,7 @@ if (isset($show_detected_xp_av) AND $show_detected_xp_av == "y"){
     "<div class=\"main_each\">
        <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\"  width=\"100%\">
          <tr>
-           <td class=\"contenthead\" colspan=\"3\"><a href=\"javascript://\" onclick=\"switchUl('f12');\">$l_xps.</a></td>
+           <td class=\"indexheadlines\" colspan=\"3\"><a href=\"javascript://\" onclick=\"switchUl('f12');\">$l_xps.</a></td>
            <td align=\"right\"><a href=\"javascript://\" onclick=\"switchUl('f12');\"><img src=\"images/down.png\" width=\"16\" height=\"16\" border=\"0\" alt=\"\" /></a></td>
          </tr>
        </table>

@@ -19,6 +19,10 @@ body {
   padding: 5px;
   border: 1px solid #ccc; }
 
+td.indexheadlines {
+  vertical-align:top;
+  font-size: 120%;
+  color: #555}
 
 td.contenthead {
   font-weight:bold;
