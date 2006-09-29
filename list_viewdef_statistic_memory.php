@@ -2,12 +2,12 @@
 
 $query_array=array("headline"=>__("Statistic for Physical Memory"),
                    "sql"=>"SELECT
-                               system_memory,
+                               memory_capacity AS system_memory, sum(memory_capacity),
                                COUNT(*) count_item,
-                               ( 100 / (SELECT count(*) FROM system WHERE system_memory != '') * COUNT( * ) ) AS percentage
-                           FROM system
+                               ( 100 / (SELECT count(*) FROM memory WHERE memory_detail != 'Unknown') * COUNT( * ) ) AS percentage
+                           FROM memory
                            WHERE (1)
-                           GROUP BY system_memory
+                           GROUP BY memory_capacity
                            ",
                    "sort"=>"count_item",
                    "dir"=>"DESC",
@@ -31,3 +31,4 @@ $query_array=array("headline"=>__("Statistic for Physical Memory"),
                                   ),
                   );
 ?>
+
