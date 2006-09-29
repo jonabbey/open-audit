@@ -343,7 +343,7 @@ CREATE TABLE `memory` (
   `memory_type` varchar(45) NOT NULL default '',
   `memory_form_factor` varchar(45) NOT NULL default '',
   `memory_detail` varchar(45) NOT NULL default '',
-  `memory_capacity` varchar(45) NOT NULL default '',
+  `memory_capacity` int(11) NOT NULL,
   `memory_speed` varchar(45) NOT NULL default '',
   `memory_timestamp` bigint(20) unsigned NOT NULL default '0',
   `memory_first_timestamp` bigint(20) unsigned NOT NULL default '0',
@@ -943,7 +943,7 @@ CREATE TABLE `video` (
   KEY `id2` (`video_timestamp`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
-INSERT INTO config (config_name, config_value) VALUES ('version','06.08.30');
+INSERT INTO config (config_name, config_value) VALUES ('version','06.09.29');
 
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 

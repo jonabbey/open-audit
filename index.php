@@ -4,7 +4,7 @@ $extra = "";
 $software = "";
 $count = 0;
 $total_rows = 0;
-$latest_version = "06.08.30";
+$latest_version = "06.09.29";
 
 
 

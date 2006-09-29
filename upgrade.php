@@ -40,6 +40,9 @@ $sql = "ALTER TABLE `system` CHANGE `system_country_code` `system_country_code` 
 
 upgrade($version, "06.08.30", $sql);
 
+$sql = "ALTER TABLE `memory` CHANGE `memory_capacity` `memory_capacity` INT( 11 ) NOT NULL ";
+
+upgrade($version, "06.09.29", $sql);
 
 ?>
     <br /><?php echo __("Upgrade complete."); ?>
