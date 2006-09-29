@@ -321,7 +321,7 @@ while (list ($viewname, $viewdef_array) = @each ($query_array["views"])) {
         }while ($myrow = mysql_fetch_array($result));
     } else {
         echo "<tr>\n";
-         echo "<td bgcolor=\"$bg1\" style=\"padding-right:10px;\" colspan=\"2\">";
+         echo "<td bgcolor=\"$bg1\" style=\"padding-right:10px;\" colspan=\"20\">";
           echo __("No Results");
          echo "</td>\n";
         echo "</tr>\n";
