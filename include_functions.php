@@ -224,7 +224,8 @@ function special_field_converting($myrow, $field, $db, $page){
     }elseif($field["name"]=="system_memory" OR
             $field["name"]=="video_adapter_ram" OR
             $field["name"]=="hard_drive_size" OR
-            $field["name"]=="partition_size")
+            $field["name"]=="partition_size" OR
+            $field["name"]=="total_memory")
     {
         $show_value=number_format($myrow[$field["name"]])." MB";
     }elseif($field["name"]=="video_current_number_colours"){
