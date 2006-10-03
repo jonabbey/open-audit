@@ -80,10 +80,10 @@ if(is_file($include_filename)){
     //Show Searchboxes, if search is used on the calling page
     if(isset($filter_query) AND $filter_query==1){
         $style_searchboxes="display:inline;";
-        $image_searchboxes="images/arrows_up.gif";
+        $image_searchboxes="images/go-less.png";
     }else{
         $style_searchboxes="display:none;";
-        $image_searchboxes="images/arrows_down.gif";
+        $image_searchboxes="images/go-all.png";
 
     }
     if(!isset($sql_where))$sql_where=" ";
@@ -256,7 +256,7 @@ echo "<script type=\"text/javascript\">\n";
   echo "function show_searchboxes(){
             if(document.getElementById(\"searchboxes_1\").style.display == 'none'){
                 action='inline';
-                var img_src='images/arrows_up.gif'
+                var img_src='images/go-less.png'
                 //Show Boxes
                 for (var i = 1 ; i < ".($count_searchboxes+1)."; i++){
                     document.getElementById(\"searchboxes_\"+i).style.display = action;

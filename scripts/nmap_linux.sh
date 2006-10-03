@@ -1,7 +1,7 @@
 #!/bin/bash
 
 
-for ((a=38; a <= 255 ; a++))
+for ((a=40; a <= 60 ; a++))
 do
 echo "192.168.10.$a"
 nmap_file="nmap_file.txt"
