@@ -235,7 +235,7 @@ foreach($viewdef_array["fields"] as $field) {
 
  //Button to Show and Hide the searchboxes
  $headline_1 .= "<td width=\"20\" style=\"border-bottom: 1px solid #000000;\">";
- $headline_1 .= "<a href=\"#\" onClick=\"show_searchboxes();\" id=\"link_searchboxes\"><img src=\"$image_searchboxes\" id=\"arrows_searchboxes\" border=\"0\" width=\"15\" height=\"21\" alt=\"".__("Search in this View")."\" title=\"".__("Search in this View")."\" /></a>";
+ $headline_1 .= "<a href=\"#\" onClick=\"show_searchboxes();\" id=\"link_searchboxes\"><img src=\"$image_searchboxes\" id=\"arrows_searchboxes\" border=\"0\" width=\"16\" height=\"16\" alt=\"".__("Search in this View")."\" title=\"".__("Search in this View")."\" /></a>";
  $headline_1 .= "</td>";
 
  $count_searchboxes++;
