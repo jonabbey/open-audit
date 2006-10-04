@@ -387,8 +387,6 @@ $GLOBALS["lang"]["Hotfixes & Patches"]="Hotfixes & Patches";
 $GLOBALS["lang"]["Max Speed MHz"]="Max Speed MHz";
 $GLOBALS["lang"]["Current Speed MHz"]="Current Speed MHz";
 $GLOBALS["lang"]["Setup Open-AudIT"]="Setup Open-AudIT";
-
-
 $GLOBALS["lang"]["Audit.vbs Configuration"]="Audit.vbs Configuration";
 $GLOBALS["lang"]["Verbose Console Output ?"]="Verbose Console Output ?";
 $GLOBALS["lang"]["Use what for the unique identifier (UUID)"]="Use what for the unique identifier (UUID)";
@@ -436,5 +434,13 @@ $GLOBALS["lang"]["You must declare a MySQL Server"]="You must declare a MySQL Se
 $GLOBALS["lang"]["You must declare a MySQL Username"]="You must declare a MySQL Username";
 $GLOBALS["lang"]["The Open-AudIT config has been updated"]="The Open-AudIT config has been updated";
 $GLOBALS["lang"]["Uploading files from Uploads directory"]="Uploading files from Uploads directory";
+
+$GLOBALS["lang"]["Systems"]="Systems";
+$GLOBALS["lang"]["Packages"]="Packages";
+$GLOBALS["lang"]["State"]="State";
+$GLOBALS["lang"]["Windows"]="Windows";
+$GLOBALS["lang"]["Nmap discovered on Other equipment"]="Nmap discovered on Other equipment";
+$GLOBALS["lang"]["VNC Servers"]="VNC Servers";
+$GLOBALS["lang"]["RDP and Terminal Servers"]="RDP and Terminal Servers";
 
 ?>
