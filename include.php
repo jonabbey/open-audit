@@ -10,7 +10,7 @@ if(is_file($language_file)){
     die("Language-File not found: ".$language_file);
 }
 //Old-Translation-System
-include "include_lang_english.php";
+//include "include_lang_english.php";
 
 //if ($language <> "english"){ include "include_lang_" . $language . ".php"; }
 include_once "include_functions.php";
