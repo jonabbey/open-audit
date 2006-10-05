@@ -245,7 +245,7 @@ if ($show_partition_usage == "y") {
              <td width=\"150\"><b>".__("Size")."</b></td>
              <td width=\"150\"><b>".__("Free Space")." %</b></td>
              <td width=\"150\"><b>".__("Drive Letter")."</b></td>
-             <td width=\"150\"><b>".__("Hostname")."</b></td>
+             <td width=\"150\"><b>".__("Volume Name")."</b></td>
            </tr>\n";
 
       do {
