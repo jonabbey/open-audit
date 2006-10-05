@@ -5,11 +5,20 @@ include "include.php";
 //$this_page="https://".$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF']; 
 //echo "<meta name=\"refresh\" content=\"10;".$this_page."\">";
 //
+function microtime_float()
+{
+    list($usec, $sec) = explode(" ", microtime());
+    return ((float)$usec + (float)$sec);
+}
+$time_start = microtime_float();
+
+
 $newline = "\r\n";
 $page = "database_backup.php";
 $bgcolor = "#FFFFFF";
-set_time_limit(240);
-
+// This is a bit crude... FIXME I need to find a more interactive method for this, rather than just leaving the script for 5 mins, and then timing out if no result. 
+set_time_limit(300); 
+$backup = '';
 
 echo "<td valign=\"top\">$newline";
 echo "<div class=\"main_each\">$newline";
@@ -18,15 +27,16 @@ echo "  <tr><td class=\"contenthead\">".__("Backing up the Database")."</td></tr
 echo "  <tr><td colspan=\"3\"><hr /></td></tr>";
 echo "<tr><td>".__("The following tables were found")."</td><td>".__("Length")."</td><td>".__("Connectable")."</td></tr>";
 echo "  <tr><td colspan=\"3\"><hr /></td></tr>";
-$today = date("d-m-Y-G.i.s");
+$today = date("d-m-Y G.i.s");
 $backup_dir = '.\\backup\\';
 
 if (!file_exists($backup_dir)) {
    mkdir($backup_dir);
 } 
- 
+define ('Name','Name');
+define ('Auto_increment','Auto_increment');
 
-$backup_filename = $backup_dir.'backup'.$today.'.sql';
+$backup_filename = $backup_dir.'OA Backup'.$today.'.sql';
 $handle = fopen($backup_filename, "w");
 $table_len=strlen($backup);
 
@@ -35,9 +45,13 @@ while($all = mysql_fetch_assoc($tab_status)):
    $tbl_stat[$all[Name]] = $all[Auto_increment];
 endwhile;
 unset($backup);
-$tables = mysql_list_tables($mysql_database);
+
+//$tables = mysql_list_tables($mysql_database); Depreciated... use SHOW TABLES FROM instead... 
+$tables = mysql_query("SHOW TABLES FROM $mysql_database");
+
 $date_time = date('l dS \of F Y h:i:s A');
 
+$backup = '';
 $url = $_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
 
 $backup .= "-- ----------  $date_time   -----------$newline";
@@ -94,12 +108,14 @@ if (is_writable($backup_filename)) {
   $database_length = strlen($backup);
 //      $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
    echo "  <tr><td colspan=\"3\"><hr /></td></tr>";
-   echo "<tr bgcolor=\"" . $bgcolor . "\"><td class=\"contenthead\">".__("Success, wrote ").$database_length." ".__("bytes to file").$backup_filename."</td><td></td><td></td></tr>";
+   echo "<tr bgcolor=\"" . $bgcolor . "\"><td class=\"contentsubtitle\">".__("Success, wrote ").$database_length." ".__("bytes to file").$backup_filename."</td><td></td><td></td></tr>";
   
    fclose($handle);
+
    
 //     $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
-   echo "<tr bgcolor=\"" . $bgcolor . "\"><td class=\"contenthead\">".__("Backup Completed")."</td><td></td><td></td></tr>";
+   echo "<tr bgcolor=\"" . $bgcolor . "\"><td class=\"contentsubtitle\">".__("Backup Completed")."</td><td></td><td></td></tr>";
+   echo "<tr><td>".__("Database Backed up in")." ".number_format((microtime_float()-$time_start),2)." ". __("Seconds").". </td></tr>";
 } else {
    echo "<tr><td>".__("The file $backup_filename is not writable")."</td></tr>";
 }

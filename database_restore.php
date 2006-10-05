@@ -34,7 +34,7 @@ echo "<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" class=\"content\">
 //echo "<tr><td colspan=\"1\"><hr /></td></tr>";
 echo "<tr>\n";
 echo "<td>".__("Database").":</td>\n";
-echo "<td><select size=\"1\" name=\"database_post\" class=\"for_forms\">\n";
+echo "<td><select size=\"1\" name=\"backup_name\" class=\"for_forms\">\n";
 
 $handle=opendir('./backup/');
 while ($file = readdir ($handle)) {
