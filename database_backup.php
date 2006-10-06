@@ -53,11 +53,12 @@ $date_time = date('l dS \of F Y h:i:s A');
 
 $backup = '';
 $url = $_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
-
+$backup .= "-- -------------------http://www.open-audit.org//-------------------$newline";
+$backup .= "-- --------------------------------------------------------$newline";
 $backup .= "-- ----------  $date_time   -----------$newline";
 $backup .= "-- ----------  ".__("Open Audit Database Backup")."  -----------$newline";
-$backup .= "-- ----".$mysql_database."----";
-$backup .= "-- $url --$newline";
+$backup .= "-- ----Database Name --".$mysql_database."----$newline";
+$backup .= "-- Created by .. $url --$newline";
 $backup .= "-- --------------------------------------------------------$newline";
 
 $file_len=strlen($backup);
@@ -74,7 +75,7 @@ while($tabs = mysql_fetch_row($tables)):
    $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
    while($all = mysql_fetch_assoc($res)):
        $str = str_replace("CREATE TABLE `$tabs[0]` (", "", $all['Create Table']);
-       $str = str_replace(",", ", $newline", $str);
+       $str = str_replace(",", ", ".$newline."", $str);
        $str2 = str_replace("`) ) TYPE=MyISAM ", "`)".$newline." ) TYPE=MyISAM ", $str);
        $backup .= $str2.";".$newline;
        //" AUTO_INCREMENT=".$tbl_stat[$tabs[0]].";".$newline.$newline;
