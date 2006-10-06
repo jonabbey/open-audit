@@ -225,6 +225,7 @@ function special_field_converting($myrow, $field, $db, $page){
             $field["name"]=="video_adapter_ram" OR
             $field["name"]=="hard_drive_size" OR
             $field["name"]=="partition_size" OR
+            $field["name"]=="partition_free_space" OR
             $field["name"]=="total_memory")
     {
         $show_value=number_format($myrow[$field["name"]])." MB";
