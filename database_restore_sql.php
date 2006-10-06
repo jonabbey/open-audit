@@ -1,4 +1,5 @@
 <?php
+set_time_limit(300); 
 $page = "database_restore_sql";
 include "include.php";
 echo "<td valign=\"top\">\n";
@@ -50,7 +51,7 @@ $filename = ".\\backup\\".$backup_name.".sql";
   $contents = fread($handle, filesize($filename));
   fclose($handle);
   echo "<td>".__("Done").".</td><td><img src=\"images/button_ok.png\" width=\"16\" height=\"16\" /></td></tr>\n";
-  echo "<tr><td>".__("Creating database").".</td>\n";
+  //echo "<tr><td>".__("Creating database").".</td>\n";
    $sql = stripslashes($contents);
   $sql2 = explode(";", $sql);
   echo "<tr><td>".__("Running SQL upload").".</td>";
