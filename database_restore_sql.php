@@ -52,12 +52,15 @@ $filename = ".\\backup\\".$backup_name.".sql";
   fclose($handle);
   echo "<td>".__("Done").".</td><td><img src=\"images/button_ok.png\" width=\"16\" height=\"16\" /></td></tr>\n";
   //echo "<tr><td>".__("Creating database").".</td>\n";
-   $sql = stripslashes($contents);
+   $sql = $contents;
   $sql2 = explode(";", $sql);
   echo "<tr><td>".__("Running SQL upload").".</td>";
   foreach ($sql2 as $sql3) {
   //echo "<tr><td>" . $sql3 . "</td></tr>";
-  $result = mysql_query($sql3 . ";");// or die ("</tr><tr><td><font color=\"red\">" . $sql3 . "</font></td></tr><tr><td colspan=\"2\"><h3>MySQL Error:</h3> " . mysql_error() . "</td></tr><tr>\n");
+  $result = mysql_query($sql3 . ";") ;
+    if (!$result) {
+        echo "</tr><tr><td><font color=\"red\">" . $sql3 . "</font></td></tr><tr><td colspan=\"2\"><h3>MySQL Error:</h3> " . mysql_error() . "</td></tr><tr>\n";
+        }
   }
   echo "<td>".__("Done").".</td></tr>\n";
   echo "<tr><td><br />".__("Click")." <a href=\"index.php\">".__("here")."</a> ".__("to continue").".</td></tr>\n";
