@@ -82,7 +82,7 @@ while($tabs = mysql_fetch_row($tables)):
    $backup .= "--$newline-- ".__("All Data from table")." `$tabs[0]`".$newline."--".$newline.$newline;
    $data = mysql_query("SELECT * FROM $tabs[0]");
    while($dt = mysql_fetch_row($data)):
-       $backup .= "INSERT INTO `$tabs[0]` VALUES('urlencode($dt[0])'";
+       $backup .= "INSERT INTO `$tabs[0]` VALUES('$dt[0]'";
        for($i=1; $i<sizeof($dt); $i++):
            $backup .= ", '$dt[$i]'";
        endfor;
