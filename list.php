@@ -418,7 +418,7 @@ if ($myrow = mysql_fetch_array($result)){
     if(isset($_REQUEST["monitor"])){
         echo "<input type=\"hidden\" name=\"monitor\" value=\"".$_REQUEST["monitor"]."\" />\n";
     }
-    echo "<tr><td colspan=\"4\"><br><a href=\"#\" onClick=\"document.form_export.submit();\">".__("Export this View to CSV")." (BETA)</a></td></tr>\n";
+    echo "<tr><td colspan=\"4\"><br><a href=\"#\" onClick=\"document.form_export.submit();\">".__("Export this View to CSV")."</a></td></tr>\n";
     echo "</form>\n";
 
 
