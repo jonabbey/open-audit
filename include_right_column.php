@@ -17,18 +17,54 @@ echo "<input name=\"submit\" value=\"Go\" type=\"submit\" />\n";
 echo "</form>\n";
 echo "</center>";
 
-    if($pc){
-        echo "<br />".$name;
-        echo "<div style=\"margin-left:10px;;\">";
+    if(isset($pc)){
+        $i=0;
+        echo "<br />";
+        echo "<a href=\"system.php?pc=$pc&amp;view=summary\">\n<b>" . $name . "</b></a>\n";
+        echo "<table cellpadding=\"0\" cellspacing=\"0\" border=\"0\">";
         require_once("include_menu_array.php");
         reset ($menue_array["machine"]);
         while (list ($key_1, $topic_item) = each ($menue_array["machine"])) {
-            echo "<a href=\"".$topic_item["link"]."\">";
-            echo "<img src=\"".$topic_item["image"]."\" width=\"16\" height=\"16\" border=\"0\" alt=\"\" />&nbsp;";
-            echo __($topic_item["name"]);
-            echo "</a><br />\n";
+            $i++;
+            echo "<tr>\n";
+            echo "<td align=\"left\" width=\"20\">\n";
+             echo "<img src=\"".$topic_item["image"]."\" width=\"16\" height=\"16\" border=\"0\" alt=\"\" />\n";
+            echo "</td>\n";
+
+            echo "<td>\n";
+             echo "<a href=\"".$topic_item["link"]."\">";
+             echo __($topic_item["name"]);
+            echo "</a>\n";
+            echo "</td>\n";
+
+            if(isset($topic_item["childs"]) AND is_array($topic_item["childs"])){
+                echo "<td>\n";
+                 echo "<a href=\"javascript://\" onclick=\"switchUl('m".$i."');\">+</a>\n";
+                echo "</td>\n";
+
+                echo "</tr>\n";
+                echo "<tr>\n";
+                echo "<td colspan=\"3\">\n";
+
+                echo "<div style=\"display:none; margin:7px;\" id=\"m".$i."\">\n";
+                @reset ($topic_item["childs"]);
+                while (list ($key_2, $child_item_2) = @each ($topic_item["childs"])) {
+                    echo "<a href=\"".$child_item_2["link"]."\"";
+                    if (isset($child_item_2["title"])) {
+                      echo " title=\"".$child_item_2["title"]."\"";
+                    }
+                    echo ">";
+                    //echo "<img src=\"".$child_item_2["image"]."\"  width=\"16\" height=\"16\" border=\"0\" alt=\"\" />&nbsp;";
+                    echo __($child_item_2["name"]);
+                    echo "</a><br />\n";
+                }
+                echo "</div>\n";
+                echo "</td>\n";
+            }
+            echo "</tr>\n";
+
         }
-        echo "</div>";
+        echo "</table>\n";
     }
 
 echo "</div>\n";
