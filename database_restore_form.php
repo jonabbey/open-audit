@@ -6,7 +6,7 @@ include "include.php";
 //echo "<meta name=\"refresh\" content=\"10;".$this_page."\">";
 //
 $newline = "\r\n";
-$page = "database_backup_form.php";
+$page = "database_restore.php";
 $bgcolor = "#FFFFFF";
 
 set_time_limit(240);
@@ -15,9 +15,9 @@ set_time_limit(240);
 echo "<td valign=\"top\">$newline";
 echo "<div class=\"main_each\">$newline";
 echo "<table border=\"0\" cellpadding=\"2\" cellspacing=\"0\" width=\"100%\" >$newline";
-echo "  <tr><td class=\"contenthead\">".__("Backup the Database")."</td></tr>";
+echo "  <tr><td class=\"contenthead\">".__("Restore the Database")."</td></tr>";
 echo "  <tr><td colspan=\"1\"><hr /></td></tr>";
-echo "<tr><td>".__("Select a database")."</td>";
+echo "<tr><td>".__("Select a backup")."</td>";
 //echo "  <tr><td colspan=\"1\"><hr /></td></tr>";
 $today = date("dmYGis");
 $backup_dir = '.\\backup\\';
@@ -29,25 +29,13 @@ if (!file_exists($backup_dir)) {
 
 // Start of restore section
 
-echo "<form method=\"GET\" action=\"database_backup_sql.php\" name=\"database_backup\">";
+echo "<form method=\"GET\" action=\"database_restore_sql.php\" name=\"database_restore\">";
 echo "<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" class=\"content\">";
 //echo "<tr><td colspan=\"1\"><hr /></td></tr>";
 echo "<tr>\n";
 echo "<td>".__("Database").":</td>\n";
 echo "<td><select size=\"1\" name=\"backup_name\" class=\"for_forms\">\n";
 
-
-$link = mysql_connect($mysql_server, $mysql_user, $mysql_password);
-$db_list = mysql_list_dbs($link);
-
-while ($row = mysql_fetch_object($db_list)) {
-$selected = "";
-$my_database_names = $row->Database ;
-    echo "<OPTION $selected>".$my_database_names."</OPTION>\n";
-//  echo '</SELECT>';
-}
-
-/*
 $handle=opendir('./backup/');
 while ($file = readdir ($handle)) {
     if ($file != "." && $file != "..") {
@@ -57,11 +45,9 @@ while ($file = readdir ($handle)) {
         }
     }
 }
-//
-//closedir($handle);
+closedir($handle);
 //echo "<tr><td colspan=\"5\"><hr /></td></tr>\n";
-*/
-echo "<tr><td><input type=\"submit\" value=\"".__("Backup")."\" name=\"submit_button\" /></td></tr>\n";
+echo "<tr><td><input type=\"submit\" value=\"".__("Restore")."\" name=\"submit_button\" /></td></tr>\n";
 
 //End of restore section
 echo "</tr></td></table>\n";
