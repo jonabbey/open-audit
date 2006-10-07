@@ -17,7 +17,7 @@ echo "<input name=\"submit\" value=\"Go\" type=\"submit\" />\n";
 echo "</form>\n";
 echo "</center>";
 
-    if(isset($pc)){
+    if(isset($pc) AND $pc!=""){
         $i=0;
         echo "<br />";
         echo "<a href=\"system.php?pc=$pc&amp;view=summary\">\n<b>" . $name . "</b></a>\n";
