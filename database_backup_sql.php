@@ -89,7 +89,7 @@ while($tabs = mysql_fetch_row($tables)):
    while($dt = mysql_fetch_row($data)):
        $backup .= "INSERT INTO `$tabs[0]` VALUES('$dt[0]'";
        for($i=1; $i<sizeof($dt); $i++):
-           $backup .= ", '".$dt[$i]."'";
+           $backup .= ", '".preg_quote($dt[$i],';')."'";
        endfor;
        $backup .= ");".$newline;
    endwhile;
