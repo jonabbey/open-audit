@@ -31,7 +31,7 @@ echo "  <tr><td class=\"contenthead\">".__("Backing up the Database")."</td></tr
 echo "  <tr><td colspan=\"3\"><hr /></td></tr>";
 echo "<tr><td>".__("The following tables were found")."</td><td>".__("Length")."</td><td>".__("Connectable")."</td></tr>";
 echo "  <tr><td colspan=\"3\"><hr /></td></tr>";
-$today = date("d-m-Y G.i.s");
+$today = date("_d-m-Y_G-i-s");
 $backup_dir = '.\\backup\\';
 
 if (!file_exists($backup_dir)) {
@@ -40,7 +40,7 @@ if (!file_exists($backup_dir)) {
 define ('Name','Name');
 define ('Auto_increment','Auto_increment');
 
-$backup_filename = $backup_dir.$backup_name.' Backup'.$today.'.sql';
+$backup_filename = $backup_dir.$backup_name.'_Backup'.$today.'.sql';
 $handle = fopen($backup_filename, "w");
 $table_len=strlen($backup);
 
@@ -89,7 +89,7 @@ while($tabs = mysql_fetch_row($tables)):
    while($dt = mysql_fetch_row($data)):
        $backup .= "INSERT INTO `$tabs[0]` VALUES('$dt[0]'";
        for($i=1; $i<sizeof($dt); $i++):
-           $backup .= ", '".addslashes($dt[$i])."'";
+           $backup .= ", '".$dt[$i]."'";
        endfor;
        $backup .= ");".$newline;
    endwhile;
