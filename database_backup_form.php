@@ -1,8 +1,8 @@
 <?php
 //    Open Audit Restore Database
-//    restore over current database. 
+//    restore over current database.
 include "include.php";
-//$this_page="https://".$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF']; 
+//$this_page="https://".$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'];
 //echo "<meta name=\"refresh\" content=\"10;".$this_page."\">";
 //
 $newline = "\r\n";
@@ -24,8 +24,8 @@ $backup_dir = '.\\backup\\';
 
 if (!file_exists($backup_dir)) {
    mkdir($backup_dir);
-} 
- 
+}
+
 
 // Start of restore section
 
@@ -41,8 +41,8 @@ $link = mysql_connect($mysql_server, $mysql_user, $mysql_password);
 $db_list = mysql_list_dbs($link);
 
 while ($row = mysql_fetch_object($db_list)) {
-$selected = "";
-$my_database_names = $row->Database ;
+    $my_database_names = $row->Database ;
+    if($mysql_database==$my_database_names) $selected = "selected"; else $selected = "";
     echo "<OPTION $selected>".$my_database_names."</OPTION>\n";
 //  echo '</SELECT>';
 }
@@ -62,6 +62,8 @@ while ($file = readdir ($handle)) {
 //echo "<tr><td colspan=\"5\"><hr /></td></tr>\n";
 */
 echo "<tr><td><input type=\"submit\" value=\"".__("Backup")."\" name=\"submit_button\" /></td></tr>\n";
+
+echo "<tr><td colspan=\"2\"><br>".__("This process can take several minutes")."</td></tr>\n";
 
 //End of restore section
 echo "</tr></td></table>\n";
