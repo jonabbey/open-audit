@@ -110,10 +110,11 @@ function __($word){
         return $GLOBALS["lang"][$word];
     }else{
         //Learning-Mode
-        if($language_learning_mode==1 AND $word!="")  {
+        if($language_learning_mode==1 AND isset($word) AND $word!="")  {
             if(is_writable($language_file)){
 
                 //Deleting
+                $buffer="";
                 $handle = fopen($language_file, "r");
                 while (!feof($handle)) {
                     $line = fgets($handle, 4096);
