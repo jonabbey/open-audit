@@ -16,7 +16,6 @@ function microtime_float()
 }
 $time_start = microtime_float();
 
-
 $newline = "\r\n";
 $page = "database_backup_sql.php";
 $bgcolor = "#FFFFFF";
@@ -34,6 +33,8 @@ echo "<tr>";
  echo "<td class=\"views_tablehead\">".__("Size")."</td>\n";
  echo "<td class=\"views_tablehead\">".__("Backup")."</td>\n";
 echo "</tr>\n";
+
+mysql_select_db($backup_name);
 
 $today = date("_d-m-Y_H-i-s");
 $backup_dir = '.\\backup\\';
@@ -55,6 +56,7 @@ endwhile;
 unset($backup);
 
 //$tables = mysql_list_tables($mysql_database); Depreciated... use SHOW TABLES FROM instead...
+
 $tables = mysql_query("SHOW TABLES FROM $backup_name");
 
 $date_time = date('l dS \of F Y h:i:s A');

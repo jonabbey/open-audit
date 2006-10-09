@@ -28,7 +28,7 @@ $backup_name = $_GET['backup_name'];
   echo "    </select></td>\n";
   echo "            <td>".__("Restoring backup")." '".$backup_name."'</td></tr>\n";
   echo "            <td>".__("What database name do you want to restore to")." ?</td>\n";
-  echo "            <td><input type=\"text\" size=\"20\" name=\"mysql_data\" value=\"openaudit\" class=\"for_forms\" /></td>\n";
+  echo "            <td><input type=\"text\" size=\"20\" name=\"mysql_data\" value=\"$mysql_database\" class=\"for_forms\" /></td>\n";
   echo "          </tr>\n";
   echo "            <td><input type=\"submit\" name=\"submit\" value=\"".__("Restore")."\" /></td>\n";
     echo "            <td><input type=\"hidden\" name=\"backup_name\" value=\"$backup_name\" /></td>\n";
