@@ -18,6 +18,7 @@ $query_array=array("headline"=>__("Statistic for Mozilla Firefox Versions"),
                                    software, system
                                WHERE
                                     software_name LIKE 'Mozilla Firefox%' AND
+                                    software_name NOT LIKE 'Mozilla Firefox Extension%' AND
                                     software_timestamp=system_timestamp AND
                                     software_uuid=system_uuid
                                GROUP BY software_version
