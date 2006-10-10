@@ -3,7 +3,7 @@
 $query_array=array("headline"=>__("Statistic for Internet Explorer Versions"),
                    "sql"=>"
                            SELECT
-                               DISTINCT software_version,
+                               DISTINCT software_name, software_version,
                                COUNT( * ) AS count_item,
                                ( 100 / (
                                        SELECT count(software_uuid) FROM software, system
@@ -24,10 +24,18 @@ $query_array=array("headline"=>__("Statistic for Internet Explorer Versions"),
                                ",
                    "sort"=>"count_item",
                    "dir"=>"DESC",
+                   "get"=>array("file"=>"list.php",
+                                "title"=>__("Systems installed this Version of this Software"),
+                                "var"=>array("name"=>"%software_name",
+                                             "version"=>"%software_version",
+                                             "view"=>"systems_for_software_version",
+                                             "headline_addition"=>"%software_name",
+                                            ),
+                               ),
                    "fields"=>array("10"=>array("name"=>"software_version",
                                                "head"=>__("Version"),
                                                "show"=>"y",
-                                               "link"=>"n",
+                                               "link"=>"y",
                                               ),
                                    "20"=>array("name"=>"count_item",
                                                "head"=>__("Count"),
