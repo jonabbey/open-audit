@@ -479,4 +479,16 @@ $GLOBALS["lang"]["Opening MySQL Dump"]="Opening MySQL Dump";
 $GLOBALS["lang"]["An update has been found."]="An update has been found.";
 $GLOBALS["lang"]["Click here to upgrade!"]="Click here to upgrade!";
 $GLOBALS["lang"]["Upgrading to"]="Upgrading to";
+
+$GLOBALS["lang"]["List Systems with Hard Drive Size"]="List Systems with Hard Drive Size";
+$GLOBALS["lang"]["Brand/Model"]="Brand/Model";
+$GLOBALS["lang"]["Interface"]="Interface";
+$GLOBALS["lang"]["Execute search"]="Execute search";
+$GLOBALS["lang"]["Hosts with this Hard Drive Size"]="Hosts with this Hard Drive Size";
+$GLOBALS["lang"]["Unknown"]="Unknown";
+$GLOBALS["lang"]["Statistic for Mozilla Firefox Versions"]="Statistic for Mozilla Firefox Versions";
+$GLOBALS["lang"]["Hosts with this Memory"]="Hosts with this Memory";
+$GLOBALS["lang"]["List Systems with Memory"]="List Systems with Memory";
+$GLOBALS["lang"]["Total Memory"]="Total Memory";
+$GLOBALS["lang"]["Windows Reported"]="Windows Reported";
 ?>
