@@ -19,7 +19,8 @@ include_once("include_functions.php");
 define('FPDF_FONTPATH','./lib/ezpdf/fonts/');
 require('./lib/ezpdf/class.ezpdf.php');
 //Create PDF-Instance
-$pdf =& new Cezpdf();
+$pdf = '';
+$pdf = new Cezpdf();
 
 //MySQL-Connect
 $db = mysql_connect($mysql_server,$mysql_user,$mysql_password) or die('Could not connect: ' . mysql_error());
