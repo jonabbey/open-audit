@@ -275,8 +275,8 @@ echo "</script>\n";
  echo "<input type=\"hidden\" name=\"page_count\" value=\"".$page_count."\" />\n";
  echo "<input type=\"hidden\" name=\"show_all\" value=\"".$show_all."\" />\n";
  echo "<input type=\"hidden\" name=\"headline_addition\" value=\"".$headline_addition."\" />\n";
-echo "</form>\n";
-echo "<form method=\"post\" name=\"form_search\" action=\"".htmlentities($_SERVER["REQUEST_URI"])."\" style=\"margin:0px;\">\n";
+//echo "</form>\n";
+//echo "<form method=\"post\" name=\"form_search\" action=\"".htmlentities($_SERVER["REQUEST_URI"])."\" style=\"margin:0px;\">\n";
 echo "<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n";
 
 echo "<tr>\n";
