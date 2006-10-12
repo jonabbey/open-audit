@@ -3,7 +3,7 @@
 $query_array=array("headline"=>__("Statistic for Physical Memory"),
                    "sql"=>"SELECT system_memory,
                                COUNT(*) count_item,
-                               ( 100 / (SELECT count(*) FROM memory WHERE memory_detail != 'Unknown') * COUNT( * ) ) AS percentage
+                               round( 100 / (SELECT count(*) FROM memory WHERE memory_detail != 'Unknown') * COUNT( * ), $round_to_decimal_places  ) AS percentage
                            FROM (select *, sum(memory_capacity) AS system_memory FROM memory GROUP BY memory_uuid) AS full_system_memory
                            WHERE (1)
                            GROUP BY system_memory

@@ -5,7 +5,7 @@ $query_array=array("headline"=>__("Statistic for Mozilla Firefox Versions"),
                            SELECT
                                DISTINCT software_name, software_version,
                                COUNT( * ) AS count_item,
-                               ( 100 / (
+                               round( 100 / (
                                        SELECT count(software_uuid) FROM software, system
                                        WHERE
                                            software_name LIKE 'Mozilla Firefox%' AND
@@ -13,7 +13,7 @@ $query_array=array("headline"=>__("Statistic for Mozilla Firefox Versions"),
                                            software_uuid=system_uuid
                                        )
                                  * COUNT( * )
-                               ) AS percentage
+                               ,$round_to_decimal_places ) AS percentage
                                FROM
                                    software, system
                                WHERE

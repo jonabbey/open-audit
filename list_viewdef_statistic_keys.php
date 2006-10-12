@@ -5,13 +5,13 @@ $query_array=array("headline"=>__("Statistic for Software Keys"),
                            SELECT
                                DISTINCT ms_keys_cd_key,
                                COUNT( * ) AS count_item,
-                               ( 100 / (
+                               ROUND( 100 / (
                                        SELECT count(ms_keys_cd_key) FROM ms_keys, system
                                        WHERE
                                            ms_keys_uuid = system_uuid AND ms_keys_uuid = system_uuid AND ms_keys_timestamp = system_timestamp
                                        )
                                  * COUNT( * )
-                               ) AS percentage,ms_keys_name,ms_keys_release
+                               , $round_to_decimal_places) AS percentage,ms_keys_name,ms_keys_release
                                FROM
                                    ms_keys, system
                                WHERE

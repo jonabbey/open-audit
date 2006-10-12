@@ -5,13 +5,13 @@ $query_array=array("headline"=>__("Statistic for Processors"),
                            SELECT
                                processor_name,
                                COUNT(*) count_item,
-                               ( 100 / (
+                               ROUND( 100 / (
                                        SELECT count(*)
                                        FROM  processor INNER JOIN system ON
                                            system_uuid=processor_uuid AND system_timestamp=processor_timestamp
                                        )
                                  * COUNT(*)
-                               ) AS percentage
+                               ,$round_to_decimal_places ) AS percentage
                            FROM  processor INNER JOIN system ON
                            system_uuid=processor_uuid AND system_timestamp=processor_timestamp
                            GROUP BY processor_name
