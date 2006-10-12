@@ -93,15 +93,17 @@ if(is_file($include_filename)){
 
     //Executing the Qeuery
     $sql=$sql_query."\n".$sql_where."\n".$sql_groupby."\n".$sql_sort."\n".$sql_limit;
-    $result = mysql_query($sql, $db);
-    if(!$result) {die( "<br>".__("Fatal Error").":<br><br>".$sql."<br><br>".mysql_error()."<br><br>" );};
-    $this_page_count = mysql_num_rows($result);
+//    $result = mysql_query($sql, $db);
+//    if(!$result) {die( "<br>".__("Fatal Error").":<br><br>".$sql."<br><br>".mysql_error()."<br><br>" );};
+//    $this_page_count = mysql_num_rows($result);
 
     //Getting the count of all available items
     $sql_all = $sql_query."\n".$sql_where."\n".$sql_groupby."\n".$sql_sort;
     $result_all = mysql_query($sql_all, $db);
-    if(!$result_all) {die( "<br>".__("Fatal Error").":<br><br>".$sql."<br><br>".mysql_error()."<br><br>" );};
+    if(!$result_all) {die( "<br>".__("Fatal Error").":<br><br>".$sql_all."<br><br>".mysql_error()."<br><br>" );};
     $all_page_count = mysql_num_rows($result_all);
+    $result = $result_all;
+    $this_page_count = ($page_current * $count_system) - $all_page_count;
 
 echo "<td valign=\"top\">\n";
 echo "<div class=\"main_each\">";
@@ -144,7 +146,8 @@ echo "<form method=\"post\" name=\"form_nav\" action=\"".htmlentities($_SERVER["
   }
 
   //All
-  if($all_page_count>=$count_system OR $count_system==$count_system_max ){
+  //if($all_page_count>=$count_system OR $count_system==$count_system_max ){
+  if($all_page_count>$count_system OR $count_system==$count_system_max ){
       if($show_all!=1){
           echo "<a href=\"#\" onClick=\"set_form_field('show_all', '1'); set_form_field('page_count', '0'); submit_form();\">";
             echo "<img src=\"images/go-all.png\" alt=\"\" title=\"".__("All")."\" border=\"0\" width=\"16\" height=\"16\" />";
@@ -158,7 +161,8 @@ echo "<form method=\"post\" name=\"form_nav\" action=\"".htmlentities($_SERVER["
       echo "<img src=\"images/go-all-disabled.png\" alt=\"".__("Disabled")."\" title=\"".__("Disabled")."\" border=\"0\" width=\"16\" height=\"16\" />\n";
   }
   //Next
-  if(($page_count+$count_system)<=$all_page_count AND (isset($show_all) AND $show_all!=1)){
+  //if(($page_count+$count_system)<=$all_page_count AND (isset($show_all) AND $show_all!=1)){
+  if(($page_count+$count_system)<$all_page_count AND (isset($show_all) AND $show_all!=1)){
       echo "<a href=\"#\" onClick=\"set_form_field('page_count', '".$page_next."'); submit_form();\">";
         echo "<img src=\"images/go-next.png\" alt=\"".__("Next")."\" title=\"".__("Next")."\" border=\"0\" width=\"16\" height=\"16\" />";
       echo "</a>\n";
@@ -170,8 +174,10 @@ echo "<form method=\"post\" name=\"form_nav\" action=\"".htmlentities($_SERVER["
 
   //Direct jumping to pages
   //Don't show if there is only one-page or show_all==1
-  if( ($all_page_count>=$count_system OR $count_system==$count_system_max) AND (isset($show_all) AND $show_all!=1) ){
-      for ($i = 0; $i <= $all_page_count; $i=$i+$count_system) {
+  //if( ($all_page_count>=$count_system OR $count_system==$count_system_max) AND (isset($show_all) AND $show_all!=1) ){
+  //    for ($i = 0; $i <= $all_page_count; $i=$i+$count_system) {
+  if( ($all_page_count>$count_system OR $count_system==$count_system_max) AND (isset($show_all) AND $show_all!=1) ){
+      for ($i = 0; $i < $all_page_count; $i=$i+$count_system) {
 
           if( ($i<=($count_system*4)) OR ($i>=($all_page_count-($count_system*3))) ){
               if($i==$page_count){ $style_for_direct_jump="color:red;";}else{$style_for_direct_jump="";};
@@ -290,7 +296,12 @@ echo "</tr>\n";
 //echo "</form>\n";
 
 //Table body
+$rownumber=0;
 if ($myrow = mysql_fetch_array($result)){
+  if(!$show_all) {
+    mysql_data_seek($result,$page_count);
+    $myrow = mysql_fetch_array($result);
+  }
     do{
         $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
         echo " <tr>\n";
@@ -405,7 +416,9 @@ if ($myrow = mysql_fetch_array($result)){
         echo "<td bgcolor=\"" . $bgcolor . "\" >\n";
         echo "</td>\n";
         echo " </tr>\n";
-    }while ($myrow = mysql_fetch_array($result));
+    //}while ($myrow = mysql_fetch_array($result));
+      $rownumber ++;
+    }while ($myrow = mysql_fetch_array($result) and ($show_all or $rownumber < $count_system));
     echo "</table></form>\n";
     echo "<form method=\"post\" name=\"form_export\" action=\"list_export.php\">\n";
     echo "<input type=\"hidden\" name=\"sql\" value=\"".urlencode($sql)."\" />\n";
