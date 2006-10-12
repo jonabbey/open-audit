@@ -45,6 +45,8 @@ $show_service_pack = 'n';
 
 $count_system = '30';
 
+$round_to_decimal_places = '2';
+
 $language = 'en';
 
 ?>
