@@ -287,8 +287,9 @@ if ($show_software_detected == "y"){
   $sql .= "sys.net_ip_address FROM software sw, system sys WHERE ";
   $sql .= "software_first_timestamp >= '" . adjustdate(0,0,-$days_software_detected) . "000000' ";
   $sql .= "AND sys.system_first_timestamp < '" . adjustdate(0,0,-$days_software_detected) . "000000' ";
-  $sql .= "AND software_name NOT LIKE '%Hotfix%' AND software_name NOT LIKE '%Update%' AND ";
-  $sql .= "sw.software_uuid = sys.system_uuid";
+  $sql .= "AND sw.software_name NOT LIKE '%Hotfix%' AND sw.software_name NOT LIKE '%Update%' AND ";
+  $sql .= "sw.software_timestamp = sys.system_timestamp AND ";
+  $sql .= "sw.software_uuid = sys.system_uuid ";
   $result = mysql_query($sql, $db);
   $bgcolor = "#FFFFFF";
 
