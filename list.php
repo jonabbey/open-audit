@@ -275,7 +275,8 @@ echo "</script>\n";
  echo "<input type=\"hidden\" name=\"page_count\" value=\"".$page_count."\" />\n";
  echo "<input type=\"hidden\" name=\"show_all\" value=\"".$show_all."\" />\n";
  echo "<input type=\"hidden\" name=\"headline_addition\" value=\"".$headline_addition."\" />\n";
-
+echo "</form>\n";
+echo "<form method=\"post\" name=\"form_search\" action=\"".htmlentities($_SERVER["REQUEST_URI"])."\" style=\"margin:0px;\">\n";
 echo "<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n";
 
 echo "<tr>\n";
@@ -286,7 +287,7 @@ echo "</tr>\n";
    echo $headline_2;
   echo "</tr>\n";
 
-echo "</form>\n";
+//echo "</form>\n";
 
 //Table body
 if ($myrow = mysql_fetch_array($result)){
@@ -405,28 +406,26 @@ if ($myrow = mysql_fetch_array($result)){
         echo "</td>\n";
         echo " </tr>\n";
     }while ($myrow = mysql_fetch_array($result));
-
+    echo "</table></form>\n";
     echo "<form method=\"post\" name=\"form_export\" action=\"list_export.php\">\n";
     echo "<input type=\"hidden\" name=\"sql\" value=\"".urlencode($sql)."\" />\n";
-    echo "<input type=\"hidden\" name=\"view\" value=\"".$_REQUEST["view"]."\" />\n";
+    echo "<input type=\"hidden\" name=\"view\" value=\"".$_REQUEST["view"]."\"/>\n";
     if(isset($_REQUEST["pc"])){
-        echo "<input type=\"hidden\" name=\"pc\" value=\"".$_REQUEST["pc"]."\" />\n";
-    }
-    if(isset($_REQUEST["other"])){
-        echo "<input type=\"hidden\" name=\"other\" value=\"".$_REQUEST["other"]."\" />\n";
-    }
-    if(isset($_REQUEST["monitor"])){
-        echo "<input type=\"hidden\" name=\"monitor\" value=\"".$_REQUEST["monitor"]."\" />\n";
-    }
-    echo "<tr><td colspan=\"4\"><br><a href=\"#\" onClick=\"document.form_export.submit();\">".__("Export this View to CSV")."</a></td></tr>\n";
+         echo "<input type=\"hidden\" name=\"pc\" value=\"".$_REQUEST["pc"]."\"/>\n";
+     }
+     if(isset($_REQUEST["other"])){
+         echo "<input type=\"hidden\" name=\"other\" value=\"".$_REQUEST["other"]."\" />\n";
+     }
+     if(isset($_REQUEST["monitor"])){
+         echo "<input type=\"hidden\" name=\"monitor\" value=\"".$_REQUEST["monitor"]."\" />\n";
+     }
+     echo "<br /><a href=\"#\" onClick=\"document.form_export.submit();\">".__("Export this View to CSV")."</a>\n";
     echo "</form>\n";
-
-
 } else {
   echo "<tr><td colspan=\"4\">".__("No Results")."</td></tr>\n";
+  echo "</table>\n";
+  echo "</form>\n";
 }
-
-echo "</table>\n";
 
 echo "</div>\n";
 
