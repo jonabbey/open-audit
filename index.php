@@ -997,7 +997,7 @@ if ($show_detected_servers == "y"){
            <td>" . ip_trans($myrow["net_ip_address"]) . "&nbsp;</td>
            <td><a href=\"system.php?pc=" . $myrow["service_uuid"] . "&amp;view=summary\">" . $myrow["system_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
            <td>" . $myrow["service_display_name"] . "</td>
-           <td><a href= \"launch.php?hostname=".$myrow["system_name"]."&application=vnc&ext=vnc\"/>" . $myrow["service_started"] . "</td>
+           <td><a href= \"launch.php?hostname=".$myrow["system_name"]."&amp;application=vnc&amp;ext=vnc\"/>" . $myrow["service_started"] . "</td>
          </tr>\n";
 
     } while ($myrow = mysql_fetch_array($result));
@@ -1143,7 +1143,7 @@ if ($show_detected_servers == "y"){
            <td>" . ip_trans($myrow["net_ip_address"]) . "&nbsp;</td>
            <td><a href=\"system.php?pc=" . $myrow["service_uuid"] . "&amp;view=summary\">" . $myrow["system_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
            <td>" . $myrow["service_display_name"] . "</td>
-           <td><a href= \"launch.php?hostname=".$myrow["system_name"]."&application=rdp&ext=rdp\"/>" . $myrow["service_started"] . "</td>
+           <td><a href= \"launch.php?hostname=".$myrow["system_name"]."&amp;application=rdp&amp;ext=rdp\"/>" . $myrow["service_started"] . "</td>
          </tr>\n";
 
     } while ($myrow = mysql_fetch_array($result));
@@ -1173,7 +1173,7 @@ if ($show_detected_servers == "y"){
       $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
         echo
           "<tr bgcolor=\"" . $bgcolor . "\">
-             <td><a href= \"launch.php?hostname=".$myrow["system_name"]."&application=rdp&ext=rdp\"/>" . ip_trans($myrow["net_ip_address"]) . "&nbsp;</td>
+             <td><a href= \"launch.php?hostname=".$myrow["system_name"]."&amp;application=rdp&amp;ext=rdp\"/>" . ip_trans($myrow["net_ip_address"]) . "&nbsp;</td>
              <td ><a href=\"system.php?pc=" . $myrow["system_uuid"] . "&amp;view=summary\">" . $myrow["system_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
              <td>" . $myrow["nmap_port_number"] . "&nbsp;</td>
             </tr>\n";
