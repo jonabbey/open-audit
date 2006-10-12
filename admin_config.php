@@ -66,10 +66,10 @@ if (isset($_POST['pic_style_post'])) {$pic_style_post = $_POST['pic_style_post']
   $content .= "// Make sure to set use_pass = \"n\" if you do not wish to use passwords\n";
   $content .= "\$use_pass = '" . $iis_passwords_post . "';\n";
   $content .= "\$users = array(\n";
-  if ($username0 == "") {} else { $content .= "  '$username0' => '$password0'"; }
-  if ($username1 == "") {} else { $content .= " ,\n  '$username1' => '$password1'"; }
-  if ($username2 == "") {} else { $content .= " ,\n  '$username2' => '$password2'"; }
-  if ($username3 == "") {} else { $content .= " ,\n  '$username3' => '$password3'"; }
+  if ($username0 == "") {} else { if ($password0 == "") {$thepassword = $users[$username0];} else {$thepassword = md5($password0);} $content .= " '$username0' => '$thepassword'";}
+  if ($username1 == "") {} else { if ($password1 == "") {$thepassword = $users[$username1];} else {$thepassword = md5($password1);} $content .= " ,\n'$username1' => '$thepassword'";}
+  if ($username2 == "") {} else { if ($password2 == "") {$thepassword = $users[$username2];} else {$thepassword = md5($password2);} $content .= " ,\n'$username2' => '$thepassword'";}
+  if ($username3 == "") {} else { if ($password3 == "") {$thepassword = $users[$username3];} else {$thepassword = md5($password3);} $content .= " ,\n'$username3' => '$thepassword'";}
   $content .= "\n);\n";
   $content .= "\n";
   $content .= "\n";
@@ -169,7 +169,7 @@ echo "<tr><td>" . __("Use Passwords") . ":&nbsp;</td><td><input type=\"checkbox\
   echo "<tr><td></td><td>".__("Username").": </td>";
   echo "<td><input type=\"text\" name=\"username$count\" size=\"12\" value=\"$key\" class=\"for_forms\" /></td>\n";
   echo "<td>".__("Password").": </td>";
-  echo "<td><input type=\"password\" name=\"password$count\" size=\"12\" value=\"$val\" class=\"for_forms\" /></td></tr>\n";
+  echo "<td><input type=\"password\" name=\"password$count\" size=\"12\" value=\"\" class=\"for_forms\" /></td></tr>\n";
   $count = $count + 1;}
 
 //".__("")."
