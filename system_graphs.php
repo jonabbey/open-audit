@@ -28,8 +28,14 @@ if ($myrow = mysql_fetch_array($result)){
     //$disk_time = return_date_time($myrow['disk_timestamp']);
     $disk_time = date("d M Y H:i:s", strtotime($myrow['disk_timestamp']));
     
+    if (isset($myrow2['partition_size']) and  ($myrow2['partition_size'] !='0')){ 
+    
     $disk_free_warn = (($myrow2['partition_size'] -$partition_free_space)/($myrow2['partition_size']))*100;
 //    $disk_free_warn = ($myrow2['partition_size'] );
+    } else {
+    $disk_free_warn = '0';
+    }
+    
 
 
     if ($disk_free_warn > '100'){
