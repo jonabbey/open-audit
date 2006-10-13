@@ -25,11 +25,13 @@ if ($myrow = mysql_fetch_array($result)){
       echo "<tr><td><img src=\"images/graph_side.gif\" alt=\"\" />";
     }
     $disk_percent = $myrow['disk_percent'];
-    $disk_time = return_date_time($myrow['disk_timestamp']);
-    echo "<img src=\"system_graphs_image.php?disk_percent=" . $disk_percent . "\" alt=\"".__("Partition").": " . ereg_replace (":", "", $myrow['disk_letter']) . "\r";
-    echo __("Percentage Used").": " . $disk_percent . "% \n";
-    echo __("Timestamp").": " . $disk_time  . "\" title=\"".__("Partition").": " . ereg_replace (":", "", $myrow['disk_letter']) . "\n";
-    echo __("Percentage Used").": " . $disk_percent . "%\n";
+    //$disk_time = return_date_time($myrow['disk_timestamp']);
+    $disk_time = date("d M Y H:i:s", strtotime($myrow['disk_timestamp']));
+    
+    echo "<img src=\"system_graphs_image.php?disk_percent=" . $disk_percent . "\" alt=\"".__("Partition").": " . ereg_replace (":", "", $myrow['disk_letter']) . "--\r";
+    echo __("Percent Used").": " . $disk_percent . "% \n";
+    echo __("Timestamp").": " . $disk_time  . "\" title=\"".__("Partition").": " . ereg_replace (":", "", $myrow['disk_letter']) . ": ";
+    echo __("Percent Used").": " . $disk_percent . "% ";
     echo __("Timestamp").": " . $disk_time  . "\" />";
     $disk_letter_old = $myrow['disk_letter'];
   } while ($myrow = mysql_fetch_array($result));
