@@ -1,5 +1,6 @@
 <?php
 include_once "include_config.php";
+error_reporting(E_ERROR | E_WARNING | E_PARSE | E_NOTICE | E_STRICT );
 
 //New Translatation-System
 if($language=="") $GLOBALS["language"]="en";
@@ -15,7 +16,8 @@ if(is_file($language_file)){
 //if ($language <> "english"){ include "include_lang_" . $language . ".php"; }
 include_once "include_functions.php";
 include_once "include_col_scheme.php";
-
+$is_refreshable = false ;
+$refresh_period = 10;
 $jscript_count = 0;
 if ($show_other_discovered == 'y'){ $jscript_count = $jscript_count + 1; }
 if ($show_system_discovered == 'y'){ $jscript_count = $jscript_count + 1; }
@@ -51,8 +53,30 @@ if ($use_pass != "n") {
   }
 } else {}
 
+
 if (isset($use_https) AND $use_https == "y") {
-        if ($_SERVER["SERVER_PORT"]!=443){ header("Location: https://".$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF']); exit(); }
+
+
+#gets the URI of the script
+//$our_url =  $_SERVER['SCRIPT_URI'];
+
+#chops URI into bits 
+//$chopped = parse_url($our_url);
+
+#HOST and PATH portions of your final destination
+//$destination = $chopped[host].$chopped[path];
+//print_r ($chopped[host]); 
+/*
+#if you are not HTTPS, then do something about it
+if($chopped[scheme] != "https"){
+/*
+    #forwards to HTTP version of URI with secure certificate
+    header("Location: https://$destination");
+    exit(); 
+    }
+*/
+
+       if ($_SERVER["SERVER_PORT"]!=443){ header("Location: https://".$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF']); exit(); }
 }
 
 
@@ -62,6 +86,20 @@ ob_start();
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
+<?php
+if ($is_refreshable) {
+
+    #gets the URI of the script
+    $our_url =  $_SERVER['SCRIPT_URI'];
+
+    #chops URI into bits 
+    $chopped = parse_url($our_url);
+
+    #HOST and PATH portions of your final destination
+    $destination = $chopped[scheme]."://".$chopped[host].$chopped[path];
+    echo " <META HTTP-EQUIV=REFRESH CONTENT=".$refresh_period.";URL=".$destination.">";
+        }
+?>        
     <title>Open-AudIT</title>
     <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
         <link rel="stylesheet" type="text/css" href="default.css" />
