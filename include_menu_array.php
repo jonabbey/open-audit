@@ -90,7 +90,7 @@ $menue_array = array(
                     "title"=>"",
               ),
       "100" => array("name"=>"PDF-Report",
-                    "link"=>"system_export.php?pc=$pc&view=report",
+                    "link"=>"system_export.php?pc=$pc&amp;view=report",
                     "image"=>"images/printer.png",
                     "title"=>"",
               ),
