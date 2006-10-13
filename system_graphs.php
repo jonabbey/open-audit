@@ -28,7 +28,19 @@ if ($myrow = mysql_fetch_array($result)){
     //$disk_time = return_date_time($myrow['disk_timestamp']);
     $disk_time = date("d M Y H:i:s", strtotime($myrow['disk_timestamp']));
     
-    echo "<img src=\"system_graphs_image.php?disk_percent=" . $disk_percent . "\" alt=\"".__("Partition").": " . ereg_replace (":", "", $myrow['disk_letter']) . "--\r";
+    $disk_free_warn = (($myrow2['partition_size'] -$partition_free_space)/($myrow2['partition_size']))*100;
+//    $disk_free_warn = ($myrow2['partition_size'] );
+
+
+    if ($disk_free_warn > '100'){
+        $disk_free_warn = '100';
+    } else {
+          if ($disk_free_warn < '0'){
+        $disk_free_warn = '0';
+        }
+    }
+            
+    echo "<img src=\"system_graphs_image.php?disk_percent=" . $disk_percent . "&disk_free_warn=".$disk_free_warn."\" alt=\"".__("Partition").": " . ereg_replace (":", "", $myrow['disk_letter']) . "--\r";
     echo __("Percent Used").": " . $disk_percent . "% \n";
     echo __("Timestamp").": " . $disk_time  . "\" title=\"".__("Partition").": " . ereg_replace (":", "", $myrow['disk_letter']) . ": ";
     echo __("Percent Used").": " . $disk_percent . "% ";
