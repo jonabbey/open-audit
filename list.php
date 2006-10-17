@@ -54,92 +54,9 @@ if(is_file($include_filename)){
         $sql_limit="";
     }
 
-
     //Integrating Search-Values in the SQL-Query (WHERE)
-    if(isset($_REQUEST["filter"]) AND $_REQUEST["filter"]){
-
-        //Generating the WHERE-Clause
-        $sql_where =" ( 1 ";
-        @reset($_REQUEST["filter"]);
-        while (list ($filter_var, $filter_val) = @each ($_REQUEST["filter"])) {
-            if($filter_val!=""){
-                //Delete all "-" if the Searchbox is a timestamp
-                if(ereg("timestamp",$filter_var)) { $filter_val=str_replace("-","",$filter_val); }
-                $sql_where.= " AND ".$filter_var." LIKE '%".$filter_val."%' ";
-                $filter_query=1;
-            }
-        }
-        $sql_where.=" ) ";
-
-        //Searching the WHERE, walking through the statement
-        $brackets=0;
-        $pos_where=0;
-        //Check for WHERE
-        if(strpos(strtoupper($sql_query),"WHERE")){
-            for ($c=0; $c<strlen($sql_query); $c++) {
-                if ($sql_query[$c] =='('){
-                    ++$brackets;
-                }elseif ($sql_query[$c] ==')'){
-                    --$brackets;
-                }
-                if($brackets==0 AND substr(strtoupper($sql_query),$c+1,5)=="WHERE" ){
-                    $pos_where=$c+6;
-                }
-            }
-        }
-
-        //IF there's no WHERE, check for GROUP BY
-        //Searching the GROUP BY, walking through the statement
-        if($pos_where==0){
-            $brackets=0;
-            $pos_groupby=0;
-            //Check for GROUP BY
-            if(strpos(strtoupper($sql_query),"GROUP BY")){
-                for ($c=0; $c<strlen($sql_query); $c++) {
-                    if ($sql_query[$c] =='('){
-                        ++$brackets;
-                    }elseif ($sql_query[$c] ==')'){
-                        --$brackets;
-                    }
-                    if($brackets==0 AND substr(strtoupper($sql_query),$c+1,8)=="GROUP BY" ){
-                        $pos_groupby=$c;
-                    }
-                }
-            }
-
-            //Check for JOIN
-            $brackets=0;
-            $pos_join=0;
-            if(strpos(strtoupper($sql_query),"JOIN")){
-                for ($c=0; $c<strlen($sql_query); $c++) {
-                    if ($sql_query[$c] =='('){
-                        ++$brackets;
-                    }elseif ($sql_query[$c] ==')'){
-                        --$brackets;
-                    }
-                    if($brackets==0 AND substr(strtoupper($sql_query),$c+1,4)=="JOIN" ){
-                        $pos_join=$c;
-                    }
-                }
-            }
-        }
-
-        //Insert search after WHERE
-        if($pos_where>0){
-            $sql_query = substr($sql_query,0,$pos_where).$sql_where." AND ".substr($sql_query,$pos_where);
-        //or Insert search before GROUP BY
-        }elseif($pos_groupby>0 AND $pos_join==0 AND $pos_where>0){
-            $sql_query = substr($sql_query,0,$pos_groupby).$sql_where.substr($sql_query,$pos_groupby);
-        //or before GROUP BY with WHERE
-        }elseif($pos_groupby>0 AND $pos_join==0 AND $pos_where==0){
-            $sql_query = substr($sql_query,0,$pos_groupby)." WHERE ".$sql_where.substr($sql_query,$pos_groupby);
-        //or before GROUP BY with AND
-        }elseif($pos_groupby>0 AND $pos_join>0){
-            $sql_query = substr($sql_query,0,$pos_groupby)." AND ".$sql_where.substr($sql_query,$pos_groupby);
-        //or at the end
-        }else{
-            $sql_query = $sql_query." WHERE ".$sql_where;
-        }
+    if(isset($filter) AND $filter){
+        $sql_query=sql_insert_search($sql_query, $_REQUEST["filter"]);
     }
 
     //Executing the Qeuery
