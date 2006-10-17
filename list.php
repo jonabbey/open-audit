@@ -108,7 +108,10 @@ if(is_file($include_filename)){
 echo "<td valign=\"top\">\n";
 echo "<div class=\"main_each\">";
 
-echo "<form method=\"post\" name=\"form_nav\" action=\"".htmlentities($_SERVER["REQUEST_URI"])."\" style=\"margin:0px;\">\n";
+//IIS doesn't set $_SERVER["REQUEST_URI"] so need to use script name and query string instead
+$MY_REQUEST_URI = $_SERVER["SCRIPT_NAME"] . "?" .  $_SERVER["QUERY_STRING"];
+
+echo "<form method=\"post\" name=\"form_nav\" action=\"".htmlentities($MY_REQUEST_URI)."\" style=\"margin:0px;\">\n";
 
   //Calculating the page-count-vars in headline
   if( ($page_count+$count_system)>$all_page_count OR (isset($show_all) AND $show_all==1)){
