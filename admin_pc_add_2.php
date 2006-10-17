@@ -137,7 +137,7 @@ $sql = "";
 $software_timestamp = $old_timestamp;
 $service_timestamp = $old_timestamp;
 
-if ($software_timestamp > $timestamp and $timestamp != "") {
+if ($software_timestamp >= $timestamp and $timestamp != "") {
   die("Cannot insert old data when newer data already exists in the database, sorry!");
 }
 
