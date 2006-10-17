@@ -71,9 +71,18 @@ if(is_file($include_filename)){
         $sql_where.=" )";
         //Extract GROUP BY from $sql_query
         if(ereg("GROUP BY",$sql_query)){
-            $sql_query_tmp=explode("GROUP BY",$sql_query);
-            $sql_query=$sql_query_tmp[0];
-            $sql_groupby=" GROUP BY ".$sql_query_tmp[1];
+          $sql_query_tmp=explode("GROUP BY",$sql_query);
+          $group_count = count($sql_query_tmp);
+          //If a WHERE appears after the last GROUP BY we must be in a subselect
+          if (preg_match("/WHERE/i",$sql_query_tmp[$group_count-1])) {
+            //Do nothing
+          } else { 
+            $sql_query=$sql_query_tmp[0]; 
+            for ($i=1; $i==$group_count-2; $i++) {
+              $sql_query .= " GROUP BY " . $sql_query_tmp[$i];
+            }
+            $sql_groupby=" GROUP BY ".$sql_query_tmp[$group_count-1];
+          } 
         }
     }
 
