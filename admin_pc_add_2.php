@@ -137,6 +137,10 @@ $sql = "";
 $software_timestamp = $old_timestamp;
 $service_timestamp = $old_timestamp;
 
+if ($software_timestamp > $timestamp and $timestamp != "") {
+  die("Cannot insert old data when newer data already exists in the database, sorry!");
+}
+
 //If a software audit is NOT performed - update the missing tables with the timestamp
 if ($software_audit == "n") {
   $sql = "UPDATE software SET software_timestamp = '$timestamp' WHERE software_uuid = '$uuid' AND software_timestamp = '$old_timestamp'";
