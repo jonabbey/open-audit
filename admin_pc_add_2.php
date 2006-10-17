@@ -69,7 +69,7 @@ foreach ($input as $split) {
     $uuid = trim($extended[3]);
     $user_name = trim($extended[4]);
     $verbose = trim($extended[5]);
-    $software_audit = trim($extended[5]);
+    $software_audit = trim($extended[6]);
   }
 }
 
