@@ -50,41 +50,111 @@ if(is_file($include_filename)){
     //LIMIT
     if(isset($show_all) AND $show_all!=1){
         $sql_limit=" LIMIT " . $page_count . "," . $count_system;
+    }else{
+        $sql_limit="";
     }
-    //WHERE
+
+
+    //Integrating Search-Values in the SQL-Query (WHERE)
     if(isset($_REQUEST["filter"]) AND $_REQUEST["filter"]){
-        if(!preg_match("/WHERE/i",$sql_query)){
-            $sql_where="WHERE 1 ";
-        }else{
-            $sql_where=" ";
-        }
-        $sql_where.=" AND ( 1 ";
+
+        //Generating the WHERE-Clause
+        $sql_where =" ( 1 ";
         @reset($_REQUEST["filter"]);
         while (list ($filter_var, $filter_val) = @each ($_REQUEST["filter"])) {
             if($filter_val!=""){
                 //Delete all "-" if the Searchbox is a timestamp
                 if(ereg("timestamp",$filter_var)) { $filter_val=str_replace("-","",$filter_val); }
-                $sql_where.= " AND `".$filter_var."` LIKE '%".$filter_val."%' ";
+                $sql_where.= " AND ".$filter_var." LIKE '%".$filter_val."%' ";
                 $filter_query=1;
             }
         }
-        $sql_where.=" )";
-        //Extract GROUP BY from $sql_query
-        if(ereg("GROUP BY",$sql_query)){
-          $sql_query_tmp=explode("GROUP BY",$sql_query);
-          $group_count = count($sql_query_tmp);
-          //If a WHERE appears after the last GROUP BY we must be in a subselect
-          if (preg_match("/WHERE/i",$sql_query_tmp[$group_count-1])) {
-            //Do nothing
-          } else { 
-            $sql_query=$sql_query_tmp[0]; 
-            for ($i=1; $i==$group_count-2; $i++) {
-              $sql_query .= " GROUP BY " . $sql_query_tmp[$i];
+        $sql_where.=" ) ";
+
+        //Searching the WHERE, walking through the statement
+        $brackets=0;
+        $pos_where=0;
+        //Check for WHERE
+        if(strpos(strtoupper($sql_query),"WHERE")){
+            for ($c=0; $c<strlen($sql_query); $c++) {
+                if ($sql_query[$c] =='('){
+                    ++$brackets;
+                }elseif ($sql_query[$c] ==')'){
+                    --$brackets;
+                }
+                if($brackets==0 AND substr(strtoupper($sql_query),$c+1,5)=="WHERE" ){
+                    $pos_where=$c+6;
+                }
             }
-            $sql_groupby=" GROUP BY ".$sql_query_tmp[$group_count-1];
-          } 
+        }
+
+        //IF there's no WHERE, check for GROUP BY
+        //Searching the GROUP BY, walking through the statement
+        if($pos_where==0){
+            $brackets=0;
+            $pos_groupby=0;
+            //Check for GROUP BY
+            if(strpos(strtoupper($sql_query),"GROUP BY")){
+                for ($c=0; $c<strlen($sql_query); $c++) {
+                    if ($sql_query[$c] =='('){
+                        ++$brackets;
+                    }elseif ($sql_query[$c] ==')'){
+                        --$brackets;
+                    }
+                    if($brackets==0 AND substr(strtoupper($sql_query),$c+1,8)=="GROUP BY" ){
+                        $pos_groupby=$c;
+                    }
+                }
+            }
+
+            //Check for JOIN
+            $brackets=0;
+            $pos_join=0;
+            if(strpos(strtoupper($sql_query),"JOIN")){
+                for ($c=0; $c<strlen($sql_query); $c++) {
+                    if ($sql_query[$c] =='('){
+                        ++$brackets;
+                    }elseif ($sql_query[$c] ==')'){
+                        --$brackets;
+                    }
+                    if($brackets==0 AND substr(strtoupper($sql_query),$c+1,4)=="JOIN" ){
+                        $pos_join=$c;
+                    }
+                }
+            }
+        }
+
+        //Insert search after WHERE
+        if($pos_where>0){
+            $sql_query = substr($sql_query,0,$pos_where).$sql_where." AND ".substr($sql_query,$pos_where);
+        //or Insert search before GROUP BY
+        }elseif($pos_groupby>0 AND $pos_join==0 AND $pos_where>0){
+            $sql_query = substr($sql_query,0,$pos_groupby).$sql_where.substr($sql_query,$pos_groupby);
+        //or before GROUP BY with WHERE
+        }elseif($pos_groupby>0 AND $pos_join==0 AND $pos_where==0){
+            $sql_query = substr($sql_query,0,$pos_groupby)." WHERE ".$sql_where.substr($sql_query,$pos_groupby);
+        //or before GROUP BY with AND
+        }elseif($pos_groupby>0 AND $pos_join>0){
+            $sql_query = substr($sql_query,0,$pos_groupby)." AND ".$sql_where.substr($sql_query,$pos_groupby);
+        //or at the end
+        }else{
+            $sql_query = $sql_query." WHERE ".$sql_where;
         }
     }
+
+    //Executing the Qeuery
+    $sql=$sql_query."\n".$sql_sort."\n".$sql_limit;
+//    $result = mysql_query($sql, $db);
+//    if(!$result) {die( "<br>".__("Fatal Error").":<br><br>".$sql."<br><br>".mysql_error()."<br><br>" );};
+//    $this_page_count = mysql_num_rows($result);
+
+    //Getting the count of all available items
+    $sql_all = $sql_query."\n".$sql_sort;
+    $result_all = mysql_query($sql_all, $db);
+    if(!$result_all) {die( "<br>".__("Fatal Error").":<br><br>".$sql_all."<br><br>".mysql_error()."<br><br>" );};
+    $all_page_count = mysql_num_rows($result_all);
+    $result = $result_all;
+    $this_page_count = ($page_current * $count_system) - $all_page_count;
 
     //Show Searchboxes, if search is used on the calling page
     if(isset($filter_query) AND $filter_query==1){
@@ -93,26 +163,7 @@ if(is_file($include_filename)){
     }else{
         $style_searchboxes="display:none;";
         $image_searchboxes="images/go-all.png";
-
     }
-    if(!isset($sql_where))$sql_where=" ";
-    if(!isset($sql_groupby))$sql_groupby=" ";
-    if(!isset($sql_limit))$sql_limit=" ";
-
-
-    //Executing the Qeuery
-    $sql=$sql_query."\n".$sql_where."\n".$sql_groupby."\n".$sql_sort."\n".$sql_limit;
-//    $result = mysql_query($sql, $db);
-//    if(!$result) {die( "<br>".__("Fatal Error").":<br><br>".$sql."<br><br>".mysql_error()."<br><br>" );};
-//    $this_page_count = mysql_num_rows($result);
-
-    //Getting the count of all available items
-    $sql_all = $sql_query."\n".$sql_where."\n".$sql_groupby."\n".$sql_sort;
-    $result_all = mysql_query($sql_all, $db);
-    if(!$result_all) {die( "<br>".__("Fatal Error").":<br><br>".$sql_all."<br><br>".mysql_error()."<br><br>" );};
-    $all_page_count = mysql_num_rows($result_all);
-    $result = $result_all;
-    $this_page_count = ($page_current * $count_system) - $all_page_count;
 
 echo "<td valign=\"top\">\n";
 echo "<div class=\"main_each\">";
@@ -191,6 +242,7 @@ echo "<form method=\"post\" name=\"form_nav\" action=\"".htmlentities($MY_REQUES
   if( ($all_page_count>$count_system OR $count_system==$count_system_max) AND (isset($show_all) AND $show_all!=1) ){
       for ($i = 0; $i < $all_page_count; $i=$i+$count_system) {
 
+          $last_goto_page=0;
           if( ($i<=($count_system*4)) OR ($i>=($all_page_count-($count_system*3))) ){
               if($i==$page_count){ $style_for_direct_jump="color:red;";}else{$style_for_direct_jump="";};
               $goto_page=($i/$count_system+1);
@@ -396,6 +448,11 @@ if ($myrow = mysql_fetch_array($result)){
                  echo "style=\"padding-right:10px;\">";
 
                 $show_value=" ";
+
+                //Strip the table-name
+                if(strpos($field["name"],".")){
+                    $field["name"]=substr($field["name"],(strpos($field["name"],".")+1));
+                }
 
                 //Special field-converting
                 $show_value = special_field_converting($myrow, $field, $db, "list");

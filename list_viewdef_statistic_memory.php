@@ -1,7 +1,7 @@
 <?php
 
 $query_array=array("headline"=>__("Statistic for Physical Memory"),
-                   "sql"=>"SELECT full_system_memory.system_memory, 
+                   "sql"=>"SELECT full_system_memory.system_memory,
                                COUNT(*) count_item,
                                round( 100 / (SELECT count(*) FROM memory WHERE memory_detail != 'Unknown') * COUNT( * ), $round_to_decimal_places  ) AS percentage
                            FROM (select *, sum(memory_capacity) AS system_memory FROM memory GROUP BY memory_uuid) AS full_system_memory, system
@@ -17,7 +17,7 @@ $query_array=array("headline"=>__("Statistic for Physical Memory"),
                                              "headline_addition"=>"%system_memory",
                                             ),
                                ),
-                   "fields"=>array("10"=>array("name"=>"system_memory",
+                   "fields"=>array("10"=>array("name"=>"full_system_memory.system_memory",
                                                "head"=>__("Physical Memory"),
                                                "show"=>"y",
                                                "link"=>"y",

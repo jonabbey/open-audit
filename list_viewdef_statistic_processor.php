@@ -12,7 +12,7 @@ $query_array=array("headline"=>__("Statistic for Processors"),
                                        )
                                  * COUNT(*)
                                ,$round_to_decimal_places ) AS percentage
-                           FROM  processor INNER JOIN system ON
+                           FROM processor INNER JOIN system ON
                            system_uuid=processor_uuid AND system_timestamp=processor_timestamp
                            GROUP BY processor_name
                            ",
@@ -44,4 +44,4 @@ $query_array=array("headline"=>__("Statistic for Processors"),
                                               ),
                                   ),
                   );
-?> 
+?>
