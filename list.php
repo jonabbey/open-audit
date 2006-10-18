@@ -74,14 +74,18 @@ if(is_file($include_filename)){
     $this_page_count = ($page_current * $count_system) - $all_page_count;
 
     //Show Searchboxes, if search is used on the calling page
-    $image_searchboxes_array[0]="images/searchbox_hide.png";
-    $image_searchboxes_array[1]="images/searchbox_show.png";
-    if(isset($filter_query) AND $filter_query==1){
+    $searchboxes_array[0]["image"]="images/searchbox_hide.png";
+    $searchboxes_array[0]["alt"]=__("Discard Search");
+    $searchboxes_array[1]["image"]="images/searchbox_show.png";
+    $searchboxes_array[1]["alt"]=__("Search in this View");
+    if(isset($_REQUEST["filter"])){
         $style_searchboxes="display:inline;";
-        $image_searchboxes=$image_searchboxes_array[0];
+        $image_searchboxes=$searchboxes_array[0]["image"];
+        $alt_searchboxes=$searchboxes_array[0]["alt"];
     }else{
         $style_searchboxes="display:none;";
-        $image_searchboxes=$image_searchboxes_array[1];
+        $image_searchboxes=$searchboxes_array[1]["image"];
+        $alt_searchboxes=$searchboxes_array[1]["alt"];
     }
 
 echo "<td valign=\"top\">\n";
@@ -224,7 +228,7 @@ foreach($viewdef_array["fields"] as $field) {
 
  //Button to Show and Hide the searchboxes
  $headline_1 .= "<td width=\"20\" style=\"border-bottom: 1px solid #000000;\">";
- $headline_1 .= "<a href=\"#\" onClick=\"show_searchboxes();\" id=\"link_searchboxes\"><img src=\"$image_searchboxes\" id=\"arrows_searchboxes\" border=\"0\" width=\"20\" height=\"16\" alt=\"".__("Search in this View")."\" title=\"".__("Search in this View")."\" /></a>";
+ $headline_1 .= "<a href=\"#\" onClick=\"show_searchboxes();\" id=\"link_searchboxes\"><img src=\"".$image_searchboxes."\" id=\"arrows_searchboxes\" border=\"0\" width=\"20\" height=\"16\" alt=\"".$alt_searchboxes."\" title=\"".$alt_searchboxes."\" /></a>";
  $headline_1 .= "</td>";
 
  $count_searchboxes++;
@@ -245,13 +249,16 @@ echo "<script type=\"text/javascript\">\n";
   echo "function show_searchboxes(){
             if(document.getElementById(\"searchboxes_1\").style.display == 'none'){
                 action='inline';
-                var img_src='".$image_searchboxes_array[0]."'
+                var img_src='".$searchboxes_array[0]["image"]."';
+                var img_alt='".$searchboxes_array[0]["alt"]."';
                 //Show Boxes
                 for (var i = 1 ; i < ".($count_searchboxes+1)."; i++){
                     document.getElementById(\"searchboxes_\"+i).style.display = action;
                 }
                 //Show Image
                 document.getElementById('arrows_searchboxes').src=img_src;
+                document.getElementById('arrows_searchboxes').alt=img_alt;
+                document.getElementById('arrows_searchboxes').title=img_alt;
             }else{
                 document.getElementById(\"link_searchboxes\").href='".$_SERVER["REQUEST_URI"]."';
             }
