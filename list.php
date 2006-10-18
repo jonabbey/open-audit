@@ -55,7 +55,7 @@ if(is_file($include_filename)){
     }
 
     //Integrating Search-Values in the SQL-Query (WHERE)
-    if(isset($filter) AND $filter){
+    if(isset($_REQUEST["filter"]) AND $_REQUEST["filter"]){
         $sql_query=sql_insert_search($sql_query, $_REQUEST["filter"]);
     }
 
