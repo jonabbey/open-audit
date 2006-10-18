@@ -2,10 +2,11 @@
 
 $query_array=array("headline"=>__("List Systems with Memory"),
                    "sql"=>"SELECT * FROM system,
-                   (select *, sum(memory_capacity) AS total_memory FROM memory GROUP BY memory_uuid) AS full_system_memory
-                   WHERE full_system_memory.memory_uuid  = system_uuid
-                   AND full_system_memory.memory_timestamp = system_timestamp
-                   AND full_system_memory.total_memory = '" . $_GET["name"] . "'",
+                           (select *, sum(memory_capacity) AS total_memory FROM memory GROUP BY memory_uuid, memory_timestamp) AS full_system_memory
+                           WHERE full_system_memory.memory_uuid  = system_uuid
+                           AND full_system_memory.memory_timestamp = system_timestamp
+                           AND full_system_memory.total_memory = '" . $_GET["name"] . "'
+                           ",
                    "sort"=>"system_name",
                    "dir"=>"ASC",
                    "get"=>array("file"=>"system.php",
