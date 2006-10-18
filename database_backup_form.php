@@ -1,10 +1,8 @@
 <?php
-//    Open Audit Restore Database
-//    restore over current database.
+//    Open Audit Backup Database
+//    
 include "include.php";
-//$this_page="https://".$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'];
-//echo "<meta name=\"refresh\" content=\"10;".$this_page."\">";
-//
+
 $newline = "\r\n";
 $page = "database_backup_form.php";
 $bgcolor = "#FFFFFF";
@@ -15,9 +13,23 @@ set_time_limit(240);
 echo "<td valign=\"top\">$newline";
 echo "<div class=\"main_each\">$newline";
 echo "<table border=\"0\" cellpadding=\"2\" cellspacing=\"0\" width=\"100%\" >$newline";
+
+
+
 echo "  <tr><td class=\"contenthead\">".__("Backup the Database")."</td></tr>";
 echo "  <tr><td colspan=\"1\"><hr /></td></tr>";
+
+
 echo "<tr><td>".__("Select a database")."</td>";
+
+// Added Drop Tables tick box
+if (isset($_POST['add_drop_tables'])) {$add_drop_tables = $_POST['add_drop_tables'];} else { $add_drop_tables = "n";}
+
+echo "<tr><td>".__("Include DROP TABLE IF EXISTS [Table_name] commands in backup file").":&nbsp;</td><td><input type=\"checkbox\" name=\"add_drop_tables\" value=\"y\"";
+  if (isset($add_drop_tables) AND $add_drop_tables == "y"){ echo "checked=\"checked\"";}
+  echo "/></td>";
+
+
 //echo "  <tr><td colspan=\"1\"><hr /></td></tr>";
 $today = date("dmYGis");
 $backup_dir = '.\\backup\\';
@@ -27,7 +39,7 @@ if (!file_exists($backup_dir)) {
 }
 
 
-// Start of restore section
+// Start of Backup Selection section
 
 echo "<form method=\"GET\" action=\"database_backup_sql.php\" name=\"database_backup\">";
 echo "<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" class=\"content\">";
@@ -44,29 +56,25 @@ while ($row = mysql_fetch_object($db_list)) {
     $my_database_names = $row->Database ;
     if($mysql_database==$my_database_names) $selected = "selected"; else $selected = "";
     echo "<OPTION $selected>".$my_database_names."</OPTION>\n";
-//  echo '</SELECT>';
 }
 
-/*
-$handle=opendir('./backup/');
-while ($file = readdir ($handle)) {
-    if ($file != "." && $file != "..") {
-        if(substr($file,strlen($file)-4)==".sql"){
-            if($language == substr($file,0,strlen($file)-4) ) $selected="selected"; else $selected="";
-            echo "<option $selected>".substr($file,0,strlen($file)-4)."</option>\n";
-        }
-    }
-}
-//
-//closedir($handle);
-//echo "<tr><td colspan=\"5\"><hr /></td></tr>\n";
-*/
+
 echo "<tr><td><input type=\"submit\" value=\"".__("Backup")."\" name=\"submit_button\" /></td></tr>\n";
 
 echo "<tr><td colspan=\"2\"><br>".__("This process can take several minutes")."</td></tr>\n";
 
-//End of restore section
-echo "</tr></td></table>\n";
+
+
+//End of Backup Selection  section
+echo "</tr>";
+// Added Drop Tables tick box 
+
+
+echo "</td>";
+
+
+echo "</table>\n";
+
 
 include "include_right_column.php";
 

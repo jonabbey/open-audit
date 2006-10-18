@@ -7,6 +7,11 @@ include "include.php";
 //
 $backup_name = $_GET['backup_name'];
 
+$add_drop_tables = "n";
+
+if (isset($GET['add_drop_tables'])) {
+    $add_drop_tables = $_GET['add_drop_tables'];
+    }
 
 
 function microtime_float()
@@ -19,8 +24,8 @@ $time_start = microtime_float();
 $newline = "\r\n";
 $page = "database_backup_sql.php";
 $bgcolor = "#FFFFFF";
-// This is a bit crude... FIXME I need to find a more interactive method for this, rather than just leaving the script for 5 mins, and then timing out if no result.
-set_time_limit(300);
+// This is a bit crude... FIXME I need to find a more interactive method for this, rather than just leaving the script for 10 mins, and then timing out if no result.
+set_time_limit(600);
 $backup = '';
 
 echo "<td valign=\"top\">$newline";
@@ -74,8 +79,14 @@ $backup .= "-- --------------------------------------------------------$newline"
 $file_len=strlen($backup);
 
 while($tabs = mysql_fetch_row($tables)):
+   if ($add_drop_tables = "y"){
+   // Include the DROP TABLE IF EXISTS commands.
    $backup .= "--$newline-- ".__("Table structure for")." `$tabs[0]`".$newline."--".$newline."DROP TABLE IF EXISTS `$tabs[0]`;".$newline."CREATE TABLE IF NOT EXISTS `$tabs[0]` (".$newline;
-
+    } else {
+    // Include DROP TABLE IF EXISTS commands only as comments.
+   $backup .= "--$newline-- ".__("Table structure for")." `$tabs[0]`".$newline."--".$newline."-- DROP TABLE IF EXISTS `$tabs[0]`;".$newline."CREATE TABLE IF NOT EXISTS `$tabs[0]` (".$newline;
+    }
+    
    $res = mysql_query("SHOW CREATE TABLE $tabs[0]");
    //echo "<tr><td>". __($tabs[0])."</td><td>$tabs[0]</td></tr>";
 
@@ -98,7 +109,7 @@ while($tabs = mysql_fetch_row($tables)):
    while($dt = mysql_fetch_row($data)):
        $backup .= "INSERT INTO `$tabs[0]` VALUES('".mysql_escape_string($dt[0])."'";
        for($i=1; $i<sizeof($dt); $i++):
-           $backup .= ", '".preg_quote($dt[$i],';')."'";
+           $backup .= ", '".mysql_escape_string($dt[$i])."'";
        endfor;
        $backup .= ");".$newline;
    endwhile;
