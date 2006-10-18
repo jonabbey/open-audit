@@ -491,4 +491,7 @@ $GLOBALS["lang"]["Hosts with this Memory"]="Hosts with this Memory";
 $GLOBALS["lang"]["List Systems with Memory"]="List Systems with Memory";
 $GLOBALS["lang"]["Total Memory"]="Total Memory";
 $GLOBALS["lang"]["Windows Reported"]="Windows Reported";
+
+$GLOBALS["lang"]["Discard Search"]="Discard Search";
+
 ?>
