@@ -74,12 +74,14 @@ if(is_file($include_filename)){
     $this_page_count = ($page_current * $count_system) - $all_page_count;
 
     //Show Searchboxes, if search is used on the calling page
+    $image_searchboxes_array[0]="images/searchbox_hide.png";
+    $image_searchboxes_array[1]="images/searchbox_show.png";
     if(isset($filter_query) AND $filter_query==1){
         $style_searchboxes="display:inline;";
-        $image_searchboxes="images/go-less.png";
+        $image_searchboxes=$image_searchboxes_array[0];
     }else{
         $style_searchboxes="display:none;";
-        $image_searchboxes="images/go-all.png";
+        $image_searchboxes=$image_searchboxes_array[1];
     }
 
 echo "<td valign=\"top\">\n";
@@ -222,7 +224,7 @@ foreach($viewdef_array["fields"] as $field) {
 
  //Button to Show and Hide the searchboxes
  $headline_1 .= "<td width=\"20\" style=\"border-bottom: 1px solid #000000;\">";
- $headline_1 .= "<a href=\"#\" onClick=\"show_searchboxes();\" id=\"link_searchboxes\"><img src=\"$image_searchboxes\" id=\"arrows_searchboxes\" border=\"0\" width=\"16\" height=\"16\" alt=\"".__("Search in this View")."\" title=\"".__("Search in this View")."\" /></a>";
+ $headline_1 .= "<a href=\"#\" onClick=\"show_searchboxes();\" id=\"link_searchboxes\"><img src=\"$image_searchboxes\" id=\"arrows_searchboxes\" border=\"0\" width=\"20\" height=\"16\" alt=\"".__("Search in this View")."\" title=\"".__("Search in this View")."\" /></a>";
  $headline_1 .= "</td>";
 
  $count_searchboxes++;
@@ -243,7 +245,7 @@ echo "<script type=\"text/javascript\">\n";
   echo "function show_searchboxes(){
             if(document.getElementById(\"searchboxes_1\").style.display == 'none'){
                 action='inline';
-                var img_src='images/go-less.png'
+                var img_src='".$image_searchboxes_array[0]."'
                 //Show Boxes
                 for (var i = 1 ; i < ".($count_searchboxes+1)."; i++){
                     document.getElementById(\"searchboxes_\"+i).style.display = action;
