@@ -260,7 +260,7 @@ echo "<script type=\"text/javascript\">\n";
                 document.getElementById('arrows_searchboxes').alt=img_alt;
                 document.getElementById('arrows_searchboxes').title=img_alt;
             }else{
-                document.getElementById(\"link_searchboxes\").href='".$_SERVER["REQUEST_URI"]."';
+                document.getElementById(\"link_searchboxes\").href='".$MY_REQUEST_URI."';
             }
         }\n";
  echo "//-->\n";
