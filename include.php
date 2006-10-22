@@ -1,19 +1,6 @@
 <?php
 include_once "include_config.php";
-//error_reporting(E_ERROR | E_WARNING | E_PARSE | E_NOTICE | E_STRICT );
-
-//New Translatation-System
-if($language=="") $GLOBALS["language"]="en";
-$language_file="./lang/".$GLOBALS["language"].".inc";
-if(is_file($language_file)){
-    include($language_file);
-}else{
-    die("Language-File not found: ".$language_file);
-}
-//Old-Translation-System
-//include "include_lang_english.php";
-
-//if ($language <> "english"){ include "include_lang_" . $language . ".php"; }
+include_once "include_lang.php";
 include_once "include_functions.php";
 include_once "include_col_scheme.php";
 $is_refreshable = false ;
