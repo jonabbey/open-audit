@@ -52,10 +52,10 @@ RAMsize=`expr $RAMsizekb / 1024`
 nbcpu=`cat /proc/cpuinfo | grep "processor" | wc -l`
 
 # System Model
-sys_model=`lshal --long --show /org/freedesktop/Hal/devices/computer | grep smbios.system.product | cut -d" " -f5 | cut -d"'" -f2`
-chassis_type=`lshal --long --show /org/freedesktop/Hal/devices/computer | grep smbios.chassis.type | cut -d" " -f5 | cut -d"'" -f2`
-sys_serial=`lshal --long --show /org/freedesktop/Hal/devices/computer | grep smbios.system.serial | cut -d" " -f5 | cut -d"'" -f2`
-sys_manufacturer=`lshal --long --show /org/freedesktop/Hal/devices/computer | grep smbios.system.manufacturer | cut -d" " -f5 | cut -d"'" -f2`
+sys_model=`hal-get-property --udi /org/freedesktop/Hal/devices/computer --key smbios.system.product`
+chassis_type=`hal-get-property --udi /org/freedesktop/Hal/devices/computer --key smbios.chassis.type`
+sys_serial=`hal-get-property --udi /org/freedesktop/Hal/devices/computer --key smbios.system.serial`
+sys_manufacturer=`hal-get-property --udi /org/freedesktop/Hal/devices/computer --key smbios.system.manufacturer`
 country=`cat /etc/timezone`
 timezone=`date | cut -d" " -f5`
 # System02
@@ -65,11 +65,11 @@ echo "system02^^^$sys_model^^^$HOSTNAME^^^$nbcpu^^^ ^^^ ^^^$chassis_type^^^$RAMs
 #         - Domain Role
 
 
-bios_date=`lshal --long --show /org/freedesktop/Hal/devices/computer | grep smbios.bios.release_date | cut -d" " -f5 | cut -d"'" -f2`
-bios_version=`lshal --long --show /org/freedesktop/Hal/devices/computer | grep smbios.bios.version | cut -d" " -f5 | cut -d"'" -f2`
-bios_serial=`lshal --long --show /org/freedesktop/Hal/devices/computer | grep smbios.system.serial | cut -d" " -f5 | cut -d"'" -f2`
-bios_manufacturer=`lshal --long --show /org/freedesktop/Hal/devices/computer | grep smbios.bios.vendor | cut -d" " -f5 | cut -d"'" -f2`
-bios_description=`lshal --long --show /org/freedesktop/Hal/devices/computer | grep smbios.system.product | cut -d" " -f5 | cut -d"'" -f2`
+bios_date=`hal-get-property --udi /org/freedesktop/Hal/devices/computer --key grep smbios.bios.release_date`
+bios_version=`hal-get-property --udi /org/freedesktop/Hal/devices/computer --key smbios.bios.version`
+bios_serial=`hal-get-property --udi /org/freedesktop/Hal/devices/computer --key smbios.system.serial`
+bios_manufacturer=`hal-get-property --udi /org/freedesktop/Hal/devices/computer --key smbios.bios.vendor`
+bios_description=`hal-get-property --udi /org/freedesktop/Hal/devices/computer --key smbios.system.product`
 
 #Bios
 echo "bios^^^$bios_description^^^$bios_manufacturer^^^$bios_serial^^^$bios_version^^^$bios_version^^^" >> $ReportFile
