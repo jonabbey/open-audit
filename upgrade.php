@@ -9,6 +9,7 @@
 <?php
 @(include "include_config.php") OR die("include_config.php missing");
 @(include "include_functions.php") OR die("include_functions.php missing");
+@(include "include_lang.php") OR die("include_lang.php missing");
 
 $db = mysql_connect($mysql_server,$mysql_user,$mysql_password) or die('Could not connect: ' . mysql_error());
 mysql_select_db($mysql_database,$db);

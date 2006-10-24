@@ -2,6 +2,7 @@
 $page = "other";
 include "include_config.php";
 include "include_functions.php";
+include "include_lang.php";
 
 mysql_connect($mysql_server, $mysql_user, $mysql_password) or die("Could not connect");
 mysql_select_db($mysql_database) or die("Could not select database");
