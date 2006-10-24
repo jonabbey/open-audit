@@ -78,7 +78,15 @@ if(is_file($include_filename)){
     $searchboxes_array[0]["alt"]=__("Discard Search");
     $searchboxes_array[1]["image"]="images/searchbox_show.png";
     $searchboxes_array[1]["alt"]=__("Search in this View");
-    if(isset($_REQUEST["filter"])){
+
+    //Check for searchvalues
+    if(isset($_REQUEST["filter"]) ){
+        reset($_REQUEST["filter"]);
+        while (list ($filter_var, $filter_val) = @each ($_REQUEST["filter"])) {
+            if($filter_val!="")$show_filter=1;
+        }
+    }
+    if(isset($show_filter) AND $show_filter==1){
         $style_searchboxes="display:inline;";
         $image_searchboxes=$searchboxes_array[0]["image"];
         $alt_searchboxes=$searchboxes_array[0]["alt"];
