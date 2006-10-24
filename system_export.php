@@ -13,6 +13,7 @@ $time_start = microtime_float();
 
 include_once("include_config.php");
 include_once("include_functions.php");
+include_once("include_lang.php");
 
 //Include PDF-Libaries
 /////////////////////////////////////////////////////////////////////////////////
