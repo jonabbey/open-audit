@@ -1,6 +1,7 @@
 <?php
 include_once("include_config.php");
 include_once("include_functions.php");
+include_once("include_lang.php");
 
 //MySQL-Connect
 $db = mysql_connect($mysql_server,$mysql_user,$mysql_password) or die('Could not connect: ' . mysql_error());
