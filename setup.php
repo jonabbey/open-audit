@@ -148,7 +148,7 @@ function step2CheckPrereq() {
   <input type="hidden" name="step" value="3" />
   <input type="submit" value="<?php echo __("Continue") ?> >>" name="submit_button" />
   </form>
-<?
+<?php
   } else {
 ?>
   <p><?php echo __("For each failed file, check the permissions on the file. For linux, chmod them with permissions 646. You will need to create the file if it does not exist. When this is completed, press retry to verify the changes.") ?></p>
@@ -157,7 +157,7 @@ function step2CheckPrereq() {
   <input type="hidden" name="step" value="2" />
   <input type="submit" value="<?php echo __("Retry") ?>" name="submit_button" />
   </form>
-<?
+<?php
   }  
 }
 
