@@ -283,11 +283,11 @@ while (list ($viewname, $viewdef_array) = @each ($query_array["views"])) {
                            echo " <a href='http://support.dell.com/support/downloads/index.aspx?c=us&amp;l=en&amp;s=gen&amp;servicetag=" . $myrow["system_id_number"] . "' target=_blank>".__("Drivers &amp; Software")."</a>";
                            $links_to_manu=1;
                        }
-                     } elseif ($myrow["system_vendor"] == "Compaq") {
+                     } elseif ($myrow["system_vendor"] == "Compaq" || $myrow["system_vendor"] == "HP"){
                        if(isset($myrow["system_id_number"]) AND $myrow["system_id_number"]!=""){
                            echo " <a href='http://www4.itrc.hp.com/service/ewarranty/warrantyResults.do?BODServiceID=NA&amp;RegisteredPurchaseDate=&amp;country=GB&amp;productNumber=&amp;serialNumber1=" . $myrow["system_id_number"] . "' target=_blank>".__("Warranty Information")."</a>";
                            echo " / ";
-                           echo " <a href='http://h20180.www2.hp.com/apps/Lookup?h_lang=en&amp;h_cc=uk&amp;cc=uk&amp;h_page=hpcom&amp;lang=en&amp;h_client=S-A-R135-1&amp;h_pagetype=s-002&amp;h_query=" . $myrow["system_id_number"] . "' target=_blank>".__("Drivers &amp; Software")."</a>";
+                           echo " <a href='http://h20180.www2.hp.com/apps/Lookup?h_lang=en&amp;h_cc=uk&amp;cc=uk&amp;h_page=hpcom&amp;lang=en&amp;h_client=S-A-R135-1&amp;h_pagetype=s-002&amp;h_query=" . $myrow["system_model"] . "' target=_blank>".__("Drivers &amp; Software")."</a>";
                            $links_to_manu=1;
                        }
                      } elseif ($myrow["system_vendor"] == "IBM") {
