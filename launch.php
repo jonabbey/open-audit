@@ -6,7 +6,7 @@ if(isset($_GET["domain"])) $domain=$_GET["domain"];
 if(isset($_GET["ext"])) $ext=$_GET["ext"];
 
 
-if (!ereg('/.',$domain)){
+if (!ereg(chr(46),$domain)){
     $domain = $domain.".local";
     }
 

@@ -3,22 +3,25 @@ on error resume next
 Set objWMIService = GetObject("winmgmts:" _
     & "{impersonationLevel=impersonate,(Shutdown)}!\\" & _
         strComputer & "\root\cimv2")
+ThisMessage="Click OK to Reboot " & strComputer
+ThisResult = MsgBox (ThisMessage, 65, "Launch")
+if ThisResult = 1 then
+    Set colOperatingSystems = objWMIService.ExecQuery _
+        ("Select * from Win32_OperatingSystem")
+    
+    For Each objOperatingSystem in colOperatingSystems
+         objOperatingSystem.Reboot()
+    Next
 
-Set colOperatingSystems = objWMIService.ExecQuery _
-    ("Select * from Win32_OperatingSystem")
+    if Err.Descriptin = "Object not a collection" then
+    wscript.echo "Machine not available"
+    end if
 
-For Each objOperatingSystem in colOperatingSystems
-    objOperatingSystem.Reboot()
-Next
+    if Err.Description = "" then
+    wscript.echo strComputer+" System Reboot Started"
+    end if
 
-if Err.Descriptin = "Object not a collection" then
-wscript.echo "Machine not available"
-end if
-
-if Err.Description = "" then
-wscript.echo strComputer+" System Reboot Started"
-end if
-
-if Err.Description <> "" then
-rem wscript.echo "Check System is available"
-end if
+    if Err.Description <> "" then
+    rem wscript.echo "Check System is available"
+    end if
+end if 
