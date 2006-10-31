@@ -224,9 +224,22 @@ while (list ($viewname, $viewdef_array) = @each ($query_array["views"])) {
                                if(isset($field["get"]["target"])) {
                                  echo " target=\"" . $field["get"]["target"] . "\"";
                                }
-                               echo ">";
-                               echo $field["get"]["head"];
-                               echo "</a>";
+                               echo ">\n";
+                               if(isset($field["get"]["image"]) AND $field["get"]["image"]!="") {
+                                   echo "<img src=\"".$field["get"]["image"]."\" border=\"0\"";
+                                   if(isset($field["get"]["image_width"]) AND $field["get"]["image_width"]!="") {
+                                       echo " width=\"".$field["get"]["image_width"]."\" ";
+                                   }
+                                   if(isset($field["get"]["image_height"]) AND $field["get"]["image_height"]!="") {
+                                       echo " height=\"".$field["get"]["image_height"]."\" ";
+                                   }
+                                   echo ">";
+                                   echo "&nbsp;";
+                               }
+                               if(isset($field["get"]["head"]) AND $field["get"]["head"]!=""){
+                                   echo $field["get"]["head"];
+                               }
+                               echo "</a>\n";
                            }else{
                                //Form-Fields
                                if(isset($field["edit"]) AND $field["edit"]=="y" AND isset($_REQUEST["edit"])){
