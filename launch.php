@@ -10,17 +10,18 @@ if (ereg(chr(46),$domain)){
     $domain = $domain.".local";
     }
 */
-$fqdn=$hostname.".".$domain;
-$domain_suffix = null;
 
-if (ereg(chr(46),$fqdn)>1){
-    $domain_suffix = null;
-    }
-    else
-    {
-    $domain_suffix = "local";
-    $fqdn=$fqdn.".".$domain_suffix;
-    }
+
+
+$fqdn=$hostname.".".$domain;
+$domain_parts=explode (".",$fqdn);
+$domain_parts_count = count($domain_parts);
+if ($domain_parts_count = 1){
+        $domain_parts[2] = "local";
+}
+
+$fqdn=implode(".",$domain_parts);
+
 
 SWITCH($application){
     case "http":
@@ -40,13 +41,9 @@ SWITCH($application){
         //Send to Browser
         header("Content-type: application/force-download");
         header("Content-Transfer-Encoding: Binary");
+        $filename=$fqdn.".".$ext;
         
-        if (strlen($domain_suffix)>0 ){
-        header("Content-disposition: attachment; filename=\"".$hostname.".".$domain.".".$domain_suffix.".".$ext."\"");
-        }
-        else{
-        header("Content-disposition: attachment; filename=\"".$hostname.".".$domain.".".$ext."\"");
-        }
+        header("Content-disposition: attachment; filename=\"".$filename."\"");
         
         echo trim($buffer);
     break;
