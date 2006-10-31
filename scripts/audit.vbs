@@ -433,8 +433,16 @@ For Each objItem in colItems
 Next
 
 if isnull(net_ip_address) then net_ip_address = "" end if
-if isnull(net_domain) then net_domain = "" end if
-if isnull(net_user_name) then net_user_name = "" end if
+
+if isnull(net_domain) then
+  oReg.GetStringValue HKEY_LOCAL_MACHINE, "SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon", "DefaultDomainName", net_domain
+  if isnull(net_domain) then net_domain = "" end if
+end if
+if isnull(net_user_name) then
+  oReg.GetStringValue HKEY_LOCAL_MACHINE, "SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon", "DefaultUserName", net_user_name
+  if isnull(net_user_name) then net_user_name = "" end if
+end if 
+
 if isnull(net_client_site_name) then net_client_site_name = "" end if
 if isnull(net_domain_controller_address) then net_domain_controller_address = "" end if
 if isnull(net_domain_controller_name) then net_domain_controller_name = "" end if
