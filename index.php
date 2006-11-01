@@ -101,7 +101,7 @@ if ($show_system_discovered == "y") {
 
 
 if ($show_other_discovered == "y") {
-  $sql  = "SELECT * FROM other WHERE (other_mac_address <> '' AND ";
+  $sql  = "SELECT * FROM other WHERE (other_ip_address <> '' AND ";
   $sql .= "other_first_timestamp > '" . adjustdate(0,0,-$other_detected) . "000000') ORDER BY other_ip_address";
   $result = mysql_query($sql, $db);
   $bgcolor = "#FFFFFF";
@@ -631,11 +631,12 @@ if ($show_detected_servers == "y"){
     do {
         $count = $count + 1;
         $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
-
+//<td><a href=\"system.php?other=" . $myrow["other_id"] . "&amp;view=other_system\">" . $myrow["other_network_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
+         
     echo
       "<tr bgcolor=\"" . $bgcolor . "\">
          <td>" . ip_trans($myrow["other_ip_address"]) . "&nbsp;</td>
-         <td><a href=\"system.php?other=" . $myrow["other_id"] . "&amp;view=other_system\">" . $myrow["other_network_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
+         <td><a href= ftp://".$myrow["other_network_name"]." TARGET=\"_blank\"/a></td>
          <td>" . $myrow["nmap_port_number"] . "&nbsp;</td>
          <td></td>
          <td></td>
