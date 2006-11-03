@@ -243,6 +243,16 @@ function special_field_converting($myrow, $field, $db, $page){
         }else{
             $show_value=__("Yes")." / ".$myrow[$field["name"]];
         }
+    }elseif($field["name"]=="auth_enabled" OR $field["name"]=="auth_admin"){
+        if($myrow[$field["name"]]=="0"){
+            $show_value=__("No");
+        }elseif($myrow[$field["name"]]=="1"){
+            $show_value=__("Yes");
+        }else{
+            $show_value=$myrow[$field["name"]];
+        }
+    }elseif($field["name"]=="auth_hash"){
+            $show_value="*****";
     }else{
         if(isset($myrow[$field["name"]])){
             $show_value=$myrow[$field["name"]];
@@ -272,13 +282,13 @@ function determine_os($os) {
                     "Microsoft(R) Windows(R) Server 2003, for Small Business Server"=>"2003 Server, SBS",
                     "Microsoft(R) Windows(R) Server 2003, Enterprise Edition"=>"2003 Server, Ent",
                     "Microsoft(R) Windows(R) Server 2003, Data Center Edition"=>"2003 Server, Data",
-                    "Microsoft(R) Windows(R) Server 2003, Standard x64 Edition"=>"2003 Server x64, Std", 
+                    "Microsoft(R) Windows(R) Server 2003, Standard x64 Edition"=>"2003 Server x64, Std",
                     "Microsoft(R) Windows(R) Server 2003 Web Edition"=>"2003 Server, Web",
                     "Microsoft(R) Windows(R) Server 2003 Standard Edition"=>"2003 Server, Std",
                     "Microsoft(R) Windows(R) Server 2003 for Small Business Server"=>"2003 Server, SBS",
                     "Microsoft(R) Windows(R) Server 2003 Enterprise Edition"=>"2003 Server, Ent",
                     "Microsoft(R) Windows(R) Server 2003 Data Center Edition"=>"2003 Server, Data",
-                    "Microsoft(R) Windows(R) Server 2003 Standard x64 Edition"=>"2003 Server x64, Std", 
+                    "Microsoft(R) Windows(R) Server 2003 Standard x64 Edition"=>"2003 Server x64, Std",
                     "Microsoft Windows XP Tablet PC Edition"=>"XP Tablet",
                     "Microsoft Windows XP Starter Edition"=>"XP Starter",
                     "Microsoft Windows XP Professional x64 Edition"=>"XP Pro 64",

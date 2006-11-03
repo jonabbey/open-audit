@@ -60,9 +60,19 @@ if(isset($_REQUEST["view"]) AND isset($_REQUEST["category"])){
     //System-Manual-Data ------------------------------------------------------------------------
     }elseif($_REQUEST["view"]=="oauser" AND $_REQUEST["category"]=="manual"){
 
+        $old_password=$_REQUEST['auth_hash_old'];
+        if($old_password!=$_REQUEST['auth_hash']){
+            $password=md5($_REQUEST['auth_hash']);
+            $sql_password="`auth_hash` = '" . $password . "', ";
+        }else{
+            $password=$old_password;
+            $sql_password="";
+        }
+
+
         $sql  = "UPDATE `auth` SET ";
         $sql .= "`auth_username` = '" . $_REQUEST['auth_username'] . "', ";
-        $sql .= "`auth_hash` = '" . $_REQUEST['auth_hash'] . "', ";
+        $sql .= $sql_password;
         $sql .= "`auth_realname` = '" . $_REQUEST['auth_realname'] . "', ";
         $sql .= "`auth_enabled` = '" . $_REQUEST['auth_enabled'] . "', ";
         $sql .= "`auth_admin` = '" . $_REQUEST['auth_admin'] . "'";

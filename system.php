@@ -263,6 +263,18 @@ while (list ($viewname, $viewdef_array) = @each ($query_array["views"])) {
                                             }
                                            echo "</select>\n";
                                        break;
+                                       case "select_static":
+                                           echo "<select name=\"".$field["name"]."\" style=\"width:300px\" class=\"for_forms\">\n";
+                                           while (list ($varname, $value) = @each ($field["select_static_values"])) {
+                                               if($value==$myrow[$field["name"]]) $selected="selected"; else $selected=" ";
+                                               echo "<option value=\"".$value."\" $selected>".$varname."</option>\n";
+                                           }
+                                           echo "</select>\n";
+                                       break;
+                                       case "password":
+                                           echo "<input type=\"password\" style=\"width:300px\" name=\"".$field["name"]."\" value=\"".$show_value."\" class=\"for_forms\" />";
+                                           echo "<input type=\"hidden\" style=\"width:300px\" name=\"".$field["name"]."_old\" value=\"".$show_value."\" class=\"for_forms\" />";
+                                       break;
                                        case "text":
                                            echo "<input type=\"text\" style=\"width:300px\" name=\"".$field["name"]."\" value=\"".$show_value."\" class=\"for_forms\" />";
                                        break;
