@@ -238,7 +238,7 @@ echo "<tr><td>".__("Display 'Service Pack' column in system list").":&nbsp;</td>
   if (isset($show_service_pack) AND $show_service_pack == "y"){ echo "checked=\"checked\"";}
   echo "/></td>\n";
 echo "<tr><td>".__("Number of Systems to display").":&nbsp;</td><td><input type=\"text\" name=\"count_system_post\" size=\"12\" value=\"$count_system\" class=\"for_forms\" /></td></tr>";
-echo "<tr><td>".__("VNC Type Real Vnc or Ultra VNC ").":&nbsp;</td><td><input type=\"text\" name=\"vnc_type_post\" size=\"12\" value=\"$vnc_type\" class=\"for_forms\" /></td></tr>";
+echo "<tr><td>".__("VNC Type 'real' or 'ultra' ").":&nbsp;</td><td><input type=\"text\" name=\"vnc_type_post\" size=\"12\" value=\"$vnc_type\" class=\"for_forms\" /></td></tr>";
 echo "<tr><td>".__("Number of decimal places to display").":&nbsp;</td><td><input type=\"text\" name=\"decimalplaces_post\" size=\"12\" value=\"$round_to_decimal_places\" class=\"for_forms\" /></td></tr>";
 echo "<tr><td colspan=\"5\"><hr /></td></tr>\n";
 echo "<tr><td><input type=\"submit\" value=\"".__("Save")."\" name=\"submit_button\" /></td></tr>\n";
