@@ -144,6 +144,9 @@ while (list ($viewname, $viewdef_array) = @each ($query_array["views"])) {
     if(isset($_REQUEST["monitor"])){
         echo "<input type=\"hidden\" name=\"monitor\" value=\"".$_REQUEST["monitor"]."\" />";
     }
+    if(isset($_REQUEST["user"])){
+        echo "<input type=\"hidden\" name=\"user\" value=\"".$_REQUEST["user"]."\" />";
+    }
 
     echo "<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n";
 
@@ -357,6 +360,8 @@ while (list ($viewname, $viewdef_array) = @each ($query_array["views"])) {
             echo "other=".$_REQUEST["other"]."&amp;";
         }elseif(isset($_REQUEST["monitor"])){
             echo "monitor=".$_REQUEST["monitor"]."&amp;";
+        }elseif(isset($_REQUEST["user"])){
+            echo "user=".$_REQUEST["user"]."&amp;";
         }else{
             die(__("FATAL: There's no ID-variable to identify the item. I.e pc or other"));
         }

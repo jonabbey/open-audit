@@ -57,6 +57,19 @@ if(isset($_REQUEST["view"]) AND isset($_REQUEST["category"])){
 
         $url="./system.php?pc=".$_REQUEST["pc"]."&view=".$_REQUEST["view"]." ";
 
+    //System-Manual-Data ------------------------------------------------------------------------
+    }elseif($_REQUEST["view"]=="oauser" AND $_REQUEST["category"]=="manual"){
+
+        $sql  = "UPDATE `auth` SET ";
+        $sql .= "`auth_username` = '" . $_REQUEST['auth_username'] . "', ";
+        $sql .= "`auth_hash` = '" . $_REQUEST['auth_hash'] . "', ";
+        $sql .= "`auth_realname` = '" . $_REQUEST['auth_realname'] . "', ";
+        $sql .= "`auth_enabled` = '" . $_REQUEST['auth_enabled'] . "', ";
+        $sql .= "`auth_admin` = '" . $_REQUEST['auth_admin'] . "'";
+        $sql .= " WHERE `auth_id` = '" . $_REQUEST['user'] . "' ";
+
+        $url="./system.php?user=".$_REQUEST["user"]."&view=".$_REQUEST["view"]." ";
+
     }else{
         die(__("FATAL: There is now method for this view/summary defined"));
     }
