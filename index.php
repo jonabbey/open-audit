@@ -778,7 +778,7 @@ if ($show_detected_servers == "y"){
     echo
       "<tr bgcolor=\"" . $bgcolor . "\">
          <td><a href= telnet://".$myrow["other_network_name"]." TARGET=\"_blank\"/>" . ip_trans($myrow["other_ip_address"]) . "&nbsp;</td>
-         <td><a href=\"summary.php?other=" . $myrow["other_id"] . "&amp;view_other_system\">" . $myrow["other_network_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
+         <td><a href=\"system.php?other=" . $myrow["other_id"] . "&amp;view=other_system\">" . $myrow["other_network_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
          <td>" . $myrow["nmap_port_number"] . "&nbsp;</td>
          <td></td>
        </tr>\n";
