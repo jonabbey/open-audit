@@ -48,7 +48,8 @@ $sql  = "SELECT sw.software_name, sw.software_first_timestamp, sys.system_name, 
       echo '<description>'.$myrow["system_name"].' '.ip_trans($myrow["net_ip_address"]).'</description>'."\n";
       echo '</item>'."\n";
     } while ($myrow = mysql_fetch_array($result));
-   echo '</channel>'."\n";
-   echo '</rss>'."\n";
-  }     
+  }
+
+  echo '</channel>'."\n";
+  echo '</rss>'."\n";
 ?>
