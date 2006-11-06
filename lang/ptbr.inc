@@ -1,5 +1,7 @@
 <?php
 
+$GLOBALS["lang"]["scaixeta"]="translate brazilian portuguese: sergio caixeta";
+
 $GLOBALS["lang"]["Home"]="Home";
 $GLOBALS["lang"]["Queries"]="Consultas";
 $GLOBALS["lang"]["All Audited Systems"]="Todos os Sistemas Auditados";
@@ -35,7 +37,7 @@ $GLOBALS["lang"]["List all Systems"]="Mostrar todos Sistemas";
 $GLOBALS["lang"]["Go to System"]="Ir para o Sistema";
 $GLOBALS["lang"]["UUID"]="UUID";
 $GLOBALS["lang"]["IP"]="IP";
-$GLOBALS["lang"]["Hostname"]="Hostname";
+$GLOBALS["lang"]["Hostname"]="Nome Equipamento";
 $GLOBALS["lang"]["OS"]="SO";
 $GLOBALS["lang"]["Date Audited"]="Data de Auditoria";
 $GLOBALS["lang"]["System Type"]="Tipo de Sistema";
@@ -95,7 +97,7 @@ $GLOBALS["lang"]["Battery"]="Bateria";
 $GLOBALS["lang"]["Printer"]="Impressora";
 $GLOBALS["lang"]["USB"]="USB";
 $GLOBALS["lang"]["Installed Software"]="Software Instalado";
-$GLOBALS["lang"]["System Components"]="componentes do Sistema";
+$GLOBALS["lang"]["System Components"]="Componentes do Sistema";
 $GLOBALS["lang"]["Hotfixes &amp; Patches"]="Hotfixes &amp; Patches";
 $GLOBALS["lang"]["Run at Startup"]="Rodando no Início";
 $GLOBALS["lang"]["Software Audit-Trail"]="Acompanhamento de Auditoria";
@@ -171,7 +173,7 @@ $GLOBALS["lang"]["List Systems for Monitormanufacturer"]="Mostrar Sistemas por F
 $GLOBALS["lang"]["List System for Monitormodell"]="Mostrar Sistemas por Modelo";
 $GLOBALS["lang"]["List all Network Equipment"]="Todos os Equipamentos de Rede";
 $GLOBALS["lang"]["Type"]="Tipo";
-$GLOBALS["lang"]["IP Address"]="IP Address";
+$GLOBALS["lang"]["IP Address"]="Endereço IP";
 $GLOBALS["lang"]["Network Name"]="Nome na Rede";
 $GLOBALS["lang"]["Other System"]="Outros Sistemas";
 $GLOBALS["lang"]["User"]="Usuário";
