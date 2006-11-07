@@ -297,7 +297,7 @@ if ($show_software_detected == "y"){
     "<div class=\"main_each\">
        <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" >
          <tr>
-           <td class=\"indexheadlines\"><a href=\"javascript://\" onclick=\"switchUl('f4');\">".__("Software detected in the last")." $days_software_detected ".__("Days").".</a></td>
+           <td class=\"indexheadlines\"><a href=\"rss_new_software.php\"><img src=\"images/feed-icon.png\" width=\"16\" height=\"16\" border=\"0\" alt=\"\"></a>&nbsp;<a href=\"javascript://\" onclick=\"switchUl('f4');\">".__("Software detected in the last")." $days_software_detected ".__("Days").".</a></td>
            <td align=\"right\"><a href=\"javascript://\" onclick=\"switchUl('f4');\"><img src=\"images/down.png\" width=\"16\" height=\"16\" border=\"0\" alt=\"\" /></a></td>
          </tr>
        </table>
