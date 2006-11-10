@@ -1,0 +1,6 @@
+
+Dim WshShell, oExec
+Set WshShell = CreateObject("WScript.Shell")
+cmdline = "cmd.exe /c compmgmt.msc /computer=NAME"
+Set oExec = WshShell.Exec(cmdline)
+
