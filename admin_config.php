@@ -50,6 +50,19 @@ if (isset($_POST['show_service_pack_post']))  {$show_service_pack_post = $_POST[
 if (isset($_POST['count_system_post'])) {$count_system_post = $_POST['count_system_post'];} else { $count_system_post = "";}
 if (isset($_POST['vnc_type_post'])) {$vnc_type_post = $_POST['vnc_type_post'];} else { $vnc_type_post = "ultra";}
 if (isset($_POST['decimalplaces_post'])) {$decimalplaces_post = $_POST['decimalplaces_post'];} else { $decimalplaces_post = "2";}
+
+// Added to preset domain suffix for management vbs scripts AJH
+if (isset($_POST['management_domain_suffix'])) {$management_domain_suffix = $_POST['management_domain_suffix'];} else { $management_domain_suffix = "local";}
+
+// Added for ldap integration AJH
+if (isset($_POST['use_ldap_integration'])) {$use_ldap_integration = $_POST['use_ldap_integration'];} else { $use_ldap_integration = "n";}
+//
+if (isset($_POST['ldap_base_dn'])) {$ldap_base_dn = $_POST['ldap_base_dn'];} else { $ldap_base_dn = "dc=mydomain,dc=local";}
+if (isset($_POST['ldap_server'])) {$ldap_server = $_POST['ldap_server'];} else { $ldap_server = "myserver.mydomain.local";}
+if (isset($_POST['ldap_user'])) {$ldap_user = $_POST['ldap_user'];} else { $ldap_user = "myusername@mydomain.local";}
+if (isset($_POST['ldap_secret'])) {$ldap_secret = $_POST['ldap_secret'];} else { $ldap_secret = "AnythingButPassword";}
+
+
 if (isset($_POST['col_post'])) {$col_post = $_POST['col_post'];} else { $col_post = "blue";}
 if (isset($_POST['pic_style_post'])) {$pic_style_post = $_POST['pic_style_post'];} else { $pic_style_post = "_win";}
 
@@ -115,6 +128,26 @@ if (isset($_POST['pic_style_post'])) {$pic_style_post = $_POST['pic_style_post']
   $content .= "\n";
   $content .= "\$round_to_decimal_places = '" . $decimalplaces_post . "';\n";
   $content .= "\n";
+  
+  $content .= "\$management_domain_suffix = '" . $management_domain_suffix . "';\n";
+  $content .= "\n";
+  
+  $content .= "\$use_ldap_integration= '" . $use_ldap_integration. "';\n";
+  $content .= "\n";
+
+  
+  $content .= "\$ldap_base_dn= '" . $ldap_base_dn. "';\n";
+  $content .= "\n";
+
+  $content .= "\$ldap_server = '" . $ldap_server . "';\n";
+  $content .= "\n";
+
+  $content .= "\$ldap_user = '" . $ldap_user . "';\n";
+  $content .= "\n";
+   
+  $content .= "\$ldap_secret = '" . $ldap_secret . "';\n";
+  $content .= "\n";
+    
   $content .= "\$language = '" . $language_post . "';\n";
   $content .= "\n";
   $content .= "?";
@@ -238,9 +271,22 @@ echo "<tr><td>".__("Display 'Service Pack' column in system list").":&nbsp;</td>
   if (isset($show_service_pack) AND $show_service_pack == "y"){ echo "checked=\"checked\"";}
   echo "/></td>\n";
 echo "<tr><td>".__("Number of Systems to display").":&nbsp;</td><td><input type=\"text\" name=\"count_system_post\" size=\"12\" value=\"$count_system\" class=\"for_forms\" /></td></tr>";
+
 echo "<tr><td>".__("VNC Type 'real' or 'ultra' ").":&nbsp;</td><td><input type=\"text\" name=\"vnc_type_post\" size=\"12\" value=\"$vnc_type\" class=\"for_forms\" /></td></tr>";
+
 echo "<tr><td>".__("Number of decimal places to display").":&nbsp;</td><td><input type=\"text\" name=\"decimalplaces_post\" size=\"12\" value=\"$round_to_decimal_places\" class=\"for_forms\" /></td></tr>";
 echo "<tr><td colspan=\"5\"><hr /></td></tr>\n";
+
+echo "<tr><td>".__("Management Domain Suffix").":&nbsp;</td><td><input type=\"text\" name=\"management_domain_suffix_post\" size=\"10\" value=\"$management_domain_suffix\" class=\"for_forms\" /></td></tr>";
+echo "<tr><td colspan=\"5\"><hr /></td></tr>\n";
+echo "<tr><td>".__("Use LDAP Integration to display user details").":&nbsp;</td><td><input type=\"text\" name=\"use_ldap_integration_post\" size=\"1\" value=\"$use_ldap_integration\" class=\"for_forms\" /></td></tr>";
+echo "<tr><td>".__("LDAP Base DN").":&nbsp;</td><td><input type=\"text\" name=\"ldap_base_dn_post\" size=\"24\" value=\"$ldap_base_dn\" class=\"for_forms\" /></td></tr>";
+echo "<tr><td>".__("LDAP Connection Server").":&nbsp;</td><td><input type=\"text\" name=\"ldap_server_post\" size=\"24\" value=\"$ldap_server\" class=\"for_forms\" /></td></tr>";
+echo "<tr><td>".__("LDAP Connection User").":&nbsp;</td><td><input type=\"text\" name=\"ldap_user_post\" size=\"24\" value=\"$ldap_user\" class=\"for_forms\" /></td></tr>";
+echo "<tr><td>".__("LDAP Connection Secret").":&nbsp;</td><td><input type=\"text\" name=\"ldap_secret_post\" size=\"24\" value=\"$ldap_secret\" class=\"for_forms\" /></td></tr>";
+
+
+
 echo "<tr><td><input type=\"submit\" value=\"".__("Save")."\" name=\"submit_button\" /></td></tr>\n";
 echo "</table>\n";
 echo "</form>\n";

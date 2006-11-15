@@ -472,4 +472,10 @@ function sql_insert_search($sql_query, $filter){
 
 }
 
+ // check whether input is a valid email address
+function isEmailAddress($value) {
+return
+eregi('^([a-z0-9])+([.a-z0-9_-])*@([a-z0-9_-])+(.[a-z0-9_-]+)*.([a-z]{2,6})$', $value);
+} 
+
 ?>

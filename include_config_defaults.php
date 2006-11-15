@@ -6,7 +6,7 @@ $mysql_password = '';
 
 $use_https = '';
 // An array of allowed users and their passwords
-// Make sure to set use_pass = "n" if you do not wish to use passwords
+// Make sure to set use_pass = 'n' if you do not wish to use passwords
 $use_pass = 'n';
 $users = array(
   'admin' => 'Open-AudIT'
@@ -48,5 +48,19 @@ $count_system = '30';
 $round_to_decimal_places = '2';
 
 $language = 'en';
+
+$domain_suffix = 'local' ;
+$ldap_base_db = 'dc=mydomain,dc=local';
+$ldap_user = 'unknown@domain.local';
+$ldap_secret = 'password';
+$ldap_attributes = array('displayname','description','userprincipalname','homedirectory','homedrive','profilepath','scriptpath','mail','samaccountname','telephonenumber','usncreated','department','sn');
+
+$ldap_filter = '(&(objectClass=user)(objectCategory=person)(|(samaccountname='.$name.chr(42).')(name='.$name.chr(42).')(displayname='.$name.chr(42).')(cn='.$name.chr(42).')))';
+
+$ldap_connect_string = 'LDAP://server.domain.local';
+
+ 
+
+
 
 ?>
