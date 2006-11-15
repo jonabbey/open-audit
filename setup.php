@@ -111,7 +111,7 @@ function step2CheckPrereq() {
   echo "<li>include_config.php ... ";
   $filename = "include_config.php";
   if (!file_exists($filename) or is_writable($filename)) {
-    if (@fopen($filename, 'w')) {
+    if (@fopen($filename, 'a')) {
       @fclose($handle);
       echo __("Success!") . "<br />";
     } else {
@@ -126,7 +126,7 @@ function step2CheckPrereq() {
   echo "<li>scripts/audit.config ... ";
   $filename = "scripts/audit.config";
   if (!file_exists($filename) or is_writable($filename)) {
-    if (@fopen($filename, 'w')) {
+    if (@fopen($filename, 'a')) {
       @fclose($handle);
       echo __("Success!") . "<br />";
     } else {
