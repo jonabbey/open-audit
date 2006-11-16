@@ -52,15 +52,15 @@ if (isset($_POST['vnc_type_post'])) {$vnc_type_post = $_POST['vnc_type_post'];} 
 if (isset($_POST['decimalplaces_post'])) {$decimalplaces_post = $_POST['decimalplaces_post'];} else { $decimalplaces_post = "2";}
 
 // Added to preset domain suffix for management vbs scripts AJH
-if (isset($_POST['management_domain_suffix'])) {$management_domain_suffix = $_POST['management_domain_suffix'];} else { $management_domain_suffix = "local";}
+if (isset($_POST['management_domain_suffix_post'])) {$management_domain_suffix_post = $_POST['management_domain_suffix_post'];} else { $management_domain_suffix_post = "local";}
 
 // Added for ldap integration AJH
-if (isset($_POST['use_ldap_integration'])) {$use_ldap_integration = $_POST['use_ldap_integration'];} else { $use_ldap_integration = "n";}
+if (isset($_POST['use_ldap_integration_post'])) {$use_ldap_integration_post = $_POST['use_ldap_integration_post'];} else { $use_ldap_integration_post = "n";}
 //
-if (isset($_POST['ldap_base_dn'])) {$ldap_base_dn = $_POST['ldap_base_dn'];} else { $ldap_base_dn = "dc=mydomain,dc=local";}
-if (isset($_POST['ldap_server'])) {$ldap_server = $_POST['ldap_server'];} else { $ldap_server = "myserver.mydomain.local";}
-if (isset($_POST['ldap_user'])) {$ldap_user = $_POST['ldap_user'];} else { $ldap_user = "myusername@mydomain.local";}
-if (isset($_POST['ldap_secret'])) {$ldap_secret = $_POST['ldap_secret'];} else { $ldap_secret = "AnythingButPassword";}
+if (isset($_POST['ldap_base_dn_post'])) {$ldap_base_dn_post = $_POST['ldap_base_dn_post'];} else { $ldap_base_dn_post = "dc=mydomain,dc=local";}
+if (isset($_POST['ldap_server_post'])) {$ldap_server_post = $_POST['ldap_server_post'];} else { $ldap_server_post = "myserver.mydomain.local";}
+if (isset($_POST['ldap_user_post'])) {$ldap_user_post = $_POST['ldap_user_post'];} else { $ldap_user_post = "myusername@mydomain.local";}
+if (isset($_POST['ldap_secret_post'])) {$ldap_secret_post = $_POST['ldap_secret_post'];} else { $ldap_secret_post = "AnythingButPassword";}
 
 
 if (isset($_POST['col_post'])) {$col_post = $_POST['col_post'];} else { $col_post = "blue";}
@@ -129,23 +129,23 @@ if (isset($_POST['pic_style_post'])) {$pic_style_post = $_POST['pic_style_post']
   $content .= "\$round_to_decimal_places = '" . $decimalplaces_post . "';\n";
   $content .= "\n";
   
-  $content .= "\$management_domain_suffix = '" . $management_domain_suffix . "';\n";
+  $content .= "\$management_domain_suffix = '" . $management_domain_suffix_post . "';\n";
   $content .= "\n";
   
-  $content .= "\$use_ldap_integration= '" . $use_ldap_integration. "';\n";
+  $content .= "\$use_ldap_integration= '" . $use_ldap_integration_post. "';\n";
   $content .= "\n";
 
   
-  $content .= "\$ldap_base_dn= '" . $ldap_base_dn. "';\n";
+  $content .= "\$ldap_base_dn= '" . $ldap_base_dn_post. "';\n";
   $content .= "\n";
 
-  $content .= "\$ldap_server = '" . $ldap_server . "';\n";
+  $content .= "\$ldap_server = '" . $ldap_server_post . "';\n";
   $content .= "\n";
 
-  $content .= "\$ldap_user = '" . $ldap_user . "';\n";
+  $content .= "\$ldap_user = '" . $ldap_user_post . "';\n";
   $content .= "\n";
    
-  $content .= "\$ldap_secret = '" . $ldap_secret . "';\n";
+  $content .= "\$ldap_secret = '" . $ldap_secret_post. "';\n";
   $content .= "\n";
     
   $content .= "\$language = '" . $language_post . "';\n";
@@ -279,11 +279,14 @@ echo "<tr><td colspan=\"5\"><hr /></td></tr>\n";
 
 echo "<tr><td>".__("Management Domain Suffix").":&nbsp;</td><td><input type=\"text\" name=\"management_domain_suffix_post\" size=\"10\" value=\"$management_domain_suffix\" class=\"for_forms\" /></td></tr>";
 echo "<tr><td colspan=\"5\"><hr /></td></tr>\n";
-echo "<tr><td>".__("Use LDAP Integration to display user details").":&nbsp;</td><td><input type=\"text\" name=\"use_ldap_integration_post\" size=\"1\" value=\"$use_ldap_integration\" class=\"for_forms\" /></td></tr>";
+
+echo "<tr><td>".__("Use LDAP Integration to display user details").":&nbsp;</td><td><input type=\"checkbox\" name=\"use_ldap_integration_post\" value=\"y\"";
+if (isset($use_ldap_integration) AND $use_ldap_integration == "y"){ echo "checked=\"checked\"";}
+  echo "/></td>\n";
 echo "<tr><td>".__("LDAP Base DN").":&nbsp;</td><td><input type=\"text\" name=\"ldap_base_dn_post\" size=\"24\" value=\"$ldap_base_dn\" class=\"for_forms\" /></td></tr>";
 echo "<tr><td>".__("LDAP Connection Server").":&nbsp;</td><td><input type=\"text\" name=\"ldap_server_post\" size=\"24\" value=\"$ldap_server\" class=\"for_forms\" /></td></tr>";
 echo "<tr><td>".__("LDAP Connection User").":&nbsp;</td><td><input type=\"text\" name=\"ldap_user_post\" size=\"24\" value=\"$ldap_user\" class=\"for_forms\" /></td></tr>";
-echo "<tr><td>".__("LDAP Connection Secret").":&nbsp;</td><td><input type=\"text\" name=\"ldap_secret_post\" size=\"24\" value=\"$ldap_secret\" class=\"for_forms\" /></td></tr>";
+echo "<tr><td>".__("LDAP Connection Secret").":&nbsp;</td><td><input type=\"password\" name=\"ldap_secret_post\" size=\"24\" value=\"$ldap_secret\" class=\"for_forms\" /></td></tr>";
 
 
 
