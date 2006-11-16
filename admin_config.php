@@ -60,7 +60,7 @@ if (isset($_POST['use_ldap_integration_post'])) {$use_ldap_integration_post = $_
 if (isset($_POST['ldap_base_dn_post'])) {$ldap_base_dn_post = $_POST['ldap_base_dn_post'];} else { $ldap_base_dn_post = "dc=mydomain,dc=local";}
 if (isset($_POST['ldap_server_post'])) {$ldap_server_post = $_POST['ldap_server_post'];} else { $ldap_server_post = "myserver.mydomain.local";}
 if (isset($_POST['ldap_user_post'])) {$ldap_user_post = $_POST['ldap_user_post'];} else { $ldap_user_post = "myusername@mydomain.local";}
-if (isset($_POST['ldap_secret_post'])) {$ldap_secret_post = $_POST['ldap_secret_post'];} else { $ldap_secret_post = "AnythingButPassword";}
+if (isset($_POST['ldap_secret_post'])) {$ldap_secret_post = $_POST['ldap_secret_post'];} else { $ldap_secret_post = "";}
 
 
 if (isset($_POST['col_post'])) {$col_post = $_POST['col_post'];} else { $col_post = "blue";}
@@ -144,10 +144,16 @@ if (isset($_POST['pic_style_post'])) {$pic_style_post = $_POST['pic_style_post']
 
   $content .= "\$ldap_user = '" . $ldap_user_post . "';\n";
   $content .= "\n";
-   
+ /*  
+  if ($ldap_secret_post == "") {$thepassword = $ldap_secret_post;} else {$thepassword = md5($ldap_secret_post);}
+  
+  $content .= "\$ldap_secret = '" . $thepassword. "';\n";
+  $content .= "\n";
+*/  
+  
   $content .= "\$ldap_secret = '" . $ldap_secret_post. "';\n";
   $content .= "\n";
-    
+  
   $content .= "\$language = '" . $language_post . "';\n";
   $content .= "\n";
   $content .= "?";
@@ -277,7 +283,7 @@ echo "<tr><td>".__("VNC Type 'real' or 'ultra' ").":&nbsp;</td><td><input type=\
 echo "<tr><td>".__("Number of decimal places to display").":&nbsp;</td><td><input type=\"text\" name=\"decimalplaces_post\" size=\"12\" value=\"$round_to_decimal_places\" class=\"for_forms\" /></td></tr>";
 echo "<tr><td colspan=\"5\"><hr /></td></tr>\n";
 
-echo "<tr><td>".__("Management Domain Suffix").":&nbsp;</td><td><input type=\"text\" name=\"management_domain_suffix_post\" size=\"10\" value=\"$management_domain_suffix\" class=\"for_forms\" /></td></tr>";
+echo "<tr><td>".__("FQDN Domain Suffix for Management Utilities").":&nbsp;</td><td><input type=\"text\" name=\"management_domain_suffix_post\" size=\"10\" value=\"$management_domain_suffix\" class=\"for_forms\" /></td></tr>";
 echo "<tr><td colspan=\"5\"><hr /></td></tr>\n";
 
 echo "<tr><td>".__("Use LDAP Integration to display user details").":&nbsp;</td><td><input type=\"checkbox\" name=\"use_ldap_integration_post\" value=\"y\"";

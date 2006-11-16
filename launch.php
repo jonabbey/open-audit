@@ -1,4 +1,6 @@
 <?php
+include "include_config.php";
+
 
 if(isset($_GET["application"])) $application=$_GET["application"];
 if(isset($_GET["hostname"])) $hostname=$_GET["hostname"];
@@ -17,7 +19,7 @@ $fqdn=$hostname.".".$domain;
 $domain_parts=explode (".",$fqdn);
 $domain_parts_count = count($domain_parts);
 if ($domain_parts_count = 1){
-        $domain_parts[2] = "local";
+        $domain_parts[2] = $management_domain_suffix;
 }
 
 $fqdn=implode(".",$domain_parts);
