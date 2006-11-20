@@ -222,7 +222,7 @@ while (list ($viewname, $viewdef_array) = @each ($query_array["views"])) {
 
                           echo "</td>\n";
                          echo "<td bgcolor=\"" . $bgcolor . "\" align=\"".$field["align"]."\" class=\"system_tablebody_right\">";
-                           if(isset($field["get"]) AND is_array($field["get"])){
+                           if(isset($field["get"]) AND is_array($field["get"]) AND isset($field["get"]["file"])){
                                echo "<a href=\"".$field["get"]["file"]."?".$link_query."\" title=\"".$field["get"]["title"]."\"";
                                if(isset($field["get"]["target"])) {
                                  echo " target=\"" . $field["get"]["target"] . "\"";
