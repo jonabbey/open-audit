@@ -1,5 +1,5 @@
 <?php
-
+include "include_config.php";
 $query_array=array("name"=>array("name"=>__("Summary"),
                                  "sql"=>"SELECT `system_name` FROM `system` WHERE `system_uuid` = '" . $_GET["pc"] . "'",
                                 ),
@@ -18,20 +18,8 @@ $query_array=array("name"=>array("name"=>__("Summary"),
                                                                     "40"=>array("name"=>"net_domain_role", "head"=>__("Domain Role"),),
                                                                     "50"=>array("name"=>"system_registered_user", "head"=>__("Registered User"),),
                                                                     "60"=>array("name"=>"net_user_name", "head"=>__("Current User"),),
-                                                                    "65"=>array("name"=>"net_user_name", "head"=>__("LDAP Directory Info"),
-                                                                        "get"=>array("head"=>__("LDAP User Details"),
-                                                                                             "file"=>"ldap_users_details.php",
-                                                                                             //"%net_user_name"
-                                                                                             "title"=>__("LDAP User Details"),
-                                                                                             //"title"=>"%net_user_name",                                                                                             
-                                                                                             "image"=>"./images/groups_l.png",
-                                                                                             "image_width"=>"16",
-                                                                                             "image_height"=>"16",
-                                                                                             "var"=>array("name"=>"%net_user_name",
-                                                                                                          "show_details"=> "basic",
-                                                                                                         ),
-                                                                                            ),
-                                                                                ),
+                                                                    // Include a blank entry as a place holder so we can add the LDAP details tab at the end  if required (AJH)
+                                                                    "65"=>array("name"=>"", "head"=>__(""),),                                                                                 
                                                                     "70"=>array("name"=>"net_domain", "head"=>__("Domain"),),
                                                                     "80"=>array("name"=>"system_system_type", "head"=>__("Chassis Type"),),
                                                                     "90"=>array("name"=>"system_model", "head"=>__("Model #"),),
@@ -214,4 +202,39 @@ $query_array=array("name"=>array("name"=>__("Summary"),
 
                                  ),
                   );
+              
+if ((isset($use_ldap_integration))and($use_ldap_integration == 'y')) {
+
+    if ((isset($ldap_details))and ($ldap_details  == 'advanced')) {
+    $query_array['views']['summary']['fields']['65']=array("name"=>"net_user_name", "head"=>__("LDAP Directory Info"),
+                                                                        "get"=>array("head"=>__("LDAP User Details"),
+                                                                                             "file"=>"ldap_users_details.php",
+                                                                                             //"%net_user_name"
+                                                                                             "title"=>__("LDAP User Details"),
+                                                                                             //"name"=>"%net_user_name",                                                                                             
+                                                                                             "image"=>"./images/groups_l.png",
+                                                                                             "image_width"=>"16",
+                                                                                             "image_height"=>"16",
+                                                                                             "var"=>array("name"=>"%net_user_name",
+                                                                                                          "show_details"=> "advanced",
+                                                                                                         ),
+                                                                                            ),
+                                                                              );
+                                  } else {
+    $query_array['views']['summary']['fields']['65']=array("name"=>"net_user_name", "head"=>__("LDAP Directory Info"),
+                                                                        "get"=>array("head"=>__("LDAP User Details"),
+                                                                                             "file"=>"ldap_users_details.php",
+                                                                                             //"%net_user_name"
+                                                                                             "title"=>__("LDAP User Details"),
+                                                                                             //"name"=>"%net_user_name",                                                                                             
+                                                                                             "image"=>"./images/groups_l.png",
+                                                                                             "image_width"=>"16",
+                                                                                             "image_height"=>"16",
+                                                                                             "var"=>array("name"=>"%net_user_name",
+                                                                                                          "show_details"=> "basic",
+                                                                                                         ),
+                                                                                            ),
+                                                                              );                                  
+                                }
+                            }
 ?>
