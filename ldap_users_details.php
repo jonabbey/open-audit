@@ -28,15 +28,19 @@ if (isset($_GET['show_details'])) {$show_details = $_GET['show_details'];} else 
 if ($use_ldap_integration == "y") {
 
 // Find name from domain\name
-list ($name1,$name2,$name3) = split('['.chr(92).']', $name);
 
-if (strlen($name3)!=0) {
-$name = $name3 ;
-}else{
-$name = $name1 ;
-}
+$slash_char = chr(92);
 
+$pos = strrpos($name, $slash_char);
 
+if ($pos === false ) {
+    // Dont need to do anything if we didn't find a slash in the username.
+    } else {
+    // We pick up the right half of the string  if we found the slash
+    $pos=$pos+1;
+    $name = substr($name,($pos));
+//   echo $name;
+    }
 
 
 // This throws away some spurious Active Direcrory error related nonsense if you have no phone number or whatever
@@ -101,7 +105,7 @@ $num_found = $entries["count"];
 for ($user_record_number = 0; $user_record_number<$num_found; $user_record_number++) {
 //echo "Next User:<br>";
 $record_number = $user_record_number+1;
-echo "<td><img src='images/users_l.png' width='64' height='64' alt='' /></td><td>".__("Domain User Account Details Like <b>".$name."</b>")." $record_number of $num_found ";
+echo "<td><img src='images/users_l.png' width='64' height='64' alt='' />".__("Domain User Account Details Like <b>".$name."</b></td><td>")." $record_number of $num_found </td>";
 	
 
       if ($bgcolor == "#F1F1F1") { $bgcolor = "#FFFFFF"; } else { $bgcolor = "#F1F1F1"; }
