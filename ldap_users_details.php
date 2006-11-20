@@ -101,7 +101,7 @@ $num_found = $entries["count"];
 for ($user_record_number = 0; $user_record_number<$num_found; $user_record_number++) {
 //echo "Next User:<br>";
 $record_number = $user_record_number+1;
-echo "<td><img src='images/users_l.png' width='64' height='64' alt='' /></td><td><b>".__("Domain User Account Details Like ".$name.chr(42)."</b>")." $record_number of $num_found </td>";
+echo "<td><img src='images/users_l.png' width='64' height='64' alt='' /></td><td>".__("Domain User Account Details Like <b>".$name."</b>")." $record_number of $num_found ";
 	
 
       if ($bgcolor == "#F1F1F1") { $bgcolor = "#FFFFFF"; } else { $bgcolor = "#F1F1F1"; }
