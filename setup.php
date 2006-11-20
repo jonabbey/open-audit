@@ -353,7 +353,7 @@ function returnConfig() {
   $content .= $_POST['language_post'];
   $content .= "'; ";
   $content .= "?";
-  $content .= ">\n\n";
+  $content .= ">";
 
   return $content;
 }
