@@ -210,7 +210,7 @@ if ((isset($use_ldap_integration))and($use_ldap_integration == 'y')) {
                                                                         "get"=>array("head"=>__("LDAP User Details"),
                                                                                              "file"=>"ldap_users_details.php",
                                                                                              //"%net_user_name"
-                                                                                             "title"=>__("LDAP User Details"),
+                                                                                             "title"=>__("LDAP Advanced User Details"),
                                                                                              //"name"=>"%net_user_name",                                                                                             
                                                                                              "image"=>"./images/groups_l.png",
                                                                                              "image_width"=>"16",

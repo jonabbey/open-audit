@@ -43,9 +43,6 @@ if ($pos === false ) {
     }
 
 
-// This throws away some spurious Active Direcrory error related nonsense if you have no phone number or whatever
-// should really catch this gracefully
-error_reporting(0);
 
 //
 //Note that this LDAP string specifies the OU that contains the User Accounts
@@ -57,10 +54,14 @@ $dn = $ldap_base_dn;
 $user = $ldap_user;
 $secret = $ldap_secret;
 //$name="*".$name;
-$attributes = array("displayname","description","userprincipalname","homedirectory","homedrive","profilepath","scriptpath","mail","samaccountname","telephonenumber","usncreated","department","sn");
+$attributes = array("displayname","description","userprincipalname","homedirectory","homedrive","profilepath","scriptpath","mail","samaccountname","telephonenumber","location","department","sn","badpwdcount");
 //$filter = "(&(objectClass=user)(objectCategory=person)((samaccountname=".$name.")(name=".$name.")(displayname=".$name.")(cn=".$name."))";
 $filter = "(&(objectClass=user)(objectCategory=person)(|(samaccountname=".$name.chr(42).")(name=".$name.chr(42).")(displayname=".$name.chr(42).")(cn=".$name.chr(42).")))";
 //(|(name=$name*)(displayname=$name*)(cn=$name*))
+
+// This throws away some spurious Active Direcrory error related nonsense if you have no phone number or whatever
+// should really catch this gracefully
+error_reporting(0);
 
 
 $ad = ldap_connect($ldap_server) or die(__("Couldn't connect to LDAP Dirctory"));
@@ -104,33 +105,40 @@ echo "<table border=\"0\" cellpadding=\"2\" cellspacing=\"0\" width=\"100%\" cla
 $num_found = $entries["count"];
 for ($user_record_number = 0; $user_record_number<$num_found; $user_record_number++) {
 //echo "Next User:<br>";
+$bgcolor == "#F1F1F1";
+echo "<tr bgcolor=\"" . $bgcolor . "\"></tr>";
 $record_number = $user_record_number+1;
-echo "<td><img src='images/users_l.png' width='64' height='64' alt='' />".__("Domain User Account Details Like <b>".$name."</b></td><td>")." $record_number of $num_found </td>";
+      echo "<tr><td colspan=\"2\"><hr /></td></tr>\n";
+//      echo "<td><img src='images/users_l.png' width='64' height='64' alt='' />".__("Domain User Account Details Like <b>".$name."</b></td><td>")." $record_number of $num_found </td>";
+      echo "<td><img src='images/users_l.png' width='64' height='64' alt='' />";
 	
 
       if ($bgcolor == "#F1F1F1") { $bgcolor = "#FFFFFF"; } else { $bgcolor = "#F1F1F1"; }
-	echo "<tr bgcolor=\"" . $bgcolor . "\"><td><h3>" . $entries[$user_record_number]["displayname"][0] . "</h3></td><td></td></tr>";
-    	echo "<tr bgcolor=\"" . $bgcolor . "\"><td><b>Telephone:</td><td>" . $entries[$user_record_number]["telephonenumber"][0] . "</a></b></td></tr>";	
+	  echo "<tr bgcolor=\"" . $bgcolor . "\"><td><h3>" . $entries[$user_record_number]["displayname"][0] . "</h3></td><td></td></tr>";
+      if ($bgcolor == "#F1F1F1") { $bgcolor = "#FFFFFF"; } else { $bgcolor = "#F1F1F1"; }
+	  echo "<tr bgcolor=\"" . $bgcolor . "\"><td><b>Telephone:</td><td>" . $entries[$user_record_number]["telephonenumber"][0] . "</a></b></td></tr>";	
 	  if ($bgcolor == "#F1F1F1") { $bgcolor = "#FFFFFF"; } else { $bgcolor = "#F1F1F1"; }
- 	echo "<tr bgcolor=\"" . $bgcolor . "\"><td>" .__("Full LDAP Account Details"). "</td><td></td></tr>";      
- for ($user_record_field_number=0; $user_record_field_number<$entries[$user_record_number]["count"]; $user_record_field_number++){
-     $data =$entries[$user_record_number][$user_record_field_number];
+ 	  echo "<tr bgcolor=\"" . $bgcolor . "\"><td>" .__("Full LDAP Account Details"). "</td><td></td></tr>";      
+      for ($user_record_field_number=0; $user_record_field_number<$entries[$user_record_number]["count"]; $user_record_field_number++){
+      $data =$entries[$user_record_number][$user_record_field_number];
 
-     for ($user_record_field_number_data=0; $user_record_field_number_data<$entries[$user_record_number][$data]["count"]; $user_record_field_number_data++) {
-     if  (isEmailAddress($entries[$user_record_number][$data][$user_record_field_number_data])){
+      for ($user_record_field_number_data=0; $user_record_field_number_data<$entries[$user_record_number][$data]["count"]; $user_record_field_number_data++) {
+      if  (isEmailAddress($entries[$user_record_number][$data][$user_record_field_number_data])){
           // If its a valid email address, highlight it, and add a URL mailto:
       if ($bgcolor == "#F1F1F1") { $bgcolor = "#FFFFFF"; } else { $bgcolor = "#F1F1F1"; }	
-     echo "<tr bgcolor=\"" . $bgcolor . "\"><td><b>".__($data)."</b></td><td><a href='mailto:" . $entries[$user_record_number][$data][$user_record_field_number_data] . "'>" . $entries[$user_record_number][$data][$user_record_field_number_data] . "</a></td></tr>";
+     echo "<tr bgcolor=\"" . $bgcolor . "\"><td><b>".__($data).":</b></td><td><a href='mailto:" . $entries[$user_record_number][$data][$user_record_field_number_data] . "'>" . $entries[$user_record_number][$data][$user_record_field_number_data] . "</a></td></tr>";
      }
      else 
      {
             // Else just show it. 
       	  if ($bgcolor == "#F1F1F1") { $bgcolor = "#FFFFFF"; } else { $bgcolor = "#F1F1F1"; }
-          echo "<tr bgcolor=\"" . $bgcolor . "\"><td>".__($data)."</td><td>" .$entries[$user_record_number][$data][$user_record_field_number_data]. "</td></tr>";
+          echo "<tr bgcolor=\"" . $bgcolor . "\"><td>".__($data).":</td><td>" .$entries[$user_record_number][$data][$user_record_field_number_data]. "</td></tr>";
       }    
      }
   }
 echo "<p>"; // separate entries
+echo "<tr><td colspan=\"2\"><hr /></td></tr>\n";
+
 }
 
 } else {

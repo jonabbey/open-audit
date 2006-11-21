@@ -492,7 +492,7 @@ $GLOBALS["lang"]["List Systems with Memory"]="List Systems with Memory";
 $GLOBALS["lang"]["Total Memory"]="Total Memory";
 $GLOBALS["lang"]["Windows Reported"]="Windows Reported";
 
-$GLOBALS["lang"]["Discard Search"]="Discard Search";
+$GLOBALS["lang"]["description"]="Description";
 $GLOBALS["lang"]["Discard Search"]="Discard Search";
 $GLOBALS["lang"]["accountexpires"]="Account Expiress";	
 $GLOBALS["lang"]["streetaddress"]="Street";	
@@ -508,7 +508,7 @@ $GLOBALS["lang"]["mail"]="Account Email Address";
 $GLOBALS["lang"]["givenname"]="Given Name";	
 $GLOBALS["lang"]["instancetype"]="Instance Type";	
 $GLOBALS["lang"]["lastlogoff"]="Last Log Off";	
-$GLOBALS["lang"]["lastlogon"]="Last Log Off";	
+$GLOBALS["lang"]["lastlogon"]="Last Log On";	
 $GLOBALS["lang"]["l"]="Location";	
 $GLOBALS["lang"]["logoncount"]="Logon Count";	
 $GLOBALS["lang"]["distinguishedname"]="Distinguished Name";	
@@ -534,6 +534,6 @@ $GLOBALS["lang"]["usnchanged"]="Update Sequence Number Changed";
 $GLOBALS["lang"]["usncreated"]="Update Sequence Number Created";	
 $GLOBALS["lang"]["whenchanged"]="When Changed";	
 $GLOBALS["lang"]["whencreated"]="When Created ";	
-$GLOBALS["lang"]["memberof"]="Momber of Group";
+$GLOBALS["lang"]["memberof"]="Member of Group";
 
 ?>
