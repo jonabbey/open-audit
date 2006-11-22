@@ -5,10 +5,10 @@ $software = "";
 $count = 0;
 $total_rows = 0;
 
-$page = "calls";
+$page = "";
 include "include.php"; 
 
-$title = "call_user_datails.php";
+$title = "ldap_users_datails.php";
 if (isset($_GET["show_all"])){ $count_system = '10000'; } else {}
 if (isset($_GET["page_count"])){ $page_count = $_GET["page_count"]; } else { $page_count = 0;}
 $page_prev = $page_count - 1;
@@ -105,15 +105,14 @@ echo "<table border=\"0\" cellpadding=\"2\" cellspacing=\"0\" width=\"100%\" cla
 $num_found = $entries["count"];
 for ($user_record_number = 0; $user_record_number<$num_found; $user_record_number++) {
 //echo "Next User:<br>";
-$bgcolor == "#F1F1F1";
-echo "<tr bgcolor=\"" . $bgcolor . "\"></tr>";
+
 $record_number = $user_record_number+1;
-      echo "<tr><td colspan=\"2\"><hr /></td></tr>\n";
+//      echo "<tr><td colspan=\"2\"><hr /></td></tr>\n";
+
 //      echo "<td><img src='images/users_l.png' width='64' height='64' alt='' />".__("Domain User Account Details Like <b>".$name."</b></td><td>")." $record_number of $num_found </td>";
       echo "<td><img src='images/users_l.png' width='64' height='64' alt='' />";
-	
-
-      if ($bgcolor == "#F1F1F1") { $bgcolor = "#FFFFFF"; } else { $bgcolor = "#F1F1F1"; }
+    	$bgcolor == "#FFFFFF";	
+//      if ($bgcolor == "#F1F1F1") { $bgcolor = "#FFFFFF"; } else { $bgcolor = "#F1F1F1"; }
 	  echo "<tr bgcolor=\"" . $bgcolor . "\"><td><h3>" . $entries[$user_record_number]["displayname"][0] . "</h3></td><td></td></tr>";
       if ($bgcolor == "#F1F1F1") { $bgcolor = "#FFFFFF"; } else { $bgcolor = "#F1F1F1"; }
 	  echo "<tr bgcolor=\"" . $bgcolor . "\"><td><b>Telephone:</td><td>" . $entries[$user_record_number]["telephonenumber"][0] . "</a></b></td></tr>";	

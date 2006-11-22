@@ -14,6 +14,8 @@ $query_array=array("name"=>array("name"=>__("Summary"),
                                                                                 "show"=>"n",
                                                                                ),
                                                                     "20"=>array("name"=>"system_name", "head"=>__("System Name"),),
+                                                                    // Include a blank entry as a place holder so we can add the LDAP details tab at the end  if required (AJH)
+                                                                    "25"=>array("name"=>"", "head"=>__(""),),                                                                                 
                                                                     "30"=>array("name"=>"system_description", "head"=>__("Description"),),
                                                                     "40"=>array("name"=>"net_domain_role", "head"=>__("Domain Role"),),
                                                                     "50"=>array("name"=>"system_registered_user", "head"=>__("Registered User"),),
@@ -206,7 +208,22 @@ $query_array=array("name"=>array("name"=>__("Summary"),
 if ((isset($use_ldap_integration))and($use_ldap_integration == 'y')) {
 
     if ((isset($ldap_details))and ($ldap_details  == 'advanced')) {
-    $query_array['views']['summary']['fields']['65']=array("name"=>"net_user_name", "head"=>__("LDAP Directory Info"),
+    $query_array['views']['summary']['fields']['25']=array("name"=>"system_name", "head"=>__("LDAP Directory Info"),
+                                                                        "get"=>array("head"=>__("LDAP Computer Details"),
+                                                                                             "file"=>"ldap_computers_details.php",
+                                                                                             //"%net_user_name"
+                                                                                             "title"=>__("LDAP Advanced Computer Details"),
+                                                                                             //"name"=>"%net_user_name",                                                                                             
+                                                                                             "image"=>"./images/groups_l.png",
+                                                                                             "image_width"=>"16",
+                                                                                             "image_height"=>"16",
+                                                                                             "var"=>array("name"=>"%system_name",
+                                                                                                          "show_details"=> "advanced",
+                                                                                                         ),
+                                                                                            ),
+                                                                              );
+                                                                          
+       $query_array['views']['summary']['fields']['65']=array("name"=>"net_user_name", "head"=>__("LDAP Directory Info"),
                                                                         "get"=>array("head"=>__("LDAP User Details"),
                                                                                              "file"=>"ldap_users_details.php",
                                                                                              //"%net_user_name"
@@ -219,8 +236,23 @@ if ((isset($use_ldap_integration))and($use_ldap_integration == 'y')) {
                                                                                                           "show_details"=> "advanced",
                                                                                                          ),
                                                                                             ),
-                                                                              );
+                                                                              );                                                                          
+                                                                              
                                   } else {
+   $query_array['views']['summary']['fields']['25']=array("name"=>"system_name", "head"=>__("LDAP Directory Info"),
+                                                                        "get"=>array("head"=>__("LDAP Computer Details"),
+                                                                                             "file"=>"ldap_computers_details.php",
+                                                                                             //"%net_user_name"
+                                                                                             "title"=>__("LDAP Computer Details"),
+                                                                                             //"name"=>"%net_user_name",                                                                                             
+                                                                                             "image"=>"./images/groups_l.png",
+                                                                                             "image_width"=>"16",
+                                                                                             "image_height"=>"16",
+                                                                                             "var"=>array("name"=>"%system_name",
+                                                                                                          "show_details"=> "basic",
+                                                                                                         ),
+                                                                                            ),
+                                                                              );                                      
     $query_array['views']['summary']['fields']['65']=array("name"=>"net_user_name", "head"=>__("LDAP Directory Info"),
                                                                         "get"=>array("head"=>__("LDAP User Details"),
                                                                                              "file"=>"ldap_users_details.php",
