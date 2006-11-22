@@ -20,7 +20,7 @@ $page_count = $page_count * $count_system;
 echo "<td>\n";
 
 
-$user_name = "";
+$computer_name = "";
 
 if (isset($_GET['name'])) {$name = $_GET['name'];} else {$name= "none";}
 if (isset($_GET['show_details'])) {$show_details = $_GET['show_details'];} else {$show_details= "basic";}
@@ -51,12 +51,15 @@ $dn = $ldap_base_dn;
 
 //domain user fullname and password
 
-$user = $ldap_user;
+$computer = $ldap_user;
 $secret = $ldap_secret;
 //$name="*".$name;
 $attributes = array("displayname","description","userprincipalname","homedirectory","homedrive","profilepath","scriptpath","mail","samaccountname","telephonenumber","location","department","sn","badpwdcount");
 //$filter = "(&(objectClass=user)(objectCategory=person)((samaccountname=".$name.")(name=".$name.")(displayname=".$name.")(cn=".$name."))";
-$filter = "(&(objectClass=user)(objectCategory=person)(|(samaccountname=".$name.chr(42).")(name=".$name.chr(42).")(displayname=".$name.chr(42).")(cn=".$name.chr(42).")))";
+//$filter = "(&(objectClass=user)(objectCategory=person)(|(samaccountname=".$name.chr(42).")(name=".$name.chr(42).")(displayname=".$name.chr(42).")(cn=".$name.chr(42).")))";
+//$filter = "(&(objectClass=computer)(objectCategory=computer)(|(samaccountname=".$name.chr(42).")(name=".$name.chr(42).")(displayname=".$name.chr(42).")(cn=".$name.chr(42).")))";
+$filter = "(&(objectClass=computer)(objectCategory=computer)(|(name=".$name.chr(42).")(displayname=".$name.chr(42).")(cn=".$name.chr(42).")))";
+
 //(|(name=$name*)(displayname=$name*)(cn=$name*))
 
 // This throws away some spurious Active Direcrory error related nonsense if you have no phone number or whatever
@@ -67,7 +70,7 @@ error_reporting(0);
 $ad = ldap_connect($ldap_server) or die(__("Couldn't connect to LDAP Dirctory"));
 ldap_set_option($ad, LDAP_OPT_PROTOCOL_VERSION, 3);
 ldap_set_option($ad, LDAP_OPT_REFERRALS, 0);
-$bd = ldap_bind($ad,$user,$secret);
+$bd = ldap_bind($ad,$computer,$secret);
 if ($bd){
   //echo "Admin - Authenticated<br>";
 } else {
@@ -77,7 +80,7 @@ if ($bd){
 
 ldap_set_option($ad, LDAP_OPT_PROTOCOL_VERSION, 3);
 ldap_set_option($ad, LDAP_OPT_REFERRALS, 0);
-$bd = ldap_bind($ad,$user,$secret);
+$bd = ldap_bind($ad,$computer,$secret);
 if ($bd){
   //echo "Admin - Authenticated<br>";
 } else {
@@ -86,7 +89,7 @@ if ($bd){
 
 
 
-if ($show_details == "basic"){$result = ldap_search($ad, $dn, $filter, $attributes);}
+if ($show_details == "roobarb"){$result = ldap_search($ad, $dn, $filter, $attributes);}
     else
     {$result = ldap_search($ad, $dn, $filter);}
 
@@ -116,45 +119,44 @@ if ($num_found == 0 ){
 
 } else {
 
-
-
-
-for ($user_record_number = 0; $user_record_number<$num_found; $user_record_number++) {
+for ($computer_record_number = 0; $computer_record_number<$num_found; $computer_record_number++) {
 //echo "Next User:<br>";
 
-$record_number = $user_record_number+1;
+$record_number = $computer_record_number+1;
 //      echo "<tr><td colspan=\"2\"><hr /></td></tr>\n";
 
 //      echo "<td><img src='images/users_l.png' width='64' height='64' alt='' />".__("Domain User Account Details Like <b>".$name."</b></td><td>")." $record_number of $num_found </td>";
-      echo "<td><img src='images/users_l.png' width='64' height='64' alt='' />";
+      echo "<td><img src='images/o_terminal_server.png' width='64' height='64' alt='' />";
     	$bgcolor == "#FFFFFF";	
 //      if ($bgcolor == "#F1F1F1") { $bgcolor = "#FFFFFF"; } else { $bgcolor = "#F1F1F1"; }
-	  echo "<tr bgcolor=\"" . $bgcolor . "\"><td><h3>" . $entries[$user_record_number]["displayname"][0] . "</h3></td><td></td></tr>";
+	  echo "<tr bgcolor=\"" . $bgcolor . "\"><td><h3>" . $entries[$computer_record_number]["name"][0] . "</h3></td><td></td></tr>";
       if ($bgcolor == "#F1F1F1") { $bgcolor = "#FFFFFF"; } else { $bgcolor = "#F1F1F1"; }
-	  echo "<tr bgcolor=\"" . $bgcolor . "\"><td><b>Telephone:</td><td>" . $entries[$user_record_number]["telephonenumber"][0] . "</a></b></td></tr>";	
+//	  echo "<tr bgcolor=\"" . $bgcolor . "\"><td><b>Telephone:</td><td>" . $entries[$computer_record_number]["telephonenumber"][0] . "</a></b></td></tr>";	
 	  if ($bgcolor == "#F1F1F1") { $bgcolor = "#FFFFFF"; } else { $bgcolor = "#F1F1F1"; }
  	  echo "<tr bgcolor=\"" . $bgcolor . "\"><td>" .__("Full LDAP Account Details"). "</td><td></td></tr>";      
-      for ($user_record_field_number=0; $user_record_field_number<$entries[$user_record_number]["count"]; $user_record_field_number++){
-      $data =$entries[$user_record_number][$user_record_field_number];
+      for ($computer_record_field_number=0; $computer_record_field_number<$entries[$computer_record_number]["count"]; $computer_record_field_number++){
+      $data =$entries[$computer_record_number][$computer_record_field_number];
 
-      for ($user_record_field_number_data=0; $user_record_field_number_data<$entries[$user_record_number][$data]["count"]; $user_record_field_number_data++) {
-      if  (isEmailAddress($entries[$user_record_number][$data][$user_record_field_number_data])){
+      for ($computer_record_field_number_data=0; $computer_record_field_number_data<$entries[$computer_record_number][$data]["count"]; $computer_record_field_number_data++) {
+      if  (isEmailAddress($entries[$computer_record_number][$data][$computer_record_field_number_data])){
           // If its a valid email address, highlight it, and add a URL mailto:
       if ($bgcolor == "#F1F1F1") { $bgcolor = "#FFFFFF"; } else { $bgcolor = "#F1F1F1"; }	
-     echo "<tr bgcolor=\"" . $bgcolor . "\"><td><b>".__($data).":</b></td><td><a href='mailto:" . $entries[$user_record_number][$data][$user_record_field_number_data] . "'>" . $entries[$user_record_number][$data][$user_record_field_number_data] . "</a></td></tr>";
+     echo "<tr bgcolor=\"" . $bgcolor . "\"><td><b>".__($data).":</b></td><td><a href='mailto:" . $entries[$computer_record_number][$data][$computer_record_field_number_data] . "'>" . $entries[$computer_record_number][$data][$computer_record_field_number_data] . "</a></td></tr>";
      }
      else 
      {
             // Else just show it. 
       	  if ($bgcolor == "#F1F1F1") { $bgcolor = "#FFFFFF"; } else { $bgcolor = "#F1F1F1"; }
-          echo "<tr bgcolor=\"" . $bgcolor . "\"><td>".__($data).":</td><td>" .$entries[$user_record_number][$data][$user_record_field_number_data]. "</td></tr>";
+          echo "<tr bgcolor=\"" . $bgcolor . "\"><td>".__($data).":</td><td>" .$entries[$computer_record_number][$data][$computer_record_field_number_data]. "</td></tr>";
       }    
      }
   }
-  echo "<p>"; // separate entries
-  echo "<tr><td colspan=\"2\"><hr /></td></tr>\n";
+    echo "<p>"; // separate entries
+    echo "<tr><td colspan=\"2\"><hr /></td></tr>\n";
+
  }
 }
+
 } else {
 
         echo "<div class=\"main_each\">\n";
