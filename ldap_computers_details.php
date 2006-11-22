@@ -59,7 +59,9 @@ $attributes = array("displayname","description","userprincipalname","homedirecto
 //$filter = "(&(objectClass=user)(objectCategory=person)(|(samaccountname=".$name.chr(42).")(name=".$name.chr(42).")(displayname=".$name.chr(42).")(cn=".$name.chr(42).")))";
 $filter = "(&(objectClass=computer)(objectCategory=computer)(|(samaccountname=".$name.chr(42).")(name=".$name.chr(42).")(displayname=".$name.chr(42).")(cn=".$name.chr(42).")))";
 //$filter = "(&(objectClass=*)(objectCategory=*)(|(name=".$name.chr(42).")(displayname=".$name.chr(42).")(cn=".$name.chr(42).")))";
-if ($show_details == 'dump') {$filter = "(&(objectClass=*)(objectCategory=*))";}
+//if ($show_details == 'dump') {$filter = "(&(objectClass=*)(objectCategory=*))";}
+if ($show_details == 'dump') {$filter = "(&(objectClass=*))";}
+
 
 //(|(name=$name*)(displayname=$name*)(cn=$name*))
 
@@ -137,8 +139,8 @@ for ($computer_record_number = 0; $computer_record_number<$num_found; $computer_
 $record_number = $computer_record_number+1;
 //      echo "<tr><td colspan=\"2\"><hr /></td></tr>\n";
 
-//      echo "<td><img src='images/users_l.png' width='64' height='64' alt='' />".__("Domain User Account Details Like <b>".$name."</b></td><td>")." $record_number of $num_found </td>";
-      echo "<td><img src='images/o_terminal_server.png' width='64' height='64' alt='' />";
+      echo "<td><img src='images/users_l.png' width='64' height='64' alt='' />".__("Details Like <b>".$name."</b></td><td>")." $record_number of $num_found </td>";
+//      echo "<td><img src='images/o_terminal_server.png' width='64' height='64' alt='' />";
     	$bgcolor == "#FFFFFF";	
 //      if ($bgcolor == "#F1F1F1") { $bgcolor = "#FFFFFF"; } else { $bgcolor = "#F1F1F1"; }
 	  echo "<tr bgcolor=\"" . $bgcolor . "\"><td><h3>" . $entries[$computer_record_number]["name"][0] . "</h3></td><td></td></tr>";
@@ -192,6 +194,7 @@ $record_number = $computer_record_number+1;
         echo "<p>"; 
         echo "<tr bgcolor=\"" . $bgcolor . "\"><td><b>".__("Bind failure attempting to connect to ".$ldap_base_dn.".")."</b></td></tr>";
 }
+
 echo "</table>";
 
 echo "</td>\n";
