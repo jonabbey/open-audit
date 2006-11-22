@@ -57,8 +57,9 @@ $secret = $ldap_secret;
 $attributes = array("displayname","description","userprincipalname","homedirectory","homedrive","profilepath","scriptpath","mail","samaccountname","telephonenumber","location","department","sn","badpwdcount");
 //$filter = "(&(objectClass=user)(objectCategory=person)((samaccountname=".$name.")(name=".$name.")(displayname=".$name.")(cn=".$name."))";
 //$filter = "(&(objectClass=user)(objectCategory=person)(|(samaccountname=".$name.chr(42).")(name=".$name.chr(42).")(displayname=".$name.chr(42).")(cn=".$name.chr(42).")))";
-//$filter = "(&(objectClass=computer)(objectCategory=computer)(|(samaccountname=".$name.chr(42).")(name=".$name.chr(42).")(displayname=".$name.chr(42).")(cn=".$name.chr(42).")))";
-$filter = "(&(objectClass=computer)(objectCategory=computer)(|(name=".$name.chr(42).")(displayname=".$name.chr(42).")(cn=".$name.chr(42).")))";
+$filter = "(&(objectClass=computer)(objectCategory=computer)(|(samaccountname=".$name.chr(42).")(name=".$name.chr(42).")(displayname=".$name.chr(42).")(cn=".$name.chr(42).")))";
+//$filter = "(&(objectClass=*)(objectCategory=*)(|(name=".$name.chr(42).")(displayname=".$name.chr(42).")(cn=".$name.chr(42).")))";
+if ($show_details == 'dump') {$filter = "(&(objectClass=*)(objectCategory=*))";}
 
 //(|(name=$name*)(displayname=$name*)(cn=$name*))
 
@@ -67,14 +68,20 @@ $filter = "(&(objectClass=computer)(objectCategory=computer)(|(name=".$name.chr(
 error_reporting(0);
 
 
-$ad = ldap_connect($ldap_server) or die(__("Couldn't connect to LDAP Dirctory"));
+if ($ad = ldap_connect($ldap_server)) {
+
 ldap_set_option($ad, LDAP_OPT_PROTOCOL_VERSION, 3);
 ldap_set_option($ad, LDAP_OPT_REFERRALS, 0);
 $bd = ldap_bind($ad,$computer,$secret);
 if ($bd){
   //echo "Admin - Authenticated<br>";
 } else {
-  echo "Problem - Not a valid username/password.";
+        echo "<div class=\"main_each\">\n";
+        echo "<form action=\"call_users_details.php?sub=no\" method=\"post\">";
+        echo "<table border=\"0\" cellpadding=\"2\" cellspacing=\"0\" width=\"100%\" class=\"content\">";
+     	if ($bgcolor == "#F1F1F1") { $bgcolor = "#FFFFFF"; } else { $bgcolor = "#F1F1F1"; }
+        echo "<p>"; 
+        echo "<tr bgcolor=\"" . $bgcolor . "\"><td><b>".__("User or Password invalid when attemting to connect to ".$ldap_base_dn.".")."</b></td></tr>";
 }
 
 
@@ -84,7 +91,12 @@ $bd = ldap_bind($ad,$computer,$secret);
 if ($bd){
   //echo "Admin - Authenticated<br>";
 } else {
-  echo "Problem - Not a valid username/password.";
+        echo "<div class=\"main_each\">\n";
+        echo "<form action=\"call_users_details.php?sub=no\" method=\"post\">";
+        echo "<table border=\"0\" cellpadding=\"2\" cellspacing=\"0\" width=\"100%\" class=\"content\">";
+     	if ($bgcolor == "#F1F1F1") { $bgcolor = "#FFFFFF"; } else { $bgcolor = "#F1F1F1"; }
+        echo "<p>"; 
+        echo "<tr bgcolor=\"" . $bgcolor . "\"><td><b>".__("User or Password invalid when attemting to connect to ".$ldap_base_dn.".")."</b></td></tr>";
 }
 
 
@@ -157,6 +169,8 @@ $record_number = $computer_record_number+1;
  }
 }
 
+
+
 } else {
 
         echo "<div class=\"main_each\">\n";
@@ -168,6 +182,15 @@ $record_number = $computer_record_number+1;
 
 
 //        echo "<tr>".__("LDAP Not configured. Please set this up in Admin> Config")."</tr>";
+}
+
+} else {
+        echo "<div class=\"main_each\">\n";
+        echo "<form action=\"call_users_details.php?sub=no\" method=\"post\">";
+        echo "<table border=\"0\" cellpadding=\"2\" cellspacing=\"0\" width=\"100%\" class=\"content\">";
+     	if ($bgcolor == "#F1F1F1") { $bgcolor = "#FFFFFF"; } else { $bgcolor = "#F1F1F1"; }
+        echo "<p>"; 
+        echo "<tr bgcolor=\"" . $bgcolor . "\"><td><b>".__("Bind failure attempting to connect to ".$ldap_base_dn.".")."</b></td></tr>";
 }
 echo "</table>";
 
