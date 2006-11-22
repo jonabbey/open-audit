@@ -32,8 +32,10 @@ header("Content-Disposition: inline; filename=\"export.xls\"");
 
 //Table head
 foreach($viewdef_array["fields"] as $field) {
-    echo $field["head"];
-    echo "\t";
+    if($field["show"]!="n"){
+        echo $field["head"];
+        echo "\t";
+    }
 }
 echo "\r\n";
 
