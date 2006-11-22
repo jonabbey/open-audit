@@ -18,7 +18,7 @@ if (ereg(chr(46),$domain)){
 $fqdn=$hostname.".".$domain;
 $domain_parts=explode (".",$fqdn);
 $domain_parts_count = count($domain_parts);
-if ($domain_parts_count = 1){
+if ($domain_parts_count == 1){
         $domain_parts[2] = $management_domain_suffix;
 }
 
@@ -44,9 +44,9 @@ SWITCH($application){
         header("Content-type: application/force-download");
         header("Content-Transfer-Encoding: Binary");
         $filename=$fqdn.".".$ext;
-        
+
         header("Content-disposition: attachment; filename=\"".$filename."\"");
-        
+
         echo trim($buffer);
     break;
 
