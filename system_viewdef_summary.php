@@ -208,13 +208,13 @@ $query_array=array("name"=>array("name"=>__("Summary"),
 if ((isset($use_ldap_integration))and($use_ldap_integration == 'y')) {
 
     if ((isset($ldap_details))and ($ldap_details  == 'advanced')) {
-    $query_array['views']['summary']['fields']['25']=array("name"=>"system_name", "head"=>__("LDAP Directory Info"),
-                                                                        "get"=>array("head"=>__("LDAP Computer Details"),
+    $query_array['views']['summary']['fields']['25']=array("name"=>"system_name", "head"=>__("Directory Info"),
+                                                                        "get"=>array("head"=>__("Computer Details"),
                                                                                              "file"=>"ldap_computers_details.php",
                                                                                              //"%net_user_name"
-                                                                                             "title"=>__("LDAP Advanced Computer Details"),
+                                                                                             "title"=>__("Advanced Computer Details"),
                                                                                              //"name"=>"%net_user_name",                                                                                             
-                                                                                             "image"=>"./images/groups_l.png",
+                                                                                             "image"=>"./images/o_terminal_server.png",
                                                                                              "image_width"=>"16",
                                                                                              "image_height"=>"16",
                                                                                              "var"=>array("name"=>"%system_name",
@@ -223,11 +223,11 @@ if ((isset($use_ldap_integration))and($use_ldap_integration == 'y')) {
                                                                                             ),
                                                                               );
                                                                           
-       $query_array['views']['summary']['fields']['65']=array("name"=>"net_user_name", "head"=>__("LDAP Directory Info"),
-                                                                        "get"=>array("head"=>__("LDAP User Details"),
+       $query_array['views']['summary']['fields']['65']=array("name"=>"net_user_name", "head"=>__("Directory Info"),
+                                                                        "get"=>array("head"=>__("User Details"),
                                                                                              "file"=>"ldap_users_details.php",
                                                                                              //"%net_user_name"
-                                                                                             "title"=>__("LDAP Advanced User Details"),
+                                                                                             "title"=>__("Advanced User Details"),
                                                                                              //"name"=>"%net_user_name",                                                                                             
                                                                                              "image"=>"./images/groups_l.png",
                                                                                              "image_width"=>"16",
@@ -239,13 +239,13 @@ if ((isset($use_ldap_integration))and($use_ldap_integration == 'y')) {
                                                                               );                                                                          
                                                                               
                                   } else {
-   $query_array['views']['summary']['fields']['25']=array("name"=>"system_name", "head"=>__("LDAP Directory Info"),
-                                                                        "get"=>array("head"=>__("LDAP Computer Details"),
+   $query_array['views']['summary']['fields']['25']=array("name"=>"system_name", "head"=>__("Directory Info"),
+                                                                        "get"=>array("head"=>__("Computer Details"),
                                                                                              "file"=>"ldap_computers_details.php",
                                                                                              //"%net_user_name"
-                                                                                             "title"=>__("LDAP Computer Details"),
+                                                                                             "title"=>__("Computer Details"),
                                                                                              //"name"=>"%net_user_name",                                                                                             
-                                                                                             "image"=>"./images/groups_l.png",
+                                                                                             "image"=>"./images/o_terminal_server.png",
                                                                                              "image_width"=>"16",
                                                                                              "image_height"=>"16",
                                                                                              "var"=>array("name"=>"%system_name",
@@ -253,11 +253,11 @@ if ((isset($use_ldap_integration))and($use_ldap_integration == 'y')) {
                                                                                                          ),
                                                                                             ),
                                                                               );                                      
-    $query_array['views']['summary']['fields']['65']=array("name"=>"net_user_name", "head"=>__("LDAP Directory Info"),
-                                                                        "get"=>array("head"=>__("LDAP User Details"),
+    $query_array['views']['summary']['fields']['65']=array("name"=>"net_user_name", "head"=>__("Directory Info"),
+                                                                        "get"=>array("head"=>__("User Details"),
                                                                                              "file"=>"ldap_users_details.php",
                                                                                              //"%net_user_name"
-                                                                                             "title"=>__("LDAP User Details"),
+                                                                                             "title"=>__("User Details"),
                                                                                              //"name"=>"%net_user_name",                                                                                             
                                                                                              "image"=>"./images/groups_l.png",
                                                                                              "image_width"=>"16",

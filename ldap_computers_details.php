@@ -54,13 +54,15 @@ $dn = $ldap_base_dn;
 $computer = $ldap_user;
 $secret = $ldap_secret;
 //$name="*".$name;
-$attributes = array("displayname","description","userprincipalname","homedirectory","homedrive","profilepath","scriptpath","mail","samaccountname","telephonenumber","location","department","sn","badpwdcount");
+$attributes = array("displayname","mail","telephonenumber","location","department");
+//$attributes = array("displayname","description","userprincipalname","homedirectory","homedrive","profilepath","scriptpath","mail","samaccountname","telephonenumber","location","department","sn","badpwdcount");
+
 //$filter = "(&(objectClass=user)(objectCategory=person)((samaccountname=".$name.")(name=".$name.")(displayname=".$name.")(cn=".$name."))";
 //$filter = "(&(objectClass=user)(objectCategory=person)(|(samaccountname=".$name.chr(42).")(name=".$name.chr(42).")(displayname=".$name.chr(42).")(cn=".$name.chr(42).")))";
 $filter = "(&(objectClass=computer)(objectCategory=computer)(|(samaccountname=".$name.chr(42).")(name=".$name.chr(42).")(displayname=".$name.chr(42).")(cn=".$name.chr(42).")))";
 //$filter = "(&(objectClass=*)(objectCategory=*)(|(name=".$name.chr(42).")(displayname=".$name.chr(42).")(cn=".$name.chr(42).")))";
 //if ($show_details == 'dump') {$filter = "(&(objectClass=*)(objectCategory=*))";}
-if ($show_details == 'dump') {$filter = "(&(objectClass=*))";}
+if ($show_details == 'dump') {$filter = "(&(objectCategory=person)(objectClass=user)(telephonenumber=*))";}
 
 
 //(|(name=$name*)(displayname=$name*)(cn=$name*))
@@ -103,7 +105,7 @@ if ($bd){
 
 
 
-if ($show_details == "roobarb"){$result = ldap_search($ad, $dn, $filter, $attributes);}
+if ($show_details == "dump"){$result = ldap_search($ad, $dn, $filter, $attributes);}
     else
     {$result = ldap_search($ad, $dn, $filter);}
 
@@ -139,7 +141,9 @@ for ($computer_record_number = 0; $computer_record_number<$num_found; $computer_
 $record_number = $computer_record_number+1;
 //      echo "<tr><td colspan=\"2\"><hr /></td></tr>\n";
 
-      echo "<td><img src='images/users_l.png' width='64' height='64' alt='' />".__("Details Like <b>".$name."</b></td><td>")." $record_number of $num_found </td>";
+//      echo "<td><img src='images/users_l.png' width='64' height='64' alt='' />".__("Details Like <b>".$name."</b></td><td>")." $record_number of $num_found </td>";
+      echo "<td><img src='images/users_l.png' width='64' height='64' alt='' />";
+
 //      echo "<td><img src='images/o_terminal_server.png' width='64' height='64' alt='' />";
     	$bgcolor == "#FFFFFF";	
 //      if ($bgcolor == "#F1F1F1") { $bgcolor = "#FFFFFF"; } else { $bgcolor = "#F1F1F1"; }
@@ -147,7 +151,7 @@ $record_number = $computer_record_number+1;
       if ($bgcolor == "#F1F1F1") { $bgcolor = "#FFFFFF"; } else { $bgcolor = "#F1F1F1"; }
 //	  echo "<tr bgcolor=\"" . $bgcolor . "\"><td><b>Telephone:</td><td>" . $entries[$computer_record_number]["telephonenumber"][0] . "</a></b></td></tr>";	
 	  if ($bgcolor == "#F1F1F1") { $bgcolor = "#FFFFFF"; } else { $bgcolor = "#F1F1F1"; }
- 	  echo "<tr bgcolor=\"" . $bgcolor . "\"><td>" .__("Full LDAP Account Details"). "</td><td></td></tr>";      
+ 	  echo "<tr bgcolor=\"" . $bgcolor . "\"><td>" .__("Full Account Details"). "</td><td></td></tr>";      
       for ($computer_record_field_number=0; $computer_record_field_number<$entries[$computer_record_number]["count"]; $computer_record_field_number++){
       $data =$entries[$computer_record_number][$computer_record_field_number];
 
@@ -162,7 +166,9 @@ $record_number = $computer_record_number+1;
             // Else just show it. 
       	  if ($bgcolor == "#F1F1F1") { $bgcolor = "#FFFFFF"; } else { $bgcolor = "#F1F1F1"; }
           echo "<tr bgcolor=\"" . $bgcolor . "\"><td>".__($data).":</td><td>" .$entries[$computer_record_number][$data][$computer_record_field_number_data]. "</td></tr>";
-      }    
+//         echo "<tr bgcolor=\"" . $bgcolor . "\"><td>".$data.":</td><td>" .$entries[$computer_record_number][$data][$computer_record_field_number_data]. "</td></tr>";
+
+}    
      }
   }
     echo "<p>"; // separate entries

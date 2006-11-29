@@ -23,7 +23,11 @@ echo "<td>\n";
 $user_name = "";
 
 if (isset($_GET['name'])) {$name = $_GET['name'];} else {$name= "none";}
+
 if (isset($_GET['show_details'])) {$show_details = $_GET['show_details'];} else {$show_details= "basic";}
+
+if (isset($_GET['inject'])) {$inject = $_GET['inject'];} else {$inject= "n";}
+
 
 if ($use_ldap_integration == "y") {
 
@@ -41,12 +45,12 @@ if ($pos === false ) {
     $name = substr($name,($pos));
 //   echo $name;
     }
-
-
-
+    
+// $ldap vars are set in config
 //
 //Note that this LDAP string specifies the OU that contains the User Accounts
 //All OUs under it are also retrieved
+
 $dn = $ldap_base_dn;
 
 //domain user fullname and password
@@ -110,35 +114,78 @@ if ($num_found == 0 ){
         echo "<div class=\"main_each\">\n";
         echo "<form action=\"call_users_details.php?sub=no\" method=\"post\">";
         echo "<table border=\"0\" cellpadding=\"2\" cellspacing=\"0\" width=\"100%\" class=\"content\">";
-     	if ($bgcolor == "#F1F1F1") { $bgcolor = "#FFFFFF"; } else { $bgcolor = "#F1F1F1"; }
+        if ($bgcolor == "#F1F1F1") { $bgcolor = "#FFFFFF"; } else { $bgcolor = "#F1F1F1"; }
         echo "<p>"; 
         echo "<tr bgcolor=\"" . $bgcolor . "\"><td><b>".__("Not found in ".$ldap_base_dn.".")."</b></td></tr>";
 
 } else {
 
+if ($inject == "y"){
+//sql inject create table    $table_name = "ldap_users_details";
+    $column_names = "";
+    $column_values = "";
+    $table_name = "ldap_users_details";
+    
+//$sql ="DROP TABLE IF EXISTS `".$table_name ."`;";
+//$result = mysql_query($sql) ;
 
-
+  $time_now = time(); 
+  $sql = "CREATE TABLE IF NOT EXISTS `" . $table_name . "` (
+  `ldap_users_details_id` int(11) NOT NULL auto_increment,
+    `ldap_users_details_first_timestamp` bigint(20) unsigned NOT NULL default '".$time_now."',
+    `ldap_users_details_update_timestamp` bigint(20) unsigned NOT NULL default '0',
+    `samaccountname` varchar(100) NOT NULL default '',
+   PRIMARY KEY  (`samaccountname`),
+   KEY (`ldap_users_details_id`)
+   ) ENGINE=MyISAM DEFAULT CHARSET=latin1;";
+//      $result = mysql_query($sql);
+        $result = mysql_query($sql) or die ('CREATE Failed: ' . mysql_error() . '<br />' . $sql);
+//end
+} 
 
 for ($user_record_number = 0; $user_record_number<$num_found; $user_record_number++) {
 //echo "Next User:<br>";
+
 
 $record_number = $user_record_number+1;
 //      echo "<tr><td colspan=\"2\"><hr /></td></tr>\n";
 
 //      echo "<td><img src='images/users_l.png' width='64' height='64' alt='' />".__("Domain User Account Details Like <b>".$name."</b></td><td>")." $record_number of $num_found </td>";
       echo "<td><img src='images/users_l.png' width='64' height='64' alt='' />";
-    	$bgcolor == "#FFFFFF";	
+        $bgcolor == "#FFFFFF";	
 //      if ($bgcolor == "#F1F1F1") { $bgcolor = "#FFFFFF"; } else { $bgcolor = "#F1F1F1"; }
-	  echo "<tr bgcolor=\"" . $bgcolor . "\"><td><h3>" . $entries[$user_record_number]["displayname"][0] . "</h3></td><td></td></tr>";
+      echo "<tr bgcolor=\"" . $bgcolor . "\"><td><h3>" . $entries[$user_record_number]["displayname"][0] . "</h3></td><td></td></tr>";
       if ($bgcolor == "#F1F1F1") { $bgcolor = "#FFFFFF"; } else { $bgcolor = "#F1F1F1"; }
-	  echo "<tr bgcolor=\"" . $bgcolor . "\"><td><b>Telephone:</td><td>" . $entries[$user_record_number]["telephonenumber"][0] . "</a></b></td></tr>";	
-	  if ($bgcolor == "#F1F1F1") { $bgcolor = "#FFFFFF"; } else { $bgcolor = "#F1F1F1"; }
- 	  echo "<tr bgcolor=\"" . $bgcolor . "\"><td>" .__("Full LDAP Account Details"). "</td><td></td></tr>";      
+      echo "<tr bgcolor=\"" . $bgcolor . "\"><td><b>Telephone:</td><td>" . $entries[$user_record_number]["telephonenumber"][0] . "</a></b></td></tr>";	
+      if ($bgcolor == "#F1F1F1") { $bgcolor = "#FFFFFF"; } else { $bgcolor = "#F1F1F1"; }
+      echo "<tr bgcolor=\"" . $bgcolor . "\"><td>" .__("Full LDAP Account Details"). "</td><td></td></tr>";      
       for ($user_record_field_number=0; $user_record_field_number<$entries[$user_record_number]["count"]; $user_record_field_number++){
       $data =$entries[$user_record_number][$user_record_field_number];
 
-      for ($user_record_field_number_data=0; $user_record_field_number_data<$entries[$user_record_number][$data]["count"]; $user_record_field_number_data++) {
-      if  (isEmailAddress($entries[$user_record_number][$data][$user_record_field_number_data])){
+
+    
+  
+    for ($user_record_field_number_data=0; $user_record_field_number_data<$entries[$user_record_number][$data]["count"]; $user_record_field_number_data++) {
+
+if ($inject == "y"){
+// SQL inject code.
+
+//        $sql="ALTER TABLE 'ldap_users_details' ADD COLUMN IF NOT EXISTS '$data' varchar(255) ;";
+        $sql2="ALTER TABLE ".$table_name ." ADD COLUMN ".$data." varchar(255) NOT NULL default '' ;";
+
+        $result = mysql_query($sql2) ;
+        //or die ('ALTER Failed: ' . mysql_error() . '<br />' . $sql);
+        
+         $column_names = $column_names.$data.",";
+         
+         $this_value =  ereg_replace("/","-", $entries[$user_record_number][$data][$user_record_field_number_data]);
+         $this_value = ereg_replace("'","-",$this_value);
+        $last_value = $this_value ;
+        
+        $column_values = $column_values."'".$this_value."',";
+}
+// End SQL inject        
+        if  (isEmailAddress($entries[$user_record_number][$data][$user_record_field_number_data])){
           // If its a valid email address, highlight it, and add a URL mailto:
       if ($bgcolor == "#F1F1F1") { $bgcolor = "#FFFFFF"; } else { $bgcolor = "#F1F1F1"; }	
      echo "<tr bgcolor=\"" . $bgcolor . "\"><td><b>".__($data).":</b></td><td><a href='mailto:" . $entries[$user_record_number][$data][$user_record_field_number_data] . "'>" . $entries[$user_record_number][$data][$user_record_field_number_data] . "</a></td></tr>";
@@ -146,11 +193,27 @@ $record_number = $user_record_number+1;
      else 
      {
             // Else just show it. 
-      	  if ($bgcolor == "#F1F1F1") { $bgcolor = "#FFFFFF"; } else { $bgcolor = "#F1F1F1"; }
-          echo "<tr bgcolor=\"" . $bgcolor . "\"><td>".__($data).":</td><td>" .$entries[$user_record_number][$data][$user_record_field_number_data]. "</td></tr>";
+          if ($bgcolor == "#F1F1F1") { $bgcolor = "#FFFFFF"; } else { $bgcolor = "#F1F1F1"; }
+//          echo "<tr bgcolor=\"" . $bgcolor . "\"><td>".__($data).":</td><td>" .$entries[$user_record_number][$data][$user_record_field_number_data]. "</td></tr>";
+            echo "<tr bgcolor=\"" . $bgcolor . "\"><td>".$data.":</td><td>" .$entries[$user_record_number][$data][$user_record_field_number_data]. "</td></tr>";
       }    
      }
+ 
   }
+  if ($inject == "y"){
+  // SQL inject code
+            $column_names = rtrim( $column_names,",");
+            $column_values = rtrim( $column_values,",");
+            $time_now = time();
+           $sql="INSERT INTO ".$table_name. " (".$column_names.") VALUES (".$column_values.") ON DUPLICATE KEY UPDATE ldap_users_details_update_timestamp = ".$time_now." ;";
+
+        //
+        $result = mysql_query($sql) or die ('Insert Failed: ' . mysql_error() . '<br />' . $sql); 
+               $column_names = "";
+               $column_values = "";
+  // End SQL inject
+} 
+               
   echo "<p>"; // separate entries
   echo "<tr><td colspan=\"2\"><hr /></td></tr>\n";
  }
@@ -160,7 +223,7 @@ $record_number = $user_record_number+1;
         echo "<div class=\"main_each\">\n";
         echo "<form action=\"call_users_details.php?sub=no\" method=\"post\">";
         echo "<table border=\"0\" cellpadding=\"2\" cellspacing=\"0\" width=\"100%\" class=\"content\">";
-     	if ($bgcolor == "#F1F1F1") { $bgcolor = "#FFFFFF"; } else { $bgcolor = "#F1F1F1"; }
+        if ($bgcolor == "#F1F1F1") { $bgcolor = "#FFFFFF"; } else { $bgcolor = "#F1F1F1"; }
         echo "<p>"; 
         echo "<tr bgcolor=\"" . $bgcolor . "\"><td><b>".__("LDAP Not configured. Please set this up in Admin> Config")."</b></td></tr>";
 
