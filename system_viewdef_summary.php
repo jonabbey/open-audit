@@ -207,10 +207,10 @@ $query_array=array("name"=>array("name"=>__("Summary"),
               
 if ((isset($use_ldap_integration))and($use_ldap_integration == 'y')) {
 
-    if ((isset($ldap_details))and ($ldap_details  == 'advanced')) {
+    if ((isset($full_details))and ($full_details  == 'y')) {
     $query_array['views']['summary']['fields']['25']=array("name"=>"system_name", "head"=>__("Directory Info"),
                                                                         "get"=>array("head"=>__("Computer Details"),
-                                                                                             "file"=>"ldap_computers_details.php",
+                                                                                             "file"=>"ldap_details.php",
                                                                                              //"%net_user_name"
                                                                                              "title"=>__("Advanced Computer Details"),
                                                                                              //"name"=>"%net_user_name",                                                                                             
@@ -218,14 +218,15 @@ if ((isset($use_ldap_integration))and($use_ldap_integration == 'y')) {
                                                                                              "image_width"=>"16",
                                                                                              "image_height"=>"16",
                                                                                              "var"=>array("name"=>"%system_name",
-                                                                                                          "show_details"=> "advanced",
+                                                                                                          "full_details"=> "y",
+                                                                                                          "record_type" => "computer",
                                                                                                          ),
                                                                                             ),
                                                                               );
                                                                           
        $query_array['views']['summary']['fields']['65']=array("name"=>"net_user_name", "head"=>__("Directory Info"),
                                                                         "get"=>array("head"=>__("User Details"),
-                                                                                             "file"=>"ldap_users_details.php",
+                                                                                             "file"=>"ldap_details.php",
                                                                                              //"%net_user_name"
                                                                                              "title"=>__("Advanced User Details"),
                                                                                              //"name"=>"%net_user_name",                                                                                             
@@ -233,7 +234,8 @@ if ((isset($use_ldap_integration))and($use_ldap_integration == 'y')) {
                                                                                              "image_width"=>"16",
                                                                                              "image_height"=>"16",
                                                                                              "var"=>array("name"=>"%net_user_name",
-                                                                                                          "show_details"=> "advanced",
+                                                                                                          "full_details"=> "y",
+                                                                                                          "record_type" => "user",
                                                                                                          ),
                                                                                             ),
                                                                               );                                                                          
@@ -241,7 +243,7 @@ if ((isset($use_ldap_integration))and($use_ldap_integration == 'y')) {
                                   } else {
    $query_array['views']['summary']['fields']['25']=array("name"=>"system_name", "head"=>__("Directory Info"),
                                                                         "get"=>array("head"=>__("Computer Details"),
-                                                                                             "file"=>"ldap_computers_details.php",
+                                                                                             "file"=>"ldap_details.php",
                                                                                              //"%net_user_name"
                                                                                              "title"=>__("Computer Details"),
                                                                                              //"name"=>"%net_user_name",                                                                                             
@@ -249,13 +251,14 @@ if ((isset($use_ldap_integration))and($use_ldap_integration == 'y')) {
                                                                                              "image_width"=>"16",
                                                                                              "image_height"=>"16",
                                                                                              "var"=>array("name"=>"%system_name",
-                                                                                                          "show_details"=> "basic",
+                                                                                                          "full_details"=> "n",
+                                                                                                          "record_type" => "computer",
                                                                                                          ),
                                                                                             ),
                                                                               );                                      
     $query_array['views']['summary']['fields']['65']=array("name"=>"net_user_name", "head"=>__("Directory Info"),
                                                                         "get"=>array("head"=>__("User Details"),
-                                                                                             "file"=>"ldap_users_details.php",
+                                                                                             "file"=>"ldap_details.php",
                                                                                              //"%net_user_name"
                                                                                              "title"=>__("User Details"),
                                                                                              //"name"=>"%net_user_name",                                                                                             
@@ -263,7 +266,8 @@ if ((isset($use_ldap_integration))and($use_ldap_integration == 'y')) {
                                                                                              "image_width"=>"16",
                                                                                              "image_height"=>"16",
                                                                                              "var"=>array("name"=>"%net_user_name",
-                                                                                                          "show_details"=> "basic",
+                                                                                                         "full_details"=> "n",
+                                                                                                          "record_type" => "user",
                                                                                                          ),
                                                                                             ),
                                                                               );                                  

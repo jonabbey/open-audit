@@ -61,6 +61,7 @@ if (isset($_POST['ldap_base_dn_post'])) {$ldap_base_dn_post = $_POST['ldap_base_
 if (isset($_POST['ldap_server_post'])) {$ldap_server_post = $_POST['ldap_server_post'];} else { $ldap_server_post = "myserver.mydomain.local";}
 if (isset($_POST['ldap_user_post'])) {$ldap_user_post = $_POST['ldap_user_post'];} else { $ldap_user_post = "myusername@mydomain.local";}
 if (isset($_POST['ldap_secret_post'])) {$ldap_secret_post = $_POST['ldap_secret_post'];} else { $ldap_secret_post = "";}
+if (isset($_POST['full_details_post'])) {$full_details_post = $_POST['full_details_post'];} else { $full_details_post = "";}
 
 
 if (isset($_POST['col_post'])) {$col_post = $_POST['col_post'];} else { $col_post = "blue";}
@@ -152,6 +153,9 @@ if (isset($_POST['pic_style_post'])) {$pic_style_post = $_POST['pic_style_post']
 */  
   
   $content .= "\$ldap_secret = '" . $ldap_secret_post. "';\n";
+  $content .= "\n";
+  
+  $content .= "\$full_details = '" . $full_details_post. "';\n";
   $content .= "\n";
   
   $content .= "\$language = '" . $language_post . "';\n";
@@ -286,14 +290,24 @@ echo "<tr><td colspan=\"5\"><hr /></td></tr>\n";
 echo "<tr><td>".__("FQDN Domain Suffix for Management Utilities").":&nbsp;</td><td><input type=\"text\" name=\"management_domain_suffix_post\" size=\"10\" value=\"$management_domain_suffix\" class=\"for_forms\" /></td></tr>";
 echo "<tr><td colspan=\"5\"><hr /></td></tr>\n";
 
+if (function_exists('ldap_connect')){
+} else {
+        echo "<tr bgcolor=\"" . $bgcolor . "\"><td><b>".__("LDAP connectivity is not available, please check php.ini ")."</b></td></tr>";
+}
+
+
 echo "<tr><td>".__("Use LDAP Integration to display user details").":&nbsp;</td><td><input type=\"checkbox\" name=\"use_ldap_integration_post\" value=\"y\"";
 if (isset($use_ldap_integration) AND $use_ldap_integration == "y"){ echo "checked=\"checked\"";}
+
+
+
   echo "/></td>\n";
 echo "<tr><td>".__("LDAP Base DN").":&nbsp;</td><td><input type=\"text\" name=\"ldap_base_dn_post\" size=\"24\" value=\"$ldap_base_dn\" class=\"for_forms\" /></td></tr>";
 echo "<tr><td>".__("LDAP Connection Server").":&nbsp;</td><td><input type=\"text\" name=\"ldap_server_post\" size=\"24\" value=\"$ldap_server\" class=\"for_forms\" /></td></tr>";
 echo "<tr><td>".__("LDAP Connection User").":&nbsp;</td><td><input type=\"text\" name=\"ldap_user_post\" size=\"24\" value=\"$ldap_user\" class=\"for_forms\" /></td></tr>";
 echo "<tr><td>".__("LDAP Connection Secret").":&nbsp;</td><td><input type=\"password\" name=\"ldap_secret_post\" size=\"24\" value=\"$ldap_secret\" class=\"for_forms\" /></td></tr>";
-
+echo "<tr><td>".__("Show Full LDAP details").":&nbsp;</td><td><input type=\"checkbox\" name=\"full_details_post\" value=\"y\"";
+if (isset($full_details) AND $full_details == "y"){ echo "checked=\"checked\"";}
 
 
 echo "<tr><td><input type=\"submit\" value=\"".__("Save")."\" name=\"submit_button\" /></td></tr>\n";
