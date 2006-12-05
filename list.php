@@ -1,12 +1,15 @@
 <?php
+/*
 function microtime_float()
 {
     list($usec, $sec) = explode(" ", microtime());
     return ((float)$usec + (float)$sec);
 }
-$time_start = microtime_float();
+*/
 
 include_once("include.php");
+$time_start = microtime_float();
+
 $count_system_max="10000";
 
 // If you would like to have a new View, you have to modify 3 parts:

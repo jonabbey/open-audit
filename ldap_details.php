@@ -212,8 +212,7 @@ if ($inject == "y"){
      {
             // Else just show it. 
           if ($bgcolor == "#F1F1F1") { $bgcolor = "#FFFFFF"; } else { $bgcolor = "#F1F1F1"; }
-//          echo "<tr bgcolor=\"" . $bgcolor . "\"><td>".__($data).":</td><td>" .$entries[$user_record_number][$data][$user_record_field_number_data]. "</td></tr>";
-            echo "<tr bgcolor=\"" . $bgcolor . "\"><td>".__($data).":</td><td>" .$entries[$user_record_number][$data][$user_record_field_number_data]. "</td></tr>";
+           echo "<tr bgcolor=\"" . $bgcolor . "\"><td>".__($data).":</td><td>" .$entries[$user_record_number][$data][$user_record_field_number_data]. "</td></tr>";
       }    
      }
  

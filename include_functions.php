@@ -478,4 +478,59 @@ return
 eregi('^([a-z0-9])+([.a-z0-9_-])*@([a-z0-9_-])+(.[a-z0-9_-]+)*.([a-z]{2,6})$', $value);
 } 
 
+function microtime_float()
+{
+    list($usec, $sec) = explode(" ", microtime());
+    return ((float)$usec + (float)$sec);
+}
+/* This is performed by change_row_color($bgcolor,$bg1,$bg2) (AJH)
+function swap_background($bgcolor)
+{
+//        if (!isset($bgcolor)){$bgcolor = "#FFFFFF";}
+        if ($bgcolor == "#F1F1F1") { $bgcolor = "#FFFFFF"; } else { $bgcolor = "#F1F1F1"; }
+        return $bgcolor;
+}
+*/
+function WakeOnLan($hostname, $mac,$socket_number,$this_error)
+{
+
+$address_bytes = explode(':', $mac);
+//Convert mac address to string of six bytes. 
+$full_hw_addr = '';
+for ($hw_address_bytes=0; $hw_address_bytes < 6; $hw_address_bytes++) $full_hw_addr .= chr(hexdec($address_bytes[$hw_address_bytes]));
+
+$packet_header='';
+
+// Create magic header of six &HFF bytes
+for ($magic_bytes=0;$magic_bytes<6;$magic_bytes++){
+$packet_header = $packet_header.CHR(255);
+}
+
+// Add 16 copies of mac address to magic header.
+for ($mac_copies = 0; $mac_copies <= 16; $mac_copies++){ 
+$packet_header = $packet_header.$full_hw_addr ;
+}
+//echo " Packet length = ". strlen($packet_header);
+// Send it to the broadcast address using UDP 
+
+$create_magic_socket = socket_create(AF_INET, SOCK_DGRAM, SOL_UDP);
+if ($create_magic_socket  == false)
+{
+$this_error =  "Error: Could not create a socket.";
+$this_error = $this_error."-Error Reported ".socket_last_error($create_magic_socket)." ... " . socket_strerror(socket_last_error($create_magic_socket));
+}
+else
+{
+       $sock_data = socket_set_option($create_magic_socket, SOL_SOCKET, SO_BROADCAST, 1); //Set
+{
+$this_error = "Error: Could not broadcast to socket";
+}
+$broadcast = "255.255.255.255";
+$this_connection = socket_sendto($create_magic_socket, $packet_header, strlen($packet_header), 0, $broadcast, $socket_number);
+socket_close($create_magic_socket);
+$this_error = "Success: Wake on LAN sent ".$this_connection ." bytes to ".$broadcast;
+}
+ return $this_error;
+}
+
 ?>

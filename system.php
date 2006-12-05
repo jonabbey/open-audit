@@ -1,12 +1,14 @@
 <?php
+/*
 function microtime_float()
 {
     list($usec, $sec) = explode(" ", microtime());
     return ((float)$usec + (float)$sec);
 }
-$time_start = microtime_float();
+*/
 
 include_once("include.php");
+$time_start = microtime_float();
 
 // If you would like to have a new View, you have to modify 3 parts:
 // -> include_menu_array.php: $menue_array

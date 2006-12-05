@@ -107,7 +107,11 @@ while($tabs = mysql_fetch_row($tables)):
    $backup .= "--$newline-- ".__("All Data from table")." `$tabs[0]`".$newline."--".$newline.$newline;
    $data = mysql_query("SELECT * FROM $tabs[0]");
    while($dt = mysql_fetch_row($data)):
-       $backup .= "INSERT INTO `$tabs[0]` VALUES('".mysql_escape_string($dt[0])."'";
+            $this_value =  ereg_replace("/","//", $dt[0]);
+         $this_value = ereg_replace("'","/'",$this_value);
+        $last_value = $this_value ;
+   
+       $backup .= "INSERT INTO `$tabs[0]` VALUES('".mysql_escape_string($this_value)."'";
        for($i=1; $i<sizeof($dt); $i++):
            $backup .= ", '".mysql_escape_string($dt[$i])."'";
        endfor;
