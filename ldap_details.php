@@ -173,9 +173,9 @@ if ($record_type == 'computer'){
         $bgcolor == "#FFFFFF";	
 //      if ($bgcolor == "#F1F1F1") { $bgcolor = "#FFFFFF"; } else { $bgcolor = "#F1F1F1"; }
       echo "<tr bgcolor=\"" . $bgcolor . "\"><td><h3>" . $entries[$user_record_number]["displayname"][0] . "</h3></td><td></td></tr>";
-      if ($bgcolor == "#F1F1F1") { $bgcolor = "#FFFFFF"; } else { $bgcolor = "#F1F1F1"; }
+	  $bgcolor = change_row_color($bgcolor,$bg1,$bg2); 
       echo "<tr bgcolor=\"" . $bgcolor . "\"><td><b>Telephone:</td><td>" . $entries[$user_record_number]["telephonenumber"][0] . "</a></b></td></tr>";	
-      if ($bgcolor == "#F1F1F1") { $bgcolor = "#FFFFFF"; } else { $bgcolor = "#F1F1F1"; }
+      $bgcolor = change_row_color($bgcolor,$bg1,$bg2); 
       echo "<tr bgcolor=\"" . $bgcolor . "\"><td>" .__("Full LDAP Account Details"). "</td><td></td></tr>";      
       for ($user_record_field_number=0; $user_record_field_number<$entries[$user_record_number]["count"]; $user_record_field_number++){
       $data =$entries[$user_record_number][$user_record_field_number];
@@ -205,13 +205,13 @@ if ($inject == "y"){
 // End SQL inject        
         if  (isEmailAddress($entries[$user_record_number][$data][$user_record_field_number_data])){
           // If its a valid email address, highlight it, and add a URL mailto:
-      if ($bgcolor == "#F1F1F1") { $bgcolor = "#FFFFFF"; } else { $bgcolor = "#F1F1F1"; }	
+      $bgcolor = change_row_color($bgcolor,$bg1,$bg2); 	
      echo "<tr bgcolor=\"" . $bgcolor . "\"><td><b>".__($data).":</b></td><td><a href='mailto:" . $entries[$user_record_number][$data][$user_record_field_number_data] . "'>" . $entries[$user_record_number][$data][$user_record_field_number_data] . "</a></td></tr>";
      }
      else 
      {
             // Else just show it. 
-          if ($bgcolor == "#F1F1F1") { $bgcolor = "#FFFFFF"; } else { $bgcolor = "#F1F1F1"; }
+          $bgcolor = change_row_color($bgcolor,$bg1,$bg2); 
            echo "<tr bgcolor=\"" . $bgcolor . "\"><td>".__($data).":</td><td>" .$entries[$user_record_number][$data][$user_record_field_number_data]. "</td></tr>";
       }    
      }
@@ -240,7 +240,7 @@ if ($inject == "y"){
         echo "<div class=\"main_each\">\n";
         echo "<form action=\"search.php?sub=no\" method=\"post\">";
         echo "<table border=\"0\" cellpadding=\"2\" cellspacing=\"0\" width=\"100%\" class=\"content\">";
-        if ($bgcolor == "#F1F1F1") { $bgcolor = "#FFFFFF"; } else { $bgcolor = "#F1F1F1"; }
+       $bgcolor = change_row_color($bgcolor,$bg1,$bg2); 
         echo "<p>"; 
         echo "<tr bgcolor=\"" . $bgcolor . "\"><td><b>".__("LDAP Not configured. Please set this up in Admin> Config")."</b></td></tr>";
 }
