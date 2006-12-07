@@ -34,7 +34,9 @@ $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
 //      Show Result
 $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
            echo "<tr bgcolor=\"" . $bgcolor . "\"><td>".__("Result").":</td><td>" .$result. "</td></tr>";
-//      Show Target MAC address
+$bgcolor = change_row_color($bgcolor,$bg1,$bg2);
+           echo "<tr bgcolor=\"" . $bgcolor . "\"><td>".__("NOTE:  Wake on LAN only works on the local LAN and not between networks.").":</td><td></td></tr>";           
+//      Show Target Timing
 $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
           echo "<tr bgcolor=\"" . $bgcolor . "\"><td>".__("This Page was generated in")." ".number_format((microtime_float()-$time_start),2)." ". __("Seconds").".<td></td></td></tr>";
 //
