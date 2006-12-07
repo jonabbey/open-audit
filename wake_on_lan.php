@@ -21,6 +21,7 @@ $this_error = '';
 $result = WakeOnLan($hostname,$mac,$socket_number,$this_error);
 // Show the result
 $bgcolor = "#F1F1F1";
+        echo "<td><img src='images/tv_l.png' width='64' height='64' alt='' /><td><b>".__("Wake on LAN")."</b></td>";
 //      Show Hostname
 $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
            echo "<tr bgcolor=\"" . $bgcolor . "\"><td>".__("Hostname").":</td><td>" .$hostname . "</td></tr>";
