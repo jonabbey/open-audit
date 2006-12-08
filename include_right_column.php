@@ -1,9 +1,9 @@
 <?php
 
-echo "<td width=\"170\" valign=\"top\" >\n";
+echo "<td style=\"width:170px;\" valign=\"top\" align=\"center\">\n";
 echo "<div class=\"main_each\">\n";
 
-echo "<center>";
+#echo "<center>";
 echo __("Version") . " ";
 if(isset($version) AND $version!="") echo $version;
 echo "<br /><br />\n";
@@ -11,11 +11,12 @@ echo "Mark Unwin, 2006.<br /><br />\n";
 echo "<a href=\"http://www.open-audit.org\">Open-AudIT</a> ".__("Webpage").".<br /><br />\n";
 
 echo "<form action=\"search.php\" method=\"post\">\n";
-echo __("Search") . "<br />\n";
-echo "<input size=\"15\" name=\"search_field\" />\n";
+echo "<p>" . __("Search") . "<br />\n";
+echo "<input size=\"15\" name=\"search_field\" /><br />\n";
 echo "<input name=\"submit\" value=\"Go\" type=\"submit\" />\n";
+echo "</p>\n";
 echo "</form>\n";
-echo "</center>";
+#echo "</center>";
 
     if(isset($pc) AND $pc!=""){
         $i=0;

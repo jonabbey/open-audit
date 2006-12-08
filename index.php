@@ -51,10 +51,10 @@ if ($show_system_discovered == "y") {
 
   echo
     "<div class=\"main_each\">
-       <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">
+       <table style=\"border:0px;\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">
          <tr>
            <td class=\"indexheadlines\" colspan=\"3\"><a href=\"javascript://\" onclick=\"switchUl('f1');\">".__("Systems Discovered in the last")." $system_detected ".__("Days").".</a></td>
-           <td align=\"right\"><a href=\"javascript://\" onclick=\"switchUl('f1');\"><img src=\"images/down.png\" width=\"16\" height=\"16\" border=\"0\" alt=\"\" /></a></td>
+           <td align=\"right\"><a href=\"javascript://\" onclick=\"switchUl('f1');\"><img src=\"images/down.png\" width=\"16\" height=\"16\" style=\"border:0px;\" alt=\"\" /></a></td>
           </tr>
        </table>
 
@@ -63,7 +63,7 @@ if ($show_system_discovered == "y") {
   if ($myrow = mysql_fetch_array($result)){
 
     echo
-        "<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">
+        "<table style=\"border:0px;\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">
            <tr>
              <td><b>".__("IP Address")."</b></td>
              <td><b>".__("Hostname")."</b></td>
@@ -73,7 +73,7 @@ if ($show_system_discovered == "y") {
       $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
 
       echo
-        "<tr bgcolor=\"" . $bgcolor . "\">
+        "<tr style=\"bgcolor:" . $bgcolor . ";\">
            <td>" . ip_trans($myrow["net_ip_address"]) . "</td>
            <td><a href=\"system.php?pc=".$myrow["system_uuid"]."&amp;view=summary\">" . $myrow["system_name"] . "</a></td>
            <td>" . return_date_time($myrow["system_first_timestamp"]) . "</td>
@@ -85,7 +85,7 @@ if ($show_system_discovered == "y") {
   } else {}
   echo
     "</div>
-       <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" >
+       <table style=\"border:0px;\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" >
          <tr>
            <td colspan=\"3\"><b>".__("Systems").": " . mysql_numrows($result) . "</b></td>
          </tr>
@@ -107,10 +107,10 @@ if ($show_other_discovered == "y") {
   $bgcolor = "#FFFFFF";
   echo
     "<div class=\"main_each\">
-      <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" >
+      <table style=\"border:0px;\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" >
         <tr>
           <td class=\"indexheadlines\" colspan=\"4\"><a href=\"javascript://\" onclick=\"switchUl('f0');\">".__("Other Items Discovered in the last")." $other_detected ".__("Days").".</a></td>
-          <td align=\"right\"><a href=\"javascript://\" onclick=\"switchUl('f0');\"><img src=\"images/down.png\" width=\"16\" height=\"16\" border=\"0\" alt=\"\" /></a></td>
+          <td align=\"right\"><a href=\"javascript://\" onclick=\"switchUl('f0');\"><img src=\"images/down.png\" width=\"16\" height=\"16\" style=\"border:0px;\" alt=\"\" /></a></td>
         </tr>
       </table>
 
@@ -118,17 +118,17 @@ if ($show_other_discovered == "y") {
 
   if ($myrow = mysql_fetch_array($result)){
     echo
-    "<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" >
+    "<table style=\"border:0px;\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" >
        <tr>
-         <td width=\"150\"><b>".__("IP Address")."</b></td>
-         <td width=\"150\"><b>".__("Hostname")."</b></td>
-         <td width=\"100\"><b>".__("Type")."</b></td>
-         <td width=\"250\"><b>".__("Description")."</b></td>
+         <td style=\"width:150px;\"><b>".__("IP Address")."</b></td>
+         <td style=\"width:150px;\"><b>".__("Hostname")."</b></td>
+         <td style=\"width:100px;\"><b>".__("Type")."</b></td>
+         <td style=\"width:250px;\"><b>".__("Description")."</b></td>
        </tr>\n";
     do {
       $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
       echo
-        "<tr bgcolor=\"" . $bgcolor . "\">
+        "<tr style=\"bgcolor:" . $bgcolor . ";\">
            <td>" . ip_trans($myrow["other_ip_address"]) . "&nbsp;</td>
            <td><a href=\"system.php?other=" . $myrow["other_id"] . "&amp;view=other_system\">" . $myrow["other_network_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
            <td>" . $myrow["other_type"] . "&nbsp;</td>
@@ -143,7 +143,7 @@ if ($show_other_discovered == "y") {
 
   echo
     "</div>
-       <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" >
+       <table style=\"border:0px;\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" >
          <tr><td colspan=\"3\"><b>".__("Other Items").": " . $total_rows . "</b></td></tr>
         </table>
     </div>\n";
@@ -163,10 +163,10 @@ if ($show_systems_not_audited == "y") {
 
   echo
     "<div class=\"main_each\">
-       <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\"  width=\"100%\">
+       <table style=\"border:0px;\" cellpadding=\"0\" cellspacing=\"0\"  width=\"100%\">
          <tr>
            <td class=\"indexheadlines\" colspan=\"3\"><a href=\"javascript://\" onclick=\"switchUl('f2');\">".__("Systems Not Audited in the last")." $days_systems_not_audited ".__("Days").".</a></td>
-           <td align=\"right\"><a href=\"javascript://\" onclick=\"switchUl('f2');\"><img src=\"images/down.png\" width=\"16\" height=\"16\" border=\"0\" alt=\"\" /></a></td>
+           <td align=\"right\"><a href=\"javascript://\" onclick=\"switchUl('f2');\"><img src=\"images/down.png\" width=\"16\" height=\"16\" style=\"border:0px;\" alt=\"\" /></a></td>
          </tr>
        </table>
 
@@ -175,7 +175,7 @@ if ($show_systems_not_audited == "y") {
   if ($myrow = mysql_fetch_array($result)){
 
     echo
-      "<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" >
+      "<table style=\"border:0px;\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" >
          <tr>
              <td><b>".__("IP Address")."</b></td>
              <td><b>".__("Hostname")."</b></td>
@@ -186,7 +186,7 @@ if ($show_systems_not_audited == "y") {
     $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
 
     echo
-      "<tr bgcolor=\"" . $bgcolor . "\">
+      "<tr style=\"bgcolor:" . $bgcolor . ";\">
          <td>" . ip_trans($myrow["net_ip_address"]) . "</td>
            <td><a href=\"system.php?pc=".$myrow["system_uuid"]."&amp;view=summary\">" . $myrow["system_name"] . "</a></td>
            <td>" . return_date_time($myrow["system_timestamp"]) . "</td>
@@ -199,7 +199,7 @@ if ($show_systems_not_audited == "y") {
 
   echo
     "</div>
-       <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" >
+       <table style=\"border:0px;\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" >
          <tr>
            <td colspan=\"3\"><b>".__("Systems").": " . mysql_numrows($result) . "</b></td>
          </tr>
@@ -226,10 +226,10 @@ if ($show_partition_usage == "y") {
     $bgcolor = "#FFFFFF";
     echo
       "<div class=\"main_each\">
-         <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" >
+         <table style=\"border:0px;\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" >
            <tr>
              <td class=\"indexheadlines\"><a href=\"javascript://\" onclick=\"switchUl('f3');\">".__("Partition free space less than")." $partition_free_space ".__("MB").".</a></td>
-             <td align=\"right\"><a href=\"javascript://\" onclick=\"switchUl('f3');\"><img src=\"images/down.png\" width=\"16\" height=\"16\" border=\"0\" alt=\"\" /></a></td>
+             <td align=\"right\"><a href=\"javascript://\" onclick=\"switchUl('f3');\"><img src=\"images/down.png\" width=\"16\" height=\"16\" style=\"border:0px;\" alt=\"\" /></a></td>
            </tr>
          </table>
        <div style=\"display:none;\" id=\"f3\">";
@@ -237,15 +237,15 @@ if ($show_partition_usage == "y") {
     if ($myrow = mysql_fetch_array($result)){
 
       echo
-        "<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" >
+        "<table style=\"border:0px;\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" >
            <tr>
-             <td width=\"150\"><b>".__("IP Address")."</b></td>
-             <td width=\"150\"><b>".__("Hostname")."</b></td>
-             <td width=\"150\"><b>".__("Free Space")." ".__("MB")."</b></td>
-             <td width=\"150\"><b>".__("Size")."</b></td>
-             <td width=\"150\"><b>".__("Free Space")." %</b></td>
-             <td width=\"150\"><b>".__("Drive Letter")."</b></td>
-             <td width=\"150\"><b>".__("Volume Name")."</b></td>
+             <td style=\"width:150px;\"><b>".__("IP Address")."</b></td>
+             <td style=\"width:150px;\"><b>".__("Hostname")."</b></td>
+             <td style=\"width:150px;\"><b>".__("Free Space")." ".__("MB")."</b></td>
+             <td style=\"width:150px;\"><b>".__("Size")."</b></td>
+             <td style=\"width:150px;\"><b>".__("Free Space")." %</b></td>
+             <td style=\"width:150px;\"><b>".__("Drive Letter")."</b></td>
+             <td style=\"width:150px;\"><b>".__("Volume Name")."</b></td>
            </tr>\n";
 
       do {
@@ -256,7 +256,7 @@ if ($show_partition_usage == "y") {
         }
         $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
         echo
-          "<tr bgcolor=\"" . $bgcolor . "\">
+          "<tr style=\"bgcolor:" . $bgcolor . ";\">
              <td>" . ip_trans($myrow["net_ip_address"]) . "</td>
              <td><a href=\"system.php?pc=" . $myrow["partition_uuid"] . "&amp;view=summary\">" . $myrow["system_name"] . "</a></td>
              <td>" . $myrow["partition_free_space"] . " Mb</td>
@@ -273,7 +273,7 @@ if ($show_partition_usage == "y") {
 
   echo
     "</div>
-       <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" >
+       <table style=\"border:0px;\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" >
          <tr>
            <td colspan=\"3\"><b>".__("Partitions").": " . mysql_numrows($result) . "</b></td>
          </tr>
@@ -295,10 +295,10 @@ if ($show_software_detected == "y"){
 
   echo
     "<div class=\"main_each\">
-       <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" >
+       <table style=\"border:0px;\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" >
          <tr>
-           <td class=\"indexheadlines\"><a href=\"rss_new_software.php\"><img src=\"images/feed-icon.png\" width=\"16\" height=\"16\" border=\"0\" alt=\"\"></a>&nbsp;<a href=\"javascript://\" onclick=\"switchUl('f4');\">".__("Software detected in the last")." $days_software_detected ".__("Days").".</a></td>
-           <td align=\"right\"><a href=\"javascript://\" onclick=\"switchUl('f4');\"><img src=\"images/down.png\" width=\"16\" height=\"16\" border=\"0\" alt=\"\" /></a></td>
+           <td class=\"indexheadlines\"><a href=\"rss_new_software.php\"><img src=\"images/feed-icon.png\" width=\"16\" height=\"16\" style=\"border:0px;\" alt=\"\" /></a>&nbsp;<a href=\"javascript://\" onclick=\"switchUl('f4');\">".__("Software detected in the last")." $days_software_detected ".__("Days").".</a></td>
+           <td align=\"right\"><a href=\"javascript://\" onclick=\"switchUl('f4');\"><img src=\"images/down.png\" width=\"16\" height=\"16\" style=\"border:0px;\" alt=\"\" /></a></td>
          </tr>
        </table>
 
@@ -306,18 +306,18 @@ if ($show_software_detected == "y"){
 
   if ($myrow = mysql_fetch_array($result)){
     echo
-      "<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" >
+      "<table style=\"border:0px;\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" >
          <tr>
-           <td width=\"120\"><b>".__("IP Address")."</b></td>
-           <td width=\"150\"><b>".__("Hostname")."</b></td>
-           <td width=\"100\"><b>".__("Date Audited")."</b></td>
+           <td style=\"width:120px;\"><b>".__("IP Address")."</b></td>
+           <td style=\"width:150px;\"><b>".__("Hostname")."</b></td>
+           <td style=\"width:100px;\"><b>".__("Date Audited")."</b></td>
            <td><b>".__("Software")."</b></td>
          </tr>\n";
     do {
       $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
 
       echo
-        "<tr bgcolor=\"" . $bgcolor . "\">
+        "<tr style=\"bgcolor:" . $bgcolor . ";\">
            <td>" . ip_trans($myrow["net_ip_address"]) . "</td>
            <td><a href=\"system.php?pc=".$myrow["system_uuid"]."&amp;view=summary\">" . $myrow["system_name"] . "</a></td>
            <td>" . return_date($myrow["software_first_timestamp"]) . "</td>
@@ -331,7 +331,7 @@ if ($show_software_detected == "y"){
 
   echo
     "</div>
-       <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" >
+       <table style=\"border:0px;\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" >
          <tr>
            <td colspan=\"3\"><b>".__("Packages").": " . mysql_numrows($result) . "</b></td>
          </tr>
@@ -350,28 +350,28 @@ if (1 != 1){
 
   echo
     "<div class=\"main_each\">
-       <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" >
+       <table style=\"border:0px;\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" >
          <tr>
            <td class=\"indexheadlines\"><a href=\"javascript://\" onclick=\"switchUl('f5');\">$l_top  $number_patches_not_detected $l_mis.</a></td>
-           <td align=\"right\"><a href=\"javascript://\" onclick=\"switchUl('f5');\"><img src=\"images/down.png\" width=\"16\" height=\"16\" border=\"0\" alt=\"\" /></a></td>
+           <td align=\"right\"><a href=\"javascript://\" onclick=\"switchUl('f5');\"><img src=\"images/down.png\" width=\"16\" height=\"16\" style=\"border:0px;\" alt=\"\" /></a></td>
          </tr>
        </table>
      <div style=\"display:none;\" id=\"f5\">\n";
 
   if ($myrow = mysql_fetch_array($result)){
     echo
-      "<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" >
+      "<table style=\"border:0px;\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" >
          <tr>
-           <td width=\"150\" align=\"center\"><b>$l_pcw</b></td>
-           <td width=\"150\" align=\"center\"><b>$l_qno</b></td>
-           <td width=\"150\" align=\"center\"><b>$l_lin</b></td>
+           <td style=\"width:150px;\" align=\"center\"><b>$l_pcw</b></td>
+           <td style=\"width:150px;\" align=\"center\"><b>$l_qno</b></td>
+           <td style=\"width:150px;\" align=\"center\"><b>$l_lin</b></td>
          </tr>\n";
 
     do {
       $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
 
       echo
-        "<tr bgcolor=\"" . $bgcolor . "\">
+        "<tr style=\"bgcolor:" . $bgcolor . ";\">
            <td align=\"center\"><a href=\"list_missing_patches.php?sub=sw1&amp;name=" . url_clean($myrow["ss_qno"]) . "\" >" . $myrow["count"] . "</a></td>
            <td align=\"center\"><a href=\"list_missing_patches.php?sub=sw2&amp;name=" . url_clean($myrow["ss_qno"]) . "\" >" . $myrow["ss_qno"] . "</a></td>
            <td align=\"center\"><a href=\"http://www.google.com/search?num=30&amp;hl=en&amp;lr=lang_en&amp;ie=UTF-8&amp;oe=UTF-8&amp;safe=off&amp;q=%22" . $myrow["ss_qno"] . "%22&amp;btnG=Search\"><img border=0 alt=\"Google Search\" title=\"Google Search\" src=\"images/button_google.gif\" /></a></td>
@@ -394,15 +394,15 @@ if ($show_detected_servers == "y"){
   $bgcolor = "#FFFFFF";
   echo
     "<div class=\"main_each\">
-       <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" >
+       <table style=\"border:0px;\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" >
           <tr>
             <td class=\"indexheadlines\" colspan=\"4\"><a href=\"javascript://\" onclick=\"switchUl('f6');\">".__("WEB Servers").".</a></td>
-            <td align=\"right\"><a href=\"javascript://\" onclick=\"switchUl('f6');\"><img src=\"images/down.png\" width=\"16\" height=\"16\" border=\"0\" alt=\"\" /></a></td>
+            <td align=\"right\"><a href=\"javascript://\" onclick=\"switchUl('f6');\"><img src=\"images/down.png\" width=\"16\" height=\"16\" style=\"border:0px;\" alt=\"\" /></a></td>
           </tr>
         </table>
 
         <div style=\"display:none;\" id=\"f6\">
-          <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" >
+          <table style=\"border:0px;\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" >
             <tr>
               <td colspan=\"2\"><b>".__("Windows")." ".__("Services")."</b></td>
             </tr>\n";
@@ -428,11 +428,11 @@ if ($show_detected_servers == "y"){
       $count = $count + 1;
 
       echo
-        "<tr bgcolor=\"" . $bgcolor . "\">
+        "<tr style=\"bgcolor:" . $bgcolor . ";\">
            <td>" . ip_trans($myrow["net_ip_address"]) . "&nbsp;</td>
            <td><a href=\"system.php?pc=" . $myrow["service_uuid"] . "&amp;view=summary\">" . $myrow["system_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
            <td>" . $myrow["service_display_name"] . "</td>
-           <td><a href= http://".$myrow["system_name"]." TARGET=\"_blank\"/>" . $myrow["service_started"] . "</td>
+           <td><a href= \"http://".$myrow["system_name"]."\" onclick=\"this.target='_blank';\" />" . $myrow["service_started"] . "</td>
          </tr>\n";
 
     } while ($myrow = mysql_fetch_array($result));
@@ -457,7 +457,7 @@ if ($show_detected_servers == "y"){
         $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
 
         echo
-          "<tr bgcolor=\"" . $bgcolor . "\">
+          "<tr style=\"bgcolor:" . $bgcolor . ";\">
              <td>" . ip_trans($myrow["net_ip_address"]) . "&nbsp;</td>
              <td><a href=\"system.php?pc=" . $myrow["system_uuid"] . "&amp;view=summary\">" . $myrow["system_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
              <td>" . $myrow["nmap_port_number"] . "&nbsp;</td>
@@ -478,7 +478,7 @@ if ($show_detected_servers == "y"){
          <td colspan=\"4\"><b>".__("Nmap discovered on Other equipment")."</b></td>
        </tr>
 
-       <tr bgcolor=\"" . $bgcolor . "\">
+       <tr style=\"bgcolor:" . $bgcolor . ";\">
          <td><b>".__("IP Address")."</b></td>
          <td><b>".__("Hostname")."</b></td>
          <td><b>".__("Port")."</b></td>
@@ -490,7 +490,7 @@ if ($show_detected_servers == "y"){
       $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
 
     echo
-      "<tr bgcolor=\"" . $bgcolor . "\">
+      "<tr style=\"bgcolor:" . $bgcolor . ";\">
          <td>" . ip_trans($myrow["other_ip_address"]) . "&nbsp;</td>
          <td><a href=\"system.php?other=" . $myrow["other_id"] . "&amp;view=other_system\">" . $myrow["other_network_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
              <td>" . $myrow["nmap_port_number"] . "&nbsp;</td>
@@ -505,7 +505,7 @@ if ($show_detected_servers == "y"){
         "</table>
        </div>
 
-       <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" >
+       <table style=\"border:0px;\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" >
          <tr>
            <td colspan=\"3\"><b>".__("Systems").": " . $count . "</b></td>
          </tr>
@@ -530,15 +530,15 @@ if ($show_detected_servers == "y"){
 
   echo
     "<div class=\"main_each\">
-       <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" >
+       <table style=\"border:0px;\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" >
          <tr>
            <td class=\"indexheadlines\" colspan=\"4\"><a href=\"javascript://\" onclick=\"switchUl('f7');\">".__("FTP Servers").".</a></td>
-           <td align=\"right\"><a href=\"javascript://\" onclick=\"switchUl('f7');\"><img src=\"images/down.png\" width=\"16\" height=\"16\" border=\"0\" alt=\"\" /></a></td>
+           <td align=\"right\"><a href=\"javascript://\" onclick=\"switchUl('f7');\"><img src=\"images/down.png\" width=\"16\" height=\"16\" style=\"border:0px;\" alt=\"\" /></a></td>
          </tr>
         </table>
 
         <div style=\"display:none;\" id=\"f7\">
-         <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" >\n";
+         <table style=\"border:0px;\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" >\n";
 
   $sql = "SELECT DISTINCT service_uuid, service_display_name, service_started, system_name, net_ip_address FROM service, system
           WHERE service_display_name LIKE 'FTP%' AND service_uuid = system_uuid AND service_timestamp = system_timestamp
@@ -564,11 +564,11 @@ if ($show_detected_servers == "y"){
       $count = $count + 1;
 
       echo
-        "<tr bgcolor=\"" . $bgcolor . "\">
+        "<tr style=\"bgcolor:" . $bgcolor . ";\">
            <td>" . ip_trans($myrow["net_ip_address"]) . "&nbsp;</td>
            <td><a href=\"system.php?pc=" . $myrow["service_uuid"] . "&amp;view=summary\">" . $myrow["system_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
            <td>" . $myrow["service_display_name"] . "</td>
-           <td><a href= ftp://".$myrow["system_name"]." TARGET=\"_blank\"/>" . $myrow["service_started"] . "</td>
+           <td><a href=\"ftp://".$myrow["system_name"]."\" onclick=\"this.target='_blank';\" />" . $myrow["service_started"] . "</td>
          </tr>\n";
 
     } while ($myrow = mysql_fetch_array($result));
@@ -598,7 +598,7 @@ if ($show_detected_servers == "y"){
         $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
 
         echo
-          "<tr bgcolor=\"" . $bgcolor . "\">
+          "<tr style=\"bgcolor:" . $bgcolor . ";\">
              <td>" . ip_trans($myrow["net_ip_address"]) . "&nbsp;</td>
              <td><a href=\"system.php?pc=" . $myrow["system_uuid"] . "&amp;view=summary\">" . $myrow["system_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
              <td>" . $myrow["nmap_port_number"] . "&nbsp;</td>
@@ -621,7 +621,7 @@ if ($show_detected_servers == "y"){
          <td colspan=\"4\"><b>".__("Nmap discovered on Other equipment")."</b></td>
        </tr>
 
-       <tr bgcolor=\"" . $bgcolor . "\">
+       <tr style=\"bgcolor:" . $bgcolor . ";\">
          <td><b>".__("IP Address")."</b></td>
          <td><b>".__("Hostname")."</b></td>
          <td><b>".__("Port")."</b></td>
@@ -634,9 +634,9 @@ if ($show_detected_servers == "y"){
 //<td><a href=\"system.php?other=" . $myrow["other_id"] . "&amp;view=other_system\">" . $myrow["other_network_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
          
     echo
-      "<tr bgcolor=\"" . $bgcolor . "\">
+      "<tr style=\"bgcolor:" . $bgcolor . ";\">
          <td>" . ip_trans($myrow["other_ip_address"]) . "&nbsp;</td>
-         <td><a href= ftp://".$myrow["other_network_name"]." TARGET=\"_blank\"/a></td>
+         <td><a href=\"ftp://".$myrow["other_network_name"]."\" onclick=\"this.target='_blank';\" /a></td>
          <td>" . $myrow["nmap_port_number"] . "&nbsp;</td>
          <td></td>
          <td></td>
@@ -651,7 +651,7 @@ if ($show_detected_servers == "y"){
                         </table>
                 </div>
 
-        <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" >
+        <table style=\"border:0px;\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" >
          <tr>
            <td colspan=\"3\"><b>".__("Systems").": " . $count . "</b></td>
          </tr>
@@ -675,18 +675,18 @@ if ($show_detected_servers == "y"){
 
   echo
     "<div class=\"main_each\">
-       <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" >
+       <table style=\"border:0px;\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" >
          <tr>
            <td class=\"indexheadlines\" colspan=\"4\"><a href=\"javascript://\" onclick=\"switchUl('f8');\">".__("Telnet Servers")."</a></td>
-           <td align=\"right\"><a href=\"javascript://\" onclick=\"switchUl('f8');\"><img src=\"images/down.png\" width=\"16\" height=\"16\" border=\"0\" alt=\"\" /></a></td>
+           <td align=\"right\"><a href=\"javascript://\" onclick=\"switchUl('f8');\"><img src=\"images/down.png\" width=\"16\" height=\"16\" style=\"border:0px;\" alt=\"\" /></a></td>
          </tr>
        </table>
 
        <div style=\"display:none;\" id=\"f8\">
-         <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" >\n";
+         <table style=\"border:0px;\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" >\n";
 
   $sql = "SELECT DISTINCT service_uuid, service_display_name, service_started, system_name, net_ip_address FROM service, system
-          WHERE service_display_name = 'Telnet' AND service_timestamp = system_timestamp
+          WHERE service_display_name = 'Telnet' AND service_started = 'True' AND service_timestamp = system_timestamp
           AND service_uuid = system_uuid ORDER BY system_name";
   $result = mysql_query($sql, $db);
   if ($myrow = mysql_fetch_array($result)){
@@ -709,11 +709,11 @@ if ($show_detected_servers == "y"){
       $count = $count + 1;
 
       echo
-        "<tr bgcolor=\"" . $bgcolor . "\">
+        "<tr style=\"bgcolor:" . $bgcolor . ";\">
            <td>" . ip_trans($myrow["net_ip_address"]) . "&nbsp;</td>
            <td><a href=\"system.php?pc=" . $myrow["service_uuid"] . "&amp;view=summary\">" . $myrow["system_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
            <td>" . $myrow["service_display_name"] . "</td>
-           <td><a href= telnet://".$myrow["system_name"]." TARGET=\"_blank\"/>" . $myrow["service_started"] . "</td>
+           <td><a href=\"telnet://".$myrow["system_name"]."\" onclick=\"this.target='_blank';\" />" . $myrow["service_started"] . "</td>
          </tr>\n";
 
     } while ($myrow = mysql_fetch_array($result));
@@ -742,8 +742,8 @@ if ($show_detected_servers == "y"){
       $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
 
     echo
-      "<tr bgcolor=\"" . $bgcolor . "\">
-         <td><a href= telnet://".$myrow["system_name"]." TARGET=\"_blank\"/>" . ip_trans($myrow["net_ip_address"]) . "&nbsp;</td>
+      "<tr style=\"bgcolor:" . $bgcolor . ";\">
+         <td><a href=\"telnet://".$myrow["system_name"]."\" onclick=\"this.target='_blank';\" />" . ip_trans($myrow["net_ip_address"]) . "&nbsp;</td>
          <td><a href=\"system.php?pc=" . $myrow["system_uuid"] . "&amp;view=summary\">" . $myrow["system_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
          <td>" . $myrow["nmap_port_number"] . "&nbsp;</td>
        </tr>\n";
@@ -764,7 +764,7 @@ if ($show_detected_servers == "y"){
          <td colspan=\"4\"><b>".__("Nmap discovered on Other equipment")."</b></td>
        </tr>
 
-       <tr bgcolor=\"" . $bgcolor . "\">
+       <tr style=\"bgcolor:" . $bgcolor . ";\">
          <td><b>".__("IP Address")."</b></td>
          <td><b>".__("Hostname")."</b></td>
          <td><b>".__("Port")."</b></td>
@@ -776,8 +776,8 @@ if ($show_detected_servers == "y"){
       $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
 
     echo
-      "<tr bgcolor=\"" . $bgcolor . "\">
-         <td><a href= telnet://".$myrow["other_network_name"]." TARGET=\"_blank\"/>" . ip_trans($myrow["other_ip_address"]) . "&nbsp;</td>
+      "<tr style=\"bgcolor:" . $bgcolor . ";\">
+         <td><a href=\"telnet://".$myrow["other_network_name"]."\" onclick=\"this.target='_blank';\" />" . ip_trans($myrow["other_ip_address"]) . "&nbsp;</td>
          <td><a href=\"system.php?other=" . $myrow["other_id"] . "&amp;view=other_system\">" . $myrow["other_network_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
          <td>" . $myrow["nmap_port_number"] . "&nbsp;</td>
          <td></td>
@@ -794,7 +794,7 @@ if ($show_detected_servers == "y"){
                   </table>
                   </div>
 
-         <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" >
+         <table style=\"border:0px;\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" >
            <tr>
              <td colspan=\"3\"><b>".__("Systems").": $count </b></td>
            </tr>
@@ -817,15 +817,15 @@ if ($show_detected_servers == "y"){
 
   echo
     "<div class=\"main_each\">
-       <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" >
+       <table style=\"border:0px;\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" >
          <tr>
            <td class=\"indexheadlines\" colspan=\"4\"><a href=\"javascript://\" onclick=\"switchUl('f9');\">".__("Email Servers")."</a></td>
-           <td align=\"right\"><a href=\"javascript://\" onclick=\"switchUl('f9');\"><img src=\"images/down.png\" width=\"16\" height=\"16\" border=\"0\" alt=\"\" /></a></td>
+           <td align=\"right\"><a href=\"javascript://\" onclick=\"switchUl('f9');\"><img src=\"images/down.png\" width=\"16\" height=\"16\" style=\"border:0px;\" alt=\"\" /></a></td>
          </tr>
        </table>
 
        <div style=\"display:none;\" id=\"f9\">
-         <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" >\n";
+         <table style=\"border:0px;\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" >\n";
 
   $sql  = "SELECT DISTINCT service_uuid, service_display_name, service_started, system_name, net_ip_address FROM service, system WHERE
            (service_display_name = 'Microsoft Exchange Information Store' OR
@@ -853,11 +853,11 @@ if ($show_detected_servers == "y"){
       $count = $count + 1;
 
       echo
-        "<tr bgcolor=\"" . $bgcolor . "\">
+        "<tr style=\"bgcolor:" . $bgcolor . ";\">
            <td>" . ip_trans($myrow["net_ip_address"]) . "&nbsp;</td>
            <td><a href=\"system.php?pc=" . $myrow["service_uuid"] . "&amp;view=summary\">" . $myrow["system_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
            <td>" . $myrow["service_display_name"] . "</td>
-           <td><a href= telnet://".$myrow["system_name"].":25 TARGET=\"_blank\"/>" . $myrow["service_started"] . "</td>
+           <td><a href=\"telnet://".$myrow["system_name"].":25\" onclick=\"this.target='_blank';\" />" . $myrow["service_started"] . "</td>
          </tr>\n";
 
     } while ($myrow = mysql_fetch_array($result));
@@ -888,8 +888,8 @@ if ($show_detected_servers == "y"){
       $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
 
     echo
-      "<tr bgcolor=\"" . $bgcolor . "\">
-         <td><a href= telnet://".$myrow["system_name"].":25 TARGET=\"_blank\"/>" . ip_trans($myrow["net_ip_address"]) . "&nbsp;</td>
+      "<tr style=\"bgcolor:" . $bgcolor . ";\">
+         <td><a href=\"telnet://".$myrow["system_name"].":25\" onclick=\"this.target='_blank';\" />" . ip_trans($myrow["net_ip_address"]) . "&nbsp;</td>
          <td><a href=\"system.php?pc=" . $myrow["system_uuid"] . "&amp;view=summary\">" . $myrow["system_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
          <td>" . $myrow["nmap_port_number"] . "&nbsp;</td>
        </tr>\n";
@@ -910,7 +910,7 @@ if ($show_detected_servers == "y"){
          <td colspan=\"4\"><b>".__("Nmap discovered on Other equipment")."</b></td>
        </tr>
 
-       <tr bgcolor=\"" . $bgcolor . "\">
+       <tr style=\"bgcolor:" . $bgcolor . ";\">
          <td><b>".__("IP Address")."</b></td>
          <td><b>".__("Hostname")."</b></td>
          <td><b>".__("Port")."</b></td>
@@ -922,8 +922,8 @@ if ($show_detected_servers == "y"){
       $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
 
     echo
-        "<tr bgcolor=\"" . $bgcolor . "\">
-           <td><a href= telnet://".$myrow["other_network_name"].":25 TARGET=\"_blank\"/>" . ip_trans($myrow["other_ip_address"]) . "&nbsp;</td>
+        "<tr style=\"bgcolor:" . $bgcolor . ";\">
+           <td><a href=\"telnet://".$myrow["other_network_name"].":25\" onclick=\"this.target='_blank';\" />" . ip_trans($myrow["other_ip_address"]) . "&nbsp;</td>
            <td><a href=\"system.php?other=" . $myrow["other_id"] . "&amp;view=summary\">" . $myrow["other_network_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
            <td>" . $myrow["nmap_port_number"] . "&nbsp;</td>
          </tr>\n";
@@ -938,7 +938,7 @@ if ($show_detected_servers == "y"){
           "</table>
          </div>
 
-         <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" >
+         <table style=\"border:0px;\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" >
            <tr>
              <td colspan=\"3\"><b>".__("Systems").": " . $count . "</b></td>
            </tr>
@@ -960,15 +960,15 @@ if ($show_detected_servers == "y"){
 
   echo
     "<div class=\"main_each\">
-       <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" >
+       <table style=\"border:0px;\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" >
          <tr>
            <td class=\"indexheadlines\" colspan=\"4\"><a href=\"javascript://\" onclick=\"switchUl('f10');\">".__("VNC Servers")."</a></td>
-           <td align=\"right\"><a href=\"javascript://\" onclick=\"switchUl('f10');\"><img src=\"images/down.png\" width=\"16\" height=\"16\" border=\"0\" alt=\"\" /></a></td>
+           <td align=\"right\"><a href=\"javascript://\" onclick=\"switchUl('f10');\"><img src=\"images/down.png\" width=\"16\" height=\"16\" style=\"border:0px;\" alt=\"\" /></a></td>
          </tr>
        </table>
 
        <div style=\"display:none;\" id=\"f10\">
-         <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" >\n";
+         <table style=\"border:0px;\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" >\n";
 
   $sql  = "SELECT DISTINCT service_uuid, service_display_name, service_started, system_name, net_ip_address FROM service, system WHERE
            service_display_name LIKE '%VNC%' AND
@@ -994,11 +994,11 @@ if ($show_detected_servers == "y"){
       $count = $count + 1;
 
       echo
-        "<tr bgcolor=\"" . $bgcolor . "\">
+        "<tr style=\"bgcolor:" . $bgcolor . ";\">
            <td>" . ip_trans($myrow["net_ip_address"]) . "&nbsp;</td>
            <td><a href=\"system.php?pc=" . $myrow["service_uuid"] . "&amp;view=summary\">" . $myrow["system_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
            <td>" . $myrow["service_display_name"] . "</td>
-           <td><a href= \"launch.php?hostname=".$myrow["system_name"]."&amp;application=vnc&amp;ext=vnc\"/>" . $myrow["service_started"] . "</td>
+           <td><a href=\"launch.php?hostname=".$myrow["system_name"]."&amp;application=vnc&amp;ext=vnc\"/>" . $myrow["service_started"] . "</td>
          </tr>\n";
 
     } while ($myrow = mysql_fetch_array($result));
@@ -1028,7 +1028,7 @@ if ($show_detected_servers == "y"){
       $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
 
         echo
-          "<tr bgcolor=\"" . $bgcolor . "\">
+          "<tr style=\"bgcolor:" . $bgcolor . ";\">
              <td>" . ip_trans($myrow["net_ip_address"]) . "&nbsp;</td>
              <td><a href=\"system.php?pc=" . $myrow["system_uuid"] . "&amp;view=summary\">" . $myrow["system_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
              <td>" . $myrow["nmap_port_number"] . "&nbsp;</td>
@@ -1050,7 +1050,7 @@ if ($show_detected_servers == "y"){
          <td colspan=\"4\"><b>".__("Nmap discovered on Other equipment")."</b></td>
        </tr>
 
-       <tr bgcolor=\"" . $bgcolor . "\">
+       <tr style=\"bgcolor:" . $bgcolor . ";\">
          <td><b>".__("IP Address")."</b></td>
          <td><b>".__("Hostname")."</b></td>
          <td><b>".__("Port")."</b></td>
@@ -1062,7 +1062,7 @@ if ($show_detected_servers == "y"){
       $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
 
       echo
-        "<tr bgcolor=\"" . $bgcolor . "\">
+        "<tr style=\"bgcolor:" . $bgcolor . ";\">
            <td>" . ip_trans($myrow["other_ip_address"]) . "&nbsp;</td>
            <td><a href=\"system.php?other=" . $myrow["other_id"] . "&amp;view=summary\">" . $myrow["other_network_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
            <td>" . $myrow["nmap_port_number"] . "&nbsp;</td>
@@ -1078,7 +1078,7 @@ if ($show_detected_servers == "y"){
           "</table>
          </div>
 
-         <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" >
+         <table style=\"border:0px;\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" >
            <tr>
              <td colspan=\"3\"><b>".__("Systems").": " . $count . "</b></td>
            </tr>
@@ -1106,15 +1106,15 @@ if ($show_detected_servers == "y"){
 
   echo
     "<div class=\"main_each\">
-       <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" >
+       <table style=\"border:0px;\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" >
          <tr>
            <td class=\"indexheadlines\" colspan=\"4\"><a href=\"javascript://\" onclick=\"switchUl('f11');\">".__("RDP and Terminal Servers").".</a></td>
-           <td align=\"right\"><a href=\"javascript://\" onclick=\"switchUl('f11');\"><img src=\"images/down.png\" width=\"16\" height=\"16\" border=\"0\" alt=\"\" /></a></td>
+           <td align=\"right\"><a href=\"javascript://\" onclick=\"switchUl('f11');\"><img src=\"images/down.png\" width=\"16\" height=\"16\" style=\"border:0px;\" alt=\"\" /></a></td>
          </tr>
        </table>
 
        <div style=\"display:none;\" id=\"f11\">
-         <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" >\n";
+         <table style=\"border:0px;\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" >\n";
 
   $sql  = "SELECT DISTINCT service_uuid, service_display_name, service_started, system_name, net_ip_address FROM service, system WHERE
            service_display_name LIKE '%Terminal Services%' AND
@@ -1140,11 +1140,11 @@ if ($show_detected_servers == "y"){
       $count = $count + 1;
 
       echo
-        "<tr bgcolor=\"" . $bgcolor . "\">
+        "<tr style=\"bgcolor:" . $bgcolor . ";\">
            <td>" . ip_trans($myrow["net_ip_address"]) . "&nbsp;</td>
            <td><a href=\"system.php?pc=" . $myrow["service_uuid"] . "&amp;view=summary\">" . $myrow["system_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
            <td>" . $myrow["service_display_name"] . "</td>
-           <td><a href= \"launch.php?hostname=".$myrow["system_name"]."&amp;application=rdp&amp;ext=rdp\"/>" . $myrow["service_started"] . "</td>
+           <td><a href=\"launch.php?hostname=".$myrow["system_name"]."&amp;application=rdp&amp;ext=rdp\"/>" . $myrow["service_started"] . "</td>
          </tr>\n";
 
     } while ($myrow = mysql_fetch_array($result));
@@ -1173,7 +1173,7 @@ if ($show_detected_servers == "y"){
       $count = $count + 1;
       $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
         echo
-          "<tr bgcolor=\"" . $bgcolor . "\">
+          "<tr style=\"bgcolor:" . $bgcolor . ";\">
              <td><a href= \"launch.php?hostname=".$myrow["system_name"]."&amp;application=rdp&amp;ext=rdp\"/>" . ip_trans($myrow["net_ip_address"]) . "&nbsp;</td>
              <td ><a href=\"system.php?pc=" . $myrow["system_uuid"] . "&amp;view=summary\">" . $myrow["system_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
              <td>" . $myrow["nmap_port_number"] . "&nbsp;</td>
@@ -1195,7 +1195,7 @@ if ($show_detected_servers == "y"){
          <td colspan=\"4\"><b>".__("Nmap discovered on Other equipment")."</b></td>
        </tr>
 
-       <tr bgcolor=\"" . $bgcolor . "\">
+       <tr style=\"bgcolor:" . $bgcolor . ";\">
          <td><b>".__("IP Address")."</b></td>
          <td><b>".__("Hostname")."</b></td>
          <td><b>".__("Port")."</b></td>
@@ -1207,7 +1207,7 @@ if ($show_detected_servers == "y"){
       $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
 
       echo
-        "<tr bgcolor=\"" . $bgcolor . "\">
+        "<tr style=\"bgcolor:" . $bgcolor . ";\">
            <td>" . ip_trans($myrow["other_ip_address"]) . "&nbsp;</td>
            <td ><a href=\"system.php?other=" . $myrow["other_id"] . "&amp;view=other_system\">" . $myrow["other_network_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
            <td>" . $myrow["nmap_port_number"] . "&nbsp;</td>
@@ -1223,7 +1223,7 @@ if ($show_detected_servers == "y"){
           "</table>
          </div>
 
-         <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" >
+         <table style=\"border:0px;\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" >
            <tr>
              <td colspan=\"3\"><b>".__("Systems").": " . $count . "</b></td>
            </tr>
@@ -1245,10 +1245,10 @@ if (isset($show_detected_xp_av) AND $show_detected_xp_av == "y"){
 
   echo
     "<div class=\"main_each\">
-       <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\"  width=\"100%\">
+       <table style=\"border:0px;\" cellpadding=\"0\" cellspacing=\"0\"  width=\"100%\">
          <tr>
            <td class=\"indexheadlines\" colspan=\"3\"><a href=\"javascript://\" onclick=\"switchUl('f12');\">".__("XP SP2 without up to date AntiVirus")."</a></td>
-           <td align=\"right\"><a href=\"javascript://\" onclick=\"switchUl('f12');\"><img src=\"images/down.png\" width=\"16\" height=\"16\" border=\"0\" alt=\"\" /></a></td>
+           <td align=\"right\"><a href=\"javascript://\" onclick=\"switchUl('f12');\"><img src=\"images/down.png\" width=\"16\" height=\"16\" style=\"border:0px;\" alt=\"\" /></a></td>
          </tr>
        </table>
 
@@ -1258,7 +1258,7 @@ if (isset($show_detected_xp_av) AND $show_detected_xp_av == "y"){
 
 
     echo
-      "<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" >
+      "<table style=\"border:0px;\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" >
          <tr>
            <td><b>".__("IP Address")."</b></td>
            <td><b>".__("Hostname")."</b></td>
@@ -1270,7 +1270,7 @@ if (isset($show_detected_xp_av) AND $show_detected_xp_av == "y"){
       $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
 
       echo
-        "<tr bgcolor=\"" . $bgcolor . "\">
+        "<tr style=\"bgcolor:" . $bgcolor . ";\">
            <td>" . ip_trans($myrow["net_ip_address"]) . "</td>
            <td><a href=\"system.php?pc=" . $myrow["system_uuid"] . "&amp;view=summary\">" . $myrow["system_name"] . "</a></td>
            <td>" . $myrow["virus_name"] . "</td>
@@ -1286,7 +1286,7 @@ if (isset($show_detected_xp_av) AND $show_detected_xp_av == "y"){
 
   echo
     "</div>
-       <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" >
+       <table style=\"border:0px;\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" >
          <tr><td colspan=\"3\"><b>".__("Systems").": " . mysql_numrows($result) . "</b></td></tr>
        </table>
      </div>";
@@ -1300,7 +1300,6 @@ include "include_right_column.php";
 
 include "include_png_replace.php";
 
-echo "</body>\n</html>\n";
-
+echo "</body>\n</html>";
 ?>
 
