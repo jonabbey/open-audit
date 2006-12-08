@@ -105,7 +105,7 @@ echo "<div class=\"main_each\">";
 //IIS doesn't set $_SERVER["REQUEST_URI"] so need to use script name and query string instead
 $MY_REQUEST_URI = $_SERVER["SCRIPT_NAME"] . "?" .  $_SERVER["QUERY_STRING"];
 
-echo "<form method=\"post\" name=\"form_nav\" action=\"".htmlentities($MY_REQUEST_URI)."\" style=\"margin:0px;\">\n";
+echo "<form method=\"post\" id=\"form_nav\" action=\"".htmlentities($MY_REQUEST_URI)."\" style=\"margin:0px;\">\n";
 
   //Calculating the page-count-vars in headline
   if( ($page_count+$count_system)>$all_page_count OR (isset($show_all) AND $show_all==1)){
@@ -130,44 +130,44 @@ echo "<form method=\"post\" name=\"form_nav\" action=\"".htmlentities($MY_REQUES
 
      if(isset($_REQUEST["headline_addition"])) {echo htmlspecialchars(stripslashes($_REQUEST["headline_addition"]));}
      echo " (".($page_count+1)."-".$show_page_count_to."/".$all_page_count.")\n";
-  echo "</td><td align=\"right\" nowrap height=\"50%\">\n";
+  echo "</td><td align=\"right\" style=\"height:50%;\">\n";
 
   //Navigation-buttons
   //Previous
   if($page_count!=0 AND (isset($show_all) AND $show_all!=1)){
-      echo "<a href=\"#\" onClick=\"set_form_field('page_count', '".$page_prev."'); submit_form();\">";
-        echo "<img src=\"images/go-prev.png\" alt=\"".__("Previous")."\" title=\"".__("Previous")."\" border=\"0\" width=\"16\" height=\"16\" />";
+      echo "<a href=\"#\" onclick=\"set_form_field('page_count', '".$page_prev."'); submit_form();\">";
+        echo "<img src=\"images/go-prev.png\" alt=\"".__("Previous")."\" title=\"".__("Previous")."\" style=\"border:0px;\" width=\"16\" height=\"16\" />";
       echo "</a>\n";
   }else{
-    echo "<img src=\"images/go-prev-disabled.png\" alt=\"".__("Disabled")."\" title=\"".__("Disabled")."\" border=\"0\" width=\"16\" height=\"16\" />\n";
+    echo "<img src=\"images/go-prev-disabled.png\" alt=\"".__("Disabled")."\" title=\"".__("Disabled")."\" style=\"border:0px;\" width=\"16\" height=\"16\" />\n";
   }
 
   //All
   //if($all_page_count>=$count_system OR $count_system==$count_system_max ){
   if($all_page_count>$count_system OR $count_system==$count_system_max ){
       if($show_all!=1){
-          echo "<a href=\"#\" onClick=\"set_form_field('show_all', '1'); set_form_field('page_count', '0'); submit_form();\">";
-            echo "<img src=\"images/go-all.png\" alt=\"\" title=\"".__("All")."\" border=\"0\" width=\"16\" height=\"16\" />";
+          echo "<a href=\"#\" onclick=\"set_form_field('show_all', '1'); set_form_field('page_count', '0'); submit_form();\">";
+            echo "<img src=\"images/go-all.png\" alt=\"\" title=\"".__("All")."\" style=\"border:0px;\" width=\"16\" height=\"16\" />";
           echo "</a>\n";
       }else{
-          echo "<a href=\"#\" onClick=\"set_form_field('show_all', ''); set_form_field('page_count', '0'); submit_form();\">";
-            echo "<img src=\"images/go-less.png\" alt=\"".__("By Page")."\" title=\"".__("By Page")."\" border=\"0\" width=\"16\" height=\"16\" />";
+          echo "<a href=\"#\" onclick=\"set_form_field('show_all', ''); set_form_field('page_count', '0'); submit_form();\">";
+            echo "<img src=\"images/go-less.png\" alt=\"".__("By Page")."\" title=\"".__("By Page")."\" style=\"border:0px;\" width=\"16\" height=\"16\" />";
           echo "</a>\n";
       }
   }else{
-      echo "<img src=\"images/go-all-disabled.png\" alt=\"".__("Disabled")."\" title=\"".__("Disabled")."\" border=\"0\" width=\"16\" height=\"16\" />\n";
+      echo "<img src=\"images/go-all-disabled.png\" alt=\"".__("Disabled")."\" title=\"".__("Disabled")."\" style=\"border:0px;\" width=\"16\" height=\"16\" />\n";
   }
   //Next
   //if(($page_count+$count_system)<=$all_page_count AND (isset($show_all) AND $show_all!=1)){
   if(($page_count+$count_system)<$all_page_count AND (isset($show_all) AND $show_all!=1)){
-      echo "<a href=\"#\" onClick=\"set_form_field('page_count', '".$page_next."'); submit_form();\">";
-        echo "<img src=\"images/go-next.png\" alt=\"".__("Next")."\" title=\"".__("Next")."\" border=\"0\" width=\"16\" height=\"16\" />";
+      echo "<a href=\"#\" onclick=\"set_form_field('page_count', '".$page_next."'); submit_form();\">";
+        echo "<img src=\"images/go-next.png\" alt=\"".__("Next")."\" title=\"".__("Next")."\" style=\"border:0px;\" width=\"16\" height=\"16\" />";
       echo "</a>\n";
   }else{
-    echo "<img src=\"images/go-next-disabled.png\" alt=\"".__("Disabled")."\" title=\"".__("Disabled")."\" border=\"0\" width=\"16\" height=\"16\" />\n";
+    echo "<img src=\"images/go-next-disabled.png\" alt=\"".__("Disabled")."\" title=\"".__("Disabled")."\" style=\"border:0px;\" width=\"16\" height=\"16\" />\n";
   }
 
-  echo "</td></tr><tr><td align=\"right\" nowrap height=\"50%\">\n";
+  echo "</td></tr><tr><td align=\"right\" style=\"height:50%;\">\n";
 
   //Direct jumping to pages
   //Don't show if there is only one-page or show_all==1
@@ -180,7 +180,7 @@ echo "<form method=\"post\" name=\"form_nav\" action=\"".htmlentities($MY_REQUES
           if( ($i<=($count_system*4)) OR ($i>=($all_page_count-($count_system*3))) ){
               if($i==$page_count){ $style_for_direct_jump="color:red;";}else{$style_for_direct_jump="";};
               $goto_page=($i/$count_system+1);
-              echo "&nbsp;<a href=\"#\" onClick=\"set_form_field('page_count', '".($i/$count_system)."'); set_form_field('show_all', '0'); submit_form();\" style=\"$style_for_direct_jump\" title=\"".__("Go to Page")." ".$goto_page."\">";
+              echo "&nbsp;<a href=\"#\" onclick=\"set_form_field('page_count', '".($i/$count_system)."'); set_form_field('show_all', '0'); submit_form();\" style=\"$style_for_direct_jump\" title=\"".__("Go to Page")." ".$goto_page."\">";
               echo $goto_page;
               echo "</a>";
           }else{
@@ -193,7 +193,7 @@ echo "<form method=\"post\" name=\"form_nav\" action=\"".htmlentities($MY_REQUES
       unset($style_for_direct_jump);
       echo "&nbsp;&nbsp;\n";
       echo "<input type=\"text\" name=\"page_count_tmp\" value=\"".($page_current+1)."\" style=\"width:16px;\" />\n";
-      echo "<input type=\"button\" name=\"tmp_submit\" value=\">\" style=\"width:16px;\" onClick=\"set_form_field('page_count', (document.forms['form_nav'].elements['page_count_tmp'].value-1)); submit_form();\" />\n";
+      echo "<input type=\"button\" name=\"tmp_submit\" value=\">\" style=\"width:16px;\" onclick=\"set_form_field('page_count', (document.forms['form_nav'].elements['page_count_tmp'].value-1)); submit_form();\" />\n";
   }
 
   echo "</td></tr></table>\n";
@@ -207,18 +207,18 @@ foreach($viewdef_array["fields"] as $field) {
     if($field["show"]=="y"){
         $field_width = "";
         $field_height = "";
-        if ( isset($field["width"]) AND $field["width"] <> "") {$field_width = " width=\"".$field["width"]."\"";}
+        if ( isset($field["width"]) AND $field["width"] <> "") {$field_width = " style=\"width:".$field["width"].";\"";}
         if (isset($field["height"]) AND $field["height"] <> "") {$field_height = " height=\"".$field["height"]."\"";}
-        $headline_1 .= "<td nowrap class=\"views_tablehead\">";
+        $headline_1 .= "<td  class=\"views_tablehead\">";
         if(!isset($field["sort"]) OR (isset($field["sort"]) AND $field["sort"]!="n")){
-            $headline_1 .= "<a href=\"#\" onClick=\"set_form_field('sort', '".$field["name"]."'); set_form_field('dir', '".$new_dir."'); set_form_field('page_count', '0'); submit_form();\" title=\"".__("Sort by").": ".$field["head"].", ".__("Direction").": ".__($new_dir)."\">";
+            $headline_1 .= "<a href=\"#\" onclick=\"set_form_field('sort', '".$field["name"]."'); set_form_field('dir', '".$new_dir."'); set_form_field('page_count', '0'); submit_form();\" title=\"".__("Sort by").": ".$field["head"].", ".__("Direction").": ".__($new_dir)."\">";
         }
         $headline_1 .= $field["head"];
         if(!isset($field["sort"]) OR (isset($field["sort"]) AND $field["sort"]!="n")){
             $headline_1 .= "</a>\n";
         }
         if($sort==$field["name"]){
-            $headline_1 .= "<img src=\"images/".strtolower($dir).".png\" style=\"padding-bottom:3px;\" alt=\"\" border=\"0\" />";
+            $headline_1 .= "<img src=\"images/".strtolower($dir).".png\" style=\"padding-bottom:3px; border:0px\" alt=\"\" />";
         }
         $headline_1 .= "</td>\n";
 
@@ -238,14 +238,14 @@ foreach($viewdef_array["fields"] as $field) {
 }
 
  //Button to Show and Hide the searchboxes
- $headline_1 .= "<td width=\"20\" style=\"border-bottom: 1px solid #000000;\">";
- $headline_1 .= "<a href=\"#\" onClick=\"show_searchboxes();\" id=\"link_searchboxes\"><img src=\"".$image_searchboxes."\" id=\"arrows_searchboxes\" border=\"0\" width=\"20\" height=\"16\" alt=\"".$alt_searchboxes."\" title=\"".$alt_searchboxes."\" /></a>";
+ $headline_1 .= "<td style=\"width:20px; border-bottom: 1px solid #000000;\">";
+ $headline_1 .= "<a href=\"#\" onclick=\"show_searchboxes();\" id=\"link_searchboxes\"><img src=\"".$image_searchboxes."\" id=\"arrows_searchboxes\" style=\"border:0px;\" width=\"20\" height=\"16\" alt=\"".$alt_searchboxes."\" title=\"".$alt_searchboxes."\" /></a>";
  $headline_1 .= "</td>";
 
  $count_searchboxes++;
  $headline_2 .= "<td class=\"searchboxes\" >\n";
  $headline_2 .= "<div id=\"searchboxes_".$count_searchboxes."\" style=\"$style_searchboxes\">";
- $headline_2 .= "<input type=\"submit\" name=\"filter_submit\" value=\">\" style=\"width:16px;\" title=\"".__("Execute search")."\" onClick=\"set_form_field('page_count', '0');\" />\n";
+ $headline_2 .= "<input type=\"submit\" name=\"filter_submit\" value=\">\" style=\"width:16px;\" title=\"".__("Execute search")."\" onclick=\"set_form_field('page_count', '0');\" />\n";
  $headline_2 .= "</div>";
  $headline_2 .= "</td>\n";
 
@@ -255,7 +255,7 @@ echo "<script type=\"text/javascript\">\n";
         document.forms['form_nav'].elements[var_name].value = var_val;
         }\n";
   echo "function submit_form(var_name, var_val){
-            document.form_nav.submit();
+            document.forms['form_nav'].submit();
         }\n";
   echo "function show_searchboxes(){
             if(document.getElementById(\"searchboxes_1\").style.display == 'none'){
@@ -277,11 +277,11 @@ echo "<script type=\"text/javascript\">\n";
  echo "//-->\n";
 echo "</script>\n";
 
- echo "<input type=\"hidden\" name=\"dir\" value=\"".$dir."\" />\n";
+ echo "<p><input type=\"hidden\" name=\"dir\" value=\"".$dir."\" />\n";
  echo "<input type=\"hidden\" name=\"sort\" value=\"".$sort."\" />\n";
  echo "<input type=\"hidden\" name=\"page_count\" value=\"".$page_count."\" />\n";
  echo "<input type=\"hidden\" name=\"show_all\" value=\"".$show_all."\" />\n";
- echo "<input type=\"hidden\" name=\"headline_addition\" value=\"".$headline_addition."\" />\n";
+ echo "<input type=\"hidden\" name=\"headline_addition\" value=\"".$headline_addition."\" /></p>\n";
 //echo "</form>\n";
 //echo "<form method=\"post\" name=\"form_search\" action=\"".htmlentities($_SERVER["REQUEST_URI"])."\" style=\"margin:0px;\">\n";
 echo "<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n";
@@ -305,7 +305,7 @@ if ($myrow = mysql_fetch_array($result)){
   }
     do{
         $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
-        echo " <tr>\n";
+        echo " <tr style=\"bgcolor=" . $bgcolor . ";\">\n";
         foreach($query_array["fields"] as $field){
 
             if($field["show"]!="n"){
@@ -327,7 +327,7 @@ if ($myrow = mysql_fetch_array($result)){
                 }
 
                 if(!isset($get_array["target"])) $get_array["target"]="_self";
-                if(!isset($get_array["onClick"])) $get_array["onClick"]=" ";
+                if(!isset($get_array["onclick"])) $get_array["onclick"]=" ";
 
                 if(isset($get_array["file"])){
                     if(substr($get_array["file"],0,1)=="%"){
@@ -380,7 +380,7 @@ if ($myrow = mysql_fetch_array($result)){
                     $link_uri=$link_file;
                 }
                 $field_align = "";
-                echo "  <td bgcolor=\"" . $bgcolor . "\"";
+                echo "  <td ";
                  if (isset($field["align"])) { echo "align=\"".$field["align"]."\""; }
                  echo "style=\"padding-right:10px;\">";
 
@@ -396,10 +396,10 @@ if ($myrow = mysql_fetch_array($result)){
 
                 if(isset($field["link"]) AND $field["link"]=="y"){
                     if(!isset($get_array["title"])) $get_array["title"]=$show_value;
-                    echo "<a href=\"".$link_uri."\" target=\"".$get_array["target"]."\" title=\"".$get_array["title"]."\" onClick=\"".$get_array["onClick"]."\" $a_misc>";
+                    echo "<a href=\"".$link_uri."\" title=\"".$get_array["title"]."\" onclick=\"".$get_array["onclick"]." ; this.target='".$get_array["target"]."';\" $a_misc>";
                 }
                 if(isset($field["image"]) AND $field["image"]!=""){
-                    echo "<img src=\"".$field["image"]."\" border=\"0\" alt=\"\" />";
+                    echo "<img src=\"".$field["image"]."\" style=\"border:0px;\" alt=\"\" />";
                 }else{
                     echo $show_value;
                 }
@@ -414,20 +414,20 @@ if ($myrow = mysql_fetch_array($result)){
                     }else{
                         $help=$field["help"];
                     }
-                    echo "&nbsp;<a href=\"#\" onClick=\"alert('".addslashes(str_replace("\"","",$help))."')\">?</a>";
+                    echo "&nbsp;<a href=\"#\" onclick=\"alert('".addslashes(str_replace("\"","",$help))."')\">?</a>";
                 }
                 echo "</td>\n";
             }
         }
-        echo "<td bgcolor=\"" . $bgcolor . "\" >\n";
+        echo "<td>\n";
         echo "</td>\n";
         echo " </tr>\n";
     //}while ($myrow = mysql_fetch_array($result));
       $rownumber ++;
     }while ($myrow = mysql_fetch_array($result) and ($show_all or $rownumber < $count_system));
     echo "</table></form>\n";
-    echo "<form method=\"post\" name=\"form_export\" action=\"list_export.php\">\n";
-    echo "<input type=\"hidden\" name=\"sql\" value=\"".urlencode($sql)."\" />\n";
+    echo "<form method=\"post\" id=\"form_export\" action=\"list_export.php\">\n";
+    echo "<p><input type=\"hidden\" name=\"sql\" value=\"".urlencode($sql)."\" />\n";
     echo "<input type=\"hidden\" name=\"view\" value=\"".$_REQUEST["view"]."\"/>\n";
     if(isset($_REQUEST["pc"])){
          echo "<input type=\"hidden\" name=\"pc\" value=\"".$_REQUEST["pc"]."\"/>\n";
@@ -438,8 +438,8 @@ if ($myrow = mysql_fetch_array($result)){
      if(isset($_REQUEST["monitor"])){
          echo "<input type=\"hidden\" name=\"monitor\" value=\"".$_REQUEST["monitor"]."\" />\n";
      }
-     echo "<br /><a href=\"#\" onClick=\"document.form_export.submit();\">".__("Export this View to CSV")."</a>\n";
-    echo "</form>\n";
+     echo "<br /><a href=\"#\" onclick=\"document.form_export.submit();\">".__("Export this View to CSV")."</a>\n";
+    echo "</p></form>\n";
 } else {
   echo "<tr><td colspan=\"4\">".__("No Results")."</td></tr>\n";
   echo "</table>\n";
