@@ -251,7 +251,7 @@ while (list ($viewname, $viewdef_array) = @each ($query_array["views"])) {
                                    if(!isset($field["edit_type"])) $field["edit_type"]="text";
                                    SWITCH($field["edit_type"]){
                                        case "textarea":
-                                           echo "<textarea name=\"".$field["name"]."\" style=\"width:300px\" class=\"for_forms\">".$show_value."</textarea>\n";
+                                           echo "<textarea name=\"".$field["name"]."\" style=\"width:300px\" rows=\"6\" cols=\"30\" class=\"for_forms\">".$show_value."</textarea>\n";
                                        break;
                                        case "select":
                                            echo "<select name=\"".$field["name"]."\" style=\"width:300px\" class=\"for_forms\">\n";
