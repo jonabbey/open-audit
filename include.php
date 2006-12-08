@@ -144,13 +144,13 @@ if ($page <> "setup"){
   $version = "0.1.00";
 }
 ?>
-<table width="100%" border="0">
+<table width="100%">
   <tr>
-        <td colspan="3" class="main_each"><a href="index.php"><img src="images/logo.png" width="300" height="48" alt="" border="0"/></a></td>
+        <td colspan="3" class="main_each"><a href="index.php"><img src="images/logo.png" width="300" height="48" alt="" style="border:0px;" /></a></td>
   </tr>
 
   <tr>
-    <td width="170" rowspan="12" valign="top">
+    <td style="width:170px;" rowspan="12" valign="top">
       <ul id="primary-nav">
         <li><a href="index.php"><?php echo __("Home"); ?></a></li>
 
@@ -188,7 +188,7 @@ if ($pc > "0") {
         if(isset($topic_item["childs"]) AND is_array($topic_item["childs"])){
           echo "<span><img src=\"images/spacer.gif\" height=\"16\" width=\"0\" alt=\"\" />&gt;</span>";
         }
-        echo "<img src=\"".$topic_item["image"]."\" border=\"0\" alt=\"\" />&nbsp;";
+        echo "<img src=\"".$topic_item["image"]."\" style=\"border:0px;\" alt=\"\" />&nbsp;";
         echo __($topic_item["name"]);
         echo "</a>\n";
 
@@ -200,7 +200,7 @@ if ($pc > "0") {
             if (isset($topic_item["title"])) {
               echo " title=\"".$topic_item["title"]."\"";
             }
-            echo "><img src=\"".$child_item["image"]."\" border=\"0\" alt=\"\" />&nbsp;";
+            echo "><img src=\"".$child_item["image"]."\" style=\"border:0px;\" alt=\"\" />&nbsp;";
             echo __($child_item["name"]);
             echo "</a></li>\n";
           }
@@ -227,7 +227,7 @@ if ($pc > "0") {
               echo "<span>&gt;</span>";
           }
           if(isset($topic_item['image']) AND $topic_item["image"]!=""){
-              echo "<img src=\"".$topic_item["image"]."\" width=\"16\" height=\"16\" border=\"0\" alt=\"\" />&nbsp;";
+              echo "<img src=\"".$topic_item["image"]."\" width=\"16\" height=\"16\" style=\"border:0px;\" alt=\"\" />&nbsp;";
           }
           echo __($topic_item["name"]);
          echo "</a>";
@@ -242,7 +242,7 @@ if ($pc > "0") {
                   if(isset($child_item["childs"]) AND is_array($child_item["childs"])){
                       echo "<span>&gt;</span>";
                   }
-                  echo "<img src=\"".$child_item["image"]."\"  width=\"16\" height=\"16\" border=\"0\" alt=\"\" />&nbsp;";
+                  echo "<img src=\"".$child_item["image"]."\"  width=\"16\" height=\"16\" style=\"border:0px;\" alt=\"\" />&nbsp;";
                   echo __($child_item["name"]);
                  echo "</a>";
 
@@ -252,7 +252,7 @@ if ($pc > "0") {
                     while (list ($key_3, $child_item_2) = @each ($child_item["childs"])) {
                         echo "<li>";
                          echo "<a href=\"".$child_item_2["link"]."\" title=\"".$child_item_2["title"]."\">";
-                          echo "<img src=\"".$child_item_2["image"]."\"  width=\"16\" height=\"16\" border=\"0\" alt=\"\" />&nbsp;";
+                          echo "<img src=\"".$child_item_2["image"]."\"  width=\"16\" height=\"16\" style=\"border:0px;\" alt=\"\" />&nbsp;";
                           echo __($child_item_2["name"]);
                          echo "</a>";
                         echo "</li>\n";
