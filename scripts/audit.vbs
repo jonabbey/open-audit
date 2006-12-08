@@ -97,6 +97,23 @@ Const ForAppending = 8
 
 
 '''''''''''''''''''''''''''''
+' Clear Failed Audits File  '
+'''''''''''''''''''''''''''''
+' Check if failed_audits.txt exists, and create it if need be.
+' If file exists - remove contents
+Set objFSO = CreateObject("Scripting.FileSystemObject")
+If objFSO.FileExists("failed_audits.txt") Then
+  Set objFile = objFSO.OpenTextFile("failed_audits.txt", 2)
+  objFile.WriteLine
+  objFile.Close
+Else
+  Set objFile = objFSO.CreateTextFile("failed_audits.txt", 2)
+  objFile.WriteLine
+  objFile.Close
+End If
+
+
+'''''''''''''''''''''''''''''
 ' Process the manual input  '
 '''''''''''''''''''''''''''''
 if strComputer <> "" then
@@ -153,19 +170,6 @@ if audit_local_domain = "y" then
 
   totcomp = objRecordset.recordcount -1
   Redim comparray(totcomp) ' set array to computer count
-
-  ' Check if failed_audits.txt exists, and create it if need be.
-  ' If file exists - remove contents
-  Set objFSO = CreateObject("Scripting.FileSystemObject")
-  If objFSO.FileExists("failed_audits.txt") Then
-    Set objFile = objFSO.OpenTextFile("failed_audits.txt", 2)
-    objFile.WriteLine
-    objFile.Close
-  Else
-    Set objFile = objFSO.CreateTextFile("failed_audits.txt", 2)
-    objFile.WriteLine
-    objFile.Close
-  End If
 
   Do Until objRecordSet.EOF
     On Error Resume Next
