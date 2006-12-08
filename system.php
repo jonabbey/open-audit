@@ -111,7 +111,7 @@ while (list ($viewname, $viewdef_array) = @each ($query_array["views"])) {
           //Image
           if(isset($viewdef_array["image"]) AND $viewdef_array["image"]!=""){
               echo "<td class=\"contentsubtitle\" style=\"width: 60px;\">\n";
-               echo "<img src=\"" .$viewdef_array["image"]. "\" alt=\"\" border=\"0\" width=\"48\" height=\"48\"  />\n";
+               echo "<img src=\"" .$viewdef_array["image"]. "\" alt=\"\" style=\"border:0px;\" width=\"48\" height=\"48\"  />\n";
               echo "</td>\n";
           }
           //Headline
@@ -124,32 +124,32 @@ while (list ($viewname, $viewdef_array) = @each ($query_array["views"])) {
               if(isset($_REQUEST["category"]) AND $_REQUEST["category"]==""){
                   echo "</a>";
               }
-              echo "<td>\n";
+              echo "</td>\n";
           }
           echo "</tr>\n";
         echo "</table>\n";
 
     echo "<form id=\"v".$viewname."\" method=\"post\" action=\"system_post.php\">\n";
-
+    echo "<p>\n";
     if(isset($_REQUEST["pc"])){
-        echo "<input type=\"hidden\" name=\"pc\" value=\"".$_REQUEST["pc"]."\" />";
+        echo "  <input type=\"hidden\" name=\"pc\" value=\"".$_REQUEST["pc"]."\" />";
     }
     if(isset($_REQUEST["category"])){
-        echo "<input type=\"hidden\" name=\"category\" value=\"".$_REQUEST["category"]."\" />";
+        echo "  <input type=\"hidden\" name=\"category\" value=\"".$_REQUEST["category"]."\" />";
     }
     if(isset($_REQUEST["view"])){
-        echo "<input type=\"hidden\" name=\"view\" value=\"".$_REQUEST["view"]."\" />";
+        echo "  <input type=\"hidden\" name=\"view\" value=\"".$_REQUEST["view"]."\" />";
     }
     if(isset($_REQUEST["other"])){
-        echo "<input type=\"hidden\" name=\"other\" value=\"".$_REQUEST["other"]."\" />";
+        echo "  <input type=\"hidden\" name=\"other\" value=\"".$_REQUEST["other"]."\" />";
     }
     if(isset($_REQUEST["monitor"])){
-        echo "<input type=\"hidden\" name=\"monitor\" value=\"".$_REQUEST["monitor"]."\" />";
+        echo "  <input type=\"hidden\" name=\"monitor\" value=\"".$_REQUEST["monitor"]."\" />";
     }
     if(isset($_REQUEST["user"])){
-        echo "<input type=\"hidden\" name=\"user\" value=\"".$_REQUEST["user"]."\" />";
+        echo "  <input type=\"hidden\" name=\"user\" value=\"".$_REQUEST["user"]."\" />";
     }
-
+    echo "</p>\n";
     echo "<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n";
 
     //IF Horizontal Table-Layout
@@ -207,14 +207,14 @@ while (list ($viewname, $viewdef_array) = @each ($query_array["views"])) {
                     //IF Horizontal Table-Layout
                     if(isset($viewdef_array["table_layout"]) AND $viewdef_array["table_layout"]=="horizontal"){
                         if(!isset($field["align"])) $field["align"]="left";
-                        echo "<td bgcolor=\"" . $bgcolor . "\" align=\"".$field["align"]."\" class=\"system_tablebody_left\" >\n";
+                        echo "<td style=\"bgcolor:" . $bgcolor . ";\" align=\"".$field["align"]."\" class=\"system_tablebody_left\" >\n";
                          echo $show_value;
                         echo "</td>\n";
                     }else{
                         $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
-                        echo "<tr>\n";
+                        echo "<tr style=\"bgcolor:" . $bgcolor . ";\" >\n";
                          if (!isset($field["align"])) { $field["align"] = "left"; }
-                         echo "<td bgcolor=\"" . $bgcolor . "\" align=\"".$field["align"]."\" class=\"system_tablebody_left\" >";
+                         echo "<td align=\"".$field["align"]."\" class=\"system_tablebody_left\" >";
                            echo $field["head"];
                            if($field["head"]!=""){
                                echo ":";
@@ -223,22 +223,22 @@ while (list ($viewname, $viewdef_array) = @each ($query_array["views"])) {
                            }
 
                           echo "</td>\n";
-                         echo "<td bgcolor=\"" . $bgcolor . "\" align=\"".$field["align"]."\" class=\"system_tablebody_right\">";
+                         echo "<td align=\"".$field["align"]."\" class=\"system_tablebody_right\">";
                            if(isset($field["get"]) AND is_array($field["get"]) AND isset($field["get"]["file"])){
                                echo "<a href=\"".$field["get"]["file"]."?".$link_query."\" title=\"".$field["get"]["title"]."\"";
                                if(isset($field["get"]["target"])) {
-                                 echo " target=\"" . $field["get"]["target"] . "\"";
+                                 echo " onclick=\"this.target='" . $field["get"]["target"] . "';\"";
                                }
                                echo ">\n";
                                if(isset($field["get"]["image"]) AND $field["get"]["image"]!="") {
-                                   echo "<img src=\"".$field["get"]["image"]."\" border=\"0\"";
+                                   echo "<img src=\"".$field["get"]["image"]."\" alt=\"\" style=\"border:0px;\"";
                                    if(isset($field["get"]["image_width"]) AND $field["get"]["image_width"]!="") {
                                        echo " width=\"".$field["get"]["image_width"]."\" ";
                                    }
                                    if(isset($field["get"]["image_height"]) AND $field["get"]["image_height"]!="") {
                                        echo " height=\"".$field["get"]["image_height"]."\" ";
                                    }
-                                   echo ">";
+                                   echo "/>";
                                    echo "&nbsp;";
                                }
                                if(isset($field["get"]["head"]) AND $field["get"]["head"]!=""){
@@ -298,41 +298,41 @@ while (list ($viewname, $viewdef_array) = @each ($query_array["views"])) {
             //Links to Manufacturer
             if(isset($myrow["system_vendor"]) AND $myrow["system_vendor"]!="" AND ($viewname=="summary" OR $viewname=="chassis")){
                 $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
-                echo "<tr>\n";
-                 echo "<td bgcolor=\"" . $bgcolor . "\">\n";
+                echo "<tr style=\"bgcolor:" . $bgcolor . ";\" >\n";
+                 echo "<td>\n";
                   echo __("Links to Manufacturer");
                   echo ": &nbsp;";
-                  echo "<a href=\"#\" onClick=\"alert('".__("Regarding to Modell # and Serial #")."');\">?</a>";
+                  echo "<a href=\"#\" onclick=\"alert('".__("Regarding to Modell # and Serial #")."');\">?</a>";
                  echo "</td>\n";
-                 echo "<td bgcolor=\"" . $bgcolor . "\">\n";
+                 echo "<td>\n";
 
                      if ($myrow["system_vendor"] == "Dell Inc." || $myrow["system_vendor"] == "Dell Computer Corporation") {
                        if(isset($myrow["system_id_number"]) AND $myrow["system_id_number"]!=""){
-                           echo " <a href='http://support.dell.com/support/topics/global.aspx/support/my_systems_info/en/details?c=us&amp;cs=usbsdt1&amp;servicetag=" . $myrow["system_id_number"] . "' target=_blank>".__("Warranty Information")."</a>";
+                           echo " <a href='http://support.dell.com/support/topics/global.aspx/support/my_systems_info/en/details?c=us&amp;cs=usbsdt1&amp;servicetag=" . $myrow["system_id_number"] . "' onclick=\"this.target='_blank';\">".__("Warranty Information")."</a>";
                            echo " / ";
-                           echo " <a href='http://support.dell.com/support/downloads/index.aspx?c=us&amp;l=en&amp;s=gen&amp;servicetag=" . $myrow["system_id_number"] . "' target=_blank>".__("Drivers &amp; Software")."</a>";
+                           echo " <a href='http://support.dell.com/support/downloads/index.aspx?c=us&amp;l=en&amp;s=gen&amp;servicetag=" . $myrow["system_id_number"] . "' onclick=\"this.target='_blank';\">".__("Drivers &amp; Software")."</a>";
                            $links_to_manu=1;
                        }
                      } elseif ($myrow["system_vendor"] == "Compaq" || $myrow["system_vendor"] == "HP"){
                        if(isset($myrow["system_id_number"]) AND $myrow["system_id_number"]!=""){
-                           echo " <a href='http://www4.itrc.hp.com/service/ewarranty/warrantyResults.do?BODServiceID=NA&amp;RegisteredPurchaseDate=&amp;country=GB&amp;productNumber=&amp;serialNumber1=" . $myrow["system_id_number"] . "' target=_blank>".__("Warranty Information")."</a>";
+                           echo " <a href='http://www4.itrc.hp.com/service/ewarranty/warrantyResults.do?BODServiceID=NA&amp;RegisteredPurchaseDate=&amp;country=GB&amp;productNumber=&amp;serialNumber1=" . $myrow["system_id_number"] . "' onclick=\"this.target='_blank';\">".__("Warranty Information")."</a>";
                            echo " / ";
-                           echo " <a href='http://h20180.www2.hp.com/apps/Lookup?h_lang=en&amp;h_cc=uk&amp;cc=uk&amp;h_page=hpcom&amp;lang=en&amp;h_client=S-A-R135-1&amp;h_pagetype=s-002&amp;h_query=" . $myrow["system_model"] . "' target=_blank>".__("Drivers &amp; Software")."</a>";
+                           echo " <a href='http://h20180.www2.hp.com/apps/Lookup?h_lang=en&amp;h_cc=uk&amp;cc=uk&amp;h_page=hpcom&amp;lang=en&amp;h_client=S-A-R135-1&amp;h_pagetype=s-002&amp;h_query=" . $myrow["system_model"] . "' onclick=\"this.target='_blank';\">".__("Drivers &amp; Software")."</a>";
                            $links_to_manu=1;
                        }
                      } elseif ($myrow["system_vendor"] == "IBM") {
                        if(isset($myrow["system_id_number"]) AND $myrow["system_id_number"]!=""){
-                           echo " <a href='http://www-307.ibm.com/pc/support/site.wss/quickPath.do?quickPathEntry=" . $myrow["system_model"] . "' target=_blank>".__("Product Page")."</a>";
+                           echo " <a href='http://www-307.ibm.com/pc/support/site.wss/quickPath.do?quickPathEntry=" . $myrow["system_model"] . "' onclick=\"this.target='_blank';\">".__("Product Page")."</a>";
                            echo " / ";
                            $links_to_manu=1;
                        }
                        if(isset($myrow["system_model"]) AND $myrow["system_model"]!= "" AND isset($myrow["system_id_number"]) AND $myrow["system_id_number"]!=""){
-                           echo " <a href='http://www-307.ibm.com/pc/support/site.wss/warrantyLookup.do?type=".substr($myrow["system_model"],0,4)."&amp;serial=".$myrow["system_id_number"]."&amp;country=897&amp;iws=off' target=_blank>".__("Warranty Information")."</a>";
+                           echo " <a href='http://www-307.ibm.com/pc/support/site.wss/warrantyLookup.do?type=".substr($myrow["system_model"],0,4)."&amp;serial=".$myrow["system_id_number"]."&amp;country=897&amp;iws=off' onclick=\"this.target='_blank';\">".__("Warranty Information")."</a>";
                            $links_to_manu=1;
                        }
                      } elseif ($myrow["system_vendor"] == "Gateway") {
                        if(isset($myrow["system_id_number"]) AND $myrow["system_id_number"]!=""){
-                           echo " <a href='http://support.gateway.com/support/allsysteminfo.asp?sn=" . $myrow["system_id_number"] . "' target=_blank>".__("Support Page")."</a>";
+                           echo " <a href='http://support.gateway.com/support/allsysteminfo.asp?sn=" . $myrow["system_id_number"] . "' onclick=\"this.target='_blank';\">".__("Support Page")."</a>";
                            $links_to_manu=1;
                        }
                      }
@@ -346,17 +346,17 @@ while (list ($viewname, $viewdef_array) = @each ($query_array["views"])) {
             //IF Horizontal Table-Layout
             if(isset($viewdef_array["table_layout"]) AND $viewdef_array["table_layout"]=="horizontal"){}else{
                 $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
-                echo "<tr><td bgcolor=\"$bgcolor\" class=\"system_tablebody_right\" colspan=\"2\">&nbsp;</td></tr>\n";
+                echo "<tr style=\"bgcolor:$bgcolor;\"><td class=\"system_tablebody_right\" colspan=\"2\">&nbsp;</td></tr>\n";
             }
         }while ($myrow = mysql_fetch_array($result));
     } else {
-        echo "<tr>\n";
-         echo "<td bgcolor=\"$bg1\" style=\"padding-right:10px;\" colspan=\"20\">";
+        echo "<tr style=\"bgcolor:$bg1;\">\n";
+         echo "<td style=\"padding-right:10px;\" colspan=\"20\">";
           echo __("No Results");
          echo "</td>\n";
         echo "</tr>\n";
 
-        echo "<tr><td bgcolor=\"$bg2\" style=\"padding-right:10px;\" colspan=\"2\">&nbsp;</td></tr>\n";
+        echo "<tr style=\"bgcolor:$bg2\"><td style=\"padding-right:10px;\" colspan=\"2\">&nbsp;</td></tr>\n";
     }
 
      //Edit- and Submit-Button
@@ -367,7 +367,7 @@ while (list ($viewname, $viewdef_array) = @each ($query_array["views"])) {
         echo "<input type=\"submit\" name=\"save\" value=\"".__("Save")."\" />";
            }else{
         echo "<input type=\"button\" name=\"edit\" value=\"Edit\"";
-        echo "onClick=\"window.location.href='".$_SERVER["PHP_SELF"]."?";
+        echo "onclick=\"window.location.href='".$_SERVER["PHP_SELF"]."?";
         if(isset($_REQUEST["pc"])){
             echo "pc=".$_REQUEST["pc"]."&amp;";
         }elseif(isset($_REQUEST["other"])){
@@ -390,15 +390,15 @@ while (list ($viewname, $viewdef_array) = @each ($query_array["views"])) {
     //IF Horizontal Table-Layout
     if(isset($viewdef_array["table_layout"]) AND $viewdef_array["table_layout"]=="horizontal"){
         $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
-        echo "<tr><td bgcolor=\"$bgcolor\" class=\"system_tablebody_right\" colspan=\"10\">&nbsp;</td></tr>\n";
+        echo "<tr style=\"bgcolor:$bgcolor\"><td class=\"system_tablebody_right\" colspan=\"10\">&nbsp;</td></tr>\n";
     }
 
     echo "</table>";
     echo "</form>\n";
 }
 
-    echo "<form method=\"post\" name=\"form_export\" action=\"system_export.php\">\n";
-    echo "<input type=\"hidden\" name=\"view\" value=\"".$_REQUEST["view"]."\" />\n";
+    echo "<form method=\"post\" id=\"form_export\" action=\"system_export.php\">\n";
+    echo "<p><input type=\"hidden\" name=\"view\" value=\"".$_REQUEST["view"]."\" />\n";
     if(isset($_REQUEST["category"])){
         echo "<input type=\"hidden\" name=\"category\" value=\"".$_REQUEST["category"]."\" />\n";
     }
@@ -411,8 +411,8 @@ while (list ($viewname, $viewdef_array) = @each ($query_array["views"])) {
     if(isset($_REQUEST["monitor"])){
         echo "<input type=\"hidden\" name=\"monitor\" value=\"".$_REQUEST["monitor"]."\" />\n";
     }
-    echo "<br /><a href=\"#\" onClick=\"document.form_export.submit();\">".__("Export this Page to PDF")."</a>\n";
-    echo "</form>\n";
+    echo "<br /><a href=\"#\" onclick=\"document.form_export.submit();\">".__("Export this Page to PDF")."</a>\n";
+    echo "</p></form>\n";
 
 
   echo "</div>\n";

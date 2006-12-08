@@ -28,8 +28,8 @@ echo "</form>\n";
         while (list ($key_1, $topic_item) = each ($menue_array["machine"])) {
             $i++;
             echo "<tr>\n";
-            echo "<td align=\"left\" width=\"20\">\n";
-             echo "<img src=\"".$topic_item["image"]."\" width=\"16\" height=\"16\" border=\"0\" alt=\"\" />\n";
+            echo "<td align=\"left\" style=\"width:20px;\">\n";
+             echo "<img src=\"".$topic_item["image"]."\" width=\"16\" height=\"16\" style=\"border:0px;\" alt=\"\" />\n";
             echo "</td>\n";
 
             echo "<td>\n";
