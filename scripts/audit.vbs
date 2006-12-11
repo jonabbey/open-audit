@@ -3474,7 +3474,11 @@ end function
 
 Function urlEncode(sString)
   Dim nIndex, aCode, theString
-  theString = ""
+  Set theString = CreateObject("ADODB.Stream")
+  theString.Type = 2 'Binary?
+  theString.Open
+  theString.Position = 0 
+    
   For nIndex = 1 to Len(sString)
     aCode = AscW(Mid(sString,nIndex,1))
 
@@ -3485,24 +3489,27 @@ Function urlEncode(sString)
 
     If ((aCode >= 48 and aCode <= 57) or (aCode >= 65 and aCode <=90) or (aCode >= 97 and aCode <= 122)) then
       'Alphanumerics
-      theString = theString & Chr(aCode)
+      theString.WriteText Chr(aCode)
     elseif (aCode = 45 or aCode = 46 or aCode = 95 or aCode = 126) then
       'Following characters: - / . / _ / ~
-      theString = theString & Chr(aCode)
+      theString.WriteText Chr(aCode)
     elseif (aCode < 16) then
-      theString = theString & "%0" & Hex(aCode)
+      theString.WriteText "%0" & Hex(aCode)
     elseif (aCode < 128) then
-      theString = theString & "%" & Hex(aCode)
+      theString.WriteText "%" & Hex(aCode)
     elseif (aCode < 2048) then
-      theString = theString & "%" & hex(((aCode) \ 2^6) or 192)
-      theString = theString & "%" & hex(((aCode and 63)) or 128)
+      theString.WriteText "%" & hex(((aCode) \ 2^6) or 192)
+      theString.WriteText "%" & hex(((aCode and 63)) or 128)
     elseif (aCode < 65536) then
-      theString = theString & "%" & hex(((aCode) \ 2^12) or 224)
-      theString = theString & "%" & hex(((aCode and 4032) \ 2^6) or 128)
-      theString = theString & "%" & hex(((aCode and 63)) or 128)
+      theString.WriteText "%" & hex(((aCode) \ 2^12) or 224)
+      theString.WriteText "%" & hex(((aCode and 4032) \ 2^6) or 128)
+      theString.WriteText "%" & hex(((aCode and 63)) or 128)
     end if
   Next
-
-  urlEncode = theString
+  
+  theString.position = 0
+  urlEncode = theString.ReadText()
 
 End Function
+
+
