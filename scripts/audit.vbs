@@ -85,6 +85,27 @@ end if
 'Wscript.Echo "Input PC Name: " & strAnswer
 'strComputer = strAnswer
 
+''''''''''''''''''''''''''''''''''''
+' Check that softwarefiles.xml     '
+'  is correct                      '
+'                                  '
+''''''''''''''''''''''''''''''''''''
+
+if (software_audit = "y" and software_file_audit = "y") then
+  set xmlDoc=CreateObject("Microsoft.XMLDOM")
+  xmlDoc.async="false"
+  xmlDoc.validateOnParse="true"
+  xmlDoc.load("softwarefiles.xml")
+
+  if (xmlDoc.parseError.errorCode <> 0) then
+    WScript.Echo("Error Code: " & xmlDoc.parseError.errorCode)
+    WScript.Echo("Error Reason: " & xmlDoc.parseError.reason)
+    WScript.Echo("Error Line: " & xmlDoc.parseError.srcText)
+    WScript.Echo("Error Line Number: " & xmlDoc.parseError.line)
+    WScript.Echo("")
+    WScript.quit
+  end if
+end if
 
 ''''''''''''''''''''''''''''''''''''''''
 ' Don't change the settings below here '
@@ -1644,6 +1665,64 @@ if software_audit = "y" then
 ' software audit finishes further down the script
 
 '''''''''''''''''''''''''''
+' Software Files          '
+'''''''''''''''''''''''''''
+
+if software_file_audit = "y" then
+ comment = "Software Files"
+ if verbose = "y" then
+   wscript.echo comment
+ end if
+ Dim softName,softVersion, softPublisher
+
+ set rootNode =  xmlDoc.documentElement ' should be detect
+ for each child in rootNode.childNodes   'should get each software
+    softName = child.getAttribute("name")
+    softVersion = ""
+    softPublisher = ""
+
+    if verbose = "y" then
+     WScript.Echo "Testing for " & child.nodeName & ":" & child.getAttribute("name")
+    end if
+    if (getResultFromFileExpression(child.childNodes.Item(1))) then
+       softPublisher = child.getAttribute("publisher")
+       If (child.childNodes.Item(0).nodeName = "version") then
+          softVersion = child.childNodes.Item(0).getAttribute("name")
+       elseif (child.childNodes.Item(0).nodeName = "versionFile") then
+          softVersion = ""
+          On Error Resume Next
+          softVersion = objWMIService.get("CIM_DataFile.Name='" & child.childNodes.Item(0).getAttribute("filename") & "'").Version
+          On Error Goto 0
+       end if
+
+
+       form_input = "software^^^" & clean(softName) & "^^^" _
+                               & clean(softVersion) & "^^^" _
+                               & clean("") & "^^^" _
+                               & clean("") & "^^^" _
+                               & clean("") & "^^^" _
+                               & clean(softPublisher) & "^^^" _
+                               & clean("") & "^^^" _
+                               & clean("") & "^^^" _
+                               & clean("") & "^^^" _
+                               & clean(" ")
+       entry form_input,comment,objTextFile,oAdd,oComment
+       form_input = ""
+       if verbose = "y" then
+         WScript.Echo "Software detected"
+         WScript.Echo "Name       :" & softName
+         WScript.Echo "Publisher  :" & softPublisher
+         WScript.Echo "Version    :" & softVersion
+       end if
+    else
+       WScript.Echo "Not Detected"
+    end if
+ next
+end if
+
+
+
+'''''''''''''''''''''''''''
 '   Startup Programs      '
 '''''''''''''''''''''''''''
 comment = "Startup Programs"
@@ -2953,7 +3032,12 @@ if online = "yesxml" then
    Set objHTTP = CreateObject("MSXML2.XMLHTTP")
    Call objHTTP.Open("POST", url, FALSE)
    objHTTP.setRequestHeader "Content-Type","application/x-www-form-urlencoded"
-   objHTTP.Send "add=" + escape(Deconstruct(form_total + vbcrlf))
+   if utf8 = "y" then
+     objHTTP.Send "add=" + urlEncode(form_total + vbcrlf)
+   else 
+     objHTTP.Send "add=" + escape(Deconstruct(form_total + vbcrlf))
+   end if
+   
 '   if verbose = "y" then
 '      WScript.Echo(objHTTP.ResponseText)
 '   end if
@@ -3273,3 +3357,152 @@ if form_input <> "" then
   end if
 end if
 end sub
+
+
+
+function getResultFromFileExpression(node)
+  Dim result,child
+  for each child in node.childNodes
+
+     'Check if the tag is reconised
+     if (not(child.nodeName = "file" or child.nodeName="and" or child.nodeName="or" or child.nodeName="xor" or child.nodeName="not")) then
+        Err.Raise 1, "getResultFromFileExpression", "Unknown tag: " & child.nodeName
+     end if
+
+     ' If the result is currently empty then create one
+     if (isEmpty(result)) then
+        if (child.nodeName = "file") then
+          result = fileExists(child)
+        else
+          result = getResultFromFileExpression(child)
+        end if
+
+        if (node.nodeName = "not") then
+           result = not result
+        end if
+
+     'If the result isn't empty and nodeName is incorrect then raise error
+     elseif (node.nodeName = "not" or node.nodeName = "test" or node.nodeName = "file") then
+        Err.Raise 2, "getResultFromFileExpression", "Incorrect nesting within the node: " & node.nodeName
+
+     'and
+     elseif (node.nodeName = "and") then
+        if (child.nodeName = "file") then
+          result = result and fileExists(child)
+        else
+          result = result and getResultFromFileExpression(child)
+        end if
+
+
+     'or
+     elseif (node.nodeName = "or") then
+        if (child.nodeName = "file") then
+          result = result or fileExists(child)
+        else
+          result = result or getResultFromFileExpression(child)
+        end if
+
+     'xor
+     elseif (node.nodeName = "xor") then
+        if (child.nodeName = "file") then
+          result = result xor fileExists(child)
+        else
+          result = result xor getResultFromFileExpression(child)
+        end if
+
+     'root node
+     elseif (node.nodeName = "test") then
+        if (child.nodeName = "file") then
+           'Shouldn't be able to get here
+           Err.Raise 2, "getResultFromFileExpression", "Incorrect nesting within the node: " & node.nodeName
+        else
+           result = getResultFromFileExpression(child)
+        end if
+
+     end if
+
+     'Shortcut
+     if (node.nodeName = "and" and result = false) then
+        getResultFromFileExpression = false
+        exit function
+     elseif (node.nodeName = "or" and result = true) then
+        getResultFromFileExpression = true
+        exit function
+     end if
+
+  next
+  getResultFromFileExpression = result
+end function
+
+function fileExists(aNode)
+  if (aNode.nodeName <>"file") then
+     Err.Raise 3, "fileExists", "Incorrect node type passed to function: " & node.nodeName
+  end if
+
+  sFilename = aNode.getAttribute("filename")
+  Set colFiles = objWMIService.ExecQuery("Select Name,Version,Manufacturer,FileSize from CIM_DataFile where Name = '" & sFilename & "'")
+  if (colFiles.Count=0) then
+        fileExists = false
+     else
+         For Each objFile in colFiles
+
+             if (isNull(aNode.getAttribute("size"))) then
+                'Don't test filesize
+             else
+                 if (aNode.getAttribute("size") <> objFile.FileSize) then
+                    fileExists = false
+                    exit function
+                 else
+                    'filesize matches
+                 end if
+             end if
+
+             if (isNull(aNode.getAttribute("version"))) then
+                'Don't need to test version
+             else
+                 if (aNode.getAttribute("version") <> objFile.version) then
+                    fileExists = false
+                    exit function
+                 else
+                     'Version matches
+                 end if
+             end if
+         next
+         fileExists = true
+     end if 
+end function
+
+Function urlEncode(sString)
+  Dim nIndex, aCode, theString
+  theString = ""
+  For nIndex = 1 to Len(sString)
+    aCode = AscW(Mid(sString,nIndex,1))
+
+    'convert from twos complement
+    If aCode < 0 Then
+      aCode = 65536 + aCode
+    End If
+
+    If ((aCode >= 48 and aCode <= 57) or (aCode >= 65 and aCode <=90) or (aCode >= 97 and aCode <= 122)) then
+      'Alphanumerics
+      theString = theString & Chr(aCode)
+    elseif (aCode = 45 or aCode = 46 or aCode = 95 or aCode = 126) then
+      'Following characters: - / . / _ / ~
+      theString = theString & Chr(aCode)
+    elseif (aCode < 16) then
+      theString = theString & "%0" & Hex(aCode)
+    elseif (aCode < 128) then
+      theString = theString & "%" & Hex(aCode)
+    elseif (aCode < 2048) then
+      theString = theString & "%" & hex(((aCode) \ 2^6) or 192)
+      theString = theString & "%" & hex(((aCode and 63)) or 128)
+    elseif (aCode < 65536) then
+      theString = theString & "%" & hex(((aCode) \ 2^12) or 224)
+      theString = theString & "%" & hex(((aCode and 4032) \ 2^6) or 128)
+      theString = theString & "%" & hex(((aCode and 63)) or 128)
+    end if
+  Next
+
+  urlEncode = theString
+
+End Function
