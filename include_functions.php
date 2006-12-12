@@ -270,7 +270,8 @@ function special_field_converting($myrow, $field, $db, $page){
 
 function determine_os($os) {
 
-    $os_returned = __("unknown");
+//    $os_returned = __("version unknown");
+    $os_returned = __($os);
 
     //Direct match
     $systems=array( "Windows XP"=>"Win XP",
@@ -306,12 +307,16 @@ function determine_os($os) {
                     "Microsoft Windows 95"=>"Win 95",
                     "Microsoft Windows 2000 Server"=>"2000 Server",
                     "Microsoft Windows 2000 Professional"=>"2000 Pro",
-                    "Microsoft Windows 2000 Advanced Server"=>"2000 Adv Server");
+                    "Microsoft Windows 2000 Advanced Server"=>"2000 Adv Server",
+//                    "Microsoft&#174 Windows Vista&#153 Business N"=>"Windows Vista",
+                    "Microsoft® Windows Vista™ Business N"=>"Windows Vista",);
+//                    "Microsoft(R) Windows Vista(TM) Business N"=>"Windows Vista",);
     reset ($systems);
     while (list ($key, $val) = each ($systems)) {
         if($os==$key){
-            $os_returned=$val;
-        }
+           $os_returned=$val;
+
+       }
     }
 
     //Substring match
