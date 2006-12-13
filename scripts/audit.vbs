@@ -2362,14 +2362,15 @@ For Each subkey In arrSubKeys
 Next
 
 '''''''''''''''''''''''''''''''''''''''''''''''''
-'   MS CD Keys for Windows XP, 2000 and 2003    '
+'   MS CD Keys for Windows XP, 2000, 2003 and Vista   '
 '''''''''''''''''''''''''''''''''''''''''''''''''
 IsOSXP = InStr(OSName, "Windows XP")
 IsOS2K = InStr(OSName, "Windows 2000")
 IsOS2K3 = InStr(OSName, "Server 2003")
-IsOSXP2K2K3 = CInt(IsOSXP + IsOS2K + IsOS2K3)
+IsOSVista = InStr(OSName, "Windows Vista")
+IsOSXP2K2K3WV = CInt(IsOSXP + IsOS2K + IsOS2K3 + IsOSVista)
 
-if (IsOSXP2K2K3 > 0) then
+if (IsOSXP2K2K3WV > 0) then
   path = "SOFTWARE\Microsoft\Windows NT\CurrentVersion"
   subKey = "DigitalProductId"
   oReg.GetBinaryValue HKEY_LOCAL_MACHINE,path,subKey,key
