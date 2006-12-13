@@ -210,13 +210,21 @@ if ($inject == "y"){
      }
      else 
      {
+        if  (isGUID($entries[$user_record_number][$data][$user_record_field_number_data])){
+           $guid_text= formatGUID($entries[$user_record_number][$data][$user_record_field_number_data]);
+           echo "<tr bgcolor=\"" . $bgcolor . "\"><td>".__($data).":</td><td>{".$guid_text."}</td></tr>";
+         }
+         else
+         {
             // Else just show it. 
           $bgcolor = change_row_color($bgcolor,$bg1,$bg2); 
            echo "<tr bgcolor=\"" . $bgcolor . "\"><td>".__($data).":</td><td>" .$entries[$user_record_number][$data][$user_record_field_number_data]. "</td></tr>";
-      }    
-     }
- 
+         }   
+    }
+     
   }
+ 
+}
   if ($inject == "y"){
   // SQL inject code
             $column_names = rtrim( $column_names,",");

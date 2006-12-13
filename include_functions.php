@@ -538,4 +538,21 @@ $this_error = "Success: Wake on LAN sent ".$this_connection ." bytes to ".$broad
  return $this_error;
 }
 
+function isGUID($value) {
+return 
+strlen($value) == '16';
+} 
+
+function formatGUID($value) {
+$hex_string='';
+for ($guid_bytes = 0; $guid_bytes<= strlen($value); $guid_bytes++){
+$hex_string = $hex_string.bin2hex(substr($value,$guid_bytes, 1));
+if (($guid_bytes == '3') or ($guid_bytes == '5') or ($guid_bytes == '7')or ($guid_bytes == '9')) {
+$hex_string = $hex_string."-";
+        }
+    }
+    return $hex_string;
+}
+
+
 ?>
