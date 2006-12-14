@@ -348,6 +348,16 @@ function returnConfig() {
 \$count_system = '30';
 
 \$round_to_decimal_places = '2';
+
+\$domain_suffix = 'local' ;
+
+\$ldap_user = 'unknown@domain.local';
+\$ldap_secret = 'password';
+\$ldap_attributes = array(\"displayname\",\"description\",\"userprincipalname\",\"homedirectory\",\"homedrive\",\"profilepath\",\"scriptpath\",\"mail\",\"samaccountname\",\"telephonenumber\",\"usncreated\",\"department\",\"sn\");
+\$ldap_filter = \"(&(objectClass=user)(objectCategory=person)(|(samaccountname=\".$name.chr(42).\")(name=\".$name.chr(42).\")(displayname=\".$name.chr(42).\")(cn=\".$name.chr(42).\")))\";
+
+\$ldap_connect_string = 'LDAP:\/\/server.domain.local';
+
  
 \$language = '";
   $content .= $_POST['language_post'];
