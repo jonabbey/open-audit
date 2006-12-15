@@ -163,15 +163,23 @@ function step2CheckPrereq() {
 
 
 // STEP 3
+
+if (isset($_POST['drop_database']))  {$drop_database = $_POST['drop_database'];}  else { $drop_database = "n";}
+if (isset($_POST['drop_user']))  {$drop_user = $_POST['drop_user'];}  else { $drop_user = "n";}
+if (isset($_POST['bindlocal']))  {$bindlocal = $_POST['bindlocal'];}  else { $bindlocal = "n";}
+// <form method="post" action="setup.php" name="admin_config">
+
 function step3SetupDB() {
 ?>
   <span class="contenthead"><?php echo __("Setup") ?></span>
   <p><?php echo __("To perform an automated setup, enter the details on the root account below. This user must have the privileges to create and modify users and databases.") ?></p>
   <p><?php echo __("By clicking 'Submit Credentials,' you are allowing Open-AudIT to create a user and database for use with Open-AudIT. This is the recommended configuration, as Open-AudIT does not need root privileges after installation.") ?></p>
   <hr />
-  <?php echo __("Root User Credentials") ?>:<br />
-  <form method="post" action="setup.php" name="admin_config">
-  <table border="0" cellpadding="0" cellspacing="0" class="content">
+  <?php echo __("Root User Credentials").":<br />";
+
+  echo "<form method=\"post\" action=\"" . $_SERVER["PHP_SELF"] . "\" name=\"setup.php\">";
+ ?>
+ <table border="0" cellpadding="0" cellspacing="0" class="content">
   <tr><td><?php echo __("MySQL Server") ?>:&nbsp;</td><td><input type="text" name="mysql_server_post" size="12" value="localhost" class="for_forms"/></td></tr>
   <tr><td><?php echo __("MySQL Username") ?>:&nbsp;</td><td><input type="text" name="mysql_user_post" size="12" value="root" class="for_forms" /></td></tr>
   <tr><td><?php echo __("MySQL Password") ?>:&nbsp;</td><td><input type="password" name="mysql_password_post" size="12" value="" class="for_forms" /></td></tr>
@@ -197,7 +205,7 @@ function step3SetupDB() {
   </table>
 
   <table border="0" cellpadding="0" cellspacing="0" class="content">
-  <tr><td><input type="checkbox" name="delete_user" value="y" checked="checked" /></td><td><?php echo __("Delete User if it exists.") ?></td></tr>
+  <tr><td><input type="checkbox" name="drop_user" value="y" checked="checked" /></td><td><?php echo __("Delete User if it exists.") ?></td></tr>
   <tr><td>&nbsp;</td><td><?php echo __("CAUTION This will also remove all permissions for this user.") ?></td></tr>
   </table>
 
@@ -220,21 +228,24 @@ function step35SetupDB() {
     $db = @mysql_connect($_POST['mysql_server_post'],$_POST['mysql_user_post'],$_POST['mysql_password_post']) or die('Could not connect: ' . mysql_error());
     echo __("Success!") . "<br />";
     
-    if ($_POST['drop_database'] = 'y') {
+    if (isset($_POST['drop_database']) and ($_POST['drop_database'] == 'y')) {
         
     $sql = "DROP DATABASE `" . $_POST['mysql_new_db'].";";
     echo __("Dropping the database... ");
-    $result = mysql_query($sql, $db) or die('Could not drop db: ' . mysql_error());
+    $result = mysql_query($sql, $db);
+    if ($result<>'1'){ echo __('Could not drop db: ' . mysql_error()).$result;}
+     echo __("Success!") ."<br />";
     }
     
     $sql = "CREATE DATABASE `" . $_POST['mysql_new_db'] . "` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci";
     echo __("Creating the database... ");
-    $result = mysql_query($sql, $db) or die('Could not create db: ' . mysql_error());
+    $result = mysql_query($sql, $db);
+    if ($result<>'1') { echo __('Could not create db: ' . mysql_error()).$result;}
     echo __("Success!") ."<br />";
 
-    if ($_POST['delete_user'] = 'y') {
+    if (isset($_POST['drop_user']) and ($_POST['drop_user'] == 'y')) {
     $sql = "DROP USER '" . $_POST['mysql_new_user'] . "'@";
-    if ($_POST['bindlocal'] = 'y') {
+    if ($_POST['bindlocal'] == 'y') {
       $sql .= "'localhost' ";
     } else {
       $sql .= "'%' ";
@@ -242,26 +253,29 @@ function step35SetupDB() {
 
     //$sql = "DROP USER `" . $_POST['mysql_new_user'].";";
     echo __("Dropping the existing user... ");
-    $result = mysql_query($sql, $db) or die('Could not drop user: ' . mysql_error());
+    $result = mysql_query($sql, $db);
+    if ($result <>'1'){ echo __('Could not drop user: ' . mysql_error()).$result;}
+     echo __("Success!") ."<br />";
     }
 
     
     
     
     $sql = "CREATE USER '" . $_POST['mysql_new_user'] . "'@";
-    if ($_POST['bindlocal'] = 'y') {
+    if (isset($_POST['bindlocal']) and ($_POST['bindlocal'] == 'y')) {
       $sql .= "'localhost' ";
     } else {
       $sql .= "'%' ";
     }
     $sql .= "IDENTIFIED BY '" . $_POST['mysql_new_pass'] . "'";
     echo __("Creating the user... ");
-    $result = mysql_query($sql, $db) or die('Could not create the user: ' . mysql_error());
+    $result = mysql_query($sql, $db);
+    if ($result<>'1'){ echo __('Could not create the user: ' . mysql_error()).$result;}
     echo __("Success!") . "<br />";
     $sql = "GRANT SELECT , INSERT , UPDATE , DELETE , CREATE , DROP , INDEX , ALTER , CREATE TEMPORARY TABLES";
     $sql .= " , CREATE VIEW , SHOW VIEW , CREATE ROUTINE, ALTER ROUTINE, EXECUTE ";
     $sql .= "ON `" . $_POST['mysql_new_db'] . "`.* TO '" . $_POST['mysql_new_user'] . "'@";
-    if ($_POST['bindlocal'] = 'y') {
+    if (isset($_POST['bindlocal']) and ($_POST['bindlocal'] == 'y')) {
       $sql .= "'localhost'";
     } else {
       $sql .= "'%'";
@@ -401,7 +415,7 @@ function returnConfig() {
 \$ldap_attributes = array(\"displayname\",\"description\",\"userprincipalname\",\"homedirectory\",\"homedrive\",\"profilepath\",\"scriptpath\",\"mail\",\"samaccountname\",\"telephonenumber\",\"usncreated\",\"department\",\"sn\");
 \$ldap_filter = '\"(&(objectClass=user)(objectCategory=person)(|(samaccountname=\"*\")(name=\"*\")(displayname=\"*\")(cn=\"\"*\")))\"';
 \$ldap_base_dn = 'dc=domain,dc=local';
-\$ldap_connect_string = 'LDAP:\/\/server.domain.local';
+\$ldap_connect_string = 'LDAP://server.domain.local';
 
  
 \$language = '";
