@@ -555,4 +555,24 @@ $hex_string = $hex_string."-";
 }
 
 
+function isSID($value) {
+
+return 
+strpos( $value, "sid") <> 0 ;
+
+
+} 
+
+function formatSID($value) {
+$hex_string='S-';
+for ($sid_bytes = 0; $sid_bytes<= strlen($value); $sid_bytes++){
+$hex_string = $hex_string.bin2hex(substr($value,$sid_bytes, 1));
+if (($sid_bytes == '0') or ($sid_bytes == '1') or ($sid_bytes == '3')or ($sid_bytes == '9')) {
+$hex_string = $hex_string."-";
+        }
+    }
+    return $hex_string;
+}
+
+
 ?>

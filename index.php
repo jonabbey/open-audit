@@ -10,6 +10,7 @@ $latest_version = "06.09.29";
 
 if (isset($_GET['software'])) {$software = $_GET['software'];} else {}
 if (isset($_GET['sort'])) {$sort = $_GET['sort'];} else {$sort= "system_name";}
+if (isset($_GET['validate'])) {$validate = $_GET['validate'];} else {$validate= "n";}
 include "include.php";
 
 $title = "";
@@ -1296,10 +1297,12 @@ if (isset($show_detected_xp_av) AND $show_detected_xp_av == "y"){
 
 echo "</td>\n";
 
+
+
 include "include_right_column.php";
 
 include "include_png_replace.php";
 
-echo "</body>\n</html>";
+
 ?>
 
