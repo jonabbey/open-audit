@@ -181,13 +181,27 @@ function step3SetupDB() {
   <table border="0" cellpadding="0" cellspacing="0" class="content">
   <tr><td><?php echo __("Database Name") ?>:&nbsp;</td><td><input type="text" name="mysql_new_db" size="12" value="openaudit" class="for_forms" /></td></tr>
   </table>
+  
+   <table border="0" cellpadding="0" cellspacing="0" class="content">
+  <tr><td><input type="checkbox" name="drop_database" value="y" checked="checked" /></td><td><?php echo __("Delete Database if it exists.") ?></td></tr>
+  <tr><td>&nbsp;</td><td><?php echo __("CAUTION This will delete ALL data in this database.") ?></td></tr>
+  </table>
   <hr />
+  
   <?php echo __("Credentials for Open-AudIT database") ?>:<br />
   <table border="0" cellpadding="0" cellspacing="0" class="content">
   <tr><td><?php echo __("New Username") ?>:&nbsp;</td><td><input type="text" name="mysql_new_user" maxlength="16" size="12" value="openaudit" class="for_forms" /></td></tr>
+   
+
   <tr><td><?php echo __("New Password") ?>:&nbsp;</td><td><input type="password" name="mysql_new_pass" size="12" value="" class="for_forms" /></td></tr>
   </table>
+
   <table border="0" cellpadding="0" cellspacing="0" class="content">
+  <tr><td><input type="checkbox" name="delete_user" value="y" checked="checked" /></td><td><?php echo __("Delete User if it exists.") ?></td></tr>
+  <tr><td>&nbsp;</td><td><?php echo __("CAUTION This will also remove all permissions for this user.") ?></td></tr>
+  </table>
+
+<table border="0" cellpadding="0" cellspacing="0" class="content">
   <tr><td><input type="checkbox" name="bindlocal" value="y" checked="checked" /></td><td><?php echo __("Bind user to localhost.") ?></td></tr>
   <tr><td>&nbsp;</td><td><?php echo __("This option will allow this user to only connect from the localhost. It is recommended that you leave this checked unless your MySQL server is not on the same server as your web server.") ?></td></tr>
   </table>
@@ -205,10 +219,35 @@ function step35SetupDB() {
     echo __("Connecting to the MySQL Server... ");
     $db = @mysql_connect($_POST['mysql_server_post'],$_POST['mysql_user_post'],$_POST['mysql_password_post']) or die('Could not connect: ' . mysql_error());
     echo __("Success!") . "<br />";
+    
+    if ($_POST['drop_database'] = 'y') {
+        
+    $sql = "DROP DATABASE `" . $_POST['mysql_new_db'].";";
+    echo __("Dropping the database... ");
+    $result = mysql_query($sql, $db) or die('Could not drop db: ' . mysql_error());
+    }
+    
     $sql = "CREATE DATABASE `" . $_POST['mysql_new_db'] . "` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci";
     echo __("Creating the database... ");
     $result = mysql_query($sql, $db) or die('Could not create db: ' . mysql_error());
     echo __("Success!") ."<br />";
+
+    if ($_POST['delete_user'] = 'y') {
+    $sql = "DROP USER '" . $_POST['mysql_new_user'] . "'@";
+    if ($_POST['bindlocal'] = 'y') {
+      $sql .= "'localhost' ";
+    } else {
+      $sql .= "'%' ";
+    }
+
+    //$sql = "DROP USER `" . $_POST['mysql_new_user'].";";
+    echo __("Dropping the existing user... ");
+    $result = mysql_query($sql, $db) or die('Could not drop user: ' . mysql_error());
+    }
+
+    
+    
+    
     $sql = "CREATE USER '" . $_POST['mysql_new_user'] . "'@";
     if ($_POST['bindlocal'] = 'y') {
       $sql .= "'localhost' ";
