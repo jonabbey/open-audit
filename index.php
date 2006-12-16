@@ -7,7 +7,7 @@ $total_rows = 0;
 $latest_version = "06.09.29";
 
 // Check for config, otherwise run setup
-@(include "include_config.php") OR die(header("Location: setup.php"));
+@(include_once "include_config.php") OR die(header("Location: setup.php"));
 
 if (isset($_GET['software'])) {$software = $_GET['software'];} else {}
 if (isset($_GET['sort'])) {$sort = $_GET['sort'];} else {$sort= "system_name";}
