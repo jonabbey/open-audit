@@ -6,23 +6,14 @@ $count = 0;
 $total_rows = 0;
 $latest_version = "06.09.29";
 
-
+// Check for config, otherwise run setup
+@(include "include_config.php") OR die(header("Location: setup.php"));
 
 if (isset($_GET['software'])) {$software = $_GET['software'];} else {}
 if (isset($_GET['sort'])) {$sort = $_GET['sort'];} else {$sort= "system_name";}
 if (isset($_GET['validate'])) {$validate = $_GET['validate'];} else {$validate= "n";}
 
-if (!file_exists("include_config.php")){
-// No include_config.php
-// Change to the setup page instead.
-$URL="./setup.php";
-
-header ("Location: $URL");
-} else {
-
 include "include.php";
-
-
 
 $title = "";
 if (isset($_GET["show_all"])){ $count_system = '10000'; } else {}
@@ -1314,6 +1305,5 @@ include "include_right_column.php";
 
 include "include_png_replace.php";
 
-}
 ?>
 
