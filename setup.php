@@ -173,9 +173,9 @@ function step3SetupDB() {
 ?>
   <span class="contenthead"><?php echo __("Setup") ?></span>
   <p><?php echo __("To perform an automated setup, enter the details on the root account below. This user must have the privileges to create and modify users and databases.") ?></p>
-  <p><?php echo __("By clicking 'Submit Credentials,' you are allowing Open-AudIT to create a user and database for use with Open-AudIT. This is the recommended configuration, as Open-AudIT does not need root privileges after installation.") ?></p>
+  <p><?php echo __("By clicking 'Submit Cbentials,' you are allowing Open-AudIT to create a user and database for use with Open-AudIT. This is the recommended configuration, as Open-AudIT does not need root privileges after installation.") ?></p>
   <hr />
-  <?php echo __("Root User Credentials").":<br />";
+  <?php echo __("Root User Cbentials").":<br />";
 
   echo "<form method=\"post\" action=\"" . $_SERVER["PHP_SELF"] . "\" name=\"setup.php\">";
  ?>
@@ -191,12 +191,12 @@ function step3SetupDB() {
   </table>
   
    <table border="0" cellpadding="0" cellspacing="0" class="content">
-  <tr><td><input type="checkbox" name="drop_database" value="y" checked="checked" /></td><td><?php echo __("Delete Database if it exists.") ?></td></tr>
+  <tr><td><input type="checkbox" name="drop_database" value="n"  /></td><td><?php echo __("Delete Database if it exists.") ?></td></tr>
   <tr><td>&nbsp;</td><td><?php echo __("CAUTION This will delete ALL data in this database.") ?></td></tr>
   </table>
   <hr />
   
-  <?php echo __("Credentials for Open-AudIT database") ?>:<br />
+  <?php echo __("Cbentials for Open-AudIT database") ?>:<br />
   <table border="0" cellpadding="0" cellspacing="0" class="content">
   <tr><td><?php echo __("New Username") ?>:&nbsp;</td><td><input type="text" name="mysql_new_user" maxlength="16" size="12" value="openaudit" class="for_forms" /></td></tr>
    
@@ -205,7 +205,7 @@ function step3SetupDB() {
   </table>
 
   <table border="0" cellpadding="0" cellspacing="0" class="content">
-  <tr><td><input type="checkbox" name="drop_user" value="y" checked="checked" /></td><td><?php echo __("Delete User if it exists.") ?></td></tr>
+  <tr><td><input type="checkbox" name="drop_user" value="n"  /></td><td><?php echo __("Delete User if it exists.") ?></td></tr>
   <tr><td>&nbsp;</td><td><?php echo __("CAUTION This will also remove all permissions for this user.") ?></td></tr>
   </table>
 
@@ -216,7 +216,7 @@ function step3SetupDB() {
   <br />
   <input type="hidden" name="language_post" value="<?php echo $_POST['language_post']; ?>" />
   <input type="hidden" name="step" value="3.5" />
-  <input type="submit" value="<?php echo __("Submit Credentials") ?>" name="submit_button" />
+  <input type="submit" value="<?php echo __("Submit Cbentials") ?>" name="submit_button" />
   </form>
   <br />
 <?php
@@ -229,33 +229,38 @@ function step35SetupDB() {
     echo __("Success!") . "<br />";
     
     if (isset($_POST['drop_database']) and ($_POST['drop_database'] == 'y')) {
-        
     $sql = "DROP DATABASE `" . $_POST['mysql_new_db'].";";
     echo __("Dropping the database... ");
     $result = mysql_query($sql, $db);
-    if ($result<>'1'){ echo __('Could not drop db: ' . mysql_error()).$result;}
+    if ($result<>'1'){ echo __('Could not drop db: ' . mysql_error()).$result."-";
+     echo __("<b>Warning!</b>") ."<br />";
+     }else {
      echo __("Success!") ."<br />";
-    }
-    
+     }
+    } 
     $sql = "CREATE DATABASE `" . $_POST['mysql_new_db'] . "` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci";
     echo __("Creating the database... ");
     $result = mysql_query($sql, $db);
-    if ($result<>'1') { echo __('Could not create db: ' . mysql_error()).$result;}
+    if ($result<>'1') { echo __('Could not create db: ' . mysql_error()).$result."-";
+    echo __("<b>Warning!</b>") ."<br />";
+    }else {
     echo __("Success!") ."<br />";
-
+    }
     if (isset($_POST['drop_user']) and ($_POST['drop_user'] == 'y')) {
     $sql = "DROP USER '" . $_POST['mysql_new_user'] . "'@";
     if ($_POST['bindlocal'] == 'y') {
       $sql .= "'localhost' ";
-    } else {
+     } else {
       $sql .= "'%' ";
+     }
     }
-
-    //$sql = "DROP USER `" . $_POST['mysql_new_user'].";";
+    $sql = "DROP USER `" . $_POST['mysql_new_user'].";";
     echo __("Dropping the existing user... ");
     $result = mysql_query($sql, $db);
-    if ($result <>'1'){ echo __('Could not drop user: ' . mysql_error()).$result;}
-     echo __("Success!") ."<br />";
+    if ($result <>'1'){ echo __('Could not drop user: ' . mysql_error()).$result."-";
+    echo __("<b>Warning!</b>") ."<br />";
+    }else {
+         echo __("Success!") ."<br />";
     }
 
     
@@ -270,8 +275,12 @@ function step35SetupDB() {
     $sql .= "IDENTIFIED BY '" . $_POST['mysql_new_pass'] . "'";
     echo __("Creating the user... ");
     $result = mysql_query($sql, $db);
-    if ($result<>'1'){ echo __('Could not create the user: ' . mysql_error()).$result;}
+    if ($result<>'1'){ echo __('Could not create the user: ' . mysql_error()).$result."-";
+         echo __("<b>Warning!</b>") ."<br />";
+    }else {
+    
     echo __("Success!") . "<br />";
+    }
     $sql = "GRANT SELECT , INSERT , UPDATE , DELETE , CREATE , DROP , INDEX , ALTER , CREATE TEMPORARY TABLES";
     $sql .= " , CREATE VIEW , SHOW VIEW , CREATE ROUTINE, ALTER ROUTINE, EXECUTE ";
     $sql .= "ON `" . $_POST['mysql_new_db'] . "`.* TO '" . $_POST['mysql_new_user'] . "'@";
@@ -289,6 +298,7 @@ function step35SetupDB() {
     mysql_select_db($_POST['mysql_new_db']);
     echo __("Success!") . "<br />";
 
+   if (isset($_POST['drop_database']) and ($_POST['drop_database'] == 'y')) {
     // Load SQL contents to write to server
     echo __("Creating tables... ");
     $filename = "scripts/open_audit.sql";
@@ -302,6 +312,7 @@ function step35SetupDB() {
     }
     echo __("Success!") . "<br />";
     mysql_close($db);
+    }
 
     // Write configuration file
     echo __("Writing configuration file... ");
