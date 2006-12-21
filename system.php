@@ -207,12 +207,12 @@ while (list ($viewname, $viewdef_array) = @each ($query_array["views"])) {
                     //IF Horizontal Table-Layout
                     if(isset($viewdef_array["table_layout"]) AND $viewdef_array["table_layout"]=="horizontal"){
                         if(!isset($field["align"])) $field["align"]="left";
-                        echo "<td style=\"bgcolor:" . $bgcolor . ";\" align=\"".$field["align"]."\" class=\"system_tablebody_left\" >\n";
+                        echo "<td style=\"background-color:" . $bgcolor . ";\" align=\"".$field["align"]."\" class=\"system_tablebody_left\" >\n";
                          echo $show_value;
                         echo "</td>\n";
                     }else{
                         $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
-                        echo "<tr style=\"bgcolor:" . $bgcolor . ";\" >\n";
+                        echo "<tr style=\"background-color:" . $bgcolor . ";\" >\n";
                          if (!isset($field["align"])) { $field["align"] = "left"; }
                          echo "<td align=\"".$field["align"]."\" class=\"system_tablebody_left\" >";
                            echo $field["head"];
@@ -298,7 +298,7 @@ while (list ($viewname, $viewdef_array) = @each ($query_array["views"])) {
             //Links to Manufacturer
             if(isset($myrow["system_vendor"]) AND $myrow["system_vendor"]!="" AND ($viewname=="summary" OR $viewname=="chassis")){
                 $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
-                echo "<tr style=\"bgcolor:" . $bgcolor . ";\" >\n";
+                echo "<tr style=\"background-color:" . $bgcolor . ";\" >\n";
                  echo "<td>\n";
                   echo __("Links to Manufacturer");
                   echo ": &nbsp;";
@@ -346,7 +346,7 @@ while (list ($viewname, $viewdef_array) = @each ($query_array["views"])) {
             //IF Horizontal Table-Layout
             if(isset($viewdef_array["table_layout"]) AND $viewdef_array["table_layout"]=="horizontal"){}else{
                 $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
-                echo "<tr style=\"bgcolor:$bgcolor;\"><td class=\"system_tablebody_right\" colspan=\"2\">&nbsp;</td></tr>\n";
+                echo "<tr style=\"background-color:$bgcolor;\"><td class=\"system_tablebody_right\" colspan=\"2\">&nbsp;</td></tr>\n";
             }
         }while ($myrow = mysql_fetch_array($result));
     } else {
@@ -356,7 +356,7 @@ while (list ($viewname, $viewdef_array) = @each ($query_array["views"])) {
          echo "</td>\n";
         echo "</tr>\n";
 
-        echo "<tr style=\"bgcolor:$bg2\"><td style=\"padding-right:10px;\" colspan=\"2\">&nbsp;</td></tr>\n";
+        echo "<tr style=\"background-color:$bg2\"><td style=\"padding-right:10px;\" colspan=\"2\">&nbsp;</td></tr>\n";
     }
 
      //Edit- and Submit-Button
@@ -390,7 +390,7 @@ while (list ($viewname, $viewdef_array) = @each ($query_array["views"])) {
     //IF Horizontal Table-Layout
     if(isset($viewdef_array["table_layout"]) AND $viewdef_array["table_layout"]=="horizontal"){
         $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
-        echo "<tr style=\"bgcolor:$bgcolor\"><td class=\"system_tablebody_right\" colspan=\"10\">&nbsp;</td></tr>\n";
+        echo "<tr style=\"background-color:$bgcolor\"><td class=\"system_tablebody_right\" colspan=\"10\">&nbsp;</td></tr>\n";
     }
 
     echo "</table>";
