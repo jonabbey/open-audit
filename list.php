@@ -305,7 +305,7 @@ if ($myrow = mysql_fetch_array($result)){
   }
     do{
         $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
-        echo " <tr style=\"bgcolor=" . $bgcolor . ";\">\n";
+        echo " <tr style=\"background-color:" . $bgcolor . ";\">\n";
         foreach($query_array["fields"] as $field){
 
             if($field["show"]!="n"){
@@ -438,7 +438,7 @@ if ($myrow = mysql_fetch_array($result)){
      if(isset($_REQUEST["monitor"])){
          echo "<input type=\"hidden\" name=\"monitor\" value=\"".$_REQUEST["monitor"]."\" />\n";
      }
-     echo "<br /><a href=\"#\" onclick=\"document.form_export.submit();\">".__("Export this View to CSV")."</a>\n";
+     echo "<br /><a href=\"#\" onclick=\"document.forms['form_export'].submit();\">".__("Export this View to CSV")."</a>\n";
     echo "</p></form>\n";
 } else {
   echo "<tr><td colspan=\"4\">".__("No Results")."</td></tr>\n";
