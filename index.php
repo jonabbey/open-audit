@@ -56,7 +56,7 @@ if ($show_system_discovered == "y") {
     "<div class=\"main_each\">
        <table style=\"border:0px;\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">
          <tr>
-           <td class=\"indexheadlines\" colspan=\"3\"><a href=\"javascript://\" onclick=\"switchUl('f1');\">".__("Systems Discovered in the last")." $system_detected ".__("Days").".</a></td>
+           <td class=\"indexheadlines\" colspan=\"3\"><a href=\"rss_new_systems.php\"><img src=\"images/feed-icon.png\" width=\"16\" height=\"16\" style=\"border:0px;\" alt=\"\" /></a>&nbsp;<a href=\"javascript://\" onclick=\"switchUl('f1');\">".__("Systems Discovered in the last")." $system_detected ".__("Days").".</a></td>
            <td align=\"right\"><a href=\"javascript://\" onclick=\"switchUl('f1');\"><img src=\"images/down.png\" width=\"16\" height=\"16\" style=\"border:0px;\" alt=\"\" /></a></td>
           </tr>
        </table>
