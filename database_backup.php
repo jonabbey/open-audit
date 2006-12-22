@@ -5,11 +5,11 @@ include "include.php";
 //$this_page="https://".$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF']; 
 //echo "<meta name=\"refresh\" content=\"10;".$this_page."\">";
 //
-function microtime_float()
-{
-    list($usec, $sec) = explode(" ", microtime());
-    return ((float)$usec + (float)$sec);
-}
+//function microtime_float()
+//{
+//    list($usec, $sec) = explode(" ", microtime());
+//    return ((float)$usec + (float)$sec);
+//}
 $time_start = microtime_float();
 
 

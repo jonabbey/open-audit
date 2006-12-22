@@ -14,11 +14,11 @@ if (isset($GET['add_drop_tables'])) {
     }
 
 
-function microtime_float()
-{
-    list($usec, $sec) = explode(" ", microtime());
-    return ((float)$usec + (float)$sec);
-}
+//function microtime_float()
+//{
+//    list($usec, $sec) = explode(" ", microtime());
+//    return ((float)$usec + (float)$sec);
+//}
 $time_start = microtime_float();
 
 $newline = "\r\n";
