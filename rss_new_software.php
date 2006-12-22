@@ -22,7 +22,7 @@ if(is_file($language_file)){
 $db = mysql_connect($mysql_server,$mysql_user,$mysql_password) or die('Could not connect: ' . mysql_error());
   mysql_select_db($mysql_database,$db);
 
-$sql  = "SELECT sw.software_name, sw.software_first_timestamp, sys.system_name, sys.system_uuid, ";
+$sql  = "SELECT sw.software_id, sw.software_name, sw.software_first_timestamp, sys.system_name, sys.system_uuid, ";
   $sql .= "sys.net_ip_address FROM software sw, system sys WHERE ";
   $sql .= "software_first_timestamp >= '" . adjustdate(0,0,-$days_software_detected) . "000000' ";
   $sql .= "AND sys.system_first_timestamp < '" . adjustdate(0,0,-$days_software_detected) . "000000' ";
@@ -43,6 +43,7 @@ $sql  = "SELECT sw.software_name, sw.software_first_timestamp, sys.system_name, 
    
    do {
       echo '<item>'."\n";
+      echo '<guid>'.$myrow["software_id"]."</guid>\n";
       echo '<title>'.$myrow["software_name"].'</title>'."\n";
       echo '<link>'.$sitebaseurl.'system.php?pc='.$myrow["system_uuid"].'&amp;view=summary</link>'."\n";
       echo '<description>'.$myrow["system_name"].' '.ip_trans($myrow["net_ip_address"]).'</description>'."\n";
