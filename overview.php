@@ -1,12 +1,7 @@
 <?php
-function microtime_float()
-{
-    list($usec, $sec) = explode(" ", microtime());
-    return ((float)$usec + (float)$sec);
-}
-$time_start = microtime_float();
-
 include_once("include.php");
+
+$time_start = microtime_float();
 
 require("overview_viewdef.php");
 
@@ -224,5 +219,4 @@ foreach($query_array as $view_master) {
 include "include_right_column.php";
 echo "</body>\n";
 echo "</html>\n";
-include "include_png_replace.php";
 ?>

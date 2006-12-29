@@ -55,8 +55,6 @@ echo "</td>\n";
 include "include_right_column.php";
 echo "</body>\n";
 echo "</html>\n";
-include "include_png_replace.php";
-
 
 
 ?>

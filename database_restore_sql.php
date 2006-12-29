@@ -81,5 +81,4 @@ echo "</td>\n";
 include "include_right_column.php";
 echo "</body>";
 echo "</html> ";
-include "include_png_replace.php"
 ?>

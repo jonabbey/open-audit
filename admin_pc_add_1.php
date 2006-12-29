@@ -39,5 +39,4 @@ echo "</td>\n";
 echo "</table>\n";
 echo "</body>\n";
 echo "</html>\n";
-include "include_png_replace.php";
 ?>

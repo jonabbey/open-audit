@@ -218,7 +218,7 @@ foreach($viewdef_array["fields"] as $field) {
             $headline_1 .= "</a>\n";
         }
         if($sort==$field["name"]){
-            $headline_1 .= "<img src=\"images/".strtolower($dir).".png\" style=\"padding-bottom:3px; border:0px\" alt=\"\" />";
+            $headline_1 .= "<img src=\"images/".strtolower($dir).".png\" height=\"4\" width=\"7\" style=\"padding-bottom:3px; border:0px\" alt=\"\" />";
         }
         $headline_1 .= "</td>\n";
 
@@ -454,5 +454,4 @@ echo "</td>\n";
 include "include_right_column.php";
 echo "</body>\n";
 echo "</html>\n";
-include "include_png_replace.php";
 ?>

@@ -1303,7 +1303,5 @@ echo "</td>\n";
 
 include "include_right_column.php";
 
-include "include_png_replace.php";
-
 ?>
 

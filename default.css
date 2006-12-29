@@ -125,3 +125,4 @@ td.system_tablebody_right{
   padding-right:10px;
 }
 
+img { behavior: url(iepngfix.htc); }

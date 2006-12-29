@@ -191,5 +191,4 @@ echo "</div>\n";
 echo "</td>\n";
 echo "</body>\n";
 echo "</html>\n";
-include "include_png_replace.php";
 ?>

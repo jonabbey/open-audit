@@ -1,6 +1,6 @@
 <?php
 
-
+/*
     $x=ob_get_contents();
     ob_end_clean();
     echo replacePngTags($x);
@@ -74,5 +74,5 @@ function replacePngTags($x){
     }
     return $x;
 }
-
+*/
 ?>
