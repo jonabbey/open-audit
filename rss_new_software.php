@@ -43,8 +43,8 @@ $sql  = "SELECT sw.software_id, sw.software_name, sw.software_first_timestamp, s
    
    do {
       echo '<item>'."\n";
-      echo '<guid>'.$myrow["software_id"]."</guid>\n";
-      echo '<title>'.$myrow["software_name"].'</title>'."\n";
+      echo '<guid isPermaLink="false">openaudit-'.$myrow["software_id"]."</guid>\n";
+      echo '<title>'.htmlentities($myrow["software_name"]).'</title>'."\n";
       echo '<link>'.$sitebaseurl.'system.php?pc='.$myrow["system_uuid"].'&amp;view=summary</link>'."\n";
       echo '<description>'.$myrow["system_name"].' '.ip_trans($myrow["net_ip_address"]).'</description>'."\n";
       echo '</item>'."\n";
