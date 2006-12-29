@@ -411,7 +411,7 @@ while (list ($viewname, $viewdef_array) = @each ($query_array["views"])) {
     if(isset($_REQUEST["monitor"])){
         echo "<input type=\"hidden\" name=\"monitor\" value=\"".$_REQUEST["monitor"]."\" />\n";
     }
-    echo "<br /><a href=\"#\" onclick=\"document.form_export.submit();\">".__("Export this Page to PDF")."</a>\n";
+    echo "<br /><a href=\"#\" onclick=\"document.forms['form_export'].submit();\">".__("Export this Page to PDF")."</a>\n";
     echo "</p></form>\n";
 
 
