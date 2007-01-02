@@ -3,6 +3,12 @@ include_once "include_config.php";
 include_once "include_functions.php";
 include_once "include_lang.php";
 
+function return_datetime($timestamp)
+{
+$timestamp = substr($timestamp, 0, 4) . "-" . substr($timestamp, 4, 2) . "-" . substr($timestamp, 6, 2) . " " . substr($timestamp, 8, 2) . ":" . substr($timestamp, 10, 2);
+return $timestamp;
+}
+
 header('Content-type: application/rss+xml');
 
 //Variables
@@ -38,9 +44,10 @@ $db = mysql_connect($mysql_server,$mysql_user,$mysql_password) or die('Could not
    
    do {
       echo '<item>'."\n";
+      echo "<guid isPermaLink=\"false\">openauditnewsys-".$myrow["system_uuid"]."</guid>\n";
       echo '<title>'.$myrow["system_name"].'</title>'."\n";
       echo '<link>'.$sitebaseurl.'system.php?pc='.$myrow["system_uuid"].'&amp;view=summary</link>'."\n";
-      echo '<description>'.$myrow["system_name"].' '.ip_trans($myrow["net_ip_address"]).' '.return_date_time($myrow["system_first_timestamp"]).'</description>'."\n";
+      echo '<description>'.$myrow["system_name"].' '.ip_trans($myrow["net_ip_address"]).' '.return_datetime($myrow["system_first_timestamp"]).'</description>'."\n";
       echo '</item>'."\n";
     } while ($myrow = mysql_fetch_array($result));
   }
