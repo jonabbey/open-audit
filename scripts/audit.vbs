@@ -23,7 +23,8 @@ Dim net_mac_uuid
 form_total = ""
 
 ' Below calls the file audit_include.vbs to setup the variables.
-ExecuteGlobal CreateObject("Scripting.FileSystemObject").OpenTextFile("audit.config").ReadAll
+sScriptPath=Left(WScript.ScriptFullName, InStrRev(WScript.ScriptFullName,"\"))
+ExecuteGlobal CreateObject("Scripting.FileSystemObject").OpenTextFile(sScriptPath & "audit.config").ReadAll
 
 ' If any command line args given - use the first one as strComputer
 If Wscript.Arguments.Count > 0 Then
