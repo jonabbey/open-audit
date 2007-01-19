@@ -6,12 +6,12 @@ include_once "include_lang.php";
 header('Content-type: application/rss+xml');
 
 //Variables
-if ($use_https == 'y') { 
-$site_protocol = "https:////";
+if (isset($use_https) AND $use_https == "y") { 
+$site_protocol = "https://";
 }
 else
 {
-$site_protocol = "http:////";
+$site_protocol = "http://";
 }
 $sitebaseurl = $site_protocol  . $_SERVER["SERVER_NAME"] . dirname($_SERVER["SCRIPT_NAME"]) . "/";
 
