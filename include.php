@@ -88,6 +88,8 @@ if ($is_refreshable) {
         }
 ?>        
     <title>Open-AudIT</title>
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon"> 
     <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
         <link rel="stylesheet" type="text/css" href="default.css" />
     <script type="text/javascript">
@@ -271,12 +273,17 @@ if ($pc > "0") {
 // Add a Strict Test button if $validate is set.     
 if ((isset($validate)) and ($validate =="y")){
 echo "<p>";
-      echo "<a href=\"http://validator.w3.org/check/referer\"><img src=\"http://www.w3.org/Icons/valid-xhtml10\" alt=\"Valid XHTML 1.0!\" height=\"31\" width=\"88\" /></a>";
-    echo "</p>";
+echo "<a href=\"http://validator.w3.org/check/referer\"><img src=\"http://www.w3.org/Icons/valid-xhtml10\" alt=\"Valid XHTML 1.0!\" height=\"31\" width=\"88\" /></a>";
+//echo "<script type=\"text/javascript\" language=\"JavaScript1.2\" src=\"http://www.altavista.com/help/free/inc_translate\"></script>";
+echo "<noscript><a href=\"http://www.altavista.com/babelfish/tr\"></noscript>";
+//echo "<script language=\"JavaScript1.2\" src=\"http://www.altavista.com/static/scripts/translate_engl.js\"></script>\"";
+echo "</p>";
 //
+
+
 echo "</body>\n</html>";
 }
+ echo "</ul>\n";
+  echo "</td>\n";
 ?>
-      </ul>
-     </td>
      
