@@ -42,13 +42,16 @@ $db = mysql_connect($mysql_server,$mysql_user,$mysql_password) or die('Could not
 
   $bgcolor = "#FFFFFF";
 
-
-   echo  '<rss version="2.0">'."\n";
+  echo  '<rss version="2.0">'."\n";
    echo '<channel>'."\n";
+   echo '<image>'."\n";
+   echo '<url>'.$sitename.'favicon.ico</url>'."\n";
+   echo '</image>'."\n";
    echo '<title>'.$sitename.'</title>'."\n";
    echo '<link>'.$sitebaseurl.'</link>'."\n";
-   echo '<description>'.$sitedescription.'</description>'."\n";
 
+   echo '<description>'.$sitedescription.'</description>'."\n";
+   
   if ($myrow = mysql_fetch_array($result)){ 
  // system.php?other=&view=other_system&  
    do {
@@ -58,6 +61,7 @@ $db = mysql_connect($mysql_server,$mysql_user,$mysql_password) or die('Could not
       echo '<link>'.$sitebaseurl.'system.php?other='.$myrow["other_id"].'&amp;view=other_system</link>'."\n";
       echo '<description>'.$myrow["other_network_name"].' '.ip_trans($myrow["other_ip_address"]).' '.return_datetime($myrow["other_first_timestamp"]).'</description>'."\n";
       echo '</item>'."\n";
+  
     } while ($myrow = mysql_fetch_array($result));
   }
 

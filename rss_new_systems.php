@@ -44,6 +44,9 @@ $db = mysql_connect($mysql_server,$mysql_user,$mysql_password) or die('Could not
 
    echo  '<rss version="2.0">'."\n";
    echo '<channel>'."\n";
+   echo '<image>'."\n";
+   echo '<url>'.$sitename.'favicon.ico</url>'."\n";
+   echo '</image>'."\n";
    echo '<title>'.$sitename.'</title>'."\n";
    echo '<link>'.$sitebaseurl.'</link>'."\n";
    echo '<description>'.$sitedescription.'</description>'."\n";
@@ -57,6 +60,7 @@ $db = mysql_connect($mysql_server,$mysql_user,$mysql_password) or die('Could not
       echo '<link>'.$sitebaseurl.'system.php?pc='.$myrow["system_uuid"].'&amp;view=summary</link>'."\n";
       echo '<description>'.$myrow["system_name"].' '.ip_trans($myrow["net_ip_address"]).' '.return_datetime($myrow["system_first_timestamp"]).'</description>'."\n";
       echo '</item>'."\n";
+
     } while ($myrow = mysql_fetch_array($result));
   }
 

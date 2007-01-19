@@ -43,8 +43,12 @@ $sql  = "SELECT sw.software_id, sw.software_name, sw.software_first_timestamp, s
 
    echo  '<rss version="2.0">'."\n";
    echo '<channel>'."\n";
+   echo '<image>'."\n";
+   echo '<url>'.$sitename.'favicon.ico</url>'."\n";
+   echo '</image>'."\n";
    echo '<title>'.$sitename.'</title>'."\n";
    echo '<link>'.$sitebaseurl.'</link>'."\n";
+
    echo '<description>'.$sitedescription.'</description>'."\n";
 
   if ($myrow = mysql_fetch_array($result)){ 
@@ -56,6 +60,7 @@ $sql  = "SELECT sw.software_id, sw.software_name, sw.software_first_timestamp, s
       echo '<link>'.$sitebaseurl.'system.php?pc='.$myrow["system_uuid"].'&amp;view=summary</link>'."\n";
       echo '<description>'.$myrow["system_name"].' '.ip_trans($myrow["net_ip_address"]).'</description>'."\n";
       echo '</item>'."\n";
+
     } while ($myrow = mysql_fetch_array($result));
   }
 
