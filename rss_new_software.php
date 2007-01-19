@@ -6,7 +6,15 @@ include_once "include_lang.php";
 header('Content-type: application/rss+xml');
 
 //Variables
-$sitebaseurl = "http://" . $_SERVER["SERVER_NAME"] . dirname($_SERVER["SCRIPT_NAME"]) . "/";
+if ($use_https == 'y') { 
+$site_protocol = "https:////";
+}
+else
+{
+$site_protocol = "http:////";
+}
+$sitebaseurl = $site_protocol  . $_SERVER["SERVER_NAME"] . dirname($_SERVER["SCRIPT_NAME"]) . "/";
+
 $sitename = "Software Detected Changes in the Last ".$days_software_detected." Day(s)";
 $sitedescription = "Software changes detected by Open Audit.";
 

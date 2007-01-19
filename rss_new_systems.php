@@ -12,7 +12,15 @@ return $timestamp;
 header('Content-type: application/rss+xml');
 
 //Variables
-$sitebaseurl = "http://" . $_SERVER["SERVER_NAME"] . dirname($_SERVER["SCRIPT_NAME"]) . "/";
+if ($use_https == 'y') { 
+$site_protocol = "https:////";
+}
+else
+{
+$site_protocol = "http:////";
+}
+$sitebaseurl = $site_protocol  . $_SERVER["SERVER_NAME"] . dirname($_SERVER["SCRIPT_NAME"]) . "/";
+
 $sitename = "New Systems Detected in the Last ".$system_detected." Day(s)";
 $sitedescription = "New systems detected by Open Audit.";
 
