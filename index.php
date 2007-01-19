@@ -112,7 +112,7 @@ if ($show_other_discovered == "y") {
     "<div class=\"main_each\">
       <table style=\"border:0px;\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" >
         <tr>
-          <td class=\"indexheadlines\" colspan=\"4\"><a href=\"javascript://\" onclick=\"switchUl('f0');\">".__("Other Items Discovered in the last")." $other_detected ".__("Days").".</a></td>
+          <td class=\"indexheadlines\" colspan=\"3\"><a href=\"rss_new_other.php\"><img src=\"images/feed-icon.png\" width=\"16\" height=\"16\" style=\"border:0px;\" alt=\"\" /></a>&nbsp;<a href=\"javascript://\" onclick=\"switchUl('f0');\">".__("Other Items Discovered in the last")." $other_detected ".__("Days").".</a></td>
           <td align=\"right\"><a href=\"javascript://\" onclick=\"switchUl('f0');\"><img src=\"images/down.png\" width=\"16\" height=\"16\" style=\"border:0px;\" alt=\"\" /></a></td>
         </tr>
       </table>
