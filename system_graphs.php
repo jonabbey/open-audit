@@ -14,7 +14,10 @@ if ($myrow = mysql_fetch_array($result)){
   do {
     if ($myrow['disk_letter'] == $disk_letter_old){
     } else {
-      echo "<hr /></td></tr><tr><td>".__("Drive").": " . ereg_replace (":", "", $myrow['disk_letter']) . "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;      ";
+      
+      echo "<hr /></td></tr>";
+//      echo "<td>Drive:<img src=\"system_graphs_pie.php?disk_percent=50&width=160&height=160\" alt\"\"/>";
+      echo "<tr><td>".__("Drive").": " . ereg_replace (":", "", $myrow['disk_letter']) . "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;      ";
       $sql2 = "select * from partition where partition_uuid = '$pc' and partition_caption = '" . $myrow['disk_letter'] . "'";
       $result2 = mysql_query($sql2, $db);
       $myrow2 = mysql_fetch_array($result2);
@@ -22,7 +25,10 @@ if ($myrow = mysql_fetch_array($result)){
       echo __("Current Free Space") .": " . number_format($myrow2['partition_free_space']) . "&nbsp;MB&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
       $used = number_format($myrow2['partition_size'] - $myrow2['partition_free_space']);
       echo __("Current Disk Used") . ": " . $used . " MB</td></tr>";
-      echo "<tr><td><img src=\"images/graph_side.gif\" alt=\"\" />";
+      echo "<tr><td>";
+      echo "<img src=\"system_graphs_pie.php?disk_percent=".(100-$myrow['disk_percent'])."&width=140&height=140\" alt\"\"/>";
+ 
+      echo "<img src=\"images/graph_side.gif\" alt=\"\" />";
     }
     $disk_percent = $myrow['disk_percent'];
     //$disk_time = return_date_time($myrow['disk_timestamp']);
@@ -52,8 +58,11 @@ if ($myrow = mysql_fetch_array($result)){
     echo __("Percent Used").": " . $disk_percent . "% ";
     echo __("Timestamp").": " . $disk_time  . "\" />";
     $disk_letter_old = $myrow['disk_letter'];
-  } while ($myrow = mysql_fetch_array($result));
+  }
+while ($myrow = mysql_fetch_array($result));
 } else {}
+//echo "<img src=\"system_graphs_pie.php?disk_percent=".(100-$myrow['disk_percent'])."&width=160&height=160\" alt\"\"/>";
+//echo "<td>Drive:<img src=\"system_graphs_pie.php?disk_percent=50&width=160&height=160\" alt\"\"/></td>";
 echo "</td></tr>";
 
 echo "</table>\n";
