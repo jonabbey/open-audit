@@ -25,8 +25,10 @@ if ($myrow = mysql_fetch_array($result)){
       echo __("Current Free Space") .": " . number_format($myrow2['partition_free_space']) . "&nbsp;MB&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
       $used = number_format($myrow2['partition_size'] - $myrow2['partition_free_space']);
       echo __("Current Disk Used") . ": " . $used . " MB</td></tr>";
+      $percent_free = ( number_format($myrow2['partition_free_space'])/number_format($myrow2['partition_size'] )*100);
+
       echo "<tr><td>";
-      echo "<img src=\"system_graphs_pie.php?disk_percent=".(100-$myrow['disk_percent'])."&width=140&height=140\" alt\"\"/>";
+      echo "<img src=\"system_graphs_pie.php?disk_percent=".$percent_free."&width=140&height=140\" alt\"\"/>";
  
       echo "<img src=\"images/graph_side.gif\" alt=\"\" />";
     }
