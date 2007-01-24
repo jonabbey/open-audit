@@ -56,12 +56,11 @@ if ($percent_free <= 50) {
 
 for ($i = $height/2; $i > $height/2-$slice_thickness; $i--)  {
   imagefilledarc($image, $width/2, $i+$wedge_offset, $width-($width*$width_distortion/100),$height-($height*$height_distortion/100), 0, $angle, $empty_dark, IMG_ARC_PIE);
-  imagefilledarc($image, $width/2-$wedge_offset, $i+$wedge_offset, $width-($width*$width_distortion/100), $height-($height*$height_distortion/100), $angle, 360 , $full_dark, IMG_ARC_PIE);
+  imagefilledarc($image, $width/2-$wedge_offset, $i, $width-($width*$width_distortion/100), $height-($height*$height_distortion/100), $angle, 360 , $full_dark, IMG_ARC_PIE);
 }
 
-
-imagefilledarc($image, $width/2-$wedge_offset, $i+$wedge_offset, $width-($width*$width_distortion/100), $height-($height*$height_distortion/100), $angle, 360 , $full_light, IMG_ARC_PIE);
 imagefilledarc($image, $width/2, $i+$wedge_offset, $width-($width*$width_distortion/100), $height-($height*$height_distortion/100), 0, $angle, $empty_light, IMG_ARC_PIE);
+imagefilledarc($image, $width/2-$wedge_offset, $i, $width-($width*$width_distortion/100), $height-($height*$height_distortion/100), $angle, 360 , $full_light, IMG_ARC_PIE);
 }
 else 
 {
@@ -71,11 +70,11 @@ $angle = 360- $angle ;
 
 for ($i = $height/2; $i > $height/2-$slice_thickness; $i--)  {
   imagefilledarc($image, $width/2, $i+$wedge_offset, $width-($width*$width_distortion/100),$height-($height*$height_distortion/100), 0, $angle, $full_dark, IMG_ARC_PIE);
-  imagefilledarc($image, $width/2-$wedge_offset, $i+$wedge_offset, $width-($width*$width_distortion/100), $height-($height*$height_distortion/100), $angle, 360 , $empty_dark, IMG_ARC_PIE);
+  imagefilledarc($image, $width/2-$wedge_offset, $i, $width-($width*$width_distortion/100), $height-($height*$height_distortion/100), $angle, 360 , $empty_dark, IMG_ARC_PIE);
 }
 
 imagefilledarc($image, $width/2, $i+$wedge_offset, $width-($width*$width_distortion/100), $height-($height*$height_distortion/100), 0, $angle, $full_light, IMG_ARC_PIE);
-imagefilledarc($image, $width/2-$wedge_offset, $i+$wedge_offset, $width-($width*$width_distortion/100), $height-($height*$height_distortion/100), $angle, 360 , $empty_light, IMG_ARC_PIE);
+imagefilledarc($image, $width/2-$wedge_offset, $i, $width-($width*$width_distortion/100), $height-($height*$height_distortion/100), $angle, 360 , $empty_light, IMG_ARC_PIE);
 }
 
 // The text to draw
