@@ -41,7 +41,7 @@ $height_distortion = 70;
 $slice_thickness = $height/10;
 
 // Wedge offset 
-$wedge_offset = $width/20;
+$wedge_offset = $width/50;
 
 // Make the 3D pie effect
 // Larger slice at the rear of the image, otherwise it looks odd.
