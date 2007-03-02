@@ -224,7 +224,7 @@ function step35SetupDB() {
     }
     $sql .= "IDENTIFIED BY '" . $_POST['mysql_new_pass'] . "'";
     echo __("Creating the user... ");
-    $result = mysql_query($sql, $db) or die('Could not create the user: ' . mysql_error());
+    $result = mysql_query($sql, $db) ;//or die('Could not create the user: ' . mysql_error());
     echo __("Success!") . "<br />";
     $sql = "GRANT SELECT , INSERT , UPDATE , DELETE , CREATE , DROP , INDEX , ALTER , CREATE TEMPORARY TABLES";
     $sql .= " , CREATE VIEW , SHOW VIEW , CREATE ROUTINE, ALTER ROUTINE, EXECUTE ";

@@ -65,8 +65,11 @@ $user = $ldap_user;
 $secret = $ldap_secret;
 
 if ($record_type=="user"){
-$attributes = array("displayname","description","userprincipalname","homedirectory","homedrive","profilepath","scriptpath","mail","samaccountname","telephonenumber","location","department","sn","badpwdcount");
+//$attributes = array("displayname","description","userprincipalname","homedirectory","homedrive","profilepath","scriptpath","mail","samaccountname","telephonenumber","location","department","sn","badpwdcount");
+$attributes = array("displayname","mail","telephonenumber","location","department","sn");
+
 $filter = "(&(objectClass=user)(objectCategory=person)(|(samaccountname=".$name.chr(42).")(name=".$name.chr(42).")(displayname=".$name.chr(42).")(cn=".$name.chr(42).")))";
+
 if ($full_details == 'dump') {$filter = "(&(objectCategory=person)(objectClass=user)(telephonenumber=*))";}
 } 
 if ($record_type=="computer"){
