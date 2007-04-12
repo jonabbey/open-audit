@@ -265,7 +265,8 @@ if ($inject == "y"){
 echo "</table>";
 
 echo "</td>\n";
-
+// Unbind LDAP again to avoid flooding it with connections. 
+ldap_unbind($ad);
 include "include_right_column.php";
 
 echo "</body>\n</html>\n";
