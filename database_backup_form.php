@@ -35,7 +35,7 @@ $today = date("dmYGis");
 $backup_dir = '.\\backup\\';
 
 if (!file_exists($backup_dir)) {
-   mkdir($backup_dir);
+   mkdir($backup_dir) or die(__('Insufficient rights, could not create backup folder, Please create this manually. ') );
 }
 
 
