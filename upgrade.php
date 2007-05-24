@@ -19,6 +19,12 @@ $version = get_config("version");
 if ($version == "") {
   $version = "0.0.0";
 }
+// 
+// Currently we only run an upgrade if there are SQL table alterations. 
+// Code alterations are not vovered by this script (yet... watch this space).. 
+// Add in a sql statement and an upgrade ($version, "newversion_number", $sql) for each version change...
+// Only alter the older version changes if you absolutely must, as this would break existing installed users!
+
 
 $sql = "ALTER TABLE `system` CHANGE `system_country_code` `system_country_code` VARCHAR( 50 ) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL;
         ALTER TABLE `network_card` CHANGE `net_description` `net_description` VARCHAR( 255 ) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL;
@@ -38,6 +44,9 @@ $sql = "ALTER TABLE `system` CHANGE `system_country_code` `system_country_code` 
         `auth_username`
         )
         ) ENGINE = MYISAM DEFAULT CHARSET=latin1;";
+        
+        
+
 
 upgrade($version, "06.08.30", $sql);
 
@@ -45,8 +54,18 @@ $sql = "ALTER TABLE `memory` CHANGE `memory_capacity` `memory_capacity` INT( 11 
 
 upgrade($version, "06.09.29", $sql);
 
+// Upgrade to version 06.09.31 Upgraded network table to include gateway AJH 24th May 2007
+// Thanks to "Scott" for the idea. 
+
+$sql = "ALTER TABLE `network_card` ADD COLUMN `net_gateway` varchar(100)  NOT NULL DEFAULT '' AFTER `net_manufacturer`";
+
+upgrade ($version,"06.09.31", $sql);
+
+
+
+
 ?>
-    <br /><?php echo __("Upgrade complete."); ?>
+    <br /><?php echo __("Upgrade complete.".$latestversion); ?>
     <br /><br /><a href="index.php" alt=""><?php echo __("Return to Index"); ?></a>
   </body>
 </html>

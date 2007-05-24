@@ -397,6 +397,7 @@ Set colItems = objWMIService.ExecQuery("select * from win32_networkadapterconfig
    & "AND ServiceName<>'NDISWan' AND ServiceName<>'NdisWan4' AND ServiceName<>'RasPppoe' " _
    & "AND ServiceName<>'NdisIP' AND ServiceName<>'' AND Description<>'PPP Adapter.'",,48)
 For Each objItem in colItems
+   net_gateway = objItem.DefaultIPGateway(0)
    net_ip = objItem.IPAddress(0)
    net_mac = objItem.MACAddress
    net_description = objItem.Description
@@ -437,7 +438,7 @@ For Each objItem in colItems
      form_input = "network^^^" & net_mac            & "^^^" & net_description   & "^^^" & net_dhcp_enabled _
                        & "^^^" & net_dhcp_server    & "^^^" & net_dns_host_name & "^^^" & net_dns_server _
                        & "^^^" & net_ip             & "^^^" & net_ip_subnet     & "^^^" & net_wins_primary _
-                       & "^^^" & net_wins_secondary & "^^^" & net_adapter_type  & "^^^" & net_manufacturer & "^^^"
+                       & "^^^" & net_wins_secondary & "^^^" & net_adapter_type  & "^^^" & net_manufacturer & "^^^" & net_gateway & "^^^" 
      entry form_input,comment,objTextFile,oAdd,oComment
      form_input = ""
      if net_mac_uuid = "" then net_mac_uuid = net_mac end if

@@ -18,6 +18,7 @@ $menue_array = array(
                                     "80"=>array("name"=>"Bios", "link"=>"system.php?pc=$pc&amp;view=hardware&amp;category=bios", "image"=>"images/bios.png", "title"=>"",),
                                     "90"=>array("name"=>"Memory", "link"=>"system.php?pc=$pc&amp;view=hardware&amp;category=memory", "image"=>"images/memory.png", "title"=>"",),
                                     "100"=>array("name"=>"Network Card", "link"=>"system.php?pc=$pc&amp;view=hardware&amp;category=network_card", "image"=>"images/network_device.png", "title"=>"",),
+                                    "105"=>array("name"=>"Gateway", "link"=>"list.php?view=statistic_gateway", "image"=>"images/network_device.png", "title"=>"",), 
                                     "110"=>array("name"=>"Video Adapter", "link"=>"system.php?pc=$pc&amp;view=hardware&amp;category=video", "image"=>"images/display.png", "title"=>"",),
                                     "120"=>array("name"=>"Monitor", "link"=>"system.php?pc=$pc&amp;view=hardware&amp;category=monitor", "image"=>"images/display.png", "title"=>"",),
                                     "130"=>array("name"=>"Soundcard", "link"=>"system.php?pc=$pc&amp;view=hardware&amp;category=sound", "image"=>"images/audio.png", "title"=>"",),
@@ -137,6 +138,7 @@ $menue_array = array(
 
                                     "50"=>array("name"=>"Hard Drive", "link"=>"./list.php?view=statistic_harddrive", "image"=>"images/harddisk.png", "title"=>"Hard Drive",),
                                     "60"=>array("name"=>"Keys", "link"=>"./list.php?view=statistic_keys", "image"=>"images/key_2.png", "title"=>"Keys",),
+                                    "70"=>array("name"=>"Gateway", "link"=>"list.php?view=statistic_gateway", "image"=>"images/network_device.png", "title"=>"",), 
 /*                                  This next bit wont work, we need a Parameter for each choice FIXME
                                     "70"=>array("name"=>"AllByOSType", "link"=>"statistics.php?sub=s12", "image"=>"images/o_specialized.png", "title"=>"",),
                                     "80"=>array("name"=>"AllByIeVersions", "link"=>"statistics.php?sub=s13", "image"=>"images/browser_l.png", "title"=>"",),

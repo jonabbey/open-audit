@@ -438,6 +438,7 @@ CREATE TABLE `network_card` (
   `net_wins_secondary` varchar(30) NOT NULL default '',
   `net_adapter_type` varchar(100) NOT NULL default '',
   `net_manufacturer` varchar(100) NOT NULL default '',
+  `net_gateway` varchar(100) NOT NULL default '',
   `net_timestamp` bigint(20) unsigned NOT NULL default '0',
   `net_first_timestamp` bigint(20) unsigned NOT NULL default '0',
   PRIMARY KEY  (`net_id`),
