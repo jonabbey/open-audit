@@ -103,6 +103,7 @@ $menue_array = array(
                     "title"=>"Total Computers",
                     "class"=>"menuparent",
                     "childs"=>array("10"=>array("name"=>"All Audited Systems", "link"=>"./list.php?view=all_systems", "image"=>"images/computer.png", "title"=>"All Audited Systems",),
+                                    "15"=>array("name"=>"All Systems More Info", "link"=>"./list.php?view=all_systems_more", "image"=>"images/computer.png", "title"=>"All Audited Systems More Info",),
                                     "20"=>array("name"=>"All Servers", "link"=>"./list.php?view=all_servers", "image"=>"images/server.png", "title"=>"All Servers",),
                                     "30"=>array("name"=>"All Win-Workstations", "link"=>"./list.php?view=all_win_workstations", "image"=>"images/computer_2.png", "title"=>"All Win-Workstations",),
                                     "40"=>array("name"=>"All Laptops", "link"=>"./list.php?view=all_laptops", "image"=>"images/laptop.png", "title"=>"All Laptops",),
@@ -114,6 +115,7 @@ $menue_array = array(
                                     "90"=>array("name"=>"All Keys", "link"=>"./list.php?view=all_keys", "image"=>"images/key_2.png", "title"=>"All Keys",),
                                     "100"=>array("name"=>"All Office-Keys", "link"=>"./list.php?view=keys_for_software&amp;type=office%&amp;headline_addition=Office", "image"=>"images/key_1.png", "title"=>"All Office Keys",),
                                     "110"=>array("name"=>"All Windows-Keys", "link"=>"./list.php?view=keys_for_software&amp;type=windows%&amp;headline_addition=Windows", "image"=>"images/key_3.png", "title"=>"All Widnows Keys",),
+                                    
 
                               ),
               ),
