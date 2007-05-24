@@ -292,7 +292,7 @@ function insert_network ($split) {
     $sql .= "AND net_uuid = '$uuid' AND net_description = '$net_description' AND net_dhcp_enabled = '$net_dhcp_enabled' ";
     $sql .= "AND net_dhcp_server = '$net_dhcp_server' AND net_dns_host_name = '$net_dns_host_name' AND net_dns_server = '$net_dns_server' ";
     $sql .= "AND net_ip_address = '$net_ip_address' AND net_ip_subnet = '$net_ip_subnet' AND net_wins_primary = '$net_wins_primary' ";
-    $sql .= "AND net_adapter_type = '$net_adapter_type' AND net_manufacturer = '$net_manufacturer' AND net_gateway = '$net_gateway AND (net_timestamp = '$net_timestamp' OR net_timestamp = '$timestamp')";
+    $sql .= "AND net_adapter_type = '$net_adapter_type' AND net_manufacturer = '$net_manufacturer' AND net_gateway = '$net_gateway' AND (net_timestamp = '$net_timestamp' OR net_timestamp = '$timestamp')"; 
     if ($verbose == "y"){echo $sql . "<br />\n\n";}
     $result = mysql_query($sql) or die ('Insert Failed: ' . mysql_error() . '<br />' . $sql);
     $myrow = mysql_fetch_array($result);
@@ -301,10 +301,10 @@ function insert_network ($split) {
       // Insert into database
       $sql  = "INSERT INTO network_card (net_mac_address, net_uuid, net_description, net_dhcp_enabled,";
       $sql .= "net_dhcp_server, net_dns_host_name, net_dns_server, net_ip_address, net_ip_subnet,";
-      $sql .= "net_wins_primary, net_adapter_type, net_manufacturer, net_timestamp, net_first_timestamp) VALUES (";
+      $sql .= "net_wins_primary, net_adapter_type, net_manufacturer, net_gateway, net_timestamp, net_first_timestamp) VALUES ("; 
       $sql .= "'$net_mac_address','$uuid','$net_description','$net_dhcp_enabled',";
       $sql .= "'$net_dhcp_server','$net_dns_host_name','$net_dns_server','$net_ip_address','$net_ip_subnet',";
-      $sql .= "'$net_wins_primary','$net_adapter_type','$net_manufacturer','$net_gateway','$timestamp', '$timestamp')";
+      $sql .= "'$net_wins_primary','$net_adapter_type','$net_manufacturer', '$net_gateway', '$timestamp', '$timestamp')"; 
       if ($verbose == "y"){echo $sql . "<br />\n\n";}
       $result = mysql_query($sql) or die ('Insert Failed: ' . mysql_error() . '<br />' . $sql);
     } else {
