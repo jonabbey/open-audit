@@ -44,7 +44,7 @@ $query_array=array("headline"=>__("List all Systems"),
                                                "show"=>"y",
                                               ),
                                    "110"=>array("name"=>"hard_drive_size",
-                                               "head"=>__("Total Disk Space"),
+                                               "head"=>__("First Disk Space"),
                                                "show"=>"y",
                                               ),
 
