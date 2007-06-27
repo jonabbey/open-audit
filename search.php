@@ -183,6 +183,19 @@ if ($myrow = mysql_fetch_array($result)){
     $result_set[] = array($myrow["system_name"], $myrow["system_uuid"], ip_trans($myrow["net_ip_address"]), $search_field, $search_result);
   } while ($myrow = mysql_fetch_array($result));
 }
+} else {} 
+$sql  = "SELECT DISTINCT system_name, system_uuid, system.net_ip_address, net_mac_address FROM system, network_card WHERE ";
+$sql .= "net_uuid = system_uuid AND ";
+$sql .= "net_timestamp = system_timestamp AND (";
+$sql .= "net_mac_address LIKE '%$search%')";
+$result = mysql_query($sql, $db);
+if ($myrow = mysql_fetch_array($result)){
+  do {
+    if(!isset($myrow["software_name"])) $myrow["software_name"]=" ";
+    if (strpos(strtoupper($myrow["net_mac_address"]), $search) !== false){$search_field = "MAC Address"; $search_result = $myrow["net_mac_address"];}
+    $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
+    $result_set[] = array($myrow["system_name"], $myrow["system_uuid"], ip_trans($myrow["net_ip_address"]), $search_field, $search_result);
+  } while ($myrow = mysql_fetch_array($result));
 
 } else {} // end if search != ""
 
