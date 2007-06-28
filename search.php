@@ -183,6 +183,21 @@ if ($myrow = mysql_fetch_array($result)){
     $result_set[] = array($myrow["system_name"], $myrow["system_uuid"], ip_trans($myrow["net_ip_address"]), $search_field, $search_result);
   } while ($myrow = mysql_fetch_array($result));
 }
+$sql  = "SELECT DISTINCT other_network_name, other_id, other_ip_address, other_mac_address, other_description FROM other WHERE ";
+$sql .= "other_mac_address LIKE '%$search%'";
+
+$result = mysql_query($sql, $db);
+if ($myrow = mysql_fetch_array($result)){
+  do {
+    if (strpos(strtoupper($myrow["other_mac_address"]), $search) !== false){$search_field = "Device MAC Address"; $search_result = $myrow["other_mac_address"];}
+    $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
+    $result_set[] = array($myrow["other_network_name"], $myrow["other_id"], ip_trans($myrow["other_ip_address"]), $search_field, $search_result);
+  } while ($myrow = mysql_fetch_array($result));
+
+} else {}
+
+
+
 } else {} 
 $sql  = "SELECT DISTINCT system_name, system_uuid, system.net_ip_address, net_mac_address FROM system, network_card WHERE ";
 $sql .= "net_uuid = system_uuid AND ";
@@ -192,7 +207,7 @@ $result = mysql_query($sql, $db);
 if ($myrow = mysql_fetch_array($result)){
   do {
     if(!isset($myrow["software_name"])) $myrow["software_name"]=" ";
-    if (strpos(strtoupper($myrow["net_mac_address"]), $search) !== false){$search_field = "MAC Address"; $search_result = $myrow["net_mac_address"];}
+    if (strpos(strtoupper($myrow["net_mac_address"]), $search) !== false){$search_field = "System MAC Address"; $search_result = $myrow["net_mac_address"];}
     $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
     $result_set[] = array($myrow["system_name"], $myrow["system_uuid"], ip_trans($myrow["net_ip_address"]), $search_field, $search_result);
   } while ($myrow = mysql_fetch_array($result));
@@ -207,7 +222,12 @@ if(isset($result_set) AND $result_set) {
     $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
     echo "<tr bgcolor=\"$bgcolor\">";
     echo "<td>&nbsp;" . $result_set[$i][2] . "&nbsp;</td>";
+    $result_type = substr($result_set[$i][3],0,6);
+    if ($result_type == "Device"){
+    echo "<td>&nbsp;<a href=\"system.php?other=" . $result_set[$i][1] . "&view=other_system\">" . $result_set[$i][0] . "</a>&nbsp;</td>";
+    } else     {
     echo "<td>&nbsp;<a href=\"system.php?pc=" . $result_set[$i][1] . "&view=summary\">" . $result_set[$i][0] . "</a>&nbsp;</td>";
+    }
     echo "<td>&nbsp;" . $result_set[$i][3] . "&nbsp;</td>";
     echo "<td>&nbsp;" . $result_set[$i][4] . "&nbsp;</td>";
     echo "</tr>\n";
