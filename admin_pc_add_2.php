@@ -313,7 +313,25 @@ function insert_network ($split) {
       if ($verbose == "y"){echo $sql . "<br />\n\n";}
       $result = mysql_query($sql) or die ('Insert Failed: ' . mysql_error() . '<br />' . $sql);
     }
+    
+  // Remove from the 'other' table if exists
+  // First - get the id from the 'other' table - if it exists
+  $other_id = '';
+  $sql = "SELECT other_id FROM other WHERE other_mac_address = '$net_mac_address'";
+  if ($verbose == "y"){echo $sql . "<br />\n\n";}
+  $result = mysql_query($sql) or die ('Check Other table Failed: ' . mysql_error() . '<br />' . $sql);
+  if ($myrow = mysql_fetch_array($result)){$other_id = $myrow['other_id'];}
+  if ($other_id <> ''){
+    // It exists - so update the 'nmap_ports' table to the uuid/mac of the PC - not the other_id
+    $sql = "UPDATE nmap_ports SET nmap_other_id = '$uuid' WHERE nmap_other_id = '$other_id'";
+    if ($verbose == "y"){echo $sql . "<br />\n\n";}
+    $result = mysql_query($sql) or die ('Update nmap_ports Failed: ' . mysql_error() . '<br />' . $sql);
+    // Now remove the entry from the 'other' table
+    $sql = "DELETE FROM other WHERE other_mac_address = '$net_mac_address'";
+    if ($verbose == "y"){echo $sql . "<br />\n\n";}
+    $result = mysql_query($sql) or die ('Update nmap_ports Failed: ' . mysql_error() . '<br />' . $sql);
   }
+}
 
 function insert_system01 ($split) {
     global $timestamp, $uuid, $verbose;
