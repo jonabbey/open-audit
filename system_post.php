@@ -15,7 +15,7 @@ if(isset($_REQUEST["view"]) AND isset($_REQUEST["category"])){
        $_REQUEST["view"]=="printer" AND $_REQUEST["category"]=="summary"){
 
         $sql  = "UPDATE other SET other_network_name = '" . $_REQUEST['other_network_name'] . "',";
-        $sql .= " other_ip_address = '" . $_REQUEST['other_ip_address'] . "',";
+        $sql .= " other_ip_address = '" . ip_trans_to($_REQUEST['other_ip_address']) . "',";
         $sql .= " other_mac_address = '" . $_REQUEST['other_mac_address'] . "',";
         $sql .= " other_p_port_name = '" . $_REQUEST['other_p_port_name'] . "',";
         $sql .= " other_description = '" . $_REQUEST['other_description'] . "',";
