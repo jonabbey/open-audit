@@ -1173,11 +1173,11 @@ comment = "Partition Info"
 if verbose = "y" then
    wscript.echo comment
 end if
-LocalDrives = HostDrives(strComputer)
-For Each LocalDrive in LocalDrives
+
+
    On Error Resume Next
-   Set colItems = objWMIService.ExecQuery("Select * from Win32_DiskPartition WHERE DeviceID='" & DrivePartition(strComputer, LocalDrive) & "'",,48)
-   For Each objItem in colItems
+   Set colItems = objWMIService.ExecQuery("Select * from Win32_DiskPartition WHERE DriveType=3",,48)
+   For Each objItem in colItems 
      partition_bootable = objItem.Bootable
      if ((partition_bootable <> "True") OR isnull(partition_bootable)) then partition_bootable = "False" end if
      partition_boot_partition = objItem.BootPartition
@@ -1188,8 +1188,8 @@ For Each LocalDrive in LocalDrives
      partition_primary_partition = objItem.PrimaryPartition
    Next
    On Error Resume Next
-   Set colItems = objWMIService.ExecQuery("Select * from Win32_LogicalDisk WHERE caption='" & LocalDrive &"'",,48)
-   For Each objItem in colItems
+   Set colItems = objWMIService.ExecQuery("Select * from Win32_LogicalDisk WHERE DriveType=3",,48)
+   For Each objItem in colItems 
      partition_caption = objItem.Caption
      partition_file_system = objItem.FileSystem
      partition_free_space = 0
@@ -1199,8 +1199,8 @@ For Each LocalDrive in LocalDrives
      partition_volume_name = objItem.VolumeName
      partition_percent = 0
      partition_percent = round(((partition_size - partition_free_space) / partition_size) * 100 ,0)
-   Next
-   form_input = "partition^^^" & partition_bootable          & "^^^" & partition_boot_partition    & "^^^" _
+
+   form_input = "partition^^^" & partition_bootable & "^^^"  & partition_boot_partition            & "^^^" _
                                & partition_device_id         & "^^^" & partition_disk_index        & "^^^" _
                                & partition_percent           & "^^^" & partition_primary_partition & "^^^" _
                                & partition_caption           & "^^^" & partition_file_system       & "^^^" _
@@ -1489,8 +1489,8 @@ if audit_location = "l" then
     wscript.echo comment
   end if
   On Error Resume Next
-  Set colItems = objWMIService.ExecQuery("Select * from Win32_LogicalDisk",,48)
-  For Each objItem in colItems
+  Set colItems = objWMIService.ExecQuery("Select * from Win32_LogicalDisk where not DriveType=<2 ",,48)
+  For Each objItem in colItems 
     if Left(objItem.ProviderName,2)="\\" then
       form_input = "mapped^^^" & clean(objItem.DeviceID)                            & "^^^" _
                                & clean(objItem.FileSystem)                          & "^^^" _
