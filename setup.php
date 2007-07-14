@@ -49,10 +49,16 @@ include_once "include_lang.php";
     step1ChooseLanguage();
   } else if ($_POST['step'] == 2) {
     step2CheckPrereq();
-  } else if ($_POST['step'] == 3) {
-    step3SetupDB();
+  } else if ($_POST['step'] == 3.1) {
+   step31SetupDB();
+  } else if ($_POST['step'] == 3.2 and $_POST['rootacc_database'] == y) {
+    step33SetupDB();
+  } else if ($_POST['step'] == 3.2 and $_POST['rootacc_database'] == n) {
+    step34SetupDB();
   } else if ($_POST['step'] == 3.5) {
     step35SetupDB();
+  } else if ($_POST['step'] == 3.6) {
+    step36SetupDB();
   } else if ($_POST['step'] == 4) {
     step4Finish();
   }
@@ -141,7 +147,7 @@ function step2CheckPrereq() {
 ?>
   <form method="post" action="setup.php" name="admin_config">
   <input type="hidden" name="language_post" value="<?php echo $_POST['language_post']; ?>" />
-  <input type="hidden" name="step" value="3" />
+  <input type="hidden" name="step" value="3.1" />
   <input type="submit" value="<?php echo __("Continue") ?> >>" name="submit_button" />
   </form>
 <?php
@@ -158,16 +164,51 @@ function step2CheckPrereq() {
 }
 
 
-// STEP 3
-function step3SetupDB() {
+// STEP 3.1
+function step31SetupDB() {
+?>
+  <span class="contenthead"><?php echo __("Setup") ?></span>
+  <p><?php echo __("To perform an automated setup, choose the way to handle database creation .") ?></p>
+  
+  <hr />
+ 
+  <form method="post" action="setup.php" name="admin_config">
+  
+      <table border="0" cellpadding="0" cellspacing="0" class="content">
+  <tr><td><input type="radio" name="rootacc_database" value="y" checked="checked" /></td><td><?php echo __("I have Root access to database.") ?></td></tr>
+  <tr><td>&nbsp;</td><td><?php echo __("CAUTION: you have to have root access to this database.") ?></td></tr>
+  </table>
+  <hr />
+  <table border="0" cellpadding="0" cellspacing="0" class="content">
+  <tr><td><input type="radio" name="rootacc_database" value="n"   /></td><td><?php echo __("I do not have root access to database. Just create tables.") ?></td></tr>
+  <tr><td>&nbsp;</td><td><?php echo __("Recommended for on-line hosting.") ?></td></tr>
+  </table>
+  <hr />
+  
+  <input type="hidden" name="language_post" value="<?php echo $_POST['language_post']; ?>" />
+  <input type="hidden" name="step" value="3.2" />
+  <input type="submit" value="<?php echo __("Submit") ?>" name="submit_button" />
+  </form>
+  <br />
+<?php
+}
+/// Step 3.3
+if (isset($_POST['drop_database']))  {$drop_database = $_POST['drop_database'];}  else { $drop_database = "n";}
+if (isset($_POST['drop_user']))  {$drop_user = $_POST['drop_user'];}  else { $drop_user = "n";}
+if (isset($_POST['bindlocal']))  {$bindlocal = $_POST['bindlocal'];}  else { $bindlocal = "n";}
+// <form method="post" action="setup.php" name="admin_config">
+
+function step33SetupDB() {
 ?>
   <span class="contenthead"><?php echo __("Setup") ?></span>
   <p><?php echo __("To perform an automated setup, enter the details on the root account below. This user must have the privileges to create and modify users and databases.") ?></p>
   <p><?php echo __("By clicking 'Submit Credentials,' you are allowing Open-AudIT to create a user and database for use with Open-AudIT. This is the recommended configuration, as Open-AudIT does not need root privileges after installation.") ?></p>
   <hr />
-  <?php echo __("Root User Credentials") ?>:<br />
-  <form method="post" action="setup.php" name="admin_config">
-  <table border="0" cellpadding="0" cellspacing="0" class="content">
+  <?php echo __("Root User Credentials").":<br />";
+
+  echo "<form method=\"post\" action=\"" . $_SERVER["PHP_SELF"] . "\" name=\"setup.php\">";
+ ?>
+ <table border="0" cellpadding="0" cellspacing="0" class="content">
   <tr><td><?php echo __("MySQL Server") ?>:&nbsp;</td><td><input type="text" name="mysql_server_post" size="12" value="localhost" class="for_forms"/></td></tr>
   <tr><td><?php echo __("MySQL Username") ?>:&nbsp;</td><td><input type="text" name="mysql_user_post" size="12" value="root" class="for_forms" /></td></tr>
   <tr><td><?php echo __("MySQL Password") ?>:&nbsp;</td><td><input type="password" name="mysql_password_post" size="12" value="" class="for_forms" /></td></tr>
@@ -177,21 +218,23 @@ function step3SetupDB() {
   <table border="0" cellpadding="0" cellspacing="0" class="content">
   <tr><td><?php echo __("Database Name") ?>:&nbsp;</td><td><input type="text" name="mysql_new_db" size="12" value="openaudit" class="for_forms" /></td></tr>
   </table>
-      <table border="0" cellpadding="0" cellspacing="0" class="content">
-  <tr><td><input type="checkbox" name="drop_database" value="y" checked="checked" /></td><td><?php echo __("Delete Database if it exists.") ?></td></tr>
-  <tr><td>&nbsp;</td><td><?php echo __("CAUTION This will delete ALL data in this database.") ?></td></tr>
+  
+   <table border="0" cellpadding="0" cellspacing="0" class="content">
+  <tr><td><input type="checkbox" name="drop_database" value="n"  /></td><td><?php echo __("Delete database if it exists.") ?></td></tr>
+  <tr><td>&nbsp;</td><td><?php echo __("CAUTION: This will delete ALL data in this database.") ?></td></tr>
   </table>
   <hr />
   <?php echo __("Credentials for Open-AudIT database") ?>:<br />
   <table border="0" cellpadding="0" cellspacing="0" class="content">
   <tr><td><?php echo __("New Username") ?>:&nbsp;</td><td><input type="text" name="mysql_new_user" maxlength="16" size="12" value="openaudit" class="for_forms" /></td></tr>
    
-   <table border="0" cellpadding="0" cellspacing="0" class="content">
-  <tr><td><input type="checkbox" name="delete_user" value="y" checked="checked" /></td><td><?php echo __("Delete User if it exists.") ?></td></tr>
-  <tr><td>&nbsp;</td><td><?php echo __("CAUTION This will also remove all permissions for this user.") ?></td></tr>
-  </table>
 
   <tr><td><?php echo __("New Password") ?>:&nbsp;</td><td><input type="password" name="mysql_new_pass" size="12" value="" class="for_forms" /></td></tr>
+  </table>
+
+  <table border="0" cellpadding="0" cellspacing="0" class="content">
+  <tr><td><input type="checkbox" name="drop_user" value="n"  /></td><td><?php echo __("Delete user if it exists.") ?></td></tr>
+  <tr><td>&nbsp;</td><td><?php echo __("CAUTION: This will also remove all permissions for this user.") ?></td></tr>
   </table>
 
 <table border="0" cellpadding="0" cellspacing="0" class="content">
@@ -207,6 +250,45 @@ function step3SetupDB() {
 <?php
 }
 
+/// Step 3.4
+if (isset($_POST['drop_database']))  {$drop_database = $_POST['drop_database'];}  else { $drop_database = "n";}
+if (isset($_POST['drop_user']))  {$drop_user = $_POST['drop_user'];}  else { $drop_user = "n";}
+if (isset($_POST['bindlocal']))  {$bindlocal = $_POST['bindlocal'];}  else { $bindlocal = "n";}
+// <form method="post" action="setup.php" name="admin_config">
+
+function step34SetupDB() {
+?>
+  <span class="contenthead"><?php echo __("Setup") ?></span>
+  <p><?php echo __("To perform an automated setup, enter the details on the Database account below. This user must have the privileges to access and modify databases.") ?></p>
+  <p><?php echo __("By clicking 'Submit Cbentials,' you are allowing Open-AudIT to create a Tables for use with Open-AudIT. This is the recommended configuration.") ?></p>
+  <hr />
+  <?php echo __("Database account details ").":<br />";
+
+  echo "<form method=\"post\" action=\"" . $_SERVER["PHP_SELF"] . "\" name=\"setup.php\">";
+ ?>
+ <table border="0" cellpadding="0" cellspacing="0" class="content">
+  <tr><td><?php echo __("MySQL Server") ?>:&nbsp;</td><td><input type="text" name="mysql_server_post" size="12" value="localhost" class="for_forms"/></td></tr>
+  <tr><td><?php echo __("MySQL Username") ?>:&nbsp;</td><td><input type="text" name="mysql_new_user" size="12" value="root" class="for_forms" /></td></tr>
+  <tr><td><?php echo __("MySQL Password") ?>:&nbsp;</td><td><input type="password" name="mysql_new_pass" size="12" value="" class="for_forms" /></td></tr>
+  </table>
+  <hr />
+  <?php echo __("Database for Open-AudIT") ?>:<br />
+  <table border="0" cellpadding="0" cellspacing="0" class="content">
+  <tr><td><?php echo __("Database Name") ?>:&nbsp;</td><td><input type="text" name="mysql_new_db" size="12" value="openaudit" class="for_forms" /></td></tr>
+  </table>
+  
+   
+  <hr />
+  
+   </table>
+  <br />
+  <input type="hidden" name="language_post" value="<?php echo $_POST['language_post']; ?>" />
+  <input type="hidden" name="step" value="3.6" />
+  <input type="submit" value="<?php echo __("Submit Cbentials") ?>" name="submit_button" />
+  </form>
+  <br />
+<?php
+}
 // STEP 3.5
 function step35SetupDB() {
     echo __("Connecting to the MySQL Server... ");
@@ -277,6 +359,50 @@ function step35SetupDB() {
     </form>
 <?php
 }
+
+// STEP 3.6
+function step36SetupDB() {
+    echo __("Connecting to the MySQL Server... ");
+    $db = @mysql_connect($_POST['mysql_server_post'],$_POST['mysql_new_user'],$_POST['mysql_new_pass']) or die('Could not connect: ' . mysql_error());
+    echo __("Success!") . "<br />";
+   mysql_select_db($_POST['mysql_new_db']);
+    echo __("Success!") . "<br />";
+  
+    // Load SQL contents to write to server
+    echo __("Creating tables... ");
+    $filename = "scripts/open_audit.sql";
+    $handle = fopen($filename, "rb");
+    $contents = fread($handle, filesize($filename));
+    fclose($handle);
+    $sql = stripslashes($contents);
+    $sql2 = explode(";", $sql);
+    foreach ($sql2 as $sql3) {
+      $result = mysql_query($sql3 . ";");
+    }
+    echo __("Success!") . "<br />";
+    mysql_close($db);
+
+    // Write configuration file
+    echo __("Writing configuration file... ");
+    $filename = 'include_config.php';
+    $content = returnConfig();
+    if (!file_exists($filename) or is_writable($filename)) {
+      $handle = @fopen($filename, 'w') or die(writeConfigHtml());
+      @fwrite($handle, $content) or die(writeConfigHtml());
+      @fclose($handle);
+      echo __("Success!") . "<br />";
+    } else {
+      writeConfigHtml();
+    }
+?>
+    <br /><br /><?php echo __("Setup has completed creating your database. Continue on to finish setup.") ?><br /><br />
+    <form method="post" action="setup.php" name="options">
+    <input type="hidden" name="step" value="4" />
+    <input type="submit" value="<?php echo __("Finish Setup") ?> >>" name="submit_button" />
+    </form>
+<?php
+}
+
 
 function step4Finish() {
   echo "<span class=\"contenthead\">" . __("Setup Completed") . "</span>";
