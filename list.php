@@ -440,6 +440,21 @@ if ($myrow = mysql_fetch_array($result)){
      }
      echo "<br /><a href=\"#\" onclick=\"document.forms['form_export'].submit();\">".__("Export this View to CSV")."</a>\n";
     echo "</p></form>\n";
+    //
+    echo "<form method=\"post\" id=\"form_export_dia\" action=\"list_export_dia.php\">\n";
+    echo "<p><input type=\"hidden\" name=\"sql\" value=\"".urlencode($sql)."\" />\n";
+    echo "<input type=\"hidden\" name=\"view\" value=\"".$_REQUEST["view"]."\"/>\n";
+    if(isset($_REQUEST["pc"])){
+         echo "<input type=\"hidden\" name=\"pc\" value=\"".$_REQUEST["pc"]."\"/>\n";
+     }
+     if(isset($_REQUEST["other"])){
+         echo "<input type=\"hidden\" name=\"other\" value=\"".$_REQUEST["other"]."\" />\n";
+     }
+     if(isset($_REQUEST["monitor"])){
+         echo "<input type=\"hidden\" name=\"monitor\" value=\"".$_REQUEST["monitor"]."\" />\n";
+     }
+     echo "<br /><a href=\"#\" onclick=\"document.forms['form_export_dia'].submit();\">".__("Create DIA Network Diagram From List")."</a>\n";
+    echo "</p></form>\n";
 } else {
   echo "<tr><td colspan=\"4\">".__("No Results")."</td></tr>\n";
   echo "</table>\n";
