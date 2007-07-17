@@ -150,12 +150,12 @@ $dia_obj_line_0_orth_orient_3=0;
 $dia_obj_line_0_autorouting="true";
 //
 // Start Arrow
-$dia_obj_line_0_start_arrow=5;
+$dia_obj_line_0_start_arrow=13;
 $dia_obj_line_0_start_arrow_length=0.5;
 $dia_obj_line_0_start_arrow_width=0.5;
 //
 // End Arrow
-$dia_obj_line_0_end_arrow=5;
+$dia_obj_line_0_end_arrow=13;
 $dia_obj_line_0_end_arrow_length=0.5;
 $dia_obj_line_0_end_arrow_width=0.5;
 //

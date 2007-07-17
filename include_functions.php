@@ -388,10 +388,19 @@ function determine_img($os,$system_type) {
 }
 
 function determine_dia_img($os,$system_type) {
-
-    $image="button_fail.png";
-    $title=__("Unknown");
-
+   
+    if (is_file("images/o_".$system_type.".png")){
+    $image="o_".$system_type.".png";
+    $title=__("$system_type");
+    }
+    else
+    {
+    $system_type= str_replace(" ","_",$system_type);
+    $image="o_".$system_type.".png";
+//    $image="button_fail.png";
+    $title=__("Unknown");  
+    }
+ 
     if( ereg("Windows", $os) ){
         $image="desktop.png";
         $title=determine_os($os);

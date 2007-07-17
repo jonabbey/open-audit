@@ -156,7 +156,7 @@ if ($myrow = mysql_fetch_array($result)){
             else 
             {
                        
-            $dia_icon_image = determine_dia_img($myrow["other_type"],$myrow[$field["other_network_name"]]);
+            $dia_icon_image = determine_dia_img($myrow["other_type"],$myrow["other_type"]);
 
             $dia_this_image = $dia_icon_folder.$dia_icon_image;
             }
