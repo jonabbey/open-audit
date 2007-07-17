@@ -163,71 +163,71 @@ if ($myrow = mysql_fetch_array($result)){
         
             echo '          <dia:group>
             <dia:object type="'.$dia_obj_image_0_type.'" version="'.$dia_obj_image_0_version.'" id="O'.($dia_current_object_id).'">
-      <dia:attribute name="obj_pos">
-        <dia:point val="1,1"/>
-      </dia:attribute>
-      <dia:attribute name="obj_bb">
-        <dia:rectangle val="0.95,0.95;2.05,2.05"/>
-      </dia:attribute>
-      <dia:attribute name="elem_corner">
+        <dia:attribute name="obj_pos">
+          <dia:point val="'.$dia_obj_image_0_pos_x.','.$dia_obj_image_0_pos_y.'"/>
+        </dia:attribute>
+        <dia:attribute name="obj_bb">
+          <dia:rectangle val="'.$dia_obj_image_0_bb_x1.','.$dia_obj_image_0_bb_y1.';'.$dia_obj_image_0_bb_x2.','.$dia_obj_image_0_bb_y2.'"/>
+        </dia:attribute>
+        <dia:attribute name="elem_corner">
         <dia:point val="'.$dia_current_object_x.','.$dia_current_object_y.'"/>
-      </dia:attribute>
-      <dia:attribute name="elem_width">
-        <dia:real val="1"/>
-      </dia:attribute>
-      <dia:attribute name="elem_height">
-        <dia:real val="1"/>
-      </dia:attribute>
-      <dia:attribute name="draw_border">
-        <dia:boolean val="false"/>
-      </dia:attribute>
-      <dia:attribute name="keep_aspect">
-        <dia:boolean val="true"/>
-      </dia:attribute>
-      <dia:attribute name="file">
+        </dia:attribute>
+        <dia:attribute name="elem_width">
+          <dia:real val="'.$dia_obj_image_0_elem_width.'"/>
+        </dia:attribute>
+        <dia:attribute name="elem_height">
+          <dia:real val="'.$dia_obj_image_0_elem_height.'"/>
+        </dia:attribute>
+        <dia:attribute name="draw_border">
+          <dia:boolean val="'.$dia_obj_image_0_draw_border.'"/>
+        </dia:attribute>
+        <dia:attribute name="keep_aspect">
+          <dia:boolean val="'.$dia_obj_image_0_keep_aspect.'"/>
+        </dia:attribute>
+        <dia:attribute name="file"> 
         <dia:string>#'.$dia_this_image.'#</dia:string>
       </dia:attribute>
     </dia:object>
-   <dia:object type="Standard - Text" version="1" id="O'.($dia_current_object_id+2).'">
+   <dia:object type="'.$dia_obj_text_0_type.'" version="'.$dia_obj_text_0_version.'" id="O'.($dia_current_object_id+2).'">
       <dia:attribute name="obj_pos">
         <dia:point val="'.$dia_current_object_x.','.($dia_current_object_y + 1.5).'"/>
-      </dia:attribute>
-      <dia:attribute name="obj_bb">
-        <dia:rectangle val="1,2.6875;3.225,3.2"/>
-      </dia:attribute>
-      <dia:attribute name="text">
-        <dia:composite type="text">
-          <dia:attribute name="string">
+        </dia:attribute>
+        <dia:attribute name="obj_bb">
+          <dia:rectangle val="'.$dia_obj_text_0_bb_x1.','.$dia_obj_text_0_bb_y1.';'.$dia_obj_text_0_bb_x2.','.$dia_obj_text_0_bb_y2.'"/>
+        </dia:attribute>
+        <dia:attribute name="'.$dia_obj_text_0_text.'">
+          <dia:composite type="text">
+            <dia:attribute name="string">
             <dia:string>#'.$myrow[$field["name"]].'#</dia:string>
           </dia:attribute>
-          <dia:attribute name="font">
-            <dia:font family="courier" style="80" name="Courier"/>
-          </dia:attribute>
-          <dia:attribute name="height">
-            <dia:real val="0.40000000000000002"/>
-          </dia:attribute>
-          <dia:attribute name="pos">
+            <dia:attribute name="'.$dia_obj_text_0_font.'">
+              <dia:font family="'.$dia_obj_text_0_failiky.'" style="'.$dia_obj_text_0_font_style.'" name="'.$dia_obj_text_0_font_name.'"/>
+            </dia:attribute>
+            <dia:attribute name="height">
+              <dia:real val="'.$dia_obj_text_0_font_height.'"/>
+            </dia:attribute>
+            <dia:attribute name="'.$dia_obj_text_0_font_pos.'">
             <dia:point val="'.$dia_current_object_x.','.($dia_current_object_y + 2.0).'"/>
           </dia:attribute>
-          <dia:attribute name="color">
-            <dia:color val="#a7a7a7"/>
-          </dia:attribute>
-          <dia:attribute name="alignment">
-            <dia:enum val="0"/>
-          </dia:attribute>
-        </dia:composite>
-      </dia:attribute>
-      <dia:attribute name="valign">
-        <dia:enum val="3"/>
-      </dia:attribute>
-    </dia:object> 
+            <dia:attribute name="color">
+              <dia:color val="'.$dia_obj_text_0_font_colour.'"/>
+            </dia:attribute>
+            <dia:attribute name="alignment">
+              <dia:enum val="'.$dia_obj_text_0_font_alignment.'"/>
+            </dia:attribute>
+          </dia:composite>
+        </dia:attribute>
+        <dia:attribute name="valign">
+          <dia:enum val="'.$dia_obj_text_0_font_valign.'"/>
+        </dia:attribute>
+      </dia:object>
     </dia:group>
-    <dia:object type="Standard - ZigZagLine" version="1" id="O'.($dia_current_object_id + 1.0).'">
+    <dia:object type="'.$dia_obj_line_0_type.'" version="'.$dia_obj_line_0_version.'" id="O'.($dia_current_object_id + 1.0).'">
       <dia:attribute name="obj_pos">
         <dia:point val="'.($dia_current_object_x + 1).','.($dia_current_object_y + 0.5).'"/>
       </dia:attribute>
-      <dia:attribute name="obj_bb">
-        <dia:rectangle val="2.04912,1.45;4.05,2.05"/>
+        <dia:attribute name="obj_bb">
+        <dia:rectangle val="'.$dia_obj_line_0_bb_x1.','.$dia_obj_line_0_bb_y1.';'.$dia_obj_line_0_bb_x2.','.$dia_obj_line_0_bb_y2.'"/>
       </dia:attribute>
       <dia:attribute name="orth_points">
         <dia:point val="'.($dia_current_object_x + 1).','.($dia_current_object_y + 0.5).'"/>
@@ -236,15 +236,33 @@ if ($myrow = mysql_fetch_array($result)){
         <dia:point val="'.($dia_current_object_x + 3).','.($dia_current_object_y + 1.5).'"/>
       </dia:attribute>
       <dia:attribute name="orth_orient">
-        <dia:enum val="0"/>
-        <dia:enum val="1"/>
-        <dia:enum val="0"/>
+        <dia:enum val="'.$dia_obj_line_0_orth_orient_1.'"/>
+        <dia:enum val="'.$dia_obj_line_0_orth_orient_2.'"/>
+        <dia:enum val="'.$dia_obj_line_0_orth_orient_3.'"/>
       </dia:attribute>
       <dia:attribute name="autorouting">
-        <dia:boolean val="false"/>
+        <dia:boolean val="'.$dia_obj_line_0_autorouting.'"/>
+      </dia:attribute>
+      <dia:attribute name="start_arrow">
+        <dia:enum val="'.$dia_obj_line_0_start_arrow.'"/>
+      </dia:attribute>
+      <dia:attribute name="start_arrow_length">
+        <dia:real val="'.$dia_obj_line_0_start_arrow_length.'"/>
+      </dia:attribute>
+      <dia:attribute name="start_arrow_width">
+        <dia:real val="'.$dia_obj_line_0_start_arrow_width.'"/>
+      </dia:attribute>
+      <dia:attribute name="end_arrow">
+        <dia:enum val="'.$dia_obj_line_0_end_arrow.'"/>
+      </dia:attribute>
+      <dia:attribute name="end_arrow_length">
+        <dia:real val="'.$dia_obj_line_0_end_arrow_length.'"/>
+      </dia:attribute>
+      <dia:attribute name="end_arrow_width">
+        <dia:real val="'.$dia_obj_line_0_end_arrow_width.'"/>
       </dia:attribute>
       <dia:connections>
-        <dia:connection handle="0" to="O'.$dia_current_object_id.'" connection="8"/>
+        <dia:connection handle="'.$dia_obj_line_0_connection_handle.'" to="O'.$dia_current_object_id.'" connection="'.$dia_obj_line_0_connection_handle_connection.'"/>
       </dia:connections>
     </dia:object>
 ';

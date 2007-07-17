@@ -1,5 +1,24 @@
 <?php
 //
+/**
+*
+* @version $Id: include_dia_config.php  17th July 2007
+*
+* @author The Open Audit Developer Team (Andrew Hull)
+* @objective Configuration File for DIA Diagram Creator Page for Open Audit.
+* @package open-audit (www.open-audit.org)
+* @copyright Copyright (C) open-audit.org All rights reserved.
+* @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see ../gpl.txt
+* Open-Audit is free software. This version may have been modified pursuant
+* to the GNU General Public License, and as distributed it includes or
+* is derivative of works licensed under the GNU General Public License or
+* other free or open source software licenses.
+* See www.open-audit.org for further copyright notices and details.
+*
+*/ 
+//
+
+//
 $dia_image_folder='W:\\htdocs\\openaudit\\images\\';
 //
 // Page Setup  (FIXME this should be an array (AJH))
@@ -50,14 +69,14 @@ $dia_obj_image_0_bb_y1=1.05;
 $dia_obj_image_0_bb_x2=3.0;
 $dia_obj_image_0_bb_y2=2.9;
 // Corners
-$dia_obj_elem_corner_x=0.95;
-$dia_obj_elem_corner_y=1.1;
+$dia_obj_image_0_elem_corner_x=0.95;
+$dia_obj_image_0_elem_corner_y=1.1;
 // Width & Height
-$dia_obj_elem_width=2;
-$dia_obj_elem_height=1.75;
+$dia_obj_image_0_elem_width=1;
+$dia_obj_image_0_elem_height=1;
 // Properties
-$dia_obj_draw_border="false";
-$dia_obj_keep_aspect="true";
+$dia_obj_image_0_draw_border="false";
+$dia_obj_image_0_keep_aspect="true";
 // End of Image  0 Settings
 
 //Config for Text Element 0 Label under device
@@ -115,11 +134,11 @@ $dia_obj_line_0_bb_y2=3.45;
 // Orth Points
 $dia_obj_line_0_orth_points_x1=3.05;
 $dia_obj_line_0_orth_points_y1=1.975;
-$dia_obj_line_0_orth_points_x2=4.975;
+$dia_obj_line_0_orth_points_x2=6.975;
 $dia_obj_line_0_orth_points_y2=1.975;
-$dia_obj_line_0_orth_points_x3=4.975;
+$dia_obj_line_0_orth_points_x3=6.975;
 $dia_obj_line_0_orth_points_y3=2.95;
-$dia_obj_line_0_orth_points_x4=6.9;
+$dia_obj_line_0_orth_points_x4=8.9;
 $dia_obj_line_0_orth_points_y4=2.95;
 //
 // Orth Orientation
