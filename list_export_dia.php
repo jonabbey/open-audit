@@ -129,7 +129,7 @@ echo "\r\n";
 */
 //Table body
 $dia_current_object_x = .5;
-$dia_current_object_y = -2.5;
+$dia_current_object_y = -1.5;
 $dia_current_object_id = 0;
 if ($myrow = mysql_fetch_array($result)){
     do{
