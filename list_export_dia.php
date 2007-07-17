@@ -128,22 +128,23 @@ echo "\r\n";
 
 */
 //Table body
-$dia_current_object_x=.5;
-$dia_current_object_y=.5;
+$dia_current_object_x = .5;
+$dia_current_object_y = -2.5;
+$dia_current_object_id = 0;
 if ($myrow = mysql_fetch_array($result)){
     do{
         foreach($query_array["fields"] as $field){
             if($field["show"]!="n"){
             //
-            $current_object_id= $current_object_id +1;
+            $dia_current_object_id = $dia_current_object_id + 1;
             //
             if (($field["head"]=="Hostname")or ($field["head"]=="Network Name")){
             //
-           $dia_current_object_y = $dia_current_object_y +2;
+           $dia_current_object_y = $dia_current_object_y + 2;
            //
            
             if (!isset($dia_icon_folder) ){
-            $dia_icon_folder = "W:\\htdocs\\openaudit\\images\\";
+            $dia_icon_folder = ".\\";
             } else{}
             
             if ($field["head"]=="Hostname") {
@@ -161,7 +162,7 @@ if ($myrow = mysql_fetch_array($result)){
             }
         
             echo '          <dia:group>
-            <dia:object type="Standard - Image" version="0" id="O'.$current_object_id.'">
+            <dia:object type="'.$dia_obj_image_0_type.'" version="'.$dia_obj_image_0_version.'" id="O'.($dia_current_object_id).'">
       <dia:attribute name="obj_pos">
         <dia:point val="1,1"/>
       </dia:attribute>
@@ -187,7 +188,7 @@ if ($myrow = mysql_fetch_array($result)){
         <dia:string>#'.$dia_this_image.'#</dia:string>
       </dia:attribute>
     </dia:object>
-   <dia:object type="Standard - Text" version="1" id="O'.($current_object_id+2).'">
+   <dia:object type="Standard - Text" version="1" id="O'.($dia_current_object_id+2).'">
       <dia:attribute name="obj_pos">
         <dia:point val="'.$dia_current_object_x.','.($dia_current_object_y + 1.5).'"/>
       </dia:attribute>
@@ -221,7 +222,7 @@ if ($myrow = mysql_fetch_array($result)){
       </dia:attribute>
     </dia:object> 
     </dia:group>
-    <dia:object type="Standard - ZigZagLine" version="1" id="O'.($current_object_id+1).'">
+    <dia:object type="Standard - ZigZagLine" version="1" id="O'.($dia_current_object_id + 1.0).'">
       <dia:attribute name="obj_pos">
         <dia:point val="'.($dia_current_object_x + 1).','.($dia_current_object_y + 0.5).'"/>
       </dia:attribute>
@@ -243,12 +244,11 @@ if ($myrow = mysql_fetch_array($result)){
         <dia:boolean val="false"/>
       </dia:attribute>
       <dia:connections>
-        <dia:connection handle="0" to="O'.$current_object_id.'" connection="8"/>
+        <dia:connection handle="0" to="O'.$dia_current_object_id.'" connection="8"/>
       </dia:connections>
     </dia:object>
-    
 ';
-            $current_object_id= $current_object_id +3;
+           $dia_current_object_id = $dia_current_object_id + 3;
  }                                                                       
            
                 //echo $myrow[$field["name"]];
