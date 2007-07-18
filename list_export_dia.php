@@ -162,8 +162,8 @@ if ($myrow = mysql_fetch_array($result)){
             //
             $dia_this_image = $dia_icon_folder.$dia_icon_image;
             // 
-            //$dia_current_obj_text=$myrow[$field["name"]]."\n".$myrow["other_ip_address"]."\n".$myrow["other_description"];
-            $dia_current_obj_text=eval($dia_text_other_object_text);
+            $dia_current_obj_text=$myrow[$field["name"]]."\n".$myrow["other_ip_address"]."\n".$myrow["other_description"];
+            //$dia_current_obj_text=eval($dia_text_other_object_text);
             
             }
         
