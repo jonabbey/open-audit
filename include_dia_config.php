@@ -40,6 +40,10 @@ $dia_object_spacing_y=0;
 // Config for starting point for first object
 $dia_object_num_columns=1;
 $dia_newline= "\n";
+//
+$dia_text_other_object_text= '"$myrow[$field[\"name\"]].\"\n\".$myrow[\"other_ip_address\"].\"\n\".$myrow[\"other_description\"]\"';
+
+
 
 // Page Setup next... (FIXME this should probably be an array (AJH))
 //
@@ -130,7 +134,7 @@ $dia_obj_text_0_font_pos_y=0.85;
 $dia_obj_text_0_font_colour="#000000";
 //
 $dia_obj_text_0_font_alignment=0;
-$dia_obj_text_0_valign="3";
+$dia_obj_text_0_font_valign="3";
 // End Config Text Element 0
 
 
