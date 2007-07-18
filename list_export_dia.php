@@ -128,9 +128,11 @@ echo "\r\n";
 
 */
 //Table body
-$dia_current_object_x = .5;
-$dia_current_object_y = -1.5;
-$dia_current_object_id = 0;
+//$dia_object_spacing_y=2;
+$dia_current_object_x = $dia_object_start_x;
+$dia_current_object_y = $dia_object_start_y;
+$dia_current_object_id = $dia_object_start_id;
+//
 if ($myrow = mysql_fetch_array($result)){
     do{
         foreach($query_array["fields"] as $field){
@@ -139,26 +141,30 @@ if ($myrow = mysql_fetch_array($result)){
             $dia_current_object_id = $dia_current_object_id + 1;
             //
             if (($field["head"]=="Hostname")or ($field["head"]=="Network Name")){
-            //
-           $dia_current_object_y = $dia_current_object_y + 2;
-           //
-           
+
             if (!isset($dia_icon_folder) ){
             $dia_icon_folder = ".\\";
             } else{}
-            
+            //
             if ($field["head"]=="Hostname") {
-           
+            //
             $dia_icon_image = determine_dia_img($myrow["system_os_name"],$myrow[$field["name"]]);
-
+            //
             $dia_this_image = $dia_icon_folder.$dia_icon_image;
+                       //
+           $dia_current_obj_text=$myrow[$field["name"]]."\n".$myrow["net_ip_address"];
+           
             }
             else 
             {
-                       
+            //         
             $dia_icon_image = determine_dia_img($myrow["other_type"],$myrow["other_type"]);
-
+            //
             $dia_this_image = $dia_icon_folder.$dia_icon_image;
+            // 
+            //$dia_current_obj_text=$myrow[$field["name"]]."\n".$myrow["other_ip_address"]."\n".$myrow["other_description"];
+            $dia_current_obj_text=eval($dia_text_other_object_text);
+            
             }
         
             echo '          <dia:group>
@@ -198,7 +204,7 @@ if ($myrow = mysql_fetch_array($result)){
         <dia:attribute name="'.$dia_obj_text_0_text.'">
           <dia:composite type="text">
             <dia:attribute name="string">
-            <dia:string>#'.$myrow[$field["name"]].'#</dia:string>
+            <dia:string>#'.$dia_current_obj_text.'#</dia:string>
           </dia:attribute>
             <dia:attribute name="'.$dia_obj_text_0_font.'">
               <dia:font family="'.$dia_obj_text_0_failiky.'" style="'.$dia_obj_text_0_font_style.'" name="'.$dia_obj_text_0_font_name.'"/>
@@ -243,6 +249,12 @@ if ($myrow = mysql_fetch_array($result)){
       <dia:attribute name="autorouting">
         <dia:boolean val="'.$dia_obj_line_0_autorouting.'"/>
       </dia:attribute>
+      <dia:attribute name="line_width">
+        <dia:real val="'.$dia_obj_line_0_line_width.'"/>
+      </dia:attribute>
+      <dia:attribute name="line_style">
+        <dia:enum val="'.$dia_obj_line_0_line_style.'"/>        
+      </dia:attribute>
       <dia:attribute name="start_arrow">
         <dia:enum val="'.$dia_obj_line_0_start_arrow.'"/>
       </dia:attribute>
@@ -261,21 +273,25 @@ if ($myrow = mysql_fetch_array($result)){
       <dia:attribute name="end_arrow_width">
         <dia:real val="'.$dia_obj_line_0_end_arrow_width.'"/>
       </dia:attribute>
+      <dia:attribute name="dashlength">
+        <dia:real val="'.$dia_obj_line_0_dashlength.'"/>
+      </dia:attribute>
       <dia:connections>
         <dia:connection handle="'.$dia_obj_line_0_connection_handle.'" to="O'.$dia_current_object_id.'" connection="'.$dia_obj_line_0_connection_handle_connection.'"/>
       </dia:connections>
     </dia:object>
 ';
            $dia_current_object_id = $dia_current_object_id + 3;
- }                                                                       
+                }                                                                       
            
-                //echo $myrow[$field["name"]];
-               
-//                echo "\t";
             }
         }
-//        echo "\r\n";
+        // Space out the objects
+           $dia_current_object_x += $dia_object_spacing_x; 
+           $dia_current_object_y += $dia_object_spacing_y;
+        //
     }while ($myrow = mysql_fetch_array($result));
+
 }
 //
 // Close Layer and Document

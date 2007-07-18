@@ -18,10 +18,30 @@
 */ 
 //
 
-//
+// $dia_image_folder
+// Set this to a valid location for the workstation
+// try $dia_image_folder=".\\images" then place a copy of the images folder in the same folder as the diagram, or 
+// set to a shared location for example 
+// $dia_image_folder='W:\\htdocs\\openaudit\\images\\';
+// 
 $dia_image_folder='W:\\htdocs\\openaudit\\images\\';
-//
-// Page Setup  (FIXME this should be an array (AJH))
+
+// Start offset x/y for first object
+$dia_object_start_x = 0.5;
+$dia_object_start_y = 0.5;
+
+// Start Object best left as zero 
+$dia_object0_start_id = 0;
+
+// Object Spacing incriments (set one or other of x/y to a positive value, to space out horizontaly or vertically)
+$dia_object_spacing_x=4;
+$dia_object_spacing_y=0;
+//$dia_object_spacing_y=2;
+// Config for starting point for first object
+$dia_object_num_columns=1;
+$dia_newline= "\n";
+
+// Page Setup next... (FIXME this should probably be an array (AJH))
 //
 $dia_background_name="background";
 $dia_background_colour="#FFFFFF";
@@ -149,6 +169,9 @@ $dia_obj_line_0_orth_orient_3=0;
 // Autorouting
 $dia_obj_line_0_autorouting="true";
 //
+$dia_obj_line_0_line_width=0.00;
+// Dot Dash line
+$dia_obj_line_0_line_style=3;
 // Start Arrow
 $dia_obj_line_0_start_arrow=13;
 $dia_obj_line_0_start_arrow_length=0.5;
@@ -158,6 +181,8 @@ $dia_obj_line_0_start_arrow_width=0.5;
 $dia_obj_line_0_end_arrow=13;
 $dia_obj_line_0_end_arrow_length=0.5;
 $dia_obj_line_0_end_arrow_width=0.5;
+// Dot-dash line dash length
+$dia_obj_line_0_dashlength=0.2;
 //
 // Connection properties
 $dia_obj_line_0_connection_handle="0";
@@ -167,14 +192,7 @@ $dia_obj_line_0_connection_handle_connection="8";
 //
 // End of Line Element 0 config
 
-// Config for starting point for first object
-$dia_current_object_number=0;
-$dia_current_object_x=0.5;
-$dia_current_object_y=0.5;
-$dia_object_spacing_x=0;
-$dia_object_spacing_y=0;
-$dia_object_num_columns=1;
-$dia_newline= "\n";
+
 
 //
 ?>
