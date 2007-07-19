@@ -31,7 +31,7 @@ $dia_object_start_x = 0.5;
 $dia_object_start_y = 0.5;
 
 // Start Object best left as zero 
-$dia_object0_start_id = 0;
+$dia_object_start_id = 0;
 
 // Object Spacing incriments (set one or other of x/y to a positive value, to space out horizontaly or vertically)
 $dia_object_spacing_x=4;
