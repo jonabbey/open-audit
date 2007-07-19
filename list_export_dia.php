@@ -207,7 +207,7 @@ if ($myrow = mysql_fetch_array($result)){
             <dia:string>#'.$dia_current_obj_text.'#</dia:string>
           </dia:attribute>
             <dia:attribute name="'.$dia_obj_text_0_font.'">
-              <dia:font family="'.$dia_obj_text_0_faimily.'" style="'.$dia_obj_text_0_font_style.'" name="'.$dia_obj_text_0_font_name.'"/>
+              <dia:font family="'.$dia_obj_text_0_font_faimily.'" style="'.$dia_obj_text_0_font_style.'" name="'.$dia_obj_text_0_font_name.'"/>
             </dia:attribute>
             <dia:attribute name="height">
               <dia:real val="'.$dia_obj_text_0_font_height.'"/>
