@@ -142,15 +142,15 @@ if ($myrow = mysql_fetch_array($result)){
             //
             if (($field["head"]=="Hostname")or ($field["head"]=="Network Name")){
 
-            if (!isset($dia_icon_folder) ){
-            $dia_icon_folder = ".\\";
+            if (!isset($dia_image_folder) ){
+            $dia_image_folder = ".\\";
             } else{}
             //
             if ($field["head"]=="Hostname") {
             //
-            $dia_icon_image = determine_dia_img($myrow["system_os_name"],$myrow[$field["name"]]);
+            $dia_image_icon = determine_dia_img($myrow["system_os_name"],$myrow[$field["name"]]);
             //
-            $dia_this_image = $dia_icon_folder.$dia_icon_image;
+            $dia_this_image = $dia_image_folder.$dia_image_icon;
                        //
            $dia_current_obj_text=$myrow[$field["name"]]."\n".$myrow["net_ip_address"];
            
@@ -158,9 +158,9 @@ if ($myrow = mysql_fetch_array($result)){
             else 
             {
             //         
-            $dia_icon_image = determine_dia_img($myrow["other_type"],$myrow["other_type"]);
+            $dia_image_icon = determine_dia_img($myrow["other_type"],$myrow["other_type"]);
             //
-            $dia_this_image = $dia_icon_folder.$dia_icon_image;
+            $dia_this_image = $dia_image_folder.$dia_image_icon;
             // 
             $dia_current_obj_text=$myrow[$field["name"]]."\n".$myrow["other_ip_address"]."\n".$myrow["other_description"];
             //$dia_current_obj_text=eval($dia_text_other_object_text);
