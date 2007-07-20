@@ -30,7 +30,7 @@ $dia_image_folder='W:\\htdocs\\openaudit\\images\\';
 $dia_object_start_x = 0.5;
 $dia_object_start_y = 0.5;
 
-// Start Object best left as zero 
+// Start Object id best left as zero 
 $dia_object_start_id = 0;
 
 // Object Spacing incriments (set one or other of x/y to a positive value, to space out horizontaly or vertically)
@@ -57,7 +57,20 @@ $dia_tmargin="2.8";
 $dia_bmargin="2.8";
 $dia_lmargin="2.8";
 $dia_rmargin="2.8";
-$dia_is_portrait="true";
+$dia_is_portrait="false";
+
+//
+// Set up page layout for spread of items across and down page.
+if ($dia_is_portrait == "true") {
+        $dia_num_across_page= 4;
+        $dia_num_down_page= 6;
+        } else {
+        $dia_num_across_page= 6;
+        $dia_num_down_page= 4;
+        }
+        
+
+
 $dia_scaling="1";
 $dia_fitto="false";
 $dia_grid="grid";
@@ -85,8 +98,8 @@ $dia_obj_image_0_id="O0";
 //
 $dia_obj_image_default_image="laptop_l.png";
 // Position (this will also be controlled programatically, so these are just the defaults)
-$dia_obj_image_0_pos_x=0.95;
-$dia_obj_image_0_pos_y=1.1;
+$dia_obj_image_0_pos_x=0.3;
+$dia_obj_image_0_pos_y=1.3;
 // Blob Size 
 $dia_obj_image_0_bb_x1=0.9;
 $dia_obj_image_0_bb_y1=1.05;
@@ -96,8 +109,8 @@ $dia_obj_image_0_bb_y2=2.9;
 $dia_obj_image_0_elem_corner_x=0.95;
 $dia_obj_image_0_elem_corner_y=1.1;
 // Width & Height
-$dia_obj_image_0_elem_width=1;
-$dia_obj_image_0_elem_height=1;
+$dia_obj_image_0_elem_width=0.5;
+$dia_obj_image_0_elem_height=0.5;
 // Properties
 $dia_obj_image_0_draw_border="false";
 $dia_obj_image_0_keep_aspect="true";
@@ -114,6 +127,9 @@ $dia_obj_text_0_id="O1";
 $dia_obj_text_0_pos_x=0.85;
 $dia_obj_text_0_pos_y=3.85;
 //
+$dia_obj_text_0_pos_x_offset=-0.4;
+$dia_obj_text_0_pos_y_offset=0.8;
+//
 $dia_obj_text_0_bb_x1=0.85;
 $dia_obj_text_0_bb_y1=3.20;
 $dia_obj_text_0_bb_x2=4.89;
@@ -122,10 +138,10 @@ $dia_obj_text_0_bb_y2=4.29;
 $dia_obj_text_0_text="text";
 $dia_obj_text_0_string="#DEFAULT #";
 $dia_obj_text_0_font="font";
-$dia_obj_text_0_font_family="courier";
-$dia_obj_text_0_font_style=40;
-$dia_obj_text_0_font_name="Courier";
-$dia_obj_text_0_font_height=0.4;
+$dia_obj_text_0_font_family="arial";
+$dia_obj_text_0_font_style=0;
+$dia_obj_text_0_font_name="Helvitica";
+$dia_obj_text_0_font_height=0.2;
 // 
 $dia_obj_text_0_font_pos="pos";
 $dia_obj_text_0_font_pos_x=0.85;
@@ -156,19 +172,26 @@ $dia_obj_line_0_bb_x2=6.95;
 $dia_obj_line_0_bb_y2=3.45;
 //
 // Orth Points
-$dia_obj_line_0_orth_points_x1=3.05;
-$dia_obj_line_0_orth_points_y1=1.975;
-$dia_obj_line_0_orth_points_x2=6.975;
-$dia_obj_line_0_orth_points_y2=1.975;
-$dia_obj_line_0_orth_points_x3=6.975;
-$dia_obj_line_0_orth_points_y3=2.95;
-$dia_obj_line_0_orth_points_x4=8.9;
-$dia_obj_line_0_orth_points_y4=2.95;
+$dia_obj_line_0_orth_points_x1=1.0;
+$dia_obj_line_0_orth_points_y1=0.75;
+$dia_obj_line_0_orth_points_x2=1.1;
+$dia_obj_line_0_orth_points_y2=0.75;
+$dia_obj_line_0_orth_points_x3=2.25;
+$dia_obj_line_0_orth_points_y3=0.75;
+$dia_obj_line_0_orth_points_x4=2.35;
+$dia_obj_line_0_orth_points_y4=2.0;
+$dia_obj_line_0_orth_points_x5=3.5;
+$dia_obj_line_0_orth_points_y5=2.0;
+$dia_obj_line_0_orth_points_x6=3.6;
+$dia_obj_line_0_orth_points_y6=2.0;
 //
 // Orth Orientation
-$dia_obj_line_0_orth_orient_1=0;
-$dia_obj_line_0_orth_orient_2=1;
-$dia_obj_line_0_orth_orient_3=0;
+$dia_obj_line_0_orth_orient_1=1;
+$dia_obj_line_0_orth_orient_2=0;
+$dia_obj_line_0_orth_orient_3=1;
+$dia_obj_line_0_orth_orient_4=0;
+$dia_obj_line_0_orth_orient_5=1;
+
 //
 // Autorouting
 $dia_obj_line_0_autorouting="true";
@@ -178,13 +201,13 @@ $dia_obj_line_0_line_width=0.00;
 $dia_obj_line_0_line_style=3;
 // Start Arrow
 $dia_obj_line_0_start_arrow=13;
-$dia_obj_line_0_start_arrow_length=0.5;
-$dia_obj_line_0_start_arrow_width=0.5;
+$dia_obj_line_0_start_arrow_length=0.2;
+$dia_obj_line_0_start_arrow_width=0.2;
 //
 // End Arrow
 $dia_obj_line_0_end_arrow=13;
-$dia_obj_line_0_end_arrow_length=0.5;
-$dia_obj_line_0_end_arrow_width=0.5;
+$dia_obj_line_0_end_arrow_length=0.2;
+$dia_obj_line_0_end_arrow_width=0.2;
 // Dot-dash line dash length
 $dia_obj_line_0_dashlength=0.2;
 //

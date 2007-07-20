@@ -152,7 +152,7 @@ if ($myrow = mysql_fetch_array($result)){
             //
             $dia_this_image = $dia_image_folder.$dia_image_icon;
                        //
-           $dia_current_obj_text=$myrow[$field["name"]]."\n".$myrow["net_ip_address"];
+           $dia_current_obj_text=$myrow[$field["name"]]."\n".$myrow["net_ip_address"]."\n".$myrow["net_user_name"];
            
             }
             else 
@@ -196,7 +196,7 @@ if ($myrow = mysql_fetch_array($result)){
     </dia:object>
    <dia:object type="'.$dia_obj_text_0_type.'" version="'.$dia_obj_text_0_version.'" id="O'.($dia_current_object_id+2).'">
       <dia:attribute name="obj_pos">
-        <dia:point val="'.$dia_current_object_x.','.($dia_current_object_y + 1.5).'"/>
+        <dia:point val="'.($dia_current_object_x + $dia_obj_text_0_pos_x_offset).','.($dia_current_object_y + $dia_obj_text_0_pos_y_offset).'"/>
         </dia:attribute>
         <dia:attribute name="obj_bb">
           <dia:rectangle val="'.$dia_obj_text_0_bb_x1.','.$dia_obj_text_0_bb_y1.';'.$dia_obj_text_0_bb_x2.','.$dia_obj_text_0_bb_y2.'"/>
@@ -230,21 +230,25 @@ if ($myrow = mysql_fetch_array($result)){
     </dia:group>
     <dia:object type="'.$dia_obj_line_0_type.'" version="'.$dia_obj_line_0_version.'" id="O'.($dia_current_object_id + 1.0).'">
       <dia:attribute name="obj_pos">
-        <dia:point val="'.($dia_current_object_x + 1).','.($dia_current_object_y + 0.5).'"/>
+        <dia:point val="'.($dia_current_object_x + $dia_obj_image_0_elem_width).','.($dia_current_object_y + ($dia_obj_image_0_elem_height/2)).'"/>
       </dia:attribute>
         <dia:attribute name="obj_bb">
         <dia:rectangle val="'.$dia_obj_line_0_bb_x1.','.$dia_obj_line_0_bb_y1.';'.$dia_obj_line_0_bb_x2.','.$dia_obj_line_0_bb_y2.'"/>
       </dia:attribute>
       <dia:attribute name="orth_points">
-        <dia:point val="'.($dia_current_object_x + 1).','.($dia_current_object_y + 0.5).'"/>
-        <dia:point val="'.($dia_current_object_x + 2).','.($dia_current_object_y + 0.5).'"/>
-        <dia:point val="'.($dia_current_object_x + 2).','.($dia_current_object_y + 1.5).'"/>
-        <dia:point val="'.($dia_current_object_x + 3).','.($dia_current_object_y + 1.5).'"/>
+        <dia:point val="'.($dia_current_object_x + $dia_obj_line_0_orth_points_x1).','.($dia_current_object_y + $dia_obj_line_0_orth_points_y1).'"/>
+        <dia:point val="'.($dia_current_object_x + $dia_obj_line_0_orth_points_x2).','.($dia_current_object_y + $dia_obj_line_0_orth_points_y2).'"/>
+        <dia:point val="'.($dia_current_object_x + $dia_obj_line_0_orth_points_x3).','.($dia_current_object_y + $dia_obj_line_0_orth_points_y3).'"/>
+        <dia:point val="'.($dia_current_object_x + $dia_obj_line_0_orth_points_x4).','.($dia_current_object_y + $dia_obj_line_0_orth_points_y4).'"/>
+        <dia:point val="'.($dia_current_object_x + $dia_obj_line_0_orth_points_x5).','.($dia_current_object_y + $dia_obj_line_0_orth_points_y5).'"/>
+        <dia:point val="'.($dia_current_object_x + $dia_obj_line_0_orth_points_x6).','.($dia_current_object_y + $dia_obj_line_0_orth_points_y6).'"/>
       </dia:attribute>
       <dia:attribute name="orth_orient">
         <dia:enum val="'.$dia_obj_line_0_orth_orient_1.'"/>
         <dia:enum val="'.$dia_obj_line_0_orth_orient_2.'"/>
         <dia:enum val="'.$dia_obj_line_0_orth_orient_3.'"/>
+        <dia:enum val="'.$dia_obj_line_0_orth_orient_4.'"/>
+        <dia:enum val="'.$dia_obj_line_0_orth_orient_5.'"/>
       </dia:attribute>
       <dia:attribute name="autorouting">
         <dia:boolean val="'.$dia_obj_line_0_autorouting.'"/>
@@ -287,6 +291,10 @@ if ($myrow = mysql_fetch_array($result)){
             }
         }
         // Space out the objects
+        //$dia_current_object_x = $dia_current_object_id * $dia_num_across_page * $dia_object_spacing_x;
+        //$dia_current_object_y = $dia_current_object_id * $dia_num_down_page * $dia_object_spacing_y;
+      
+        //
            $dia_current_object_x += $dia_object_spacing_x; 
            $dia_current_object_y += $dia_object_spacing_y;
         //
