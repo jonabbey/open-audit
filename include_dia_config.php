@@ -18,6 +18,11 @@
 */ 
 //
 
+// Note  Some objects are specified as gor example 4.0 rather than 4 in order to ensure that PHP uses the correct type 
+// i.e. A Number rather than a text string. 
+
+
+
 // $dia_image_folder
 // Set this to a valid location for the workstation
 // try $dia_image_folder=".\\images" then place a copy of the images folder in the same folder as the diagram, or 
@@ -31,11 +36,12 @@ $dia_object_start_x = 0.5;
 $dia_object_start_y = 0.5;
 
 // Start Object id best left as zero 
+settype($dia_object_start_id,int);
 $dia_object_start_id = 0;
 
 // Object Spacing incriments (set one or other of x/y to a positive value, to space out horizontaly or vertically)
 $dia_object_spacing_x=4;
-$dia_object_spacing_y=0;
+$dia_object_spacing_y=2.4;
 //$dia_object_spacing_y=2;
 // Config for starting point for first object
 $dia_object_num_columns=1;
@@ -62,13 +68,14 @@ $dia_is_portrait="false";
 //
 // Set up page layout for spread of items across and down page.
 if ($dia_is_portrait == "true") {
-        $dia_num_across_page= 4;
-        $dia_num_down_page= 6;
+        $dia_num_across_page= 4.0;
+        $dia_num_down_page= 6.0;
         } else {
-        $dia_num_across_page= 6;
-        $dia_num_down_page= 4;
+        $dia_num_across_page= 6.0;
+        $dia_num_down_page= 4.0;
         }
-        
+// 
+$dia_grouped_objects= 3.0;
 
 
 $dia_scaling="1";
@@ -172,17 +179,17 @@ $dia_obj_line_0_bb_x2=6.95;
 $dia_obj_line_0_bb_y2=3.45;
 //
 // Orth Points
-$dia_obj_line_0_orth_points_x1=1.0;
-$dia_obj_line_0_orth_points_y1=0.75;
+$dia_obj_line_0_orth_points_x1=0.70;
+$dia_obj_line_0_orth_points_y1=0.45;
 $dia_obj_line_0_orth_points_x2=1.1;
 $dia_obj_line_0_orth_points_y2=0.75;
-$dia_obj_line_0_orth_points_x3=2.25;
+$dia_obj_line_0_orth_points_x3=1.55;
 $dia_obj_line_0_orth_points_y3=0.75;
-$dia_obj_line_0_orth_points_x4=2.35;
+$dia_obj_line_0_orth_points_x4=1.55;
 $dia_obj_line_0_orth_points_y4=2.0;
-$dia_obj_line_0_orth_points_x5=3.5;
+$dia_obj_line_0_orth_points_x5=2.5;
 $dia_obj_line_0_orth_points_y5=2.0;
-$dia_obj_line_0_orth_points_x6=3.6;
+$dia_obj_line_0_orth_points_x6=2.6;
 $dia_obj_line_0_orth_points_y6=2.0;
 //
 // Orth Orientation

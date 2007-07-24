@@ -37,8 +37,11 @@ if(is_file($include_filename)){
     $result = mysql_query($sql, $db);
     if(!$result) {die( "<br>".__("Fatal Error").":<br><br>".$sql."<br><br>".mysql_error()."<br><br>" );};
     $this_page_count = mysql_num_rows($result);
+    
+$dia_x_offset = 0;
+$dia_y_offset = 0;
 
-$current_object_id = 0 ;
+$dia_current_object_id = 0 ;
 header("Content-Type: application/vnd.dia-win-remote");
 header("Content-Disposition: inline; filename=\"Open-Audit_".$_REQUEST["view"]."_network_diagram.dia\"");
 
@@ -138,7 +141,7 @@ if ($myrow = mysql_fetch_array($result)){
         foreach($query_array["fields"] as $field){
             if($field["show"]!="n"){
             //
-            $dia_current_object_id = $dia_current_object_id + 1;
+            
             //
             if (($field["head"]=="Hostname")or ($field["head"]=="Network Name")){
 
@@ -166,9 +169,9 @@ if ($myrow = mysql_fetch_array($result)){
             //$dia_current_obj_text=eval($dia_text_other_object_text);
             
             }
-        
+            $dia_current_image_object_id = $dia_current_object_id;        
             echo '          <dia:group>
-            <dia:object type="'.$dia_obj_image_0_type.'" version="'.$dia_obj_image_0_version.'" id="O'.($dia_current_object_id).'">
+            <dia:object type="'.$dia_obj_image_0_type.'" version="'.$dia_obj_image_0_version.'" id="O'.$dia_current_object_id.'">
         <dia:attribute name="obj_pos">
           <dia:point val="'.$dia_obj_image_0_pos_x.','.$dia_obj_image_0_pos_y.'"/>
         </dia:attribute>
@@ -193,8 +196,11 @@ if ($myrow = mysql_fetch_array($result)){
         <dia:attribute name="file"> 
         <dia:string>#'.$dia_this_image.'#</dia:string>
       </dia:attribute>
-    </dia:object>
-   <dia:object type="'.$dia_obj_text_0_type.'" version="'.$dia_obj_text_0_version.'" id="O'.($dia_current_object_id+2).'">
+    </dia:object>';
+// Next Object  
+ $dia_current_object_id += 1;
+//    
+            echo '   <dia:object type="'.$dia_obj_text_0_type.'" version="'.$dia_obj_text_0_version.'" id="O'.$dia_current_object_id .'">
       <dia:attribute name="obj_pos">
         <dia:point val="'.($dia_current_object_x + $dia_obj_text_0_pos_x_offset).','.($dia_current_object_y + $dia_obj_text_0_pos_y_offset).'"/>
         </dia:attribute>
@@ -227,8 +233,11 @@ if ($myrow = mysql_fetch_array($result)){
           <dia:enum val="'.$dia_obj_text_0_font_valign.'"/>
         </dia:attribute>
       </dia:object>
-    </dia:group>
-    <dia:object type="'.$dia_obj_line_0_type.'" version="'.$dia_obj_line_0_version.'" id="O'.($dia_current_object_id + 1.0).'">
+    </dia:group>';
+// Next Object  
+ $dia_current_object_id += 1;
+//    
+            echo '    <dia:object type="'.$dia_obj_line_0_type.'" version="'.$dia_obj_line_0_version.'" id="O'. $dia_current_object_id .'">
       <dia:attribute name="obj_pos">
         <dia:point val="'.($dia_current_object_x + $dia_obj_image_0_elem_width).','.($dia_current_object_y + ($dia_obj_image_0_elem_height/2)).'"/>
       </dia:attribute>
@@ -281,27 +290,57 @@ if ($myrow = mysql_fetch_array($result)){
         <dia:real val="'.$dia_obj_line_0_dashlength.'"/>
       </dia:attribute>
       <dia:connections>
-        <dia:connection handle="'.$dia_obj_line_0_connection_handle.'" to="O'.$dia_current_object_id.'" connection="'.$dia_obj_line_0_connection_handle_connection.'"/>
+        <dia:connection handle="'.$dia_obj_line_0_connection_handle.'" to="O'.$dia_current_image_object_id.'" connection="'.$dia_obj_line_0_connection_handle_connection.'"/>
       </dia:connections>
     </dia:object>
 ';
-           $dia_current_object_id = $dia_current_object_id + 3;
-                }                                                                       
+ $dia_current_object_id += 1;
            
+                }                                                                       
+//           $dia_current_object_id += 4.0;
             }
         }
         // Space out the objects
-        //$dia_current_object_x = $dia_current_object_id * $dia_num_across_page * $dia_object_spacing_x;
-        //$dia_current_object_y = $dia_current_object_id * $dia_num_down_page * $dia_object_spacing_y;
-      
+
         //
-           $dia_current_object_x += $dia_object_spacing_x; 
-           $dia_current_object_y += $dia_object_spacing_y;
+        $dia_x_offset = (($dia_current_object_id / $dia_grouped_objects) % $dia_num_across_page ) ;
+        if ($dia_x_offset == 0 )  {
+        $dia_y_offset = $dia_y_offset + 1;
+        }
+        
+        /*
+        //        Test code block to output a few vars
+      echo $dia_current_object_id.','  ;
+      echo $dia_x_offset.','.$dia_y_offset;
+        //
+        */        
+                
+
+          $dia_current_object_x = $dia_object_start_x + ($dia_x_offset * $dia_object_spacing_x); 
+          $dia_current_object_y = $dia_object_start_y + ($dia_y_offset * $dia_object_spacing_y);
+        //
+        //  $dia_current_object_x += $dia_object_spacing_x; 
+        //  $dia_current_object_y += $dia_object_spacing_y;
         //
     }while ($myrow = mysql_fetch_array($result));
 
 }
-//
+
+/*
+// Work in progress
+//Looks to the image folder returns the files, no subdirectories. Creates an object per file.
+
+$dh = opendir($dia_image_folder);
+while (false !== ($file = readdir($dh))) {
+//Don't list subdirectories
+if (!is_dir("$dirpath/$file")) {
+//Create a Text string to add to the object (truncate the file extension and capitalize the first letter)
+$dia_object_text=  htmlspecialchars(ucfirst(preg_replace('/\..*$/', '', $file)));
+}
+
+
+*/
+
 // Close Layer and Document
 echo '  </dia:layer>
 </dia:diagram>';

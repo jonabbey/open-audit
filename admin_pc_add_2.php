@@ -1237,7 +1237,7 @@ function insert_printer ($split){
         $result = mysql_query($sql) or die ('Insert Failed: ' . mysql_error() . '<br />' . $sql);
       } else {
         // Update
-       $sql  = "UPDATE other SET other_timestamp = '$timestamp', other_p_port_name = '$printer_host_name', ";
+       $sql  = "UPDATE other SET other_timestamp = '$timestamp', other_p_port_name = '$printer_network_name', ";
        $sql .= "other_location = '$printer_location', other_description = '$printer_caption' WHERE other_ip_address = '" . ip_trans_to($printer_ip) . "'";
        if ($verbose == "y"){echo $sql . "<br />\n\n";}
        $result = mysql_query($sql) or die ('Insert Failed: ' . mysql_error() . '<br />' . $sql);
