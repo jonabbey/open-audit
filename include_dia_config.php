@@ -29,14 +29,14 @@
 // set to a shared location for example 
 // $dia_image_folder='W:\\htdocs\\openaudit\\images\\';
 // 
-$dia_image_folder='W:\\htdocs\\openaudit\\images\\';
+$dia_image_folder='C:\\Program Files\\xampp\\htdocs\\openaudit\\images\\';
 
 // Start offset x/y for first object
 $dia_object_start_x = 0.5;
 $dia_object_start_y = 0.5;
 
 // Start Object id best left as zero 
-settype($dia_object_start_id,int);
+// settype($dia_object_start_id,int);
 $dia_object_start_id = 0;
 
 // Object Spacing incriments (set one or other of x/y to a positive value, to space out horizontaly or vertically)
