@@ -629,7 +629,7 @@ DROP TABLE IF EXISTS `software`;
 CREATE TABLE `software` (
   `software_id` int(10) unsigned NOT NULL auto_increment,
   `software_uuid` varchar(100) NOT NULL default '',
-  `software_name` varchar(100) NOT NULL default '',
+  `software_name` varchar(256) NOT NULL default '',
   `software_version` varchar(50) NOT NULL default '',
   `software_location` varchar(200) NOT NULL default '',
   `software_uninstall` MEDIUMTEXT NOT NULL default '',
@@ -944,7 +944,7 @@ CREATE TABLE `video` (
   KEY `id2` (`video_timestamp`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
-INSERT INTO config (config_name, config_value) VALUES ('version','06.09.31');
+INSERT INTO config (config_name, config_value) VALUES ('version','07.08.01');
 
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
