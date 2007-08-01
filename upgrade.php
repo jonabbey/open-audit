@@ -21,7 +21,7 @@ if ($version == "") {
 }
 // 
 // Currently we only run an upgrade if there are SQL table alterations. 
-// Code alterations are not vovered by this script (yet... watch this space).. 
+// Code alterations are not covered by this script (yet... watch this space).. 
 // Add in a sql statement and an upgrade ($version, "newversion_number", $sql) for each version change...
 // Only alter the older version changes if you absolutely must, as this would break existing installed users!
 
@@ -69,7 +69,7 @@ upgrade ($version,"07.08.01", $sql);
 
 
 ?>
-    <br /><?php echo __("Upgrade complete.".$latestversion); ?>
+    <br />Upgrade complete.
     <br /><br /><a href="index.php" alt=""><?php echo __("Return to Index"); ?></a>
   </body>
 </html>
