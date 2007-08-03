@@ -166,7 +166,7 @@ if ($myrow = mysql_fetch_array($result)){
            $dia_current_obj_text=$dia_current_obj_text."User: ".$myrow["net_user_name"]."\n";
             } else {}
             
-            if ($dia_show_system_net_net_domain == "y"){
+            if ($dia_show_system_net_domain == "y"){
            $dia_current_obj_text=$dia_current_obj_text."Domain: ".$myrow["net_domain"]."\n";
             } else {}
             
