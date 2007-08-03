@@ -60,8 +60,9 @@ ul#primary-nav li a {
   display: block;
   text-decoration: none;
   color: #777;
-  margin: 0.5px;
+  margin: 0px;
   padding: 5px;
+  padding-right: 0px;
   border: 1px solid #ccc;
   }
 
