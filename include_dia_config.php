@@ -141,7 +141,7 @@ $dia_obj_text_0_id="O1";
 $dia_obj_text_0_pos_x=0.85;
 $dia_obj_text_0_pos_y=3.85;
 //
-$dia_obj_text_0_pos_x_offset=-0.2;
+$dia_obj_text_0_pos_x_offset=0.2;
 $dia_obj_text_0_pos_y_offset=0.8;
 //
 $dia_obj_text_0_bb_x1=0.85;
@@ -163,7 +163,7 @@ $dia_obj_text_0_font_pos_y=0.85;
 //
 $dia_obj_text_0_font_colour="#000000";
 //
-$dia_obj_text_0_font_alignment=0;
+$dia_obj_text_0_font_alignment=1;
 $dia_obj_text_0_font_valign="3";
 // End Config Text Element 0
 
@@ -176,13 +176,13 @@ $dia_show_system_system_model = "y";
 $dia_show_system_system_id_number = "y"; 
 $dia_show_system_system_memory = "y";
 // What other item  text fields do we show, 
-$dia_show_other_network_name = "y";
+$dia_show_other_network_name = "n";
 $dia_show_other_ip_address = "y";
 $dia_show_other_mac_address = "y";
-$dia_show_other_description = "y";
-$dia_show_other_serial = "y";
+$dia_show_other_description = "n";
+$dia_show_other_serial = "n";
 $dia_show_other_model = "y";
-$dia_show_other_type = "y";
+$dia_show_other_type = "n";
 $dia_show_other_location = "y";
 $dia_show_other_p_port_name = "y";
 $dia_show_other_p_share_name = "y";
