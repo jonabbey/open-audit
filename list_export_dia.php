@@ -231,7 +231,7 @@ if ($myrow = mysql_fetch_array($result)){
            $dia_current_obj_text=$dia_current_obj_text."Type: ".$myrow["other_type"]."\n";
             } else {}
             
-
+// If its a printer or print server, show the port and share info
             
             if ( ($myrow["other_type"] == "printer") or ($myrow["other_type"] == "print server")) {
             
