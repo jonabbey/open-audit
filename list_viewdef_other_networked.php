@@ -1,7 +1,7 @@
 <?php
 
 $query_array=array("headline"=>__("List all Network Equipment"),
-                   "sql"=>"SELECT other_id, other_ip_address, other_network_name, other_type, other_description FROM other WHERE (other_ip_address <> '' AND other_ip_address <> ' Not-Networked') ",
+                   "sql"=>"SELECT other_id, other_ip_address,other_mac_address, other_network_name, other_type, other_description, other_serial, other_model, other_p_port_name, other_p_share_name FROM other WHERE (other_ip_address <> '' AND other_ip_address <> ' Not-Networked') ",
                    "sort"=>"other_ip_address",
                    "dir"=>"ASC",
                    "get"=>array("file"=>"system.php",

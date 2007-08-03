@@ -18,18 +18,25 @@
 */ 
 //
 
-// Note  Some objects are specified as gor example 4.0 rather than 4 in order to ensure that PHP uses the correct type 
+// Note  Some objects are specified as for example 4.0 rather than 4 in order to ensure that PHP uses the correct type 
 // i.e. A Number rather than a text string. 
 
-
-
 // $dia_image_folder
-// Set this to a valid location for the workstation
-// try $dia_image_folder=".\\images" then place a copy of the images folder in the same folder as the diagram, or 
-// set to a shared location for example 
-$dia_image_folder='W:\\htdocs\\openaudit\\images\\';
-// 
+// Set this to a valid location for your *** Workstation*** and NOT the OA server as it will be the Workstation that open the diagram!
+//
+// Try $dia_image_folder=".\\images" then place a copy of the images folder in the same folder as the diagram, or 
+//
+// Try \\home\\myuser\\mydiagrams or similar on Linix
+//
+// or for multiple Windows Workstations set to a shared location for example 
+//
+//$dia_image_folder='W:\\htdocs\\openaudit\\images\\';
+//
+// For Xampp standard installation path, try 
+//
 //$dia_image_folder='C:\\Program Files\\xampp\\htdocs\\openaudit\\images\\';
+//
+$dia_image_folder='W:\\htdocs\\openaudit\\images\\';
 
 // Start offset x/y for first object
 $dia_object_start_x = 0.5;
@@ -127,7 +134,7 @@ $dia_obj_image_0_keep_aspect="true";
 //
 $dia_obj_text_0_type="Standard - Text";
 $dia_obj_text_0_version="1";
-// *** Caution *** The Object ID Starts with a capital "O" and not a Zero so the following line is OHH ONE and not Zero One 
+// *** Caution *** The Object ID Starts with a capital "O" (for Object presumably) and not a Zero so the following line is OHH ONE and not Zero One 
 // (I spent ages trying to track this foible down (AJH))
 $dia_obj_text_0_id="O1";
 //
@@ -160,7 +167,7 @@ $dia_obj_text_0_font_alignment=0;
 $dia_obj_text_0_font_valign="3";
 // End Config Text Element 0
 
-// What text fields do we show, 
+// What system text fields do we show, 
 $dia_show_system_net_ip_address = "y";
 $dia_show_system_net_user_name = "y";
 $dia_show_system_net_domain = "y";
@@ -168,14 +175,26 @@ $dia_show_system_system_vendor = "y";
 $dia_show_system_system_model = "y";
 $dia_show_system_system_id_number = "y"; 
 $dia_show_system_system_memory = "y";
+// What other item  text fields do we show, 
+$dia_show_other_network_name = "y";
+$dia_show_other_ip_address = "y";
+$dia_show_other_mac_address = "y";
+$dia_show_other_description = "y";
+$dia_show_other_serial = "y";
+$dia_show_other_model = "y";
+$dia_show_other_type = "y";
+$dia_show_other_location = "y";
+$dia_show_other_p_port_name = "y";
+$dia_show_other_p_share_name = "y";
+
 
 // Config for Line Element 0 Zig Zag Line Connector
 //
 $dia_obj_line_0_type="Standard - ZigZagLine";
 $dia_obj_line_0_version="1";
 //
-// *** Caution *** The Object ID Starts with a capital "O" and not a Zero so the following line is OHH TWO 
-// (I spent ages trying to track this foible down (AJH))
+// *** Caution *** Remember the Object ID Starts with a capital "O" for Object and not a Zero so the following line is OHH TWO 
+// 
 $dia_obj_line_0_id="O2";
 // Start
 $dia_obj_line_0_pos_x=3.05;

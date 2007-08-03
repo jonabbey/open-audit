@@ -195,7 +195,57 @@ if ($myrow = mysql_fetch_array($result)){
             //
             $dia_this_image = $dia_image_folder.$dia_image_icon;
             // 
-            $dia_current_obj_text=$myrow[$field["name"]]."\n".$myrow["other_ip_address"]."\n".$myrow["other_description"];
+            //."\n".$myrow["other_ip_address"]."\n".$myrow["other_description"];
+            $dia_current_obj_text=$myrow[$field["name"]]."\n\n";
+            //
+            
+            if ($dia_show_other_network_name== "y"){
+           $dia_current_obj_text=$dia_current_obj_text."Name: ".$myrow["other_network_name"]."\n";
+            } else {}
+
+            if ($dia_show_system_net_ip_address == "y"){
+           $dia_current_obj_text=$dia_current_obj_text."ip: ".$myrow["other_ip_address"]."\n";
+            } else {}
+            
+            if ($dia_show_other_mac_address== "y"){
+           $dia_current_obj_text=$dia_current_obj_text."MAC: ".$myrow["other_mac_address"]."\n";
+            } else {}
+            
+            if ($dia_show_other_description== "y"){
+           $dia_current_obj_text=$dia_current_obj_text."Description: ".$myrow["other_description"]."\n";
+            } else {}
+            
+            if ($dia_show_other_location== "y"){
+           $dia_current_obj_text=$dia_current_obj_text."Location: ".$myrow["other_location"]."\n";
+            } else {}
+            
+            if ($dia_show_other_serial== "y"){
+           $dia_current_obj_text=$dia_current_obj_text."Serial: ".$myrow["other_serial"]."\n";
+            } else {}
+            
+            if ($dia_show_other_model== "y"){
+           $dia_current_obj_text=$dia_current_obj_text."Model: ".$myrow["other_model"]."\n";
+            } else {}
+            
+            if ($dia_show_other_type== "y"){
+           $dia_current_obj_text=$dia_current_obj_text."Type: ".$myrow["other_type"]."\n";
+            } else {}
+            
+
+            
+            if ( ($myrow["other_type"] == "printer") or ($myrow["other_type"] == "print server")) {
+            
+                 if ($dia_show_other_p_port_name== "y"){
+                $dia_current_obj_text=$dia_current_obj_text."Printer Port Name: ".$myrow["other_p_port_name"]."\n";
+                    } else {}
+            
+                 if ($dia_show_other_p_share_name== "y"){
+                $dia_current_obj_text=$dia_current_obj_text."Printer Share Name: ".$myrow["other_p_share_name"]."\n";
+                    } else {}
+            } else {}
+            
+            
+            
             //$dia_current_obj_text=eval($dia_text_other_object_text);
             
             }
