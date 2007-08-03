@@ -27,9 +27,9 @@
 // Set this to a valid location for the workstation
 // try $dia_image_folder=".\\images" then place a copy of the images folder in the same folder as the diagram, or 
 // set to a shared location for example 
-// $dia_image_folder='W:\\htdocs\\openaudit\\images\\';
+$dia_image_folder='W:\\htdocs\\openaudit\\images\\';
 // 
-$dia_image_folder='C:\\Program Files\\xampp\\htdocs\\openaudit\\images\\';
+//$dia_image_folder='C:\\Program Files\\xampp\\htdocs\\openaudit\\images\\';
 
 // Start offset x/y for first object
 $dia_object_start_x = 0.5;
@@ -134,7 +134,7 @@ $dia_obj_text_0_id="O1";
 $dia_obj_text_0_pos_x=0.85;
 $dia_obj_text_0_pos_y=3.85;
 //
-$dia_obj_text_0_pos_x_offset=-0.4;
+$dia_obj_text_0_pos_x_offset=-0.2;
 $dia_obj_text_0_pos_y_offset=0.8;
 //
 $dia_obj_text_0_bb_x1=0.85;
@@ -148,7 +148,7 @@ $dia_obj_text_0_font="font";
 $dia_obj_text_0_font_family="arial";
 $dia_obj_text_0_font_style=0;
 $dia_obj_text_0_font_name="Helvitica";
-$dia_obj_text_0_font_height=0.2;
+$dia_obj_text_0_font_height=0.15;
 // 
 $dia_obj_text_0_font_pos="pos";
 $dia_obj_text_0_font_pos_x=0.85;
@@ -160,6 +160,14 @@ $dia_obj_text_0_font_alignment=0;
 $dia_obj_text_0_font_valign="3";
 // End Config Text Element 0
 
+// What text fields do we show, 
+$dia_show_system_net_ip_address = "y";
+$dia_show_system_net_user_name = "y";
+$dia_show_system_net_domain = "y";
+$dia_show_system_system_vendor = "y";
+$dia_show_system_system_model = "y";
+$dia_show_system_system_id_number = "y"; 
+$dia_show_system_system_memory = "y";
 
 // Config for Line Element 0 Zig Zag Line Connector
 //

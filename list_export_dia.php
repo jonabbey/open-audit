@@ -155,8 +155,38 @@ if ($myrow = mysql_fetch_array($result)){
             //
             $dia_this_image = $dia_image_folder.$dia_image_icon;
                        //
-           $dia_current_obj_text=$myrow[$field["name"]]."\n".$myrow["net_ip_address"]."\n".$myrow["net_user_name"];
+            $dia_current_obj_text="  ".$myrow[$field["name"]]."\n\n";
+           // $dia_current_obj_text="  ".$myrow[$field["name"]]."\n\n"."ip: ".$myrow["net_ip_address"]."\n"."\n"."User: ".$myrow["net_user_name"]."\n"."Domain: ".$myrow["net_domain"]."\n"."Vendor: ".$myrow["system_vendor"]."\n"."Model: ".$myrow["system_model"]."\n"."Memory: ".$myrow["system_memory"]." Mb";
            
+           if ($dia_show_system_net_ip_address == "y"){
+           $dia_current_obj_text=$dia_current_obj_text."ip: ".$myrow["net_ip_address"]."\n";
+            } else {}
+            
+            if ($dia_show_system_net_user_name== "y"){
+           $dia_current_obj_text=$dia_current_obj_text."User: ".$myrow["net_user_name"]."\n";
+            } else {}
+            
+            if ($dia_show_system_net_net_domain == "y"){
+           $dia_current_obj_text=$dia_current_obj_text."Domain: ".$myrow["net_domain"]."\n";
+            } else {}
+            
+            if ($dia_show_system_system_vendor == "y"){
+           $dia_current_obj_text=$dia_current_obj_text."Vendor: ".$myrow["system_vendor"]."\n";
+            } else {}
+            
+            if ($dia_show_system_system_model == "y"){
+           $dia_current_obj_text=$dia_current_obj_text."Model: ".$myrow["system_model"]."\n";
+            } else {}
+            
+            if ($dia_show_system_system_id_number == "y"){
+           $dia_current_obj_text=$dia_current_obj_text."Serial #: ".$myrow["system_id_number"]."\n";
+            } else {}
+            
+            if ($dia_show_system_system_memory == "y"){
+           $dia_current_obj_text=$dia_current_obj_text."Memory: ".$myrow["system_memory"]." Mb \n";
+            } else {}
+            
+            
             }
             else 
             {
