@@ -284,12 +284,14 @@ function determine_os($os) {
                     "Microsoft(R) Windows(R) Server 2003, Enterprise Edition"=>"2003 Server, Ent",
                     "Microsoft(R) Windows(R) Server 2003, Data Center Edition"=>"2003 Server, Data",
                     "Microsoft(R) Windows(R) Server 2003, Standard x64 Edition"=>"2003 Server x64, Std",
+                    "Microsoft(R) Windows(R) Server 2003, Enterprise x64 Edition"=>"2003 Server x64, Ent",
                     "Microsoft(R) Windows(R) Server 2003 Web Edition"=>"2003 Server, Web",
                     "Microsoft(R) Windows(R) Server 2003 Standard Edition"=>"2003 Server, Std",
                     "Microsoft(R) Windows(R) Server 2003 for Small Business Server"=>"2003 Server, SBS",
                     "Microsoft(R) Windows(R) Server 2003 Enterprise Edition"=>"2003 Server, Ent",
                     "Microsoft(R) Windows(R) Server 2003 Data Center Edition"=>"2003 Server, Data",
                     "Microsoft(R) Windows(R) Server 2003 Standard x64 Edition"=>"2003 Server x64, Std",
+                    "Microsoft(R) Windows(R) Server 2003 Enterprise x64 Edition"=>"2003 Server x64, Ent",
                     "Microsoft Windows XP Tablet PC Edition"=>"XP Tablet",
                     "Microsoft Windows XP Starter Edition"=>"XP Starter",
                     "Microsoft Windows XP Professional x64 Edition"=>"XP Pro 64",
@@ -308,9 +310,9 @@ function determine_os($os) {
                     "Microsoft Windows 2000 Server"=>"2000 Server",
                     "Microsoft Windows 2000 Professional"=>"2000 Pro",
                     "Microsoft Windows 2000 Advanced Server"=>"2000 Adv Server",
-//                    "Microsoft&#174 Windows Vista&#153 Business N"=>"Windows Vista",
-                    "Microsoft® Windows Vista™ Business N"=>"Windows Vista",);
-//                    "Microsoft(R) Windows Vista(TM) Business N"=>"Windows Vista",);
+                    "Microsoft&#174 Windows Vista&#153 Ultimate"=>"Vista Ultimate",
+                    "Microsoft&#174 Windows Vista&#153 Enterprise"=>"Vista Ent",
+                    "Microsoft&#174 Windows Vista&#153 Business"=>"Vista Business";
     reset ($systems);
     while (list ($key, $val) = each ($systems)) {
         if($os==$key){
