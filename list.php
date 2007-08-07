@@ -438,7 +438,7 @@ if ($myrow = mysql_fetch_array($result)){
      if(isset($_REQUEST["monitor"])){
          echo "<input type=\"hidden\" name=\"monitor\" value=\"".$_REQUEST["monitor"]."\" />\n";
      }
-     echo "<br /><a href=\"#\" onclick=\"document.forms['form_export'].submit();\">".__("Export this View to CSV")."</a>\n";
+     echo "<br /><a href=\"http://www.openoffice.org/\"<img src=\"images/x-office-spreadsheet.png\" alt=\"".__("CSV Spreadsheet")."\" title=\"".__("Click Here for the latest version of Open Office")."\" style=\"border:0px;\" width=\"32\" height=\"32\" /></a><a href=\"#\" onclick=\"document.forms['form_export'].submit();\"> ".__("Export this View to CSV")."</a>\n";
     echo "</p></form>\n";
     //
     echo "<form method=\"post\" id=\"form_export_dia\" action=\"list_export_dia.php\">\n";
@@ -453,7 +453,7 @@ if ($myrow = mysql_fetch_array($result)){
      if(isset($_REQUEST["monitor"])){
          echo "<input type=\"hidden\" name=\"monitor\" value=\"".$_REQUEST["monitor"]."\" />\n";
      }
-     echo "<br /><a href=\"#\" onclick=\"document.forms['form_export_dia'].submit();\">".__("Create DIA Network Diagram From List")."</a>\n";
+     echo "<br /><a href=\"http://www.gnome.org/projects/dia/\" <img src=\"images/gnome-application-x-dia-diagram.png\" alt=\"".__("Dia Diagram")."\" title=\"".__("Click here for the latest version of DIA")."\" style=\"border:0px;\" width=\"32\" height=\"32\" /></a><a href=\"#\" onclick=\"document.forms['form_export_dia'].submit();\"> ".__("Create DIA Network Diagram From List")."</a>\n";
     echo "</p></form>\n";
 } else {
   echo "<tr><td colspan=\"4\">".__("No Results")."</td></tr>\n";

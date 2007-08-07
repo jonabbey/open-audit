@@ -46,7 +46,7 @@ header("Content-Type: application/vnd.dia-win-remote");
 header("Content-Disposition: inline; filename=\"Open-Audit_".$_REQUEST["view"]."_network_diagram.dia\"");
 
 //
-// Setup Page  this is VERY crude, we should create functions to allow proper control of all elements on the page,
+// Setup the format of the .dia page. This is VERY crude, we should create functions to allow proper control of all elements on the page,
 // and a setup page to allow contorl over this ... OOPS (AJH)
 //
 $dia_page_setup_1 = '<?xml version="1.0" encoding="UTF-8"?>
@@ -119,23 +119,20 @@ $dia_page_setup_1 = '<?xml version="1.0" encoding="UTF-8"?>
 
 //Create Objects
 
-/*
-foreach($viewdef_array["fields"] as $field) {
-    if($field["show"]!="n"){
-   
-        echo $field["head"];
-        echo "\t";
-    }
-}
-echo "\r\n";
 
-*/
-//Table body
-//$dia_object_spacing_y=2;
+//Table body. This section creates a list of network objects and distributes them across the page
+// The exact number across each page depends on the page size and layout.
+//
+
+// First we start at the top left of the page,
+//
 $dia_current_object_x = $dia_object_start_x;
 $dia_current_object_y = $dia_object_start_y;
+// Set the first object ID. 
 $dia_current_object_id = $dia_object_start_id;
 //
+// Now we create our list from the list on the page that brought us here.
+// This is why we need to expand the list 
 if ($myrow = mysql_fetch_array($result)){
     do{
         foreach($query_array["fields"] as $field){
