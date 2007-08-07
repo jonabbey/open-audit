@@ -64,7 +64,7 @@ foreach ($input as $split) {
   //Audit
   if (substr($split, 0, 5) == "audit"){
     $extended = explode('^^^',$split);
-    $systemname = strtoupper(trim($extended[1]));
+    $system_name = strtoupper(trim($extended[1]));
     $timestamp = trim($extended[2]);
     $uuid = trim($extended[3]);
     $user_name = trim($extended[4]);
@@ -77,7 +77,7 @@ $verbose = "y";
 
 echo "User: " . $user_name . "<br />\n\n";
 echo "Verbose: " . $verbose . "<br />\n\n";
-echo "System: " . $systemname . "<br />\n\n";
+echo "System: " . $system_name . "<br />\n\n";
 echo "UUID: " . $uuid . "<br />\n\n";
 echo "Timestamp: " . $timestamp . "<br />\n";
 echo "Software Audit: " . $software_audit . "<br /><br />\n\n";
@@ -182,7 +182,7 @@ foreach ($input as $split) {
   // First system submit - Initial insert
   if (substr($split, 0, 8) == "system01") { insert_system01($split); }
   // Second system submit
-  if (substr($split, 0, 8) == "system02") { $system_name = insert_system02($split); }
+  if (substr($split, 0, 8) == "system02") { insert_system02($split); }
   // Third system submit
   if (substr($split, 0, 8) == "system03") { insert_system03($split); }
   // Processor

@@ -312,7 +312,7 @@ function determine_os($os) {
                     "Microsoft Windows 2000 Advanced Server"=>"2000 Adv Server",
                     "Microsoft&#174 Windows Vista&#153 Ultimate"=>"Vista Ultimate",
                     "Microsoft&#174 Windows Vista&#153 Enterprise"=>"Vista Ent",
-                    "Microsoft&#174 Windows Vista&#153 Business"=>"Vista Business";
+                    "Microsoft&#174 Windows Vista&#153 Business"=>"Vista Business",);
     reset ($systems);
     while (list ($key, $val) = each ($systems)) {
         if($os==$key){
