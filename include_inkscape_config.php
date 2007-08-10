@@ -39,8 +39,8 @@
 $inkscape_image_folder='W:\\htdocs\\openaudit\\images\\';
 
 // Start offset x/y for first object
-$inkscape_object_start_x = 30.5;
-$inkscape_object_start_y = 20.5;
+$inkscape_object_start_x = 50.5;
+$inkscape_object_start_y = 30.5;
 
 // Start Object id best left as zero 
 // settype($inkscape_object_start_id,int);
