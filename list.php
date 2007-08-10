@@ -426,7 +426,8 @@ if ($myrow = mysql_fetch_array($result)){
       $rownumber ++;
     }while ($myrow = mysql_fetch_array($result) and ($show_all or $rownumber < $count_system));
     echo "</table></form>\n";
-     echo "<table width=\"100%\" border=\"0\" style=\"height: 70px\"><tr><td rowspan=\"3\">\n";
+    echo "<div class=\"main_each\">";
+     echo "<table width=\"100%\" border=\"0\" style=\"height: 50px\"><tr><td rowspan=\"3\">\n";
 
     // Export to CSV
     echo "<form method=\"post\" id=\"form_export\" action=\"list_export.php\">\n";

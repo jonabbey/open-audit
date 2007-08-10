@@ -75,11 +75,11 @@ $inkscape_is_portrait="false";
 //
 // Set up page layout for spread of items across and down page.
 if ($inkscape_is_portrait == "true") {
-        $inkscape_num_across_page= 4.0;
-        $inkscape_num_down_page= 6.0;
+        $inkscape_num_across_page= 16.0;
+        $inkscape_num_down_page= 18.0;
         } else {
-        $inkscape_num_across_page= 6.0;
-        $inkscape_num_down_page= 4.0;
+        $inkscape_num_across_page= 18.0;
+        $inkscape_num_down_page= 16.0;
         }
 // 
 $inkscape_grouped_objects= 3.0;
@@ -132,17 +132,14 @@ $inkscape_obj_image_0_keep_aspect="true";
 
 //Config for Text Element 0 Label under device
 //
-$inkscape_obj_text_0_type="Standard - Text";
-$inkscape_obj_text_0_version="1";
-// *** Caution *** The Object ID Starts with a capital "O" (for Object presumably) and not a Zero so the following line is OHH ONE and not Zero One 
-// (I spent ages trying to track this foible down (AJH))
-$inkscape_obj_text_0_id="O1";
+
 //
 $inkscape_obj_text_0_pos_x=0.85;
-$inkscape_obj_text_0_pos_y=3.85;
+$inkscape_obj_text_0_pos_y=2.85;
 //
-$inkscape_obj_text_0_pos_x_offset=10.2;
-$inkscape_obj_text_0_pos_y_offset=20.8;
+$inkscape_obj_text_0_font_height=3;
+$inkscape_obj_text_0_pos_x_offset=($inkscape_obj_image_0_elem_width/2);
+$inkscape_obj_text_0_pos_y_offset=($inkscape_obj_image_0_elem_height+($inkscape_obj_text_0_font_height*1.5));
 //
 $inkscape_obj_text_0_bb_x1=0.85;
 $inkscape_obj_text_0_bb_y1=3.20;
@@ -155,7 +152,7 @@ $inkscape_obj_text_0_font="font";
 $inkscape_obj_text_0_font_family="arial";
 $inkscape_obj_text_0_font_style=0;
 $inkscape_obj_text_0_font_name="Helvitica";
-$inkscape_obj_text_0_font_height=3;
+
 // 
 $inkscape_obj_text_0_font_pos="pos";
 $inkscape_obj_text_0_font_pos_x=0.85;
