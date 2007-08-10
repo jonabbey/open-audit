@@ -108,6 +108,9 @@ if ($myrow = mysql_fetch_array($result)){
             $inkscape_current_obj_text_5='';
             $inkscape_current_obj_text_6='';
             $inkscape_current_obj_text_8='';
+            $inkscape_current_obj_text_9='';
+            $inkscape_current_obj_text_10='';
+            
             //
             if (($field["head"]=="Hostname")or ($field["head"]=="Network Name")){
 
@@ -202,11 +205,11 @@ if ($myrow = mysql_fetch_array($result)){
             if ( ($myrow["other_type"] == "printer") or ($myrow["other_type"] == "print server")) {
             
                  if ($inkscape_show_other_p_port_name== "y"){
-                $inkscape_current_obj_text=$inkscape_current_obj_text."Printer Port Name: ".$myrow["other_p_port_name"]."\n";
+                $inkscape_current_obj_text_9="Printer Port Name: ".$myrow["other_p_port_name"]."\n";
                     } else {}
             
                  if ($inkscape_show_other_p_share_name== "y"){
-                $inkscape_current_obj_text=$inkscape_current_obj_text."Printer Share Name: ".$myrow["other_p_share_name"]."\n";
+                $inkscape_current_obj_text_10="Printer Share Name: ".$myrow["other_p_share_name"]."\n";
                     } else {}
             } else {}
             
@@ -258,7 +261,13 @@ if ($myrow = mysql_fetch_array($result)){
            id="tspan'.(($inkscape_current_image_object_id *20)+12).'">'.$inkscape_current_obj_text_7.'</tspan><tspan
            x="'.($inkscape_current_object_x+$inkscape_obj_text_0_pos_x_offset).'"
            y="'.($inkscape_current_object_y+$inkscape_obj_text_0_pos_y_offset+8*($inkscape_obj_text_0_font_height*1.5)).'"
-           id="tspan'.(($inkscape_current_image_object_id *20)+13).'">'.$inkscape_current_obj_text_8.'</tspan></text>
+           id="tspan'.(($inkscape_current_image_object_id *20)+13).'">'.$inkscape_current_obj_text_8.'</tspan><tspan
+           x="'.($inkscape_current_object_x+$inkscape_obj_text_0_pos_x_offset).'"
+           y="'.($inkscape_current_object_y+$inkscape_obj_text_0_pos_y_offset+9*($inkscape_obj_text_0_font_height*1.5)).'"
+           id="tspan'.(($inkscape_current_image_object_id *20)+14).'">'.$inkscape_current_obj_text_9.'</tspan><tspan
+           x="'.($inkscape_current_object_x+$inkscape_obj_text_0_pos_x_offset).'"
+           y="'.($inkscape_current_object_y+$inkscape_obj_text_0_pos_y_offset+10*($inkscape_obj_text_0_font_height*1.5)).'"
+           id="tspan'.(($inkscape_current_image_object_id *20)+15).'">'.$inkscape_current_obj_text_10.'</tspan></text>
     </g>
     <path
        d="M '.$inkscape_current_object_x.','.$inkscape_current_object_y.' L '.($inkscape_current_object_x+$inkscape_obj_line_0_length_x).','.($inkscape_current_object_y+$inkscape_obj_line_0_length_y).'"
