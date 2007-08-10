@@ -47,8 +47,8 @@ $inkscape_object_start_y = 20.5;
 $inkscape_object_start_id = 0;
 
 // Object Spacing incriments (set one or other of x/y to a positive value, to space out horizontaly or vertically)
-$inkscape_object_spacing_x=50;
-$inkscape_object_spacing_y=40;
+$inkscape_object_spacing_x=70;
+$inkscape_object_spacing_y=70;
 //$inkscape_object_spacing_y=2;
 // Config for starting point for first object
 $inkscape_object_num_columns=1;
@@ -75,11 +75,11 @@ $inkscape_is_portrait="false";
 //
 // Set up page layout for spread of items across and down page.
 if ($inkscape_is_portrait == "true") {
-        $inkscape_num_across_page= 16.0;
-        $inkscape_num_down_page= 18.0;
+        $inkscape_num_across_page= 10.0;
+        $inkscape_num_down_page= 12.0;
         } else {
-        $inkscape_num_across_page= 18.0;
-        $inkscape_num_down_page= 16.0;
+        $inkscape_num_across_page= 12.0;
+        $inkscape_num_down_page= 10.0;
         }
 // 
 $inkscape_grouped_objects= 3.0;
