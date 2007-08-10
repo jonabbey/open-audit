@@ -211,38 +211,44 @@ if ($myrow = mysql_fetch_array($result)){
             $inkscape_current_image_object_id = $inkscape_current_object_id;        
             echo '      <g
        transform="translate(-20,-9)"
-       id="g2293">
+       id="g'.(($inkscape_current_image_object_id *10)+1).'">
       <image
-         xlink:href="W:\htdocs\OpenAudit\images\computer_2.png"
+         xlink:href="'.$inkscape_this_image .'"
          x="'.$inkscape_current_object_x.'"
          y="'.$inkscape_current_object_y.'"
-         width="16"
-         height="16"
-         id="image2248" />
+         width="'.$inkscape_obj_image_0_elem_width.'"
+         height="'.$inkscape_obj_image_0_elem_height.'"
+         id="'.(($inkscape_current_image_object_id *10)+2).'" />
       <text
          x="'.$inkscape_current_object_x.'"
          y="'.$inkscape_current_object_y.'"
-         style="font-size:3px;text-align:center;text-anchor:middle"
-         id="text2251"
+         style="font-size:'.$inkscape_obj_text_0_font_height.'px;text-align:center;text-anchor:middle"
+         id="text'.(($inkscape_current_image_object_id *10)+3).'"
          xml:space="preserve"><tspan
-           x="'.$inkscape_current_object_x.'"
-           y="'.$inkscape_current_object_y.'"
-           id="tspan2253">'.$inkscape_current_obj_text.'</tspan><tspan
-           x="37.541016"
-           y="43.071045"
-           id="tspan2255">Domain</tspan><tspan
-           x="37.541016"
-           y="46.821045"
-           id="tspan2283">User</tspan><tspan
-           x="37.541016"
-           y="50.571045"
-           id="tspan2257" /></text>
+           x="'.($inkscape_current_object_x+$inkscape_obj_text_0_pos_x_offset).'"
+           y="'.($inkscape_current_object_y+$inkscape_obj_text_0_pos_y_offset).'"
+           id="tspan'.(($inkscape_current_image_object_id *10)+4).'">'.$inkscape_current_obj_text.'</tspan></text>
     </g>
     <path
-       d="M 26,30.81839 L 34.999289,39.074548"
-       inkscape:connection-start="#g2293"
+       d="M '.$inkscape_current_object_x.','.$inkscape_current_object_y.' L '.($inkscape_current_object_x+$inkscape_obj_line_0_length_x).','.($inkscape_current_object_y+$inkscape_obj_line_0_length_y).'"
+       inkscape:connection-start="#g'.(($inkscape_current_image_object_id *10)+1).'"
        style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.30000001;stroke-linecap:round;stroke-linejoin:round;marker-start:url(#DiamondS);marker-mid:url(#DiamondS);marker-end:url(#DiamondS);stroke-miterlimit:4;stroke-dasharray:0.9, 0.3;stroke-dashoffset:0;stroke-opacity:1;display:inline"
        id="path2301" />';
+/*
+<tspan
+           x="'.$inkscape_current_object_x.'"
+           y="'.$inkscape_current_object_y.'"
+           id="tspan'.(($inkscape_current_image_object_id *10)+5).'">Domain</tspan><tspan
+           x="'.$inkscape_current_object_x.'"
+           y="'.$inkscape_current_object_y.'"
+           id="tspan'.(($inkscape_current_image_object_id *10)+6).'">User</tspan><tspan
+           x="'.$inkscape_current_object_x.'"
+           y="'.$inkscape_current_object_y.'"
+           id="tspan'.(($inkscape_current_image_object_id *10)+7).'" />
+           */
+       
+       
+       
 // Next Object  
  $inkscape_current_object_id += 1;
 //    

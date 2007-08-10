@@ -39,15 +39,15 @@
 $inkscape_image_folder='W:\\htdocs\\openaudit\\images\\';
 
 // Start offset x/y for first object
-$inkscape_object_start_x = 0.5;
-$inkscape_object_start_y = 0.5;
+$inkscape_object_start_x = 30.5;
+$inkscape_object_start_y = 20.5;
 
 // Start Object id best left as zero 
 // settype($inkscape_object_start_id,int);
 $inkscape_object_start_id = 0;
 
 // Object Spacing incriments (set one or other of x/y to a positive value, to space out horizontaly or vertically)
-$inkscape_object_spacing_x=80;
+$inkscape_object_spacing_x=50;
 $inkscape_object_spacing_y=40;
 //$inkscape_object_spacing_y=2;
 // Config for starting point for first object
@@ -123,8 +123,8 @@ $inkscape_obj_image_0_bb_y2=2.9;
 $inkscape_obj_image_0_elem_corner_x=0.95;
 $inkscape_obj_image_0_elem_corner_y=1.1;
 // Width & Height
-$inkscape_obj_image_0_elem_width=0.5;
-$inkscape_obj_image_0_elem_height=0.5;
+$inkscape_obj_image_0_elem_width=16;
+$inkscape_obj_image_0_elem_height=16;
 // Properties
 $inkscape_obj_image_0_draw_border="false";
 $inkscape_obj_image_0_keep_aspect="true";
@@ -141,8 +141,8 @@ $inkscape_obj_text_0_id="O1";
 $inkscape_obj_text_0_pos_x=0.85;
 $inkscape_obj_text_0_pos_y=3.85;
 //
-$inkscape_obj_text_0_pos_x_offset=0.2;
-$inkscape_obj_text_0_pos_y_offset=0.8;
+$inkscape_obj_text_0_pos_x_offset=10.2;
+$inkscape_obj_text_0_pos_y_offset=20.8;
 //
 $inkscape_obj_text_0_bb_x1=0.85;
 $inkscape_obj_text_0_bb_y1=3.20;
@@ -155,7 +155,7 @@ $inkscape_obj_text_0_font="font";
 $inkscape_obj_text_0_font_family="arial";
 $inkscape_obj_text_0_font_style=0;
 $inkscape_obj_text_0_font_name="Helvitica";
-$inkscape_obj_text_0_font_height=0.15;
+$inkscape_obj_text_0_font_height=3;
 // 
 $inkscape_obj_text_0_font_pos="pos";
 $inkscape_obj_text_0_font_pos_x=0.85;
@@ -190,6 +190,10 @@ $inkscape_show_other_p_share_name = "y";
 
 // Config for Line Element 0 Zig Zag Line Connector
 //
+$inkscape_obj_line_0_length_x=10;
+$inkscape_obj_line_0_length_y=20;
+
+
 $inkscape_obj_line_0_type="Standard - ZigZagLine";
 $inkscape_obj_line_0_version="1";
 //
