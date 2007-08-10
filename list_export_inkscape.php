@@ -118,31 +118,31 @@ if ($myrow = mysql_fetch_array($result)){
            // $inkscape_current_obj_text="  ".$myrow[$field["name"]]."\n\n"."ip: ".$myrow["net_ip_address"]."\n"."\n"."User: ".$myrow["net_user_name"]."\n"."Domain: ".$myrow["net_domain"]."\n"."Vendor: ".$myrow["system_vendor"]."\n"."Model: ".$myrow["system_model"]."\n"."Memory: ".$myrow["system_memory"]." Mb";
            
            if ($inkscape_show_system_net_ip_address == "y"){
-           $inkscape_current_obj_text=$inkscape_current_obj_text."ip: ".$myrow["net_ip_address"]."\n";
+           $inkscape_current_obj_text1=$inkscape_current_obj_text."ip: ".$myrow["net_ip_address"]."\n";
             } else {}
             
             if ($inkscape_show_system_net_user_name== "y"){
-           $inkscape_current_obj_text=$inkscape_current_obj_text."User: ".$myrow["net_user_name"]."\n";
+           $inkscape_current_obj_text1=$inkscape_current_obj_text."User: ".$myrow["net_user_name"]."\n";
             } else {}
             
             if ($inkscape_show_system_net_domain == "y"){
-           $inkscape_current_obj_text=$inkscape_current_obj_text."Domain: ".$myrow["net_domain"]."\n";
+           $inkscape_current_obj_text1=$inkscape_current_obj_text."Domain: ".$myrow["net_domain"]."\n";
             } else {}
             
             if ($inkscape_show_system_system_vendor == "y"){
-           $inkscape_current_obj_text=$inkscape_current_obj_text."Vendor: ".$myrow["system_vendor"]."\n";
+           $inkscape_current_obj_text1=$inkscape_current_obj_text."Vendor: ".$myrow["system_vendor"]."\n";
             } else {}
             
             if ($inkscape_show_system_system_model == "y"){
-           $inkscape_current_obj_text=$inkscape_current_obj_text."Model: ".$myrow["system_model"]."\n";
+           $inkscape_current_obj_text1=$inkscape_current_obj_text."Model: ".$myrow["system_model"]."\n";
             } else {}
             
             if ($inkscape_show_system_system_id_number == "y"){
-           $inkscape_current_obj_text=$inkscape_current_obj_text."Serial #: ".$myrow["system_id_number"]."\n";
+           $inkscape_current_obj_text1=$inkscape_current_obj_text."Serial #: ".$myrow["system_id_number"]."\n";
             } else {}
             
             if ($inkscape_show_system_system_memory == "y"){
-           $inkscape_current_obj_text=$inkscape_current_obj_text."Memory: ".$myrow["system_memory"]." Mb \n";
+           $inkscape_current_obj_text1=$inkscape_current_obj_text."Memory: ".$myrow["system_memory"]." Mb \n";
             } else {}
             
             
@@ -159,35 +159,35 @@ if ($myrow = mysql_fetch_array($result)){
             //
             
             if ($inkscape_show_other_network_name== "y"){
-           $inkscape_current_obj_text=$inkscape_current_obj_text."Name: ".$myrow["other_network_name"]."\n";
+           $inkscape_current_obj_text1=$inkscape_current_obj_text."Name: ".$myrow["other_network_name"]."\n";
             } else {}
 
             if ($inkscape_show_system_net_ip_address == "y"){
-           $inkscape_current_obj_text=$inkscape_current_obj_text."ip: ".$myrow["other_ip_address"]."\n";
+           $inkscape_current_obj_text1=$inkscape_current_obj_text."ip: ".$myrow["other_ip_address"]."\n";
             } else {}
             
             if ($inkscape_show_other_mac_address== "y"){
-           $inkscape_current_obj_text=$inkscape_current_obj_text."MAC: ".$myrow["other_mac_address"]."\n";
+           $inkscape_current_obj_text1=$inkscape_current_obj_text."MAC: ".$myrow["other_mac_address"]."\n";
             } else {}
             
             if ($inkscape_show_other_description== "y"){
-           $inkscape_current_obj_text=$inkscape_current_obj_text."Description: ".$myrow["other_description"]."\n";
+           $inkscape_current_obj_text1=$inkscape_current_obj_text."Description: ".$myrow["other_description"]."\n";
             } else {}
             
             if ($inkscape_show_other_location== "y"){
-           $inkscape_current_obj_text=$inkscape_current_obj_text."Location: ".$myrow["other_location"]."\n";
+           $inkscape_current_obj_text1=$inkscape_current_obj_text."Location: ".$myrow["other_location"]."\n";
             } else {}
             
             if ($inkscape_show_other_serial== "y"){
-           $inkscape_current_obj_text=$inkscape_current_obj_text."Serial: ".$myrow["other_serial"]."\n";
+           $inkscape_current_obj_text1=$inkscape_current_obj_text."Serial: ".$myrow["other_serial"]."\n";
             } else {}
             
             if ($inkscape_show_other_model== "y"){
-           $inkscape_current_obj_text=$inkscape_current_obj_text."Model: ".$myrow["other_model"]."\n";
+           $inkscape_current_obj_text1=$inkscape_current_obj_text."Model: ".$myrow["other_model"]."\n";
             } else {}
             
             if ($inkscape_show_other_type== "y"){
-           $inkscape_current_obj_text=$inkscape_current_obj_text."Type: ".$myrow["other_type"]."\n";
+           $inkscape_current_obj_text1=$inkscape_current_obj_text."Type: ".$myrow["other_type"]."\n";
             } else {}
             
 // If its a printer or print server, show the port and share info
@@ -214,20 +214,20 @@ if ($myrow = mysql_fetch_array($result)){
        id="g2293">
       <image
          xlink:href="W:\htdocs\OpenAudit\images\computer_2.png"
-         x="30"
-         y="18.094482"
+         x="'.$inkscape_current_object_x.'"
+         y="'.$inkscape_current_object_y.'"
          width="16"
          height="16"
          id="image2248" />
       <text
-         x="37.541016"
-         y="39.321045"
+         x="'.$inkscape_current_object_x.'"
+         y="'.$inkscape_current_object_y.'"
          style="font-size:3px;text-align:center;text-anchor:middle"
          id="text2251"
          xml:space="preserve"><tspan
-           x="37.541016"
-           y="39.321045"
-           id="tspan2253">Computer</tspan><tspan
+           x="'.$inkscape_current_object_x.'"
+           y="'.$inkscape_current_object_y.'"
+           id="tspan2253">'.$inkscape_current_obj_text.'</tspan><tspan
            x="37.541016"
            y="43.071045"
            id="tspan2255">Domain</tspan><tspan

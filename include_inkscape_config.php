@@ -47,8 +47,8 @@ $inkscape_object_start_y = 0.5;
 $inkscape_object_start_id = 0;
 
 // Object Spacing incriments (set one or other of x/y to a positive value, to space out horizontaly or vertically)
-$inkscape_object_spacing_x=4;
-$inkscape_object_spacing_y=2.4;
+$inkscape_object_spacing_x=80;
+$inkscape_object_spacing_y=40;
 //$inkscape_object_spacing_y=2;
 // Config for starting point for first object
 $inkscape_object_num_columns=1;
