@@ -446,6 +446,64 @@ function determine_dia_img($os,$system_type) {
 
 }
 
+function determine_inkscape_img($os,$system_type) {
+   
+    if (is_file("images/o_".$system_type.".png")){
+    $image="o_".$system_type.".png";
+    $title=__("$system_type");
+    }
+    else
+    {
+    $system_type= str_replace(" ","_",$system_type);
+    $image="o_".$system_type.".png";
+//    $image="button_fail.png";
+    $title=__("Unknown");  
+    }
+    if (!is_file("images/o_".$system_type.".png")){
+    $image="button_fail.png";
+    } else {}
+ 
+    if( ereg("Windows", $os) ){
+        $image="desktop.png";
+        $title=determine_os($os);
+    }
+    if( ereg("Server", $os) ){
+        $image="server.png";
+        $title=determine_os($os);
+    }
+    if( ereg("Laptop|Expansion Chassis|Notebook|Sub Notebook|Portable|Docking Station", $system_type) ){
+        $image="laptop.png";
+        $title=determine_os($os);
+    }
+
+    //Substring match
+    $systems_substr=array( "CentOS"=>"CentOS",
+                           "Debian"=>"Debian",
+                           "Fedora"=>"Fedora",
+                           "Gentoo"=>"Gentoo",
+                           "Mandrake"=>"Mandrake",
+                           "Mandriva"=>"Mandriva",
+                           "Novell"=>"Novell",
+                           "Red Hat"=>"Red Hat",
+                           "Slackware"=>"Slackware",
+                           "Suse"=>"Suse",
+                           "SuSE"=>"SuSE",
+                           "SUSE"=>"SUSE",
+                           "Ubuntu"=>"Ubuntu",);
+    reset ($systems_substr);
+    while (list ($key, $val) = each ($systems_substr)) {
+        if(substr_count($os,$key)){
+            $image="linux_".strtolower($val).".png";
+            $title=determine_os($os);
+        }
+    }
+
+    $ret = $image;
+    return $ret;
+
+}
+
+
 
 
 

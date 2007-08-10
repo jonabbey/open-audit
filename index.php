@@ -1,7 +1,9 @@
 <?php
 
 /**
+*
 * @version $Id: index.php  24th May 2007
+*
 * @author The Open Audit Developer Team
 * @objective Index Page for Open Audit.
 * @package open-audit (www.open-audit.org)

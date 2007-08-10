@@ -426,6 +426,9 @@ if ($myrow = mysql_fetch_array($result)){
       $rownumber ++;
     }while ($myrow = mysql_fetch_array($result) and ($show_all or $rownumber < $count_system));
     echo "</table></form>\n";
+     echo "<table width=\"100%\" border=\"0\" style=\"height: 70px\"><tr><td rowspan=\"3\">\n";
+
+    // Export to CSV
     echo "<form method=\"post\" id=\"form_export\" action=\"list_export.php\">\n";
     echo "<p><input type=\"hidden\" name=\"sql\" value=\"".urlencode($sql)."\" />\n";
     echo "<input type=\"hidden\" name=\"view\" value=\"".$_REQUEST["view"]."\"/>\n";
@@ -438,9 +441,10 @@ if ($myrow = mysql_fetch_array($result)){
      if(isset($_REQUEST["monitor"])){
          echo "<input type=\"hidden\" name=\"monitor\" value=\"".$_REQUEST["monitor"]."\" />\n";
      }
-     echo "<br /><a href=\"http://www.openoffice.org/\"<img src=\"images/x-office-spreadsheet.png\" alt=\"".__("CSV Spreadsheet")."\" title=\"".__("Click Here for the latest version of Open Office")."\" style=\"border:0px;\" width=\"32\" height=\"32\" /></a><a href=\"#\" onclick=\"document.forms['form_export'].submit();\"> ".__("Export this View to CSV")."</a>\n";
+     echo "<br /><a href=\"http://www.openoffice.org/\"<img src=\"images/x-office-spreadsheet.png\" alt=\"".__("CSV Spreadsheet")."\" title=\"".__("Click Here for the latest version of Open Office")."\" style=\"border:0px;\" width=\"32\" height=\"32\" /></a><a href=\"#\" onclick=\"document.forms['form_export'].submit();\"> ".__("Export this List to CSV")."</a>\n";
     echo "</p></form>\n";
-    //
+            echo "<td>\n";
+    // Export to DIA
     echo "<form method=\"post\" id=\"form_export_dia\" action=\"list_export_dia.php\">\n";
     echo "<p><input type=\"hidden\" name=\"sql\" value=\"".urlencode($sql)."\" />\n";
     echo "<input type=\"hidden\" name=\"view\" value=\"".$_REQUEST["view"]."\"/>\n";
@@ -453,9 +457,28 @@ if ($myrow = mysql_fetch_array($result)){
      if(isset($_REQUEST["monitor"])){
          echo "<input type=\"hidden\" name=\"monitor\" value=\"".$_REQUEST["monitor"]."\" />\n";
      }
-     echo "<br /><a href=\"http://www.gnome.org/projects/dia/\" <img src=\"images/gnome-application-x-dia-diagram.png\" alt=\"".__("Dia Diagram")."\" title=\"".__("Click here for the latest version of DIA")."\" style=\"border:0px;\" width=\"32\" height=\"32\" /></a><a href=\"#\" onclick=\"document.forms['form_export_dia'].submit();\"> ".__("Create DIA Network Diagram From List")."</a>\n";
+     echo "<br /><a href=\"http://live.gnome.org/Dia\" <img src=\"images/gnome-application-x-dia-diagram.png\" alt=\"".__("Dia Diagram")."\" title=\"".__("Click here for the latest version of DIA")."\" style=\"border:0px;\" width=\"32\" height=\"32\" /></a><a href=\"#\" onclick=\"document.forms['form_export_dia'].submit();\"> ".__("Create DIA Network Diagram From List")."</a>\n";
     echo "</p></form>\n";
+            echo "<td>\n";
+    // Export to Inkscape
+    echo "<form method=\"post\" id=\"form_export_inkscape\" action=\"list_export_inkscape.php\">\n";
+    echo "<p><input type=\"hidden\" name=\"sql\" value=\"".urlencode($sql)."\" />\n";
+    echo "<input type=\"hidden\" name=\"view\" value=\"".$_REQUEST["view"]."\"/>\n";
+    if(isset($_REQUEST["pc"])){
+         echo "<input type=\"hidden\" name=\"pc\" value=\"".$_REQUEST["pc"]."\"/>\n";
+     }
+     if(isset($_REQUEST["other"])){
+         echo "<input type=\"hidden\" name=\"other\" value=\"".$_REQUEST["other"]."\" />\n";
+     }
+     if(isset($_REQUEST["monitor"])){
+         echo "<input type=\"hidden\" name=\"monitor\" value=\"".$_REQUEST["monitor"]."\" />\n";
+     }
+     echo "<br /><a href=\"http://www.inkscape.org/\" <img src=\"images/inkscape.png\" alt=\"".__("Inkscape Drawing")."\" title=\"".__("Click here for the latest version of Inkscape")."\" style=\"border:0px;\" width=\"32\" height=\"32\" /></a><a href=\"#\" onclick=\"document.forms['form_export_inkscape'].submit();\"> ".__("Create Inkscape (SVG) Picture From List(BETA)")."</a>\n";
+    echo "</p></form>\n";
+            echo "</table>\n";
+
 } else {
+
   echo "<tr><td colspan=\"4\">".__("No Results")."</td></tr>\n";
   echo "</table>\n";
   echo "</form>\n";
