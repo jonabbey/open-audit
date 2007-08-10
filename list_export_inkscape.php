@@ -43,89 +43,40 @@ $inkscape_y_offset = 0;
 
 $inkscape_current_object_id = 0 ;
 header("Content-Type: application/vnd.inkscape");
-header("Content-Disposition: inline; filename=\"Open-Audit_".$_REQUEST["view"]."_network_inkscapegram.svg\"");
+header("Content-Disposition: inline; filename=\"Open-Audit_".$_REQUEST["view"]."_network_inkscape.svg\"");
 
 //
 // Setup the format of the .inkscape page. This is VERY crude, we should create functions to allow proper control of all elements on the page,
 // and a setup page to allow contorl over this ... OOPS (AJH)
 //
-$inkscape_page_setup_1 = '<?xml version="1.0" encoding="UTF-8"?>
+$inkscape_page_setup_1 = '<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 <svg
-   xmlns:dc="http://purl.org/dc/elements/1.1/"
-   xmlns:cc="http://web.resource.org/cc/"
-   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
    xmlns:svg="http://www.w3.org/2000/svg"
    xmlns="http://www.w3.org/2000/svg"
    xmlns:xlink="http://www.w3.org/1999/xlink"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   version="1.0"
    width="1052.3622"
    height="744.09448"
-   id="svg2"
-   sodipodi:version="0.32"
-   inkscape:version="0.45.1"
-   version="1.0"
-   sodipodi:docbase="W:\htdocs\openaudit\images"
-   sodipodi:docname="OA Inkscape drawing.svg"
-   inkscape:output_extension="org.inkscape.output.svg.inkscape">
+   id="svg2">
   <defs
      id="defs4">
     <marker
-       inkscape:stockid="inkscapemondS"
+       refX="0"
+       refY="0"
        orient="auto"
-       refY="0.0"
-       refX="0.0"
-       id="inkscapemondS"
-       style="overflow:visible">
+       style="overflow:visible"
+       id="DiamondS">
       <path
-         id="path3361"
          d="M 0,-7.0710768 L -7.0710894,0 L 0,7.0710589 L 7.0710462,0 L 0,-7.0710768 z "
-         style="fill-rule:evenodd;stroke:#000000;stroke-width:1.0pt;marker-start:none"
-         transform="scale(0.2)" />
+         transform="scale(0.2,0.2)"
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt;marker-start:none"
+         id="path3361" />
     </marker>
   </defs>
-    <sodipodi:namedview
-     id="base"
-     pagecolor="#ffffff"
-     bordercolor="#666666"
-     borderopacity="1.0"
-     gridtolerance="10000"
-     guidetolerance="10"
-     objecttolerance="10"
-     inkscape:pageopacity="0.0"
-     inkscape:pageshadow="2"
-     inkscape:zoom="8.3430265"
-     inkscape:cx="49.967157"
-     inkscape:cy="720.5933"
-     inkscape:document-units="px"
-     inkscape:current-layer="layer1"
-     width="1052.3622px"
-     height="744.09449px"
-     showgrid="true"
-     inkscape:object-bbox="true"
-     inkscape:object-points="true"
-     inkscape:object-nodes="true"
-     inkscape:window-width="1280"
-     inkscape:window-height="977"
-     inkscape:window-x="-4"
-     inkscape:window-y="-4" />
-  <metadata
-     id="metadata7">
-    <rdf:RDF>
-      <cc:Work
-         rdf:about="">
-        <dc:format>image/svg+xml</dc:format>
-        <dc:type
-           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-      </cc:Work>
-    </rdf:RDF>
-  </metadata>
   <g
-     inkscape:label=/"Layer '.($inkscape_current_image_object_id+1).'/"
-     inkscape:groupmode="layer"
-     id="layer'.($inkscape_current_image_object_id+1).'">
-  ';
+     id="layer1">';
   echo $inkscape_page_setup_1;
 
 //Create Objects
@@ -258,48 +209,40 @@ if ($myrow = mysql_fetch_array($result)){
             
             }
             $inkscape_current_image_object_id = $inkscape_current_object_id;        
-            echo '         <g
-       id="g'.($inkscape_current_image_object_id+2293).'"
-       transform="translate(-20,-9)">
+            echo '      <g
+       transform="translate(-20,-9)"
+       id="g2293">
       <image
          xlink:href="W:\htdocs\OpenAudit\images\computer_2.png"
-         sodipodi:absref="W:\htdocs\OpenAudit\images\computer_2.png"
+         x="30"
+         y="18.094482"
          width="16"
          height="16"
-         id="image'.($inkscape_current_image_object_id+2248).'"
-         x="30"
-         y="18.094482" />
+         id="image2248" />
       <text
-         id="text2251"
-         y="'.$inkscape_current_object_y.'"
-         x="'.$inkscape_current_object_x.'"
+         x="37.541016"
+         y="39.321045"
          style="font-size:3px;text-align:center;text-anchor:middle"
+         id="text2251"
          xml:space="preserve"><tspan
-           y="'.$inkscape_current_object_y.'"
-           x="'.$inkscape_current_object_x.'"
-           id="tspan'.($inkscape_current_image_object_id+2253).'"
-           sodipodi:role="line">Computer '.$inkscape_current_image_object_id.'</tspan><tspan
-           id="tspan'.($inkscape_current_image_object_id+2255).'"
-           y="'.$inkscape_current_object_y.'"
-           x="'.$inkscape_current_object_x.'"
-           sodipodi:role="line">Domain</tspan><tspan
-           id="tspan'.($inkscape_current_image_object_id+2283).'"
-           y="'.$inkscape_current_object_y.'"
-           x="'.$inkscape_current_object_x.'"
-           sodipodi:role="line">User</tspan><tspan
-           id="tspan'.($inkscape_current_image_object_id+2257).'"
-           y="'.$inkscape_current_object_y.'"
-           x="'.$inkscape_current_object_x.'"
-           sodipodi:role="line" /></text>
+           x="37.541016"
+           y="39.321045"
+           id="tspan2253">Computer</tspan><tspan
+           x="37.541016"
+           y="43.071045"
+           id="tspan2255">Domain</tspan><tspan
+           x="37.541016"
+           y="46.821045"
+           id="tspan2283">User</tspan><tspan
+           x="37.541016"
+           y="50.571045"
+           id="tspan2257" /></text>
     </g>
     <path
-       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.30000001;stroke-linecap:round;stroke-linejoin:round;marker-start:url(#DiamondS);marker-mid:url(#DiamondS);marker-end:url(#DiamondS);stroke-miterlimit:4;stroke-dasharray:0.9, 0.3;stroke-dashoffset:0;stroke-opacity:1;display:inline"
        d="M 26,30.81839 L 34.999289,39.074548"
-       id="path'.($inkscape_current_image_object_id+2301).'"
-       inkscape:connector-type="polyline"
-       inkscape:connection-start="#g'.($inkscape_current_image_object_id+2293).'" />
-  </g>
-  ';
+       inkscape:connection-start="#g2293"
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.30000001;stroke-linecap:round;stroke-linejoin:round;marker-start:url(#DiamondS);marker-mid:url(#DiamondS);marker-end:url(#DiamondS);stroke-miterlimit:4;stroke-dasharray:0.9, 0.3;stroke-dashoffset:0;stroke-opacity:1;display:inline"
+       id="path2301" />';
 // Next Object  
  $inkscape_current_object_id += 1;
 //    
@@ -338,23 +281,9 @@ if ($myrow = mysql_fetch_array($result)){
 
 }
 
-/*
-// Work in progress
-//Looks to the image folder returns the files, no subdirectories. Creates an object per file.
-
-$dh = opendir($inkscape_image_folder);
-while (false !== ($file = readdir($dh))) {
-//Don't list subdirectories
-if (!is_dir("$dirpath/$file")) {
-//Create a Text string to add to the object (truncate the file extension and capitalize the first letter)
-$inkscape_object_text=  htmlspecialchars(ucfirst(preg_replace('/\..*$/', '', $file)));
-}
-
-
-*/
-
 // Close Layer and Document
-echo '  </svg>';
+echo '      </g>
+</svg>';
 // Thats all folks
 
 
