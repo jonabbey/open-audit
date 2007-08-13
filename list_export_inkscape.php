@@ -51,37 +51,39 @@ header("Content-Disposition: inline; filename=\"Open-Audit_".$_REQUEST["view"]."
 //
 
 //Page def
-$inkscape = '<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!-- Created with Inkscape (http://www.inkscape.org/) -->
-<svg
-   xmlns:svg="http://www.w3.org/2000/svg"
-   xmlns="http://www.w3.org/2000/svg"
-   xmlns:xlink="http://www.w3.org/1999/xlink"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   version="1.0"
-   width="1052.3622"
-   height="744.09448"
-   id="svg2">
-  <defs
-     id="defs4">
-    <marker
-       refX="0"
-       refY="0"
-       orient="auto"
-       style="overflow:visible"
-       id="DiamondS">
-      <path
-         d="M 0,-7.0710768 L -7.0710894,0 L 0,7.0710589 L 7.0710462,0 L 0,-7.0710768 z "
-         transform="scale(0.2,0.2)"
-         style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt;marker-start:none"
-         id="path3361" />
-    </marker>
-  </defs>';
-  // End of Page Def
-  //
-  // Add the first layer and Group Everything on this layer. 
-  $inkscape= $inkscape.'  <g
-     id="layer1">';
+$inkscape = '<?xml version="1.0" encoding="UTF-8" standalone="no"?>'.$inkscape_newline;
+
+
+$inkscape=$inkscape.'<!-- Created with Inkscape (http://www.inkscape.org/) -->'.$inkscape_newline;
+$inkscape=$inkscape.'<svg'.$inkscape_newline;
+$inkscape=$inkscape.   'xmlns:svg="http://www.w3.org/2000/svg"'.$inkscape_newline;
+$inkscape=$inkscape.'   xmlns="http://www.w3.org/2000/svg"'.$inkscape_newline;
+$inkscape=$inkscape.'   xmlns:xlink="http://www.w3.org/1999/xlink"'.$inkscape_newline;
+$inkscape=$inkscape.'   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"'.$inkscape_newline;
+$inkscape=$inkscape.'   version="1.0"'.$inkscape_newline;
+$inkscape=$inkscape.'   width="1052.3622"'.$inkscape_newline;
+$inkscape=$inkscape.'   height="744.09448"'.$inkscape_newline;
+$inkscape=$inkscape.'   id="svg2">'.$inkscape_newline;
+$inkscape=$inkscape.'  <defs'.$inkscape_newline;
+$inkscape=$inkscape.'     id="defs4">'.$inkscape_newline;
+$inkscape=$inkscape.'    <marker'.$inkscape_newline;
+$inkscape=$inkscape.'       refX="0"'.$inkscape_newline;
+$inkscape=$inkscape.'       refY="0"'.$inkscape_newline;
+$inkscape=$inkscape.'       orient="auto"'.$inkscape_newline;
+$inkscape=$inkscape.'       style="overflow:visible"'.$inkscape_newline;
+$inkscape=$inkscape.'       id="DiamondS">'.$inkscape_newline;
+$inkscape=$inkscape.'      <path'.$inkscape_newline;
+$inkscape=$inkscape.'         d="M 0,-7.0710768 L -7.0710894,0 L 0,7.0710589 L 7.0710462,0 L 0,-7.0710768 z "'.$inkscape_newline;
+$inkscape=$inkscape.'         transform="scale(0.2,0.2)"'.$inkscape_newline;
+$inkscape=$inkscape.'         style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt;marker-start:none"'.$inkscape_newline;
+$inkscape=$inkscape.'         id="path3361" />'.$inkscape_newline;
+$inkscape=$inkscape.'    </marker>'.$inkscape_newline;
+$inkscape=$inkscape.'  </defs>'.$inkscape_newline;
+// End of Page Def
+//
+// Add the first layer and Group Everything on this layer. 
+$inkscape= $inkscape.'  <g'.$inkscape_newline;
+$inkscape= $inkscape.'     id="layer1">'.$inkscape_newline;
 
 //Next we need to create the image objects
 
@@ -223,81 +225,72 @@ if ($myrow = mysql_fetch_array($result)){
                 $inkscape_current_obj_text_10="Printer Share Name: ".$myrow["other_p_share_name"]."\n";
                     } else {}
             } else {}
- // Nothing to do if it isn't a   
+ // Nothing to do if it isn't a computer or a network object (yet AJH ;))  
             }
             $inkscape_current_image_object_id = $inkscape_current_object_id;        
-            // Add the 
-            $inkscape = $inkscape.'      <g
-       transform="translate(-20,-9)"
-       id="g'.(($inkscape_current_image_object_id *20)+2).'">
-      <image
-         xlink:href="'.$inkscape_this_image .'"
-         x="'.$inkscape_current_object_x.'"
-         y="'.$inkscape_current_object_y.'"
-         width="'.$inkscape_obj_image_0_elem_width.'"
-         height="'.$inkscape_obj_image_0_elem_height.'"
-         id="'.(($inkscape_current_image_object_id *20)+3).'" />
-      <text
-         x="'.$inkscape_current_object_x.'"
-         y="'.$inkscape_current_object_y.'"
-         style="font-size:'.$inkscape_obj_text_0_font_height.'px;text-align:center;text-anchor:middle"
-         id="text'.(($inkscape_current_image_object_id *20)+4).'"
-         xml:space="preserve"><tspan
-           x="'.($inkscape_current_object_x+$inkscape_obj_text_0_pos_x_offset).'"
-           y="'.($inkscape_current_object_y+$inkscape_obj_text_0_pos_y_offset).'"
-           id="tspan'.(($inkscape_current_image_object_id *20)+5).'">'.$inkscape_current_obj_text.'</tspan><tspan
-           x="'.($inkscape_current_object_x+$inkscape_obj_text_0_pos_x_offset).'"
-           y="'.($inkscape_current_object_y+$inkscape_obj_text_0_pos_y_offset+($inkscape_obj_text_0_font_height*1.5)).'"
-           id="tspan'.(($inkscape_current_image_object_id *20)+6).'">'.$inkscape_current_obj_text_1.'</tspan><tspan
-           x="'.($inkscape_current_object_x+$inkscape_obj_text_0_pos_x_offset).'"
-           y="'.($inkscape_current_object_y+$inkscape_obj_text_0_pos_y_offset+2*($inkscape_obj_text_0_font_height*1.5)).'"
-           id="tspan'.(($inkscape_current_image_object_id *20)+7).'">'.$inkscape_current_obj_text_2.'</tspan><tspan
-           x="'.($inkscape_current_object_x+$inkscape_obj_text_0_pos_x_offset).'"
-           y="'.($inkscape_current_object_y+$inkscape_obj_text_0_pos_y_offset+3*($inkscape_obj_text_0_font_height*1.5)).'"
-           id="tspan'.(($inkscape_current_image_object_id *20)+8).'">'.$inkscape_current_obj_text_3.'</tspan><tspan
-           x="'.($inkscape_current_object_x+$inkscape_obj_text_0_pos_x_offset).'"
-           y="'.($inkscape_current_object_y+$inkscape_obj_text_0_pos_y_offset+4*($inkscape_obj_text_0_font_height*1.5)).'"
-           id="tspan'.(($inkscape_current_image_object_id *20)+9).'">'.$inkscape_current_obj_text_4.'</tspan><tspan
-           x="'.($inkscape_current_object_x+$inkscape_obj_text_0_pos_x_offset).'"
-           y="'.($inkscape_current_object_y+$inkscape_obj_text_0_pos_y_offset+5*($inkscape_obj_text_0_font_height*1.5)).'"
-           id="tspan'.(($inkscape_current_image_object_id *20)+10).'">'.$inkscape_current_obj_text_5.'</tspan><tspan
-           x="'.($inkscape_current_object_x+$inkscape_obj_text_0_pos_x_offset).'"
-           y="'.($inkscape_current_object_y+$inkscape_obj_text_0_pos_y_offset+6*($inkscape_obj_text_0_font_height*1.5)).'"
-           id="tspan'.(($inkscape_current_image_object_id *20)+11).'">'.$inkscape_current_obj_text_6.'</tspan><tspan
-           x="'.($inkscape_current_object_x+$inkscape_obj_text_0_pos_x_offset).'"
-           y="'.($inkscape_current_object_y+$inkscape_obj_text_0_pos_y_offset+7*($inkscape_obj_text_0_font_height*1.5)).'"
-           id="tspan'.(($inkscape_current_image_object_id *20)+12).'">'.$inkscape_current_obj_text_7.'</tspan><tspan
-           x="'.($inkscape_current_object_x+$inkscape_obj_text_0_pos_x_offset).'"
-           y="'.($inkscape_current_object_y+$inkscape_obj_text_0_pos_y_offset+8*($inkscape_obj_text_0_font_height*1.5)).'"
-           id="tspan'.(($inkscape_current_image_object_id *20)+13).'">'.$inkscape_current_obj_text_8.'</tspan><tspan
-           x="'.($inkscape_current_object_x+$inkscape_obj_text_0_pos_x_offset).'"
-           y="'.($inkscape_current_object_y+$inkscape_obj_text_0_pos_y_offset+9*($inkscape_obj_text_0_font_height*1.5)).'"
-           id="tspan'.(($inkscape_current_image_object_id *20)+14).'">'.$inkscape_current_obj_text_9.'</tspan><tspan
-           x="'.($inkscape_current_object_x+$inkscape_obj_text_0_pos_x_offset).'"
-           y="'.($inkscape_current_object_y+$inkscape_obj_text_0_pos_y_offset+10*($inkscape_obj_text_0_font_height*1.5)).'"
-           id="tspan'.(($inkscape_current_image_object_id *20)+15).'">'.$inkscape_current_obj_text_10.'</tspan></text>
-    </g>
-    <path
-       d="M '.$inkscape_current_object_x.','.$inkscape_current_object_y.' L '.($inkscape_current_object_x+$inkscape_obj_line_0_length_x).','.($inkscape_current_object_y+$inkscape_obj_line_0_length_y).'"
-       inkscape:connection-start="#g'.(($inkscape_current_image_object_id *20)+2).'"
-       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.30000001;stroke-linecap:round;stroke-linejoin:round;marker-start:url(#DiamondS);marker-mid:url(#DiamondS);marker-end:url(#DiamondS);stroke-miterlimit:4;stroke-dasharray:0.9, 0.3;stroke-dashoffset:0;stroke-opacity:1;display:inline"
-       id="path'.(($inkscape_current_image_object_id *20)+1).'" />';
-/*
-<tspan
-           x="'.$inkscape_current_object_x.'"
-           y="'.$inkscape_current_object_y.'"
-           id="tspan'.(($inkscape_current_image_object_id *20)+5).'">Domain</tspan><tspan
-           x="'.$inkscape_current_object_x.'"
-           y="'.$inkscape_current_object_y.'"
-           id="tspan'.(($inkscape_current_image_object_id *20)+6).'">User</tspan><tspan
-           x="'.$inkscape_current_object_x.'"
-           y="'.$inkscape_current_object_y.'"
-           id="tspan'.(($inkscape_current_image_object_id *20)+7).'" />
-           */
+            // Add the Grouping for our object
+            $inkscape = $inkscape.'      <g'.$inkscape_newline;
+            $inkscape=$inkscape.'       transform="translate(-20,-9)"'.$inkscape_newline;
+            $inkscape=$inkscape.'       id="g'.(($inkscape_current_image_object_id *20)+2).'">'.$inkscape_newline;
+            // Add the image
+            $inkscape=$inkscape.'      <image'.$inkscape_newline;
+            $inkscape=$inkscape.'         xlink:href="'.$inkscape_this_image .'"'.$inkscape_newline;
+            $inkscape=$inkscape.'         x="'.$inkscape_current_object_x.'"'.$inkscape_newline;
+            $inkscape=$inkscape.'         y="'.$inkscape_current_object_y.'"'.$inkscape_newline;
+            $inkscape=$inkscape.'         width="'.$inkscape_obj_image_0_elem_width.'"'.$inkscape_newline;
+            $inkscape=$inkscape.'         height="'.$inkscape_obj_image_0_elem_height.'"'.$inkscape_newline;
+            $inkscape=$inkscape.'         id="'.(($inkscape_current_image_object_id *20)+3).'" />'.$inkscape_newline;
+            // Add the text lines
+            $inkscape=$inkscape.'      <text'.$inkscape_newline;
+            $inkscape=$inkscape.'         x="'.$inkscape_current_object_x.'"'.$inkscape_newline;
+            $inkscape=$inkscape.'         y="'.$inkscape_current_object_y.'"'.$inkscape_newline;
+            $inkscape=$inkscape.'         style="font-size:'.$inkscape_obj_text_0_font_height.'px;text-align:center;text-anchor:middle"'.$inkscape_newline;
+            $inkscape=$inkscape.'         id="text'.(($inkscape_current_image_object_id *20)+4).'"'.$inkscape_newline;
+            $inkscape=$inkscape.'         xml:space="preserve"><tspan'.$inkscape_newline;
+            $inkscape=$inkscape.'           x="'.($inkscape_current_object_x+$inkscape_obj_text_0_pos_x_offset).'"'.$inkscape_newline;
+            $inkscape=$inkscape.'           y="'.($inkscape_current_object_y+$inkscape_obj_text_0_pos_y_offset).'"'.$inkscape_newline;
+            $inkscape=$inkscape.'           id="tspan'.(($inkscape_current_image_object_id *20)+5).'">'.$inkscape_current_obj_text.'</tspan><tspan'.$inkscape_newline;
+            $inkscape=$inkscape.'           x="'.($inkscape_current_object_x+$inkscape_obj_text_0_pos_x_offset).'"'.$inkscape_newline;
+            $inkscape=$inkscape.'           y="'.($inkscape_current_object_y+$inkscape_obj_text_0_pos_y_offset+($inkscape_obj_text_0_font_height*1.5)).'"'.$inkscape_newline;
+            $inkscape=$inkscape.'           id="tspan'.(($inkscape_current_image_object_id *20)+6).'">'.$inkscape_current_obj_text_1.'</tspan><tspan'.$inkscape_newline;
+            $inkscape=$inkscape.'           x="'.($inkscape_current_object_x+$inkscape_obj_text_0_pos_x_offset).'"'.$inkscape_newline;
+            $inkscape=$inkscape.'           y="'.($inkscape_current_object_y+$inkscape_obj_text_0_pos_y_offset+2*($inkscape_obj_text_0_font_height*1.5)).'"'.$inkscape_newline;
+            $inkscape=$inkscape.'           id="tspan'.(($inkscape_current_image_object_id *20)+7).'">'.$inkscape_current_obj_text_2.'</tspan><tspan'.$inkscape_newline;
+            $inkscape=$inkscape.'           x="'.($inkscape_current_object_x+$inkscape_obj_text_0_pos_x_offset).'"'.$inkscape_newline;
+            $inkscape=$inkscape.'           y="'.($inkscape_current_object_y+$inkscape_obj_text_0_pos_y_offset+3*($inkscape_obj_text_0_font_height*1.5)).'"'.$inkscape_newline;
+            $inkscape=$inkscape.'           id="tspan'.(($inkscape_current_image_object_id *20)+8).'">'.$inkscape_current_obj_text_3.'</tspan><tspan'.$inkscape_newline;
+            $inkscape=$inkscape.'           x="'.($inkscape_current_object_x+$inkscape_obj_text_0_pos_x_offset).'"'.$inkscape_newline;
+            $inkscape=$inkscape.'           y="'.($inkscape_current_object_y+$inkscape_obj_text_0_pos_y_offset+4*($inkscape_obj_text_0_font_height*1.5)).'"'.$inkscape_newline;
+            $inkscape=$inkscape.'           id="tspan'.(($inkscape_current_image_object_id *20)+9).'">'.$inkscape_current_obj_text_4.'</tspan><tspan'.$inkscape_newline;
+            $inkscape=$inkscape.'           x="'.($inkscape_current_object_x+$inkscape_obj_text_0_pos_x_offset).'"'.$inkscape_newline;
+            $inkscape=$inkscape.'           y="'.($inkscape_current_object_y+$inkscape_obj_text_0_pos_y_offset+5*($inkscape_obj_text_0_font_height*1.5)).'"'.$inkscape_newline;
+            $inkscape=$inkscape.'           id="tspan'.(($inkscape_current_image_object_id *20)+10).'">'.$inkscape_current_obj_text_5.'</tspan><tspan'.$inkscape_newline;
+            $inkscape=$inkscape.'           x="'.($inkscape_current_object_x+$inkscape_obj_text_0_pos_x_offset).'"'.$inkscape_newline;
+            $inkscape=$inkscape.'           y="'.($inkscape_current_object_y+$inkscape_obj_text_0_pos_y_offset+6*($inkscape_obj_text_0_font_height*1.5)).'"'.$inkscape_newline;
+            $inkscape=$inkscape.'           id="tspan'.(($inkscape_current_image_object_id *20)+11).'">'.$inkscape_current_obj_text_6.'</tspan><tspan'.$inkscape_newline;
+            $inkscape=$inkscape.'           x="'.($inkscape_current_object_x+$inkscape_obj_text_0_pos_x_offset).'"'.$inkscape_newline;
+            $inkscape=$inkscape.'           y="'.($inkscape_current_object_y+$inkscape_obj_text_0_pos_y_offset+7*($inkscape_obj_text_0_font_height*1.5)).'"'.$inkscape_newline;
+            $inkscape=$inkscape.'           id="tspan'.(($inkscape_current_image_object_id *20)+12).'">'.$inkscape_current_obj_text_7.'</tspan><tspan'.$inkscape_newline;
+            $inkscape=$inkscape.'           x="'.($inkscape_current_object_x+$inkscape_obj_text_0_pos_x_offset).'"'.$inkscape_newline;
+            $inkscape=$inkscape.'           y="'.($inkscape_current_object_y+$inkscape_obj_text_0_pos_y_offset+8*($inkscape_obj_text_0_font_height*1.5)).'"'.$inkscape_newline;
+            $inkscape=$inkscape.'           id="tspan'.(($inkscape_current_image_object_id *20)+13).'">'.$inkscape_current_obj_text_8.'</tspan><tspan'.$inkscape_newline;
+            $inkscape=$inkscape.'           x="'.($inkscape_current_object_x+$inkscape_obj_text_0_pos_x_offset).'"'.$inkscape_newline;
+            $inkscape=$inkscape.'           y="'.($inkscape_current_object_y+$inkscape_obj_text_0_pos_y_offset+9*($inkscape_obj_text_0_font_height*1.5)).'"'.$inkscape_newline;
+            $inkscape=$inkscape.'           id="tspan'.(($inkscape_current_image_object_id *20)+14).'">'.$inkscape_current_obj_text_9.'</tspan><tspan'.$inkscape_newline;
+            $inkscape=$inkscape.'           x="'.($inkscape_current_object_x+$inkscape_obj_text_0_pos_x_offset).'"'.$inkscape_newline;
+            $inkscape=$inkscape.'           y="'.($inkscape_current_object_y+$inkscape_obj_text_0_pos_y_offset+10*($inkscape_obj_text_0_font_height*1.5)).'"'.$inkscape_newline;
+            $inkscape=$inkscape.'           id="tspan'.(($inkscape_current_image_object_id *20)+15).'">'.$inkscape_current_obj_text_10.'</tspan></text>'.$inkscape_newline;
+            // Close the grouping for this object
+            $inkscape=$inkscape.'    </g>'.$inkscape_newline;
+            $inkscape=$inkscape.'    <path'.$inkscape_newline;
+            $inkscape=$inkscape.'       d="M '.$inkscape_current_object_x.','.$inkscape_current_object_y.' L '.($inkscape_current_object_x+$inkscape_obj_line_0_length_x).','.($inkscape_current_object_y+$inkscape_obj_line_0_length_y).'"'.$inkscape_newline;
+            $inkscape=$inkscape.'       inkscape:connection-start="#g'.(($inkscape_current_image_object_id *20)+2).'"'.$inkscape_newline;
+            $inkscape=$inkscape.'       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.30000001;stroke-linecap:round;stroke-linejoin:round;marker-start:url(#DiamondS);marker-mid:url(#DiamondS);marker-end:url(#DiamondS);stroke-miterlimit:4;stroke-dasharray:0.9, 0.3;stroke-dashoffset:0;stroke-opacity:1;display:inline"'.$inkscape_newline;
+            $inkscape=$inkscape.'       id="path'.(($inkscape_current_image_object_id *20)+1).'" />'.$inkscape_newline;
+
        
        
-       
-// Next Object  
+// move to next Object  
  $inkscape_current_object_id += 1;
 //    
            
@@ -336,8 +329,8 @@ if ($myrow = mysql_fetch_array($result)){
 }
 
 // Close Layer and Document
-$inkscape = $inkscape.'      </g>
-</svg>';
+$inkscape = $inkscape.'      </g>'.$inkscape_newline;
+$inkscape=$inkscape.'</svg>'.$inkscape_newline;
 // Thats all folks
 echo $inkscape;
 

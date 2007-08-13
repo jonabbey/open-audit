@@ -38,6 +38,7 @@
 //
 //$inkscape_image_folder='C:\\Program Files\\xampp\\htdocs\\openaudit\\images\\';
 //
+$inkscape_newline=chr(13);
 $inkscape_image_folder='W:\\htdocs\\openaudit\\images\\';
 
 // Start offset x/y for first object
