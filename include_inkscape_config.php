@@ -20,9 +20,11 @@
 
 // Note  Some objects are specified as for example 4.0 rather than 4 in order to ensure that PHP uses the correct type 
 // i.e. A Number rather than a text string. 
+//
+// Note: All measurements are in px (just because that's the default in Inkscape)
 
 // $inkscape_image_folder
-// Set this to a valid location for your *** Workstation*** and NOT the OA server as it will be the Workstation that open the inkscapegram!
+// Set this to a valid location for your *** Workstation*** and NOT the OA server as it will be the Workstation that opens the "inkscapegram"!
 //
 // Try $inkscape_image_folder=".\\images" then place a copy of the images folder in the same folder as the inkscapegram, or 
 //
@@ -136,8 +138,27 @@ $inkscape_obj_image_0_keep_aspect="true";
 //
 $inkscape_obj_text_0_pos_x=0.85;
 $inkscape_obj_text_0_pos_y=2.85;
-//
+//  Work in progress, to set the individual field font height (other attributes would be good)
+$inkscape_show_maxfields=11; // Max 16
+// Any more than 16 Would seem a trifle excessive ;)
 $inkscape_obj_text_0_font_height=3;
+$inkscape_obj_text_1_font_height=3;
+$inkscape_obj_text_2_font_height=3;
+$inkscape_obj_text_3_font_height=3;
+$inkscape_obj_text_4_font_height=3;
+$inkscape_obj_text_5_font_height=3;
+$inkscape_obj_text_6_font_height=3;
+$inkscape_obj_text_7_font_height=3;
+$inkscape_obj_text_8_font_height=3;
+$inkscape_obj_text_9_font_height=3;
+$inkscape_obj_text_10_font_height=3;
+$inkscape_obj_text_11_font_height=3;
+$inkscape_obj_text_12_font_height=3;
+$inkscape_obj_text_13_font_height=3;
+$inkscape_obj_text_14_font_height=3;
+$inkscape_obj_text_15_font_height=3;
+
+//
 $inkscape_obj_text_0_pos_x_offset=($inkscape_obj_image_0_elem_width/2);
 $inkscape_obj_text_0_pos_y_offset=($inkscape_obj_image_0_elem_height+($inkscape_obj_text_0_font_height*1.5));
 //
@@ -163,6 +184,7 @@ $inkscape_obj_text_0_font_colour="#000000";
 $inkscape_obj_text_0_font_alignment=1;
 $inkscape_obj_text_0_font_valign="3";
 // End Config Text Element 0
+
 
 // What system text fields do we show, 
 $inkscape_show_system_net_ip_address = "y";

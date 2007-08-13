@@ -49,7 +49,9 @@ header("Content-Disposition: inline; filename=\"Open-Audit_".$_REQUEST["view"]."
 // Setup the format of the .inkscape page. This is VERY crude, we should create functions to allow proper control of all elements on the page,
 // and a setup page to allow contorl over this ... OOPS (AJH)
 //
-$inkscape_page_setup_1 = '<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+
+//Page def
+$inkscape = '<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 <svg
    xmlns:svg="http://www.w3.org/2000/svg"
@@ -74,12 +76,14 @@ $inkscape_page_setup_1 = '<?xml version="1.0" encoding="UTF-8" standalone="no"?>
          style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt;marker-start:none"
          id="path3361" />
     </marker>
-  </defs>
-  <g
+  </defs>';
+  // End of Page Def
+  //
+  // Add the first layer and Group Everything on this layer. 
+  $inkscape= $inkscape.'  <g
      id="layer1">';
-  echo $inkscape_page_setup_1;
 
-//Create Objects
+//Next we need to create the image objects
 
 
 //Table body. This section creates a list of network objects and distributes them across the page
@@ -94,7 +98,8 @@ $inkscape_current_object_y = $inkscape_object_start_y;
 $inkscape_current_object_id = $inkscape_object_start_id;
 //
 // Now we create our list from the list on the page that brought us here.
-// This is why we need to expand the list 
+// This is why we need to expand the list using the Arrow keys, otherwise we only see the currnet page. 
+//
 if ($myrow = mysql_fetch_array($result)){
     do{
         foreach($query_array["fields"] as $field){
@@ -110,7 +115,13 @@ if ($myrow = mysql_fetch_array($result)){
             $inkscape_current_obj_text_8='';
             $inkscape_current_obj_text_9='';
             $inkscape_current_obj_text_10='';
-            
+            $inkscape_current_obj_text_11='';
+            $inkscape_current_obj_text_12='';
+            $inkscape_current_obj_text_13='';
+            $inkscape_current_obj_text_14='';
+            $inkscape_current_obj_text_15='';
+            $inkscape_current_obj_text_16='';
+           
             //
             if (($field["head"]=="Hostname")or ($field["head"]=="Network Name")){
 
@@ -212,14 +223,11 @@ if ($myrow = mysql_fetch_array($result)){
                 $inkscape_current_obj_text_10="Printer Share Name: ".$myrow["other_p_share_name"]."\n";
                     } else {}
             } else {}
-            
-            
-            
-            //$inkscape_current_obj_text=eval($inkscape_text_other_object_text);
-            
+ // Nothing to do if it isn't a   
             }
             $inkscape_current_image_object_id = $inkscape_current_object_id;        
-            echo '      <g
+            // Add the 
+            $inkscape = $inkscape.'      <g
        transform="translate(-20,-9)"
        id="g'.(($inkscape_current_image_object_id *20)+2).'">
       <image
@@ -328,9 +336,9 @@ if ($myrow = mysql_fetch_array($result)){
 }
 
 // Close Layer and Document
-echo '      </g>
+$inkscape = $inkscape.'      </g>
 </svg>';
 // Thats all folks
-
+echo $inkscape;
 
 ?>
