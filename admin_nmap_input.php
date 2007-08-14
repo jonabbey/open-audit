@@ -4,7 +4,15 @@ echo "<td valign=\"top\">\n";
 echo "<div class=\"main_each\">";
 
 echo "<p class=\"contenthead\">".__("NMap")."</p>\n";
-
+//
+// Avoid undeclared vars warnings (AJH).
+//
+$device_type="unknown";
+$running="unknown";
+$ip_address="000.000.000.000";
+$manufacturer="unknown";
+$mac="00:00:00:00:00:00";
+//
 $timestamp = date("YmdHis");
 $uuid = "";
 $process = "";
