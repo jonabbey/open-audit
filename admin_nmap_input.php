@@ -1,4 +1,5 @@
 <?php
+$page = "add_pc";
 include "include.php";
 echo "<td valign=\"top\">\n";
 echo "<div class=\"main_each\">";
