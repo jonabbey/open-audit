@@ -2803,177 +2803,183 @@ strOffXPRUKey = key
     form_input = ""
 end if
 
-if iis = "True" then
-'''''''''''''''''''''''''''
-'   IIS Information       '
-'''''''''''''''''''''''''''
-comment = "IIS Info"
-if verbose = "y" then
-   wscript.echo comment
-end if
 
-WinDir = right(WinDir,len(WinDir)-2)
-full_path = "\\" & system_name & "\c$" & WinDir & "\system32\inetsrv\inetinfo.exe"
-if verbose = "y" then
-   Wscript.Echo "IIS Version: " & objFSO.GetFileVersion(full_path)
-end if
+    if iis = "True" then
+    '''''''''''''''''''''''''''
+    '   IIS Information       '
+    '''''''''''''''''''''''''''
 
-On Error Resume Next
-for WebSiteID = 1 to 255
-
-s = WebSiteID
-p = system_name
-
-' Initialize error checking
-On Error Resume Next
-
-' Initialize variables
-Dim ArgPhysicalServer, ArgSiteIndex, ArgFilter, ArgVirtualDirectory
-Dim ArgsCounter, ArgNum
-Dim objWebServer, objWebRootDir, objWebLog, objWebFilter, objWebVirtualDir
-Dim BindingArray, strServerBinding, strSecureBinding
-Dim SecurityDescriptor, DiscretionaryAcl, IPSecurity
-Dim strPath, Item, Member, VirDirCounter, Counter
-
-' Default values
-ArgNum = 0
-
-ArgPhysicalServer = system_name
-ArgSiteIndex = WebSiteID
-
-' Specify and bind to the administrative objects
-Set objWebServer = GetObject("IIS://" & ArgPhysicalServer & "/w3svc/" & ArgSiteIndex)
-Set objWebRootDir = GetObject("IIS://" & ArgPhysicalServer & "/w3svc/" & ArgSiteIndex & "/Root")
-
-' Verify that the specified website exists
-If Err <> 0 Then
-  '
-else
-  ' do enumerate for this websiteID - will end if at end of function
-  ' ----- Web Site Tab -------
-  ' ---------------
-  iis_desc = objWebServer.ServerComment
-  For Each Item in objWebServer.ServerBindings
-    strServerBinding = Item
-    BindingArray = Split(strServerBinding, ":", -1, 1)
-    if BindingArray(0) = "" Then
-      iis_ip = "<All Unassigned>"
-    else
-      iis_ip =  BindingArray(0)
+    comment = "IIS Info"
+    if verbose = "y" then
+       wscript.echo comment
     end if
-    iis_port =  BindingArray(1)
-    If BindingArray(2) = "" Then
-      iis_host = "<None>"
-    Else
-      iis_host = BindingArray(2)
-    End If
-    form_input = "iis_3^^^" & ArgSiteIndex & "^^^" _
-                            & iis_ip       & "^^^" _
-                            & iis_port     & "^^^" _
-                            & iis_host     & "^^^"
-    entry form_input,comment,objTextFile,oAdd,oComment
-    form_input = ""
-  Next
-  For Each Item in objWebServer.SecureBindings
-    strSecureBinding = Item
-    BindingArray = Split(strSecureBinding, ":", -1, 1)
-    if BindingArray(0) = "" Then
-      iis_sec_ip = "<All Unassigned>"
-    else
-      iis_sec_ip = BindingArray(0)
+
+    WinDir = right(WinDir,len(WinDir)-2)
+    full_path = "\\" & system_name & "\c$" & WinDir & "\system32\inetsrv\inetinfo.exe"
+    if verbose = "y" then
+       Wscript.Echo "IIS Version: " & objFSO.GetFileVersion(full_path)
     end if
-    iis_sec_port = BindingArray(1)
-  Next
-  If strSecureBinding = "" Then
-    iis_sec_port = "No Secure Bindings"
-  End If
-  If objWebServer.LogType = 0 Then
-    iis_log_en =  "Disabled"
-  Else
-    iis_log_en =  "Enabled"
-    Set objWebLog = GetObject("IIS://" & ArgPhysicalServer & "/logging")
-    For Each Item in objWebLog
-      If objWebServer.LogPluginCLSID = Item.LogModuleID Then
-        iis_log_format = Item.Name
-        objWebLog = Item.Name
-      End If
-    Next
-    If objWebServer.LogFilePeriod = 0 Then
-      If objWebServer.LogFileTruncateSize = -1 Then
-        iis_log_per = "Unlimited file size"
-      Else
-        iis_log_per = "When file size reaches " & (objWebServer.LogfileTruncateSize/1048576) & " MB"
-      End If
-    End If
-    If objWebServer.LogFilePeriod = 1 Then
-      iis_log_per = "Daily"
-    Else
-      If objWebServer.LogFilePeriod = 2 Then
-        iis_log_per = "Weekly"
-      Else
-        If objWebServer.LogFilePeriod =3 Then
-          iis_log_per = "Monthly"
+
+    On Error Resume Next
+
+    Dim objWWW
+    Set objWWW = GetObject("IIS://" & system_name & "/w3svc")
+    For Each WebSiteID in objWWW
+      If IsNumeric(WebSiteID.Name) Then
+
+       s = WebSiteID.Name
+       p = system_name
+
+      '  Initialize error checking
+       On Error Resume Next
+
+       ' Initialize variables
+       Dim ArgPhysicalServer, ArgSiteIndex, ArgFilter, ArgVirtualDirectory
+       Dim ArgsCounter, ArgNum
+       Dim objWebServer, objWebRootDir, objWebLog, objWebFilter, objWebVirtualDir
+       Dim BindingArray, strServerBinding, strSecureBinding
+       Dim SecurityDescriptor, DiscretionaryAcl, IPSecurity
+       Dim strPath, Item, Member, VirDirCounter, Counter
+
+      '  Default values
+       ArgNum = 0
+
+       ArgPhysicalServer = system_name
+       ArgSiteIndex = WebSiteID.Name
+
+       ' Specify and bind to the administrative objects
+       Set objWebServer = GetObject("IIS://" & ArgPhysicalServer & "/w3svc/" & ArgSiteIndex)
+       Set objWebRootDir = GetObject("IIS://" & ArgPhysicalServer & "/w3svc/" & ArgSiteIndex & "/Root")
+
+       ' Verify that the specified website exists
+       If Err <> 0 Then
+        '
+       else
+        ' do enumerate for this websiteID - will end if at end of function
+        ' ----- Web Site Tab -------
+        ' ---------------
+        iis_desc = objWebServer.ServerComment
+        For Each Item in objWebServer.ServerBindings
+         strServerBinding = Item
+         BindingArray = Split(strServerBinding, ":", -1, 1)
+         if BindingArray(0) = "" Then
+          iis_ip = "<All Unassigned>"
+         else
+          iis_ip =  BindingArray(0)
+         end if
+         iis_port =  BindingArray(1)
+         If BindingArray(2) = "" Then
+          iis_host = "<None>"
+         Else
+          iis_host = BindingArray(2)
+         End If
+         form_input = "iis_3^^^" & ArgSiteIndex & "^^^" _
+                                 & iis_ip       & "^^^" _
+                                 & iis_port     & "^^^" _
+                                 & iis_host     & "^^^"
+         entry form_input,comment,objTextFile,oAdd,oComment
+         form_input = ""
+        Next
+        For Each Item in objWebServer.SecureBindings
+         strSecureBinding = Item
+         BindingArray = Split(strSecureBinding, ":", -1, 1)
+         if BindingArray(0) = "" Then
+          iis_sec_ip = "<All Unassigned>"
+         else
+          iis_sec_ip = BindingArray(0)
+         end if
+         iis_sec_port = BindingArray(1)
+        Next
+        If strSecureBinding = "" Then
+         iis_sec_port = "No Secure Bindings"
         End If
-      End If
-    End If
-    iis_log_dir = objWebServer.LogFileDirectory
-  End If
-  ' ----- Home Directory Tab -------
-  ' ----------------
-  If objWebRootDir.HttpRedirect <> "" Then
-    '
-  Else
-    strPath = objWebRootDir.Path
-    strPath = Left(strPath, 2)
-    iis_path = objWebRootDir.Path
-    iis_dir_browsing =  objWebRootDir.EnableDirBrowsing
-  End If
-  ' ----- Documents Tab -------
-  ' -----------------
-  If objWebRootDir.EnableDefaultDoc = False Then
-    iis_def_doc = "False"
-  Else
-    iis_def_doc = objWebRootDir.DefaultDoc
-  End If
-  form_input = "iis_1^^^" & WebSiteID          & "^^^" _
-                          & clean(iis_desc)    & "^^^" _
-                          & iis_log_en         & "^^^" _
-                          & clean(iis_log_dir) & "^^^" _
-                          & iis_log_format     & "^^^" _
-                          & iis_log_per        & "^^^" _
-                          & clean(iis_path)    & "^^^" _
-                          & iis_dir_browsing   & "^^^" _
-                          & clean(iis_def_doc) & "^^^" _
-                          & iis_sec_ip         & "^^^" _
-                          & iis_sec_port       & "^^^"
-  entry form_input,comment,objTextFile,oAdd,oComment
-  ' ------------------
-  ' --- Enumerating Virtual Directories ----
-  ' ------------------
-  VirDirCounter = 0
-  For Each Item in objWebRootDir
-    If Item.Class = "IIsWebVirtualDir" Then
-      ArgVirtualDirectory = Item.Name
-      Set objWebVirtualDir = GetObject("IIS://" & ArgPhysicalServer & "/w3svc/" & ArgSiteIndex & "/Root/" & ArgVirtualDirectory)
-      iis_vd_name = Item.Name
-      iis_vd_path = objWebVirtualDir.Path
-      form_input = "iis_2^^^" & ArgSiteIndex       & "^^^" _
-                              & clean(iis_vd_name) & "^^^" _
-                              & clean(iis_vd_path) & "^^^"
-      entry form_input,comment,objTextFile,oAdd,oComment
-      form_input = ""
-      VirDirCounter = VirDirCounter + 1
-      End If
-  Next
-end if
+        If objWebServer.LogType = 0 Then
+         iis_log_en =  "Disabled"
+        Else
+         iis_log_en =  "Enabled"
+         Set objWebLog = GetObject("IIS://" & ArgPhysicalServer & "/logging")
+         For Each Item in objWebLog
+          If objWebServer.LogPluginCLSID = Item.LogModuleID Then
+            iis_log_format = Item.Name
+            objWebLog = Item.Name
+          End If
+         Next
+         If objWebServer.LogFilePeriod = 0 Then
+          If objWebServer.LogFileTruncateSize = -1 Then
+            iis_log_per = "Unlimited file size"
+          Else
+            iis_log_per = "When file size reaches " & (objWebServer.LogfileTruncateSize/1048576) & " MB"
+          End If
+         End If
+         If objWebServer.LogFilePeriod = 1 Then
+          iis_log_per = "Daily"
+         Else
+          If objWebServer.LogFilePeriod = 2 Then
+            iis_log_per = "Weekly"
+          Else
+            If objWebServer.LogFilePeriod =3 Then
+              iis_log_per = "Monthly"
+            End If
+          End If
+         End If
+         iis_log_dir = objWebServer.LogFileDirectory
+        End If
+        ' ----- Home Directory Tab -------
+        ' ----------------
+        If objWebRootDir.HttpRedirect <> "" Then
+         '
+        Else
+         strPath = objWebRootDir.Path
+         strPath = Left(strPath, 2)
+         iis_path = objWebRootDir.Path
+         iis_dir_browsing =  objWebRootDir.EnableDirBrowsing
+        End If
+        ' ----- Documents Tab -------
+        ' -----------------
+        If objWebRootDir.EnableDefaultDoc = False Then
+         iis_def_doc = "False"
+        Else
+         iis_def_doc = objWebRootDir.DefaultDoc
+        End If
+        form_input = "iis_1^^^" & WebSiteID.Name     & "^^^" _
+                                & clean(iis_desc)    & "^^^" _
+                                & iis_log_en         & "^^^" _
+                                & clean(iis_log_dir) & "^^^" _
+                                & iis_log_format     & "^^^" _
+                                & iis_log_per        & "^^^" _
+                                & clean(iis_path)    & "^^^" _
+                                & iis_dir_browsing   & "^^^" _
+                                & clean(iis_def_doc) & "^^^" _
+                                & iis_sec_ip         & "^^^" _
+                                & iis_sec_port       & "^^^"
+        entry form_input,comment,objTextFile,oAdd,oComment
+        form_input = ""
+        ' ------------------
+        ' --- Enumerating Virtual Directories ----
+        ' ------------------
+        VirDirCounter = 0
+        For Each Item in objWebRootDir
+         If Item.Class = "IIsWebVirtualDir" Then
+          ArgVirtualDirectory = Item.Name
+          Set objWebVirtualDir = GetObject("IIS://" & ArgPhysicalServer & "/w3svc/" & ArgSiteIndex & "/Root/" & ArgVirtualDirectory)
+          iis_vd_name = Item.Name
+          iis_vd_path = objWebVirtualDir.Path
+          form_input = "iis_2^^^" & ArgSiteIndex       & "^^^" _
+                                  & clean(iis_vd_name) & "^^^" _
+                                  & clean(iis_vd_path) & "^^^"
+          entry form_input,comment,objTextFile,oAdd,oComment
+          form_input = ""
+          VirDirCounter = VirDirCounter + 1
+         End If
+        Next
+       end if
+      end if
+    ' next Site
+    next
 
-' next for 1 to 255 sites
-next
-
-
-else
-' End of IIS = True
-end if
+    else
+    ' End of IIS = True
+    end if
 
 
 if online = "n" then
