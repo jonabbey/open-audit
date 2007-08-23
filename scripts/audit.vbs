@@ -2863,13 +2863,13 @@ end if
          strServerBinding = Item
          BindingArray = Split(strServerBinding, ":", -1, 1)
          if BindingArray(0) = "" Then
-          iis_ip = "<All Unassigned>"
+          iis_ip = "All Unassigned"
          else
           iis_ip =  BindingArray(0)
          end if
          iis_port =  BindingArray(1)
          If BindingArray(2) = "" Then
-          iis_host = "<None>"
+          iis_host = "None"
          Else
           iis_host = BindingArray(2)
          End If
@@ -2884,7 +2884,7 @@ end if
          strSecureBinding = Item
          BindingArray = Split(strSecureBinding, ":", -1, 1)
          if BindingArray(0) = "" Then
-          iis_sec_ip = "<All Unassigned>"
+          iis_sec_ip = "All Unassigned"
          else
           iis_sec_ip = BindingArray(0)
          end if
