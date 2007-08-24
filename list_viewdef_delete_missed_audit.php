@@ -23,7 +23,7 @@ $query_array=array("headline"=>__("Delete Systems Not Audited in the last " ). $
                                                "link"=>"y",
                                                "sort"=>"n",
                                                "search"=>"n",
-                                               "get"=>array("file"=>"delete_system.php",
+                                               "get"=>array("file"=>"delete_missed_audit.php",
                                                             "title"=>__("Delete System"),
                                                             "onClick"=>"return confirm('".__("Do you really want to DELETE this item?")."');",
                                                             "var"=>array("pc"=>"%system_uuid",
