@@ -1,4 +1,4 @@
-this_config_url = "http://support.cmarine.local/openaudit/scripts/audit.config.defaults"
+this_config_url = "http://localhost/openaudit/scripts/audit.config.defaults"
 '''''''''''''''''''''''''''''''''''
 ' Open Audit                      '
 ' Software and Hardware Inventory '
