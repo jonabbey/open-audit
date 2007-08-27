@@ -1,3 +1,4 @@
+this_config_url = "http://support.cmarine.local/openaudit/scripts/audit.config.defaults"
 '''''''''''''''''''''''''''''''''''
 ' Open Audit                      '
 ' Software and Hardware Inventory '
@@ -18,13 +19,45 @@ Dim local_domain
 Dim sql
 Dim comment
 Dim net_mac_uuid
-
+'
+' (AJH) Moved the file read-write-append constants to here, they were defined much later.
+'
+Const ForReading = 1, ForWriting = 2, ForAppending = 8 
 
 form_total = ""
 
+dim filesys
+Set filesys = CreateObject("Scripting.FileSystemObject")
+'
+If not filesys.FileExists(this_config) Then
+'
+' This section takes a look at the local audit.config, and if there is none, it makes one from the server URL 
+' The idea is to allow us to throw the audit.vbs file to a browser and have it grab the config it needs.
+' We should only need to set one thing, namely the URL from which we will grab the remainder of the config.
+'
+'
+' We assume the local config file will always be audit.config
+this_config = "audit.config"
+
+' Now we open the web page where the remote config lives
+Set WshShell = WScript.CreateObject("WScript.Shell")
+
+Set http = CreateObject("Microsoft.XmlHttp")
+' ...and we grab it..
+http.open "GET",this_config_url, FALSE
+http.send ""
+'
+Set config_file = CreateObject("Scripting.FileSystemObject")
+Set our_config = config_file.OpenTextFile( this_config, ForWriting, True)
+'... and post it to our local config. 
+our_config.write http.responseText
+End If 
+' End of web config script. 
+break
+
 ' Below calls the file audit_include.vbs to setup the variables.
 sScriptPath=Left(WScript.ScriptFullName, InStrRev(WScript.ScriptFullName,"\"))
-ExecuteGlobal CreateObject("Scripting.FileSystemObject").OpenTextFile(sScriptPath & "audit.config").ReadAll
+ExecuteGlobal CreateObject("Scripting.FileSystemObject").OpenTextFile(sScriptPath & this_config).ReadAll
 
 ' If any command line args given - use the first one as strComputer
 If Wscript.Arguments.Count > 0 Then
@@ -115,7 +148,7 @@ Const HKEY_CLASSES_ROOT  = &H80000000
 Const HKEY_CURRENT_USER  = &H80000001
 Const HKEY_LOCAL_MACHINE = &H80000002
 Const HKEY_USERS         = &H80000003
-Const ForAppending = 8
+'Const ForAppending = 8
 
 
 '''''''''''''''''''''''''''''

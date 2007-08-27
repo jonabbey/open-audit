@@ -1,0 +1,37 @@
+'
+' Standard audit section
+'
+audit_location = "r" 
+verbose = "y" 
+audit_host="http://localhost"
+online = "yesxml" 
+strComputer = "" 
+ie_visible = "n" 
+ie_auto_submit = "y" 
+ie_submit_verbose = "n" 
+ie_form_page = audit_host + "/openaudit/admin_pc_add_1.php" 
+non_ie_page = audit_host + "/openaudit/admin_pc_add_2.php" 
+input_file = "" 
+email_to = "" 
+email_from = "" 
+email_server = "" 
+audit_local_domain = "y" 
+local_domain = "LDAP://mydomain.local" 
+hfnet = "n" 
+Count = 0 
+number_of_audits = 10 
+script_name = "audit.vbs" 
+monitor_detect = "y" 
+printer_detect = "y" 
+software_audit = "y" 
+uuid_type = "uuid"
+'
+' Nmap section
+'
+nmap_subnet = "192.168.0."            ' The subnet you wish to scan
+nmap_subnet_formatted = "192.168.000."    ' The subnet padded with 0's
+nmap_ie_form_page = audit_host + "/openaudit/admin_nmap_input.php"
+nmap_ie_visible = "n"
+nmap_ie_auto_close = "y"
+nmap_ip_start = 1
+nmap_ip_end = 254
