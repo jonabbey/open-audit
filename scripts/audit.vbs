@@ -53,7 +53,8 @@ Set our_config = config_file.OpenTextFile( this_config, ForWriting, True)
 our_config.write http.responseText
 End If 
 ' End of web config script. 
-break
+'
+' break (this is a good point to break if testing the config)
 
 ' Below calls the file audit_include.vbs to setup the variables.
 sScriptPath=Left(WScript.ScriptFullName, InStrRev(WScript.ScriptFullName,"\"))
