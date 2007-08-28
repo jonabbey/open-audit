@@ -3,7 +3,7 @@
 '
 audit_location = "r" 
 verbose = "y" 
-audit_host="http://localhost"
+audit_host="http://support.cmarine.local"
 online = "yesxml" 
 strComputer = "" 
 ie_visible = "n" 
@@ -16,7 +16,7 @@ email_to = ""
 email_from = "" 
 email_server = "" 
 audit_local_domain = "y" 
-local_domain = "LDAP://mydomain.local" 
+local_domain = "LDAP://cmarine.local" 
 hfnet = "n" 
 Count = 0 
 number_of_audits = 10 
@@ -28,8 +28,8 @@ uuid_type = "uuid"
 '
 ' Nmap section
 '
-nmap_subnet = "192.168.0."            ' The subnet you wish to scan
-nmap_subnet_formatted = "192.168.000."    ' The subnet padded with 0's
+nmap_subnet = "192.168.42."            ' The subnet you wish to scan
+nmap_subnet_formatted = "192.168.042."    ' The subnet padded with 0's
 nmap_ie_form_page = audit_host + "/openaudit/admin_nmap_input.php"
 nmap_ie_visible = "n"
 nmap_ie_auto_close = "y"

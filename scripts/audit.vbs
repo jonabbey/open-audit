@@ -1,4 +1,4 @@
-this_config_url = "http://localhost/openaudit/scripts/audit.config.defaults"
+this_config_url = "http://localhost/openaudit/list_export_config.php"
 '''''''''''''''''''''''''''''''''''
 ' Open Audit                      '
 ' Software and Hardware Inventory '
@@ -25,19 +25,36 @@ Dim net_mac_uuid
 Const ForReading = 1, ForWriting = 2, ForAppending = 8 
 
 form_total = ""
+this_config = "audit.config"
 
+'
+' This takes no account of the command line switches added to a forked version, but in principal
+' The logic should be...
+' look for audit.config and use that, if it doesn't exist, grab it from 
+' the web server, if we cant do that, then use the internal defaults. 
+' Finally modify the defaults depending on any command line switches 
+'
+'
+' First check to see if we have no config file, if so lets see if we can grab one from the server
+'
 dim filesys
 Set filesys = CreateObject("Scripting.FileSystemObject")
-'
-If not filesys.FileExists(this_config) Then
+
+If filesys.FileExists(this_config) then
+' Do nothing
+else 
+'wscript.echo("Creating new config")
 '
 ' This section takes a look at the local audit.config, and if there is none, it makes one from the server URL 
 ' The idea is to allow us to throw the audit.vbs file to a browser and have it grab the config it needs.
 ' We should only need to set one thing, namely the URL from which we will grab the remainder of the config.
 '
 '
-' We assume the local config file will always be audit.config
-this_config = "audit.config"
+' (FIXME) We assume the local config file will always be audit.config but there may be a Command Switch to modify this.
+' logically this is not a problem, we will try to grab a config and put it in audit.config 
+' If there is a command switch specifying a different file name we wont use audit.config anyway so it matters not 
+' if we fail to create one.
+' 
 
 ' Now we open the web page where the remote config lives
 Set WshShell = WScript.CreateObject("WScript.Shell")
@@ -54,8 +71,8 @@ our_config.write http.responseText
 End If 
 ' End of web config script. 
 '
-' break (this is a good point to break if testing the config)
-
+ '(this is a good point to break if testing the config)
+'wscript.Quit(0)
 ' Below calls the file audit_include.vbs to setup the variables.
 sScriptPath=Left(WScript.ScriptFullName, InStrRev(WScript.ScriptFullName,"\"))
 ExecuteGlobal CreateObject("Scripting.FileSystemObject").OpenTextFile(sScriptPath & this_config).ReadAll
