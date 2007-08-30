@@ -430,6 +430,7 @@ if ($myrow = mysql_fetch_array($result)){
      echo "<table width=\"100%\" border=\"0\" style=\"height: 50px\"><tr><td rowspan=\"3\">\n";
 
     // Export to CSV
+
     echo "<form method=\"post\" id=\"form_export\" action=\"list_export.php\">\n";
     echo "<p><input type=\"hidden\" name=\"sql\" value=\"".urlencode($sql)."\" />\n";
     echo "<input type=\"hidden\" name=\"view\" value=\"".$_REQUEST["view"]."\"/>\n";
@@ -446,6 +447,11 @@ if ($myrow = mysql_fetch_array($result)){
     echo "</p></form>\n";
             echo "<td>\n";
     // Export to DIA
+    
+    if (isset($_REQUEST["view"])) {
+    // Check to be sure that we are looking at something which we can make a diagram of
+    $pos= (strpos($_REQUEST["view"], "systems") or strpos($_REQUEST["view"], "laptops") or strpos($_REQUEST["view"], "servers") or strpos($_REQUEST["view"], "workstations") or strpos($_REQUEST["view"], "other"));
+    if ($pos === true) {
     echo "<form method=\"post\" id=\"form_export_dia\" action=\"list_export_dia.php\">\n";
     echo "<p><input type=\"hidden\" name=\"sql\" value=\"".urlencode($sql)."\" />\n";
     echo "<input type=\"hidden\" name=\"view\" value=\"".$_REQUEST["view"]."\"/>\n";
@@ -476,7 +482,12 @@ if ($myrow = mysql_fetch_array($result)){
      }
      echo "<br /><a href=\"http://www.inkscape.org/\" <img src=\"images/inkscape.png\" alt=\"".__("Inkscape Drawing")."\" title=\"".__("Click here for the latest version of Inkscape")."\" style=\"border:0px;\" width=\"28\" height=\"28\" /></a><a href=\"#\" onclick=\"document.forms['form_export_inkscape'].submit();\"> ".__("Create Inkscape (SVG) Picture From List(BETA)")."</a>\n";
     echo "</p></form>\n";
-            echo "</table>\n";
+                } else{}
+        } else{}
+    
+    echo "</table>\n";
+
+            
 
 } else {
 
