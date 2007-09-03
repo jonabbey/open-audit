@@ -109,8 +109,6 @@ $inkscape_background_visible="true";
 $inkscape_obj_image_0_type="Standard - Image";
 $inkscape_obj_image_0_version="0";
 // Set an ID, this will be controlled programatically, as each element is created.
-// *** Caution *** The Object ID Starts with a capital "O" and not a Zero so the following line is OHH ZERO 
-// (I spent ages trying to track this foible down (AJH))
 $inkscape_obj_image_0_id="O0";
 //
 $inkscape_obj_image_default_image="laptop_l.png";
@@ -140,28 +138,78 @@ $inkscape_obj_image_0_keep_aspect="true";
 $inkscape_obj_text_0_pos_x=0.85;
 $inkscape_obj_text_0_pos_y=2.85;
 //  Work in progress, to set the individual field font height (other attributes would be good)
-$inkscape_show_maxfields=11; // Max 16
+$inkscape_show_maxfields=16; // Max 16
 // Any more than 16 Would seem a trifle excessive ;)
-$inkscape_obj_text_0_font_height=3;
-$inkscape_obj_text_1_font_height=3;
-$inkscape_obj_text_2_font_height=3;
-$inkscape_obj_text_3_font_height=3;
-$inkscape_obj_text_4_font_height=3;
-$inkscape_obj_text_5_font_height=3;
-$inkscape_obj_text_6_font_height=3;
-$inkscape_obj_text_7_font_height=3;
-$inkscape_obj_text_8_font_height=3;
-$inkscape_obj_text_9_font_height=3;
-$inkscape_obj_text_10_font_height=3;
-$inkscape_obj_text_11_font_height=3;
-$inkscape_obj_text_12_font_height=3;
-$inkscape_obj_text_13_font_height=3;
-$inkscape_obj_text_14_font_height=3;
-$inkscape_obj_text_15_font_height=3;
+$inkscape_obj_text_font_height[0]=5;
+$inkscape_obj_text_font_height[1]=3;
+$inkscape_obj_text_font_height[2]=2;
+$inkscape_obj_text_font_height[3]=2;
+$inkscape_obj_text_font_height[4]=2;
+$inkscape_obj_text_font_height[5]=2;
+$inkscape_obj_text_font_height[6]=2;
+$inkscape_obj_text_font_height[7]=3;
+$inkscape_obj_text_font_height[8]=2;
+$inkscape_obj_text_font_height[9]=2;
+$inkscape_obj_text_font_height[10]=2;
+$inkscape_obj_text_font_height[11]=2;
+$inkscape_obj_text_font_height[12]=2;
+$inkscape_obj_text_font_height[13]=2;
+$inkscape_obj_text_font_height[14]=2;
+$inkscape_obj_text_font_height[15]=2;
+
+$inkscape_obj_text_spacing=1.2; //Single Spaging =1 but this can lead to the text overlaying Double spacing = 2 default = 1.2
+//
+$inkscape_obj_text_pos_x_offset[0]=($inkscape_obj_image_0_elem_width/2);
+$inkscape_obj_text_pos_y_offset[0]=(($inkscape_obj_text_font_height[0]*$inkscape_obj_text_spacing));
+//
+//
+$inkscape_obj_text_pos_x_offset[1]=($inkscape_obj_image_0_elem_width/2);
+$inkscape_obj_text_pos_y_offset[1]=($inkscape_obj_text_font_height[1]*$inkscape_obj_text_spacing);
+////
+$inkscape_obj_text_pos_x_offset[2]=($inkscape_obj_image_0_elem_width/2);
+$inkscape_obj_text_pos_y_offset[2]=($inkscape_obj_text_font_height[2]*$inkscape_obj_text_spacing);
+////
+$inkscape_obj_text_pos_x_offset[3]=($inkscape_obj_image_0_elem_width/2);
+$inkscape_obj_text_pos_y_offset[3]=($inkscape_obj_text_font_height[3]*$inkscape_obj_text_spacing);
+////
+$inkscape_obj_text_pos_x_offset[4]=($inkscape_obj_image_0_elem_width/2);
+$inkscape_obj_text_pos_y_offset[4]=($inkscape_obj_text_font_height[4]*$inkscape_obj_text_spacing);
+////
+$inkscape_obj_text_pos_x_offset[5]=($inkscape_obj_image_0_elem_width/2);
+$inkscape_obj_text_pos_y_offset[5]=($inkscape_obj_text_font_height[5]*$inkscape_obj_text_spacing);
+////
+$inkscape_obj_text_pos_x_offset[6]=($inkscape_obj_image_0_elem_width/2);
+$inkscape_obj_text_pos_y_offset[6]=($inkscape_obj_text_font_height[6]*$inkscape_obj_text_spacing);
+////
+$inkscape_obj_text_pos_x_offset[7]=($inkscape_obj_image_0_elem_width/2);
+$inkscape_obj_text_pos_y_offset[7]=($inkscape_obj_text_font_height[7]*$inkscape_obj_text_spacing);
+////
+$inkscape_obj_text_pos_x_offset[8]=($inkscape_obj_image_0_elem_width/2);
+$inkscape_obj_text_pos_y_offset[8]=($inkscape_obj_text_font_height[8]*$inkscape_obj_text_spacing);
+///
+$inkscape_obj_text_pos_x_offset[9]=($inkscape_obj_image_0_elem_width/2);
+$inkscape_obj_text_pos_y_offset[9]=($inkscape_obj_text_font_height[9]*$inkscape_obj_text_spacing);
+////
+$inkscape_obj_text_pos_x_offset[10]=($inkscape_obj_image_0_elem_width/2);
+$inkscape_obj_text_pos_y_offset[10]=($inkscape_obj_text_font_height[10]*$inkscape_obj_text_spacing);
+////
+$inkscape_obj_text_pos_x_offset[11]=($inkscape_obj_image_0_elem_width/2);
+$inkscape_obj_text_pos_y_offset[11]=($inkscape_obj_text_font_height[11]*$inkscape_obj_text_spacing);
+////
+$inkscape_obj_text_pos_x_offset[12]=($inkscape_obj_image_0_elem_width/2);
+$inkscape_obj_text_pos_y_offset[12]=($inkscape_obj_text_font_height[12]*$inkscape_obj_text_spacing);
+////
+$inkscape_obj_text_pos_x_offset[13]=($inkscape_obj_image_0_elem_width/2);
+$inkscape_obj_text_pos_y_offset[13]=($inkscape_obj_text_font_height[13]*$inkscape_obj_text_spacing);
+////
+$inkscape_obj_text_pos_x_offset[14]=($inkscape_obj_image_0_elem_width/2);
+$inkscape_obj_text_pos_y_offset[14]=($inkscape_obj_text_font_height[14]*$inkscape_obj_text_spacing);
+////
+$inkscape_obj_text_pos_x_offset[15]=($inkscape_obj_image_0_elem_width/2);
+$inkscape_obj_text_pos_y_offset[15]=($inkscape_obj_text_font_height[15]*$inkscape_obj_text_spacing);
+//
 
 //
-$inkscape_obj_text_0_pos_x_offset=($inkscape_obj_image_0_elem_width/2);
-$inkscape_obj_text_0_pos_y_offset=($inkscape_obj_image_0_elem_height+($inkscape_obj_text_0_font_height*1.5));
 //
 $inkscape_obj_text_0_bb_x1=0.85;
 $inkscape_obj_text_0_bb_y1=3.20;
@@ -188,24 +236,24 @@ $inkscape_obj_text_0_font_valign="3";
 
 
 // What system text fields do we show, 
-$inkscape_show_system_net_ip_address = "y";
-$inkscape_show_system_net_user_name = "y";
-$inkscape_show_system_net_domain = "y";
-$inkscape_show_system_system_vendor = "y";
-$inkscape_show_system_system_model = "y";
-$inkscape_show_system_system_id_number = "y"; 
-$inkscape_show_system_system_memory = "y";
+$inkscape_show_system_net_ip_address = true;
+$inkscape_show_system_net_user_name = true;
+$inkscape_show_system_net_domain = true;
+$inkscape_show_system_system_vendor = true;
+$inkscape_show_system_system_model = true;
+$inkscape_show_system_system_id_number = true; 
+$inkscape_show_system_system_memory = true;
 // What other item  text fields do we show, 
-$inkscape_show_other_network_name = "n";
-$inkscape_show_other_ip_address = "y";
-$inkscape_show_other_mac_address = "y";
-$inkscape_show_other_description = "n";
-$inkscape_show_other_serial = "n";
-$inkscape_show_other_model = "y";
-$inkscape_show_other_type = "n";
-$inkscape_show_other_location = "y";
-$inkscape_show_other_p_port_name = "y";
-$inkscape_show_other_p_share_name = "y";
+$inkscape_show_other_network_name = true;
+$inkscape_show_other_ip_address = true;
+$inkscape_show_other_mac_address = true;
+$inkscape_show_other_description = true;
+$inkscape_show_other_serial = true;
+$inkscape_show_other_model = true;
+$inkscape_show_other_type = true;
+$inkscape_show_other_location = true;
+$inkscape_show_other_p_port_name = true;
+$inkscape_show_other_p_share_name = true;
 
 
 // Config for Line Element 0 Zig Zag Line Connector
@@ -227,7 +275,7 @@ $inkscape_obj_line_0_pos_y=1.97;
 $inkscape_obj_line_0_bb_x1=3.0;
 $inkscape_obj_line_0_bb_y1=1.475;
 $inkscape_obj_line_0_bb_x2=6.95;
-$inkscape_obj_line_0_bb_y2=3.45;
+$inkscape_obj_line_0_bb_y2=7.45;
 //
 // Orth Points
 $inkscape_obj_line_0_orth_points_x1=0.70;
@@ -237,11 +285,11 @@ $inkscape_obj_line_0_orth_points_y2=0.75;
 $inkscape_obj_line_0_orth_points_x3=1.55;
 $inkscape_obj_line_0_orth_points_y3=0.75;
 $inkscape_obj_line_0_orth_points_x4=1.55;
-$inkscape_obj_line_0_orth_points_y4=2.0;
+$inkscape_obj_line_0_orth_points_y4=12.0;
 $inkscape_obj_line_0_orth_points_x5=2.5;
-$inkscape_obj_line_0_orth_points_y5=2.0;
+$inkscape_obj_line_0_orth_points_y5=12.0;
 $inkscape_obj_line_0_orth_points_x6=2.6;
-$inkscape_obj_line_0_orth_points_y6=2.0;
+$inkscape_obj_line_0_orth_points_y6=12.0;
 //
 // Orth Orientation
 $inkscape_obj_line_0_orth_orient_1=1;

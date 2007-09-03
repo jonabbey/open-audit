@@ -53,6 +53,9 @@ header("Content-Disposition: inline; filename=\"Open-Audit_".$_REQUEST["view"]."
 //Page def
 $inkscape = '<?xml version="1.0" encoding="UTF-8" standalone="no"?>'.$inkscape_newline;
 
+//
+// 
+//
 
 $inkscape=$inkscape.'<!-- Created with Inkscape (http://www.inkscape.org/) -->'.$inkscape_newline;
 $inkscape=$inkscape.'<svg'.$inkscape_newline;
@@ -107,7 +110,7 @@ if ($myrow = mysql_fetch_array($result)){
         foreach($query_array["fields"] as $field){
             if($field["show"]!="n"){
             //
-            $inkscape_current_obj_text='';
+            $inkscape_current_obj_text_0='';
             $inkscape_current_obj_text_1='';
             $inkscape_current_obj_text_2='';
             $inkscape_current_obj_text_3='';
@@ -137,35 +140,35 @@ if ($myrow = mysql_fetch_array($result)){
             //
             $inkscape_this_image = $inkscape_image_folder.$inkscape_image_icon;
                        //
-            $inkscape_current_obj_text="  ".$myrow[$field["name"]]."\n\n";
+            $inkscape_current_obj_text[0]="  ".$myrow[$field["name"]]."\n\n";
            // $inkscape_current_obj_text="  ".$myrow[$field["name"]]."\n\n"."ip: ".$myrow["net_ip_address"]."\n"."\n"."User: ".$myrow["net_user_name"]."\n"."Domain: ".$myrow["net_domain"]."\n"."Vendor: ".$myrow["system_vendor"]."\n"."Model: ".$myrow["system_model"]."\n"."Memory: ".$myrow["system_memory"]." Mb";
            
-           if ($inkscape_show_system_net_ip_address == "y"){
-           $inkscape_current_obj_text_1="ip: ".$myrow["net_ip_address"]."\n";
+           if ($inkscape_show_system_net_ip_address ){
+           $inkscape_current_obj_text[1]="ip: ".$myrow["net_ip_address"]."\n";
             } else {}
             
-            if ($inkscape_show_system_net_user_name== "y"){
-           $inkscape_current_obj_text_2="User: ".$myrow["net_user_name"]."\n";
+            if ($inkscape_show_system_net_user_name){
+           $inkscape_current_obj_text[2]="User: ".$myrow["net_user_name"]."\n";
             } else {}
             
-            if ($inkscape_show_system_net_domain == "y"){
-           $inkscape_current_obj_text_3="Domain: ".$myrow["net_domain"]."\n";
+            if ($inkscape_show_system_net_domain ){
+           $inkscape_current_obj_text[3]="Domain: ".$myrow["net_domain"]."\n";
             } else {}
             
-            if ($inkscape_show_system_system_vendor == "y"){
-           $inkscape_current_obj_text_4="Vendor: ".$myrow["system_vendor"]."\n";
+            if ($inkscape_show_system_system_vendor ){
+           $inkscape_current_obj_text[4]="Vendor: ".$myrow["system_vendor"]."\n";
             } else {}
             
-            if ($inkscape_show_system_system_model == "y"){
-           $inkscape_current_obj_text_5="Model: ".$myrow["system_model"]."\n";
+            if ($inkscape_show_system_system_model ){
+           $inkscape_current_obj_text[5]="Model: ".$myrow["system_model"]."\n";
             } else {}
             
-            if ($inkscape_show_system_system_id_number == "y"){
-           $inkscape_current_obj_text_6="Serial #: ".$myrow["system_id_number"]."\n";
+            if ($inkscape_show_system_system_id_number ){
+           $inkscape_current_obj_text[6]="Serial #: ".$myrow["system_id_number"]."\n";
             } else {}
             
-            if ($inkscape_show_system_system_memory == "y"){
-           $inkscape_current_obj_text_7="Memory: ".$myrow["system_memory"]." Mb \n";
+            if ($inkscape_show_system_system_memory ){
+           $inkscape_current_obj_text[7]="Memory: ".$myrow["system_memory"]." Mb \n";
             } else {}
             
             
@@ -178,39 +181,39 @@ if ($myrow = mysql_fetch_array($result)){
             $inkscape_this_image = $inkscape_image_folder.$inkscape_image_icon;
             // 
             //."\n".$myrow["other_ip_address"]."\n".$myrow["other_description"];
-            $inkscape_current_obj_text=$myrow[$field["name"]]."\n\n";
+            $inkscape_current_obj_text[0]=$myrow[$field["name"]]."\n\n";
             //
             
             if ($inkscape_show_other_network_name== "y"){
-           $inkscape_current_obj_text_1=$inkscape_current_obj_text."Name: ".$myrow["other_network_name"]."\n";
+           $inkscape_current_obj_text[1]="Name: ".$myrow["other_network_name"]."\n";
             } else {}
 
             if ($inkscape_show_system_net_ip_address == "y"){
-           $inkscape_current_obj_text_2="ip: ".$myrow["other_ip_address"]."\n";
+           $inkscape_current_obj_text[2]="ip: ".$myrow["other_ip_address"]."\n";
             } else {}
             
             if ($inkscape_show_other_mac_address== "y"){
-           $inkscape_current_obj_text_3="MAC: ".$myrow["other_mac_address"]."\n";
+           $inkscape_current_obj_text[3]="MAC: ".$myrow["other_mac_address"]."\n";
             } else {}
             
             if ($inkscape_show_other_description== "y"){
-           $inkscape_current_obj_text_4="Description: ".$myrow["other_description"]."\n";
+           $inkscape_current_obj_text[4]="Description: ".$myrow["other_description"]."\n";
             } else {}
             
             if ($inkscape_show_other_location== "y"){
-           $inkscape_current_obj_text_5="Location: ".$myrow["other_location"]."\n";
+           $inkscape_current_obj_text[5]="Location: ".$myrow["other_location"]."\n";
             } else {}
             
             if ($inkscape_show_other_serial== "y"){
-           $inkscape_current_obj_text_6="Serial: ".$myrow["other_serial"]."\n";
+           $inkscape_current_obj_text[6]="Serial: ".$myrow["other_serial"]."\n";
             } else {}
             
             if ($inkscape_show_other_model== "y"){
-           $inkscape_current_obj_text_7="Model: ".$myrow["other_model"]."\n";
+           $inkscape_current_obj_text[7]="Model: ".$myrow["other_model"]."\n";
             } else {}
             
             if ($inkscape_show_other_type== "y"){
-           $inkscape_current_obj_text_8="Type: ".$myrow["other_type"]."\n";
+           $inkscape_current_obj_text[8]="Type: ".$myrow["other_type"]."\n";
             } else {}
             
 // If its a printer or print server, show the port and share info
@@ -218,20 +221,23 @@ if ($myrow = mysql_fetch_array($result)){
             if ( ($myrow["other_type"] == "printer") or ($myrow["other_type"] == "print server")) {
             
                  if ($inkscape_show_other_p_port_name== "y"){
-                $inkscape_current_obj_text_9="Printer Port Name: ".$myrow["other_p_port_name"]."\n";
+                $inkscape_current_obj_text[9]="Printer Port Name: ".$myrow["other_p_port_name"]."\n";
                     } else {}
             
                  if ($inkscape_show_other_p_share_name== "y"){
-                $inkscape_current_obj_text_10="Printer Share Name: ".$myrow["other_p_share_name"]."\n";
+                $inkscape_current_obj_text[10]="Printer Share Name: ".$myrow["other_p_share_name"]."\n";
                     } else {}
             } else {}
  // Nothing to do if it isn't a computer or a network object (yet AJH ;))  
             }
-            $inkscape_current_image_object_id = $inkscape_current_object_id;        
+            $inkscape_current_image_object_id = $inkscape_current_object_id; 
+            $inkscape_current_image_object_id_offset = 2;            
             // Add the Grouping for our object
             $inkscape = $inkscape.'      <g'.$inkscape_newline;
             $inkscape=$inkscape.'       transform="translate(-20,-9)"'.$inkscape_newline;
-            $inkscape=$inkscape.'       id="g'.(($inkscape_current_image_object_id *20)+2).'">'.$inkscape_newline;
+            $inkscape=$inkscape.'       id="g'.(($inkscape_current_image_object_id *20)+$inkscape_current_image_object_id_offset ).'">'.$inkscape_newline;
+            // Next Item
+             $inkscape_current_image_object_id_offset =  $inkscape_current_image_object_id_offset + 1; 
             // Add the image
             $inkscape=$inkscape.'      <image'.$inkscape_newline;
             $inkscape=$inkscape.'         xlink:href="'.$inkscape_this_image .'"'.$inkscape_newline;
@@ -239,67 +245,63 @@ if ($myrow = mysql_fetch_array($result)){
             $inkscape=$inkscape.'         y="'.$inkscape_current_object_y.'"'.$inkscape_newline;
             $inkscape=$inkscape.'         width="'.$inkscape_obj_image_0_elem_width.'"'.$inkscape_newline;
             $inkscape=$inkscape.'         height="'.$inkscape_obj_image_0_elem_height.'"'.$inkscape_newline;
-            $inkscape=$inkscape.'         id="'.(($inkscape_current_image_object_id *20)+3).'" />'.$inkscape_newline;
-            // Add the text lines
+            $inkscape=$inkscape.'         id="'.(($inkscape_current_image_object_id *20)+$inkscape_current_image_object_id_offset).'" />'.$inkscape_newline;
+            // Next Item
+             $inkscape_current_image_object_id_offset =  $inkscape_current_image_object_id_offset + 1; 
+            //
+
+            // Add the text boxes
+            $text_line_offset=0;
+            
+            // 
+            //
+            for ($textline = 0 ;$textline <= $inkscape_show_maxfields; $textline += 1){
+            //
+            // Add the text lines, Start with the format
             $inkscape=$inkscape.'      <text'.$inkscape_newline;
             $inkscape=$inkscape.'         x="'.$inkscape_current_object_x.'"'.$inkscape_newline;
             $inkscape=$inkscape.'         y="'.$inkscape_current_object_y.'"'.$inkscape_newline;
-            $inkscape=$inkscape.'         style="font-size:'.$inkscape_obj_text_0_font_height.'px;text-align:center;text-anchor:middle"'.$inkscape_newline;
-            $inkscape=$inkscape.'         id="text'.(($inkscape_current_image_object_id *20)+4).'"'.$inkscape_newline;
+            $inkscape=$inkscape.'         style="font-size:'.$inkscape_obj_text_font_height[$textline].'px;text-align:center;text-anchor:middle"'.$inkscape_newline;
+            $inkscape=$inkscape.'         id="text'.(($inkscape_current_image_object_id *20)+$inkscape_current_image_object_id_offset).'"'.$inkscape_newline;
+            // Next ID
+             $inkscape_current_image_object_id_offset =  $inkscape_current_image_object_id_offset + 1; 
+            // Position
             $inkscape=$inkscape.'         xml:space="preserve"><tspan'.$inkscape_newline;
-            $inkscape=$inkscape.'           x="'.($inkscape_current_object_x+$inkscape_obj_text_0_pos_x_offset).'"'.$inkscape_newline;
-            $inkscape=$inkscape.'           y="'.($inkscape_current_object_y+$inkscape_obj_text_0_pos_y_offset).'"'.$inkscape_newline;
-            $inkscape=$inkscape.'           id="tspan'.(($inkscape_current_image_object_id *20)+5).'">'.$inkscape_current_obj_text.'</tspan><tspan'.$inkscape_newline;
-            $inkscape=$inkscape.'           x="'.($inkscape_current_object_x+$inkscape_obj_text_0_pos_x_offset).'"'.$inkscape_newline;
-            $inkscape=$inkscape.'           y="'.($inkscape_current_object_y+$inkscape_obj_text_0_pos_y_offset+($inkscape_obj_text_0_font_height*1.5)).'"'.$inkscape_newline;
-            $inkscape=$inkscape.'           id="tspan'.(($inkscape_current_image_object_id *20)+6).'">'.$inkscape_current_obj_text_1.'</tspan><tspan'.$inkscape_newline;
-            $inkscape=$inkscape.'           x="'.($inkscape_current_object_x+$inkscape_obj_text_0_pos_x_offset).'"'.$inkscape_newline;
-            $inkscape=$inkscape.'           y="'.($inkscape_current_object_y+$inkscape_obj_text_0_pos_y_offset+2*($inkscape_obj_text_0_font_height*1.5)).'"'.$inkscape_newline;
-            $inkscape=$inkscape.'           id="tspan'.(($inkscape_current_image_object_id *20)+7).'">'.$inkscape_current_obj_text_2.'</tspan><tspan'.$inkscape_newline;
-            $inkscape=$inkscape.'           x="'.($inkscape_current_object_x+$inkscape_obj_text_0_pos_x_offset).'"'.$inkscape_newline;
-            $inkscape=$inkscape.'           y="'.($inkscape_current_object_y+$inkscape_obj_text_0_pos_y_offset+3*($inkscape_obj_text_0_font_height*1.5)).'"'.$inkscape_newline;
-            $inkscape=$inkscape.'           id="tspan'.(($inkscape_current_image_object_id *20)+8).'">'.$inkscape_current_obj_text_3.'</tspan><tspan'.$inkscape_newline;
-            $inkscape=$inkscape.'           x="'.($inkscape_current_object_x+$inkscape_obj_text_0_pos_x_offset).'"'.$inkscape_newline;
-            $inkscape=$inkscape.'           y="'.($inkscape_current_object_y+$inkscape_obj_text_0_pos_y_offset+4*($inkscape_obj_text_0_font_height*1.5)).'"'.$inkscape_newline;
-            $inkscape=$inkscape.'           id="tspan'.(($inkscape_current_image_object_id *20)+9).'">'.$inkscape_current_obj_text_4.'</tspan><tspan'.$inkscape_newline;
-            $inkscape=$inkscape.'           x="'.($inkscape_current_object_x+$inkscape_obj_text_0_pos_x_offset).'"'.$inkscape_newline;
-            $inkscape=$inkscape.'           y="'.($inkscape_current_object_y+$inkscape_obj_text_0_pos_y_offset+5*($inkscape_obj_text_0_font_height*1.5)).'"'.$inkscape_newline;
-            $inkscape=$inkscape.'           id="tspan'.(($inkscape_current_image_object_id *20)+10).'">'.$inkscape_current_obj_text_5.'</tspan><tspan'.$inkscape_newline;
-            $inkscape=$inkscape.'           x="'.($inkscape_current_object_x+$inkscape_obj_text_0_pos_x_offset).'"'.$inkscape_newline;
-            $inkscape=$inkscape.'           y="'.($inkscape_current_object_y+$inkscape_obj_text_0_pos_y_offset+6*($inkscape_obj_text_0_font_height*1.5)).'"'.$inkscape_newline;
-            $inkscape=$inkscape.'           id="tspan'.(($inkscape_current_image_object_id *20)+11).'">'.$inkscape_current_obj_text_6.'</tspan><tspan'.$inkscape_newline;
-            $inkscape=$inkscape.'           x="'.($inkscape_current_object_x+$inkscape_obj_text_0_pos_x_offset).'"'.$inkscape_newline;
-            $inkscape=$inkscape.'           y="'.($inkscape_current_object_y+$inkscape_obj_text_0_pos_y_offset+7*($inkscape_obj_text_0_font_height*1.5)).'"'.$inkscape_newline;
-            $inkscape=$inkscape.'           id="tspan'.(($inkscape_current_image_object_id *20)+12).'">'.$inkscape_current_obj_text_7.'</tspan><tspan'.$inkscape_newline;
-            $inkscape=$inkscape.'           x="'.($inkscape_current_object_x+$inkscape_obj_text_0_pos_x_offset).'"'.$inkscape_newline;
-            $inkscape=$inkscape.'           y="'.($inkscape_current_object_y+$inkscape_obj_text_0_pos_y_offset+8*($inkscape_obj_text_0_font_height*1.5)).'"'.$inkscape_newline;
-            $inkscape=$inkscape.'           id="tspan'.(($inkscape_current_image_object_id *20)+13).'">'.$inkscape_current_obj_text_8.'</tspan><tspan'.$inkscape_newline;
-            $inkscape=$inkscape.'           x="'.($inkscape_current_object_x+$inkscape_obj_text_0_pos_x_offset).'"'.$inkscape_newline;
-            $inkscape=$inkscape.'           y="'.($inkscape_current_object_y+$inkscape_obj_text_0_pos_y_offset+9*($inkscape_obj_text_0_font_height*1.5)).'"'.$inkscape_newline;
-            $inkscape=$inkscape.'           id="tspan'.(($inkscape_current_image_object_id *20)+14).'">'.$inkscape_current_obj_text_9.'</tspan><tspan'.$inkscape_newline;
-            $inkscape=$inkscape.'           x="'.($inkscape_current_object_x+$inkscape_obj_text_0_pos_x_offset).'"'.$inkscape_newline;
-            $inkscape=$inkscape.'           y="'.($inkscape_current_object_y+$inkscape_obj_text_0_pos_y_offset+10*($inkscape_obj_text_0_font_height*1.5)).'"'.$inkscape_newline;
-            $inkscape=$inkscape.'           id="tspan'.(($inkscape_current_image_object_id *20)+15).'">'.$inkscape_current_obj_text_10.'</tspan></text>'.$inkscape_newline;
+            // add in the next text height offset
+            $text_line_offset = $text_line_offset + $inkscape_obj_text_pos_y_offset[$textline];
+            $inkscape=$inkscape.'           x="'.($inkscape_current_object_x+$inkscape_obj_text_pos_x_offset[$textline]).'"'.$inkscape_newline;
+            $inkscape=$inkscape.'           y="'.($inkscape_obj_image_0_elem_height+$inkscape_current_object_y+$text_line_offset).'"'.$inkscape_newline;
+            // ... and the text.
+            $inkscape=$inkscape.'           id="tspan'.(($inkscape_current_image_object_id *20)+$inkscape_current_image_object_id_offset).'">'.$inkscape_current_obj_text[$textline].'</tspan></text>'.$inkscape_newline;
+            //
+            $inkscape_current_image_object_id_offset =  $inkscape_current_image_object_id_offset + 1; 
+            // Next ID
+            }
+                
+            
             // Close the grouping for this object
             $inkscape=$inkscape.'    </g>'.$inkscape_newline;
             $inkscape=$inkscape.'    <path'.$inkscape_newline;
             $inkscape=$inkscape.'       d="M '.$inkscape_current_object_x.','.$inkscape_current_object_y.' L '.($inkscape_current_object_x+$inkscape_obj_line_0_length_x).','.($inkscape_current_object_y+$inkscape_obj_line_0_length_y).'"'.$inkscape_newline;
             $inkscape=$inkscape.'       inkscape:connection-start="#g'.(($inkscape_current_image_object_id *20)+2).'"'.$inkscape_newline;
+            // Next Item
+             $inkscape_current_image_object_id_offset =  $inkscape_current_image_object_id_offset + 1; 
+
             $inkscape=$inkscape.'       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.30000001;stroke-linecap:round;stroke-linejoin:round;marker-start:url(#DiamondS);marker-mid:url(#DiamondS);marker-end:url(#DiamondS);stroke-miterlimit:4;stroke-dasharray:0.9, 0.3;stroke-dashoffset:0;stroke-opacity:1;display:inline"'.$inkscape_newline;
             $inkscape=$inkscape.'       id="path'.(($inkscape_current_image_object_id *20)+1).'" />'.$inkscape_newline;
 
        
        
-// move to next Object  
- $inkscape_current_object_id += 1;
-//    
+            // move to next Object  
+            $inkscape_current_object_id += 3;
+            //    
            
- $inkscape_current_object_id += 1;
+            //$inkscape_current_object_id += 1;
 
- $inkscape_current_object_id += 1;
+            //$inkscape_current_object_id += 1;
            
                 }                                                                       
-//           $inkscape_current_object_id += 4.0;
+            // $inkscape_current_object_id += 4.0;
             }
         }
         // Space out the objects
