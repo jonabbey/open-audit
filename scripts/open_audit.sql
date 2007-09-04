@@ -500,6 +500,8 @@ CREATE TABLE `other` (
   `other_p_port_name` varchar(100) NOT NULL default '',
   `other_p_shared` varchar(10) NOT NULL default '',
   `other_p_share_name` varchar(50) NOT NULL default '',
+  `other_switch_id` varchar(10) NOT NULL default '',
+  `other_switch_port` varchar(10) NOT NULL default '',
   `other_timestamp` bigint(20) unsigned NOT NULL default '0',
   `other_first_timestamp` bigint(20) unsigned NOT NULL default '0',
   PRIMARY KEY  (`other_id`),
@@ -708,6 +710,10 @@ CREATE TABLE `spare` (
   `spare_field_1` varchar(45) NOT NULL default '',
   `spare_field_2` varchar(100) NOT NULL default '',
   `spare_field_3` varchar(200) NOT NULL default '',
+  `spare_field_4` varchar(200) NOT NULL default '',
+  `spare_field_5` varchar(200) NOT NULL default '',
+  `spare_field_6` varchar(200) NOT NULL default '',
+  `spare_field_7` varchar(200) NOT NULL default '',
   `spare_timestamp` bigint(20) unsigned NOT NULL default '0',
   PRIMARY KEY  (`spare_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
@@ -727,6 +733,18 @@ CREATE TABLE `startup` (
   PRIMARY KEY  (`startup_id`),
   KEY `id` (`startup_uuid`),
   KEY `id2` (`startup_timestamp`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+DROP TABLE IF EXISTS `switch_ports`;
+CREATE TABLE `switch_ports` (
+  `switch_id` int(10) unsigned NOT NULL auto_increment,
+  `switch_switch_id` varchar(100) NOT NULL default '',
+  `switch_other_id` varchar(45) NOT NULL default '',
+  `switch_system_id` varchar(45) NOT NULL default '',
+  `switch_port` varchar(100) NOT NULL default '',
+  `switch_timestamp` varchar(200) NOT NULL default '',
+  `switch_first_timestamp` bigint(20) unsigned NOT NULL default '0',
+  PRIMARY KEY  (`spare_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 DROP TABLE IF EXISTS `system`;
