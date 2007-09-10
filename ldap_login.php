@@ -164,14 +164,14 @@
     <form method="post" action="<?php echo $_SERVER['SCRIPT_NAME']; ?>">
     <div align="center">
     <table width="210" border="0" cellspacing="0" cellpadding="0">
-    <table width="50%">
+    <table width="40%">
   <tr>
         <td colspan="1" class="main_each"><a href="index.php"><img src="images/logo.png" width="300" height="48" alt="" style="border:0px;" /></a></td>
   </tr>
     <tr>
     <td align="center">
     <fieldset>
-    <Legend><font face="Verdana,Tahoma,Arial,sans-serif" size="3" color="gray">Enter Credentials as username@domain.name</font></Legend>
+    <Legend><font face="Verdana,Tahoma,Arial,sans-serif" size="3" color="gray">Enter LDAP Credentials as username@domain.name</font></Legend>
     <table border="0" cellspacing="3" cellpadding="0">
     <tr>
     <td align="right" valign="middle"><b><font face="Verdana,Tahoma,Arial,sans-serif" size="1" color="gray">Username:</font></td>
@@ -197,7 +197,11 @@
     <table width="640"><tr><td align="center">
     <font face="Verdana,Tahoma,Arial,sans-serif" size="1"
     color="silver">This System is for the use of authorized users only.</font>
-    </td></tr></table>
+    </td></tr><td align="center">
+    <font face="Verdana,Tahoma,Arial,sans-serif" size="1"
+    color="silver">Please login using your LDAP or Active Directory User Name and Password.</font>
+    </td>
+    </tr></table>
     </div>
     </form>
     </div>
