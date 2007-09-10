@@ -164,10 +164,14 @@
     <form method="post" action="<?php echo $_SERVER['SCRIPT_NAME']; ?>">
     <div align="center">
     <table width="210" border="0" cellspacing="0" cellpadding="0">
+    <table width="50%">
+  <tr>
+        <td colspan="1" class="main_each"><a href="index.php"><img src="images/logo.png" width="300" height="48" alt="" style="border:0px;" /></a></td>
+  </tr>
     <tr>
     <td align="center">
     <fieldset>
-    <Legend><font face="Verdana,Tahoma,Arial,sans-serif" size="1" color="gray">Enter Credentials as username@domain.name</font></Legend>
+    <Legend><font face="Verdana,Tahoma,Arial,sans-serif" size="3" color="gray">Enter Credentials as username@domain.name</font></Legend>
     <table border="0" cellspacing="3" cellpadding="0">
     <tr>
     <td align="right" valign="middle"><b><font face="Verdana,Tahoma,Arial,sans-serif" size="1" color="gray">Username:</font></td>
