@@ -167,7 +167,7 @@
     <tr>
     <td align="center">
     <fieldset>
-    <Legend><font face="Verdana,Tahoma,Arial,sans-serif" size="1" color="gray">Enter Credentials</font></Legend>
+    <Legend><font face="Verdana,Tahoma,Arial,sans-serif" size="1" color="gray">Enter Credentials as username@domain.name</font></Legend>
     <table border="0" cellspacing="3" cellpadding="0">
     <tr>
     <td align="right" valign="middle"><b><font face="Verdana,Tahoma,Arial,sans-serif" size="1" color="gray">Username:</font></td>
