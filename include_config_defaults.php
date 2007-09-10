@@ -58,6 +58,7 @@ $ldap_attributes = array('displayname','description','userprincipalname','homedi
 $ldap_filter = '(&(objectClass=user)(objectCategory=person)(|(samaccountname='.$name.chr(42).')(name='.$name.chr(42).')(displayname='.$name.chr(42).')(cn='.$name.chr(42).')))';
 
 $ldap_connect_string = 'LDAP://server.domain.local';
+$use_ldap_login = 'n';
 
  
 

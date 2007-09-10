@@ -139,7 +139,7 @@ if ($myrow = mysql_fetch_array($result)){
             $inkscape_image_icon = determine_inkscape_img($myrow["system_os_name"],$myrow[$field["name"]]);
             //
             $inkscape_this_image = $inkscape_image_folder.$inkscape_image_icon;
-                       //
+            //
             $inkscape_current_obj_text[0]="  ".$myrow[$field["name"]]."\n\n";
            // $inkscape_current_obj_text="  ".$myrow[$field["name"]]."\n\n"."ip: ".$myrow["net_ip_address"]."\n"."\n"."User: ".$myrow["net_user_name"]."\n"."Domain: ".$myrow["net_domain"]."\n"."Vendor: ".$myrow["system_vendor"]."\n"."Model: ".$myrow["system_model"]."\n"."Memory: ".$myrow["system_memory"]." Mb";
            

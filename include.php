@@ -1,5 +1,6 @@
 <?php
 include_once "include_config.php";
+include "include_ldap_login.php";
 include_once "include_lang.php";
 include_once "include_functions.php";
 include_once "include_col_scheme.php";
