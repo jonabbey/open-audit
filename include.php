@@ -156,9 +156,10 @@ if ($page <> "setup"){
     <td style="width:170px;" rowspan="12" valign="top">
       <ul id="primary-nav">
         <li><a href="index.php"><?php echo __("Home"); ?></a></li>
-
+        
 
 <?php
+// echo "<li><a href=\"include_ldap_logout.php\">".__("Logout ").$_SESSION["username"]."</a></li>\n";
 if ($pc > "0") {
   $sql = "SELECT system_uuid, system_timestamp, system_name, system.net_ip_address, net_domain FROM system, network_card WHERE system_uuid = '$pc' OR system_name = '$pc' OR (net_mac_address = '$pc' AND net_uuid = system_uuid)";
   $result = mysql_query($sql, $db);
@@ -171,6 +172,7 @@ if ($pc > "0") {
   $domain = $myrow['net_domain'];
 
   //Menu-Entries for the selected PC
+  
   require_once("include_menu_array.php");
   echo "<li class=\"menuparent\">".
         "<a href=\"system.php?pc=$pc&amp;view=summary\">".
@@ -210,9 +212,13 @@ if ($pc > "0") {
           echo "</ul>\n";
         }
         echo "</li>\n";
+    
     }
+    
    echo "</ul>\n";
   echo "</li>\n";
+
+
 
 }
 
@@ -268,8 +274,11 @@ if ($pc > "0") {
 
          echo "</ul>\n";
         echo "</li>\n";
-        unset($topic_item["title"]);
+    unset($topic_item["title"]);
     }
+    if ((isset($use_ldap_login) and ($use_ldap_login == 'y'))) {
+    echo "<li><a href=\"include_ldap_logout.php\">".__("Logout ").$_SESSION["username"]."</a></li>\n";
+} else {}
 //     
 // Add a Strict Test button if $validate is set.     
 if ((isset($validate)) and ($validate =="y")){
