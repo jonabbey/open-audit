@@ -2,6 +2,7 @@
         session_start();
         // Include LDAP settings from config file
         include "include_config.php";
+        include "include_lang.php";
         // Set variables to those defined in include_config.php
         $server = $ldap_server;
         $domain = $management_domain_suffix;
@@ -171,16 +172,16 @@
         <tr>
         <td align="center">
         <fieldset>
-        <Legend><font face="Verdana,Tahoma,Arial,sans-serif" size="3" color="gray">Enter Credentials as username@domain.name</font></Legend>
+        <Legend><font face="Verdana,Tahoma,Arial,sans-serif" size="3" color="gray"><?php echo __("Enter Your Login Name");?></font></Legend>
         <table border="0" cellspacing="3" cellpadding="0">
         <tr>
-        <td align="right" valign="middle"><b><font face="Verdana,Tahoma,Arial,sans-serif" size="1" color="gray">Username:</font></td>
+        <td align="right" valign="middle"><b><font face="Verdana,Tahoma,Arial,sans-serif" size="1" color="gray"><?php echo __("Username:");?></font></td>
         <td align="center" valign="middle">
         <input class="clear" type="text" size="15" name="username">
         </td>
         </tr>
         <tr>
-        <td align="right" valign="middle"><b><font face="Verdana,Tahoma,Arial,sans-serif" size="1" color="gray">Password:</font></td>
+        <td align="right" valign="middle"><b><font face="Verdana,Tahoma,Arial,sans-serif" size="1" color="gray"><?php echo __("Password:");?></font></td>
         <td align="center" valign="middle">
         <input class="pass" type="password" size="15" name="password">
         </td>
@@ -196,10 +197,13 @@
         <br>
         <table width="640"><tr><td align="center">
         <font face="Verdana,Tahoma,Arial,sans-serif" size="1"
-        color="gray">This System is for the use of authorized users only.</font>
+        color="gray"><?php echo __("This System is for the use of authorized users only.");?></font>
         </td></tr><td align="center">
         <font face="Verdana,Tahoma,Arial,sans-serif" size="1"
-        color="gray">Please login using your LDAP or Active Directory User Name and Password.</font>
+        color="gray"><?php echo __("Please login using your LDAP or Active Directory User Name and Password.");?></font>
+        </td></tr><td align="center">
+        <font face="Verdana,Tahoma,Arial,sans-serif" size="1"
+        color="gray"><?php echo __("Unauthorised use of this site may be a criminal offence.");?></font>
         </td>
         </tr></table>
         </div>
