@@ -1,6 +1,8 @@
 <?php
 include_once "include_config.php";
+if ((isset($use_ldap_login) and ($use_ldap_login == 'y'))) {
 include "include_ldap_login.php";
+}else {}
 include_once "include_lang.php";
 include_once "include_functions.php";
 include_once "include_col_scheme.php";
@@ -217,11 +219,7 @@ if ($pc > "0") {
     
    echo "</ul>\n";
   echo "</li>\n";
-
-
-
 }
-
     //Normal Menu-Entries
     require_once("include_menu_array.php");
     reset ($menue_array["misc"]);
