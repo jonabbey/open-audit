@@ -158,7 +158,7 @@
                         document.onmousedown=click;
                         function click()
                         {
-                                if (event.button==2) {alert('Right-clicking has been disabled by the administrator.');}
+                                if (event.button==2) {alert(<?php echo __("'Right-clicking has been disabled by the administrator.'");?>);}
                         }
                        
                 //--></SCRIPT>
