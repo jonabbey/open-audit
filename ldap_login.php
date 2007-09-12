@@ -164,7 +164,7 @@
                     //--></SCRIPT>
             <form method="post" action="<?php echo $_SERVER['SCRIPT_NAME']; ?>">
             <div align="center">
-            <table width="30%" border="0" cellspacing="0" cellpadding="0">
+            <table width="35%" border="0" cellspacing="0" cellpadding="0">
           <tr>
                 <td colspan="1" ><a href="index.php"><img src="images/logo.png" width="300" height="48" alt="" style="border:0px;" /></a></td>
           </tr>
@@ -194,7 +194,8 @@
             </fieldset>
             </table>
             <br>
-            <table width="640"><tr><td align="center">
+            <table width="35%" border="0" cellspacing="0" cellpadding="0">
+            <td align="center">
             <font face="Verdana,Tahoma,Arial,sans-serif" size="1"
             color="gray"><?php echo __("This System is for the use of authorized users only.");?></font>
             </td></tr><td align="center">
