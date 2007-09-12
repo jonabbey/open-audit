@@ -489,12 +489,11 @@ function returnConfig() {
 \$ldap_server = 'myserver.local';
 \$ldap_base_dn = 'dc=domain,dc=local';
 \$ldap_connect_string = 'LDAP:\/\/server.domain.local';
+\$use_ldap_login = 'n';
 
 
 \$ldap_attributes = array(\"displayname\",\"description\",\"userprincipalname\",\"homedirectory\",\"homedrive\",\"profilepath\",\"scriptpath\",\"mail\",\"samaccountname\",\"telephonenumber\",\"usncreated\",\"department\",\"sn\");
 \$ldap_filter = '\"(&(objectClass=user)(objectCategory=person)(|(samaccountname=\"*\")(name=\"*\")(displayname=\"*\")(cn=\"\"*\")))\"';
-\$ldap_base_dn = 'dc=domain,dc=local';
-\$ldap_connect_string = 'LDAP:\/\/server.domain.local';
 
  
 \$language = '";

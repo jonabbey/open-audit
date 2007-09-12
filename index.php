@@ -1,5 +1,4 @@
 <?php
-    include "include_ldap_login.php";
 /**
 *
 * @version $Id: index.php  24th May 2007
