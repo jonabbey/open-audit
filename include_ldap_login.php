@@ -1,6 +1,9 @@
 <?php
     session_start();
-    if(!isset($_SESSION["role"])and ($use_ldap_login = "y"))
+    if(!isset($_SESSION["role"]) and
+       isset($use_ldap_login) and
+       ($use_ldap_login == "y")
+      )
     {
        header('Location: ldap_login.php');
        exit;
