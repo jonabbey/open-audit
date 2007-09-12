@@ -164,8 +164,7 @@
                     //--></SCRIPT>
             <form method="post" action="<?php echo $_SERVER['SCRIPT_NAME']; ?>">
             <div align="center">
-            <table width="50%" border="0" cellspacing="0" cellpadding="0">
-            <table width="50%" border="0" cellspacing="0" cellpadding="0">
+            <table width="30%" border="0" cellspacing="0" cellpadding="0">
           <tr>
                 <td colspan="1" ><a href="index.php"><img src="images/logo.png" width="300" height="48" alt="" style="border:0px;" /></a></td>
           </tr>
