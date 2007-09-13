@@ -158,7 +158,7 @@ if ($page <> "setup"){
     if (strpos($_SERVER['REQUEST_URI'],"admin")){
     $page_type="admin";
     } 
-    if (strpos($_SERVER['REQUEST_URI'],"input")){
+    if (strpos($_SERVER['REQUEST_URI'],"input") or strpos($_SERVER['REQUEST_URI'],"pc_add")){
     $page_type="input";
     } 
     if (strpos($_SERVER['REQUEST_URI'],"system")){
