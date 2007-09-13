@@ -110,23 +110,11 @@ if ($myrow = mysql_fetch_array($result)){
         foreach($query_array["fields"] as $field){
             if($field["show"]!="n"){
             //
-            $inkscape_current_obj_text_0='';
-            $inkscape_current_obj_text_1='';
-            $inkscape_current_obj_text_2='';
-            $inkscape_current_obj_text_3='';
-            $inkscape_current_obj_text_4='';
-            $inkscape_current_obj_text_5='';
-            $inkscape_current_obj_text_6='';
-            $inkscape_current_obj_text_8='';
-            $inkscape_current_obj_text_9='';
-            $inkscape_current_obj_text_10='';
-            $inkscape_current_obj_text_11='';
-            $inkscape_current_obj_text_12='';
-            $inkscape_current_obj_text_13='';
-            $inkscape_current_obj_text_14='';
-            $inkscape_current_obj_text_15='';
-            $inkscape_current_obj_text_16='';
-           
+            // Blank the Text array so we dont show the previous results. 
+            for ($textline = 0 ;$textline <= $inkscape_show_maxfields; $textline += 1){
+            $inkscape_current_obj_text[$textline]='';
+            }
+            
             //
             if (($field["head"]=="Hostname")or ($field["head"]=="Network Name")){
 
@@ -185,7 +173,7 @@ if ($myrow = mysql_fetch_array($result)){
             //
             
             if ($inkscape_show_other_network_name== "y"){
-           $inkscape_current_obj_text[1]="Name: ".$myrow["other_network_name"]."\n";
+           $inkscape_current_obj_text[1]=__("Name: ").$myrow["other_network_name"]."\n";
             } else {}
 
             if ($inkscape_show_system_net_ip_address == "y"){

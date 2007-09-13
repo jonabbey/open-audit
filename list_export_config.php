@@ -13,8 +13,8 @@ $config_newline="\r\n";
 
 
 $this_config='audit_location = "r"'.$config_newline;
-$this_config=$this_config.'verbose = "n"'.$config_newline; 
-$this_config=$this_config.'audit_host="http://localhost"'.$config_newline;
+$this_config=$this_config.'verbose = "y"'.$config_newline; 
+$this_config=$this_config.'audit_host="http://support.cmarine.local"'.$config_newline;
 $this_config=$this_config.'online = "yesxml"'.$config_newline; 
 $this_config=$this_config.'strComputer = ""'.$config_newline; 
 $this_config=$this_config.'ie_visible = "n" '.$config_newline;
@@ -27,7 +27,7 @@ $this_config=$this_config.'email_to = ""'.$config_newline;
 $this_config=$this_config.'email_from = ""'.$config_newline; 
 $this_config=$this_config.'email_server = ""'.$config_newline; 
 $this_config=$this_config.'audit_local_domain = "y"'.$config_newline;
-$this_config=$this_config.'local_domain = "LDAP://localdomain.local"'.$config_newline; 
+$this_config=$this_config.'local_domain = "LDAP://cmarine.local"'.$config_newline; 
 $this_config=$this_config.'hfnet = "n"'.$config_newline; 
 $this_config=$this_config.'Count = 0'.$config_newline; 
 $this_config=$this_config.'number_of_audits = 10'.$config_newline; 

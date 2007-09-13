@@ -148,6 +148,42 @@ if ($page <> "setup"){
 } else {
   $version = "0.1.00";
 }
+/*
+?>
+<table width="100%">
+<td colspan="3" class="main_each">
+<?php
+*/
+    $page_type="standard";
+    if (strpos($_SERVER['REQUEST_URI'],"admin")){
+    $page_type="admin";
+    } 
+    if (strpos($_SERVER['REQUEST_URI'],"input")){
+    $page_type="input";
+    } 
+    if (strpos($_SERVER['REQUEST_URI'],"system")){
+    $page_type="system";
+    } 
+    if (strpos($_SERVER['REQUEST_URI'],"list")){
+    $page_type="list";
+    } 
+ 
+if ((isset($use_ldap_login) and ($use_ldap_login == 'y') and ($page_type <> "input") )) {
+    echo "<table width=\"100%\">\n";
+    echo "<td colspan=\"3\" class=\"main_each\">\n";
+    echo "<a href=\"ldap_logout.php\">".__("Logout ").$_SESSION["username"]."</a>\n";
+//  Uncomment the following to see what tyoe of page this is
+//    echo "<a href=\"index.php\">"."    We are in a ".$page_type." type of page"."</a>\n";
+    echo "</td>\n";
+    echo "</table>\n";
+
+} else {}
+/*
+?>
+/
+</td>
+</table>
+*/
 ?>
 <table width="100%">
   <tr>
@@ -275,7 +311,7 @@ if ($pc > "0") {
     unset($topic_item["title"]);
     }
     if ((isset($use_ldap_login) and ($use_ldap_login == 'y'))) {
-    echo "<li><a href=\"include_ldap_logout.php\">".__("Logout ").$_SESSION["username"]."</a></li>\n";
+//    echo "<li><a href=\"include_ldap_logout.php\">".__("Logout ").$_SESSION["username"]."</a></li>\n";
 } else {}
 //     
 // Add a Strict Test button if $validate is set.     
