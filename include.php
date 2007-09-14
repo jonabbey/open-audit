@@ -1,8 +1,8 @@
 <?php
 include_once "include_config.php";
-if ((isset($use_ldap_login) and ($use_ldap_login == 'y'))) {
-include "include_ldap_login.php";
-}else {}
+//if ((isset($use_ldap_login) and ($use_ldap_login == 'y'))) {
+//include "include_ldap_login.php";
+//}else {}
 include_once "include_lang.php";
 include_once "include_functions.php";
 include_once "include_col_scheme.php";
@@ -17,9 +17,15 @@ if ($show_software_detected == 'y'){ $jscript_count = $jscript_count + 1; }
 if ($show_patches_not_detected == 'y'){ $jscript_count = $jscript_count + 1; }
 if ($show_detected_servers == 'y'){ $jscript_count = $jscript_count + 5; }
 
-if (!isset($page)) { $page = ""; }
+if (!isset($page)) {$page = ""; }
 
-if ($page == "add_pc"){$use_pass = "n";}
+if ($page == "add_pc"){
+    $use_pass = "n";
+} else {
+    if ((isset($use_ldap_login) and ($use_ldap_login == 'y'))) {
+        include "include_ldap_login.php";
+    }else {}
+}
 
 if ($use_pass != "n") {
   // If there's no Authentication header, exit
@@ -154,21 +160,21 @@ if ($page <> "setup"){
 <td colspan="3" class="main_each">
 <?php
 */
-    $page_type="standard";
-    if (strpos($_SERVER['REQUEST_URI'],"admin")){
-    $page_type="admin";
-    } 
-    if (strpos($_SERVER['REQUEST_URI'],"input") or strpos($_SERVER['REQUEST_URI'],"pc_add")){
-    $page_type="input";
-    } 
-    if (strpos($_SERVER['REQUEST_URI'],"system")){
-    $page_type="system";
-    } 
-    if (strpos($_SERVER['REQUEST_URI'],"list")){
-    $page_type="list";
-    } 
+//    $page_type="standard";
+//    if (strpos($_SERVER['REQUEST_URI'],"admin")){
+//    $page_type="admin";
+//    } 
+//    if (strpos($_SERVER['REQUEST_URI'],"input") or strpos($_SERVER['REQUEST_URI'],"pc_add")){
+//    $page_type="input";
+//    } 
+//    if (strpos($_SERVER['REQUEST_URI'],"system")){
+//   $page_type="system";
+//    } 
+//    if (strpos($_SERVER['REQUEST_URI'],"list")){
+//    $page_type="list";
+//    } 
  
-if ((isset($use_ldap_login) and ($use_ldap_login == 'y') and ($page_type <> "input") )) {
+if ((isset($use_ldap_login) and ($use_ldap_login == 'y'))) {
     echo "<table width=\"100%\">\n";
     echo "<td colspan=\"3\" class=\"main_each\">\n";
     echo "<a href=\"ldap_logout.php\">".__("Logout ").$_SESSION["username"]."</a>\n";
@@ -176,7 +182,6 @@ if ((isset($use_ldap_login) and ($use_ldap_login == 'y') and ($page_type <> "inp
 //    echo "<a href=\"index.php\">"."    We are in a ".$page_type." type of page"."</a>\n";
     echo "</td>\n";
     echo "</table>\n";
-
 } else {}
 /*
 ?>
