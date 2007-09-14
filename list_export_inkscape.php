@@ -4,6 +4,7 @@ include_once("include_config.php");
 include_once("include_functions.php");
 include_once("include_lang.php");
 include_once("include_inkscape_config.php");
+// Set time limit to avoid broken pages, this may need to be a config var if this becomes an issue elsewhere.
 
 //$time_start = microtime_float();
 
@@ -110,11 +111,24 @@ if ($myrow = mysql_fetch_array($result)){
         foreach($query_array["fields"] as $field){
             if($field["show"]!="n"){
             //
-            // Blank the Text array so we dont show the previous results. 
-            for ($textline = 0 ;$textline <= $inkscape_show_maxfields; $textline += 1){
-            $inkscape_current_obj_text[$textline]='';
-            }
-            
+            $inkscape_current_obj_text[0]='';
+            $inkscape_current_obj_text[1]='';
+            $inkscape_current_obj_text[2]='';
+            $inkscape_current_obj_text[3]='';
+            $inkscape_current_obj_text[4]='';
+            $inkscape_current_obj_text[5]='';
+            $inkscape_current_obj_text[6]='';
+            $inkscape_current_obj_text[8]='';
+            $inkscape_current_obj_text[9]='';
+            $inkscape_current_obj_text[10]='';
+            $inkscape_current_obj_text[11]='';
+            $inkscape_current_obj_text[12]='';
+            $inkscape_current_obj_text[13]='';
+            $inkscape_current_obj_text[14]='';
+            $inkscape_current_obj_text[15]='';
+            $inkscape_current_obj_text[16]='';
+           // Add an additional 100ms to our time
+           set_time_limit(100);
             //
             if (($field["head"]=="Hostname")or ($field["head"]=="Network Name")){
 
@@ -173,7 +187,7 @@ if ($myrow = mysql_fetch_array($result)){
             //
             
             if ($inkscape_show_other_network_name== "y"){
-           $inkscape_current_obj_text[1]=__("Name: ").$myrow["other_network_name"]."\n";
+           $inkscape_current_obj_text[1]="Name: ".$myrow["other_network_name"]."\n";
             } else {}
 
             if ($inkscape_show_system_net_ip_address == "y"){
@@ -215,9 +229,10 @@ if ($myrow = mysql_fetch_array($result)){
                  if ($inkscape_show_other_p_share_name== "y"){
                 $inkscape_current_obj_text[10]="Printer Share Name: ".$myrow["other_p_share_name"]."\n";
                     } else {}
-            } else {}
+                } else {}
+             }
  // Nothing to do if it isn't a computer or a network object (yet AJH ;))  
-            }
+            
             $inkscape_current_image_object_id = $inkscape_current_object_id; 
             $inkscape_current_image_object_id_offset = 2;            
             // Add the Grouping for our object
