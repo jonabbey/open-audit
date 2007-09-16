@@ -1,8 +1,5 @@
 <?php
 include_once "include_config.php";
-//if ((isset($use_ldap_login) and ($use_ldap_login == 'y'))) {
-//include "include_ldap_login.php";
-//}else {}
 include_once "include_lang.php";
 include_once "include_functions.php";
 include_once "include_col_scheme.php";
@@ -16,6 +13,31 @@ if ($show_partition_usage == 'y'){ $jscript_count = $jscript_count + 1; }
 if ($show_software_detected == 'y'){ $jscript_count = $jscript_count + 1; }
 if ($show_patches_not_detected == 'y'){ $jscript_count = $jscript_count + 1; }
 if ($show_detected_servers == 'y'){ $jscript_count = $jscript_count + 5; }
+
+if (isset($use_https) AND $use_https == "y") {
+
+
+#gets the URI of the script
+//$our_url =  $_SERVER['SCRIPT_URI'];
+
+#chops URI into bits 
+//$chopped = parse_url($our_url);
+
+#HOST and PATH portions of your final destination
+//$destination = $chopped[host].$chopped[path];
+//print_r ($chopped[host]); 
+/*
+#if you are not HTTPS, then do something about it
+if($chopped[scheme] != "https"){
+/*
+    #forwards to HTTP version of URI with secure certificate
+    header("Location: https://$destination");
+    exit(); 
+    }
+*/
+
+       if ($_SERVER["SERVER_PORT"]!=443){ header("Location: https://".$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF']); exit(); }
+}
 
 if (!isset($page)) {$page = ""; }
 
@@ -48,33 +70,6 @@ if ($use_pass != "n") {
     exit('Unauthorized!');
   }
 } else {}
-
-
-if (isset($use_https) AND $use_https == "y") {
-
-
-#gets the URI of the script
-//$our_url =  $_SERVER['SCRIPT_URI'];
-
-#chops URI into bits 
-//$chopped = parse_url($our_url);
-
-#HOST and PATH portions of your final destination
-//$destination = $chopped[host].$chopped[path];
-//print_r ($chopped[host]); 
-/*
-#if you are not HTTPS, then do something about it
-if($chopped[scheme] != "https"){
-/*
-    #forwards to HTTP version of URI with secure certificate
-    header("Location: https://$destination");
-    exit(); 
-    }
-*/
-
-       if ($_SERVER["SERVER_PORT"]!=443){ header("Location: https://".$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF']); exit(); }
-}
-
 
 // ob_start();
 ?>

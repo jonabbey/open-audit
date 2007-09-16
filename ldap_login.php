@@ -12,7 +12,7 @@ $basedn = $ldap_base_dn;
 // Domain Users is the primary group by default. The $admin_list and $user_list variables cannot contain the Primary group.
 
 // You can assign roles by populating these arrays with Active Directory user or group names enclosed in quotes
-// and separated separated by commas. If each is empty, all users are given the role of admin.
+// and separated separated by commas. If each is empty "array()", all users are given the role of admin.
 //$admin_list = array("openauditadmin", "administrator");
 //$user_list = array("username1", "username2");
 
@@ -65,7 +65,7 @@ if (isset($_POST['username'])) {
         header('Location: '.$script);
         die ("Could not bind with account $username");
     }
-               
+
     // Query AD for fqdn to be used in check for group membership
     $sr = ldap_search($connect, $basedn, "(&(objectClass=user)(objectCategory=person)(|(sAMAccountName=$username)))");
     $info = ldap_get_entries($connect, $sr);
@@ -75,7 +75,7 @@ if (isset($_POST['username'])) {
     $_SESSION["username"]=$username;
     $_SESSION["token"]=$password;
     $_SESSION["fullname"]=$fullname;
-    $_SESSION["fqdn"]=$fqdn;           
+    $_SESSION["fqdn"]=$fqdn;
 
     // check to see if $admin_list or $user_list arrays are populated.
     // If arrays are populated check authenticated user for assigned role
@@ -83,7 +83,6 @@ if (isset($_POST['username'])) {
     if ((count($admin_list)>0) || (count($user_list)>0)) {
         for ($j=0; $j<count($user_list); $j++) {
             if (strtolower($username)==strtolower($user_list[$j])) {
-                echo " MATCH USER USERNAME" . "<BR>";
                 $_SESSION["role"]="user";
             } else {
                 $sr=ldap_search($connect, $basedn, "(&(objectClass=group)(sAMAccountName=" . $user_list[$j] . "))");
@@ -91,9 +90,7 @@ if (isset($_POST['username'])) {
                 for ($i=0; $i<$info["count"]; $i++) {
                     for ($j=0; $j<count($info[$i]["member"])-1; $j++) {
                         // Create SESSION variable if username is a member $user_list
-                        echo "Member " . $info[$i]["member"][$j] . "<BR>";
                         if ($info[$i]["member"][$j] == $fqdn) {
-                            echo " MATCH USER GROUP " . "<BR>";
                             $_SESSION["role"]="user";
                             break 3;
                         }
@@ -104,7 +101,6 @@ if (isset($_POST['username'])) {
 
         for ($j=0; $j<count($admin_list); $j++) {
             if ($username==$admin_list[$j]) {
-                echo " MATCH ADMIN USERNAME" . "<BR>";
                 $_SESSION["role"]="admin";
             } else {
                 $sr=ldap_search($connect, $basedn, "(&(objectClass=group)(sAMAccountName=" . $admin_list[$j] . "))");
@@ -112,9 +108,7 @@ if (isset($_POST['username'])) {
                 for ($i=0; $i<$info["count"]; $i++) {
                     for ($j=0; $j<count($info[$i]["member"])-1; $j++) {
                         // Create SESSION variable if username is a member of $admin_list
-                        echo "Member " . $info[$i]["member"][$j] . "<BR>";
                         if ($info[$i]["member"][$j] == $fqdn) {
-                            echo " MATCH ADMIN GROUP " . "<BR>";
                             $_SESSION["role"]="admin";
                             break 3;
                         }
@@ -154,7 +148,7 @@ if (isset($_POST['username'])) {
                      {
                             if (event.button==2) {alert(<?php echo __("'Right-clicking has been disabled by the administrator.'");?>);}
                      }
-                       
+
 //--></SCRIPT>
 <form method="post" action="<?php echo $_SERVER['SCRIPT_NAME']; ?>">
 <div align="center">
