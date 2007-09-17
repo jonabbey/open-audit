@@ -13,12 +13,12 @@ if ThisResult = 1 then
          ObjOperatingSystem.Win32Shutdown(0)
     Next
 
-    if Err.Descriptin = "Object not a collection" then
+    if Err.Description = "Object not a collection" then
     wscript.echo "Machine not available"
     end if
 
     if Err.Description = "" then
-    wscript.echo strComputer+" System Reboot Started"
+    wscript.echo strComputer+" System Logoff Started"
     end if
 
     if Err.Description <> "" then

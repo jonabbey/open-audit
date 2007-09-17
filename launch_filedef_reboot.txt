@@ -13,7 +13,7 @@ if ThisResult = 1 then
          objOperatingSystem.Reboot()
     Next
 
-    if Err.Descriptin = "Object not a collection" then
+    if Err.Description = "Object not a collection" then
     wscript.echo "Machine not available"
     end if
 
