@@ -410,55 +410,56 @@ if ($show_detected_servers == "y"){
 
 
   //// WEB Servers Detected
-  $count = 0;
-  $bgcolor = "#FFFFFF";
-  echo
-    "<div class=\"main_each\">
-       <table style=\"border:0px;\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" >
-          <tr>
-            <td class=\"indexheadlines\" colspan=\"4\"><a href=\"javascript://\" onclick=\"switchUl('f6');\">".__("WEB Servers").".</a></td>
-            <td align=\"right\"><a href=\"javascript://\" onclick=\"switchUl('f6');\"><img src=\"images/down.png\" width=\"16\" height=\"16\" style=\"border:0px;\" alt=\"\" /></a></td>
-          </tr>
-        </table>
-
-        <div style=\"display:none;\" id=\"f6\">
-          <table style=\"border:0px;\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" >
-            <tr>
-              <td colspan=\"2\"><b>".__("Windows")." ".__("Services")."</b></td>
-            </tr>\n";
-
-  $sql  = "SELECT DISTINCT ser.service_uuid, ser.service_display_name, ser.service_started, sys.system_name, sys.net_ip_address FROM service ser, system sys
-           WHERE (ser.service_display_name LIKE 'IIS Admin%' OR ser.service_display_name LIKE 'Apache%') AND
-           ser.service_uuid = sys.system_uuid AND
-           ser.service_timestamp = sys.system_timestamp ORDER BY system_name";
-
-  $result = mysql_query($sql, $db);
-  if ($myrow = mysql_fetch_array($result)){
-    // Service Detected
-    echo
-      "<tr>
-         <td><b>".__("IP Address")."</b></td>
-         <td><b>".__("Hostname")."</b></td>
-         <td><b>".__("Service")."</b></td>
-         <td><b>".__("State")."</b></td>
-       </tr>\n";
-
-    do {
-      $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
-      $count = $count + 1;
-
+      //// WEB Servers Detected
+      $count = 0;
+      $bgcolor = "#FFFFFF";
       echo
-        "<tr style=\"bgcolor:" . $bgcolor . ";\">
-           <td>" . ip_trans($myrow["net_ip_address"]) . "&nbsp;</td>
-           <td><a href=\"system.php?pc=" . $myrow["service_uuid"] . "&amp;view=summary\">" . $myrow["system_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
-           <td>" . $myrow["service_display_name"] . "</td>
-           <td><a href= \"http://".$myrow["system_name"]."\" onclick=\"this.target='_blank';\" />" . $myrow["service_started"] . "</td>
-         </tr>\n";
+        "<div class=\"main_each\">
+           <table style=\"border:0px;\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" >
+              <tr>
+                <td class=\"indexheadlines\" colspan=\"4\"><a href=\"javascript://\" onclick=\"switchUl('f6');\">".__("WEB Servers").".</a></td>
+                <td align=\"right\"><a href=\"javascript://\" onclick=\"switchUl('f6');\"><img src=\"images/down.png\" width=\"16\" height=\"16\" style=\"border:0px;\" alt=\"\" /></a></td>
+              </tr>
+            </table>
 
-    } while ($myrow = mysql_fetch_array($result));
-    echo "<tr><td>&nbsp;</td></tr>\n";
-  } else {}
-  // Nmap discovered on Audited PC
+            <div style=\"display:none;\" id=\"f6\">
+              <table style=\"border:0px;\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" >
+                <tr>
+                  <td colspan=\"2\"><b>".__("Windows")." ".__("Services")."</b></td>
+                </tr>\n";
+
+      $sql  = "SELECT DISTINCT ser.service_uuid, ser.service_name, ser.service_display_name, ser.service_started, sys.system_name, sys.net_ip_address FROM service ser, system sys
+               WHERE (ser.service_name LIKE 'IISAdmin%' OR ser.service_name LIKE 'Apache%') AND
+               ser.service_uuid = sys.system_uuid AND
+               ser.service_timestamp = sys.system_timestamp ORDER BY system_name";
+
+      $result = mysql_query($sql, $db);
+      if ($myrow = mysql_fetch_array($result)){
+        // Service Detected
+        echo
+          "<tr>
+             <td><b>".__("IP Address")."</b></td>
+             <td><b>".__("Hostname")."</b></td>
+             <td><b>".__("Service")."</b></td>
+             <td><b>".__("State")."</b></td>
+           </tr>\n";
+
+        do {
+          $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
+          $count = $count + 1;
+
+          echo
+            "<tr style=\"bgcolor:" . $bgcolor . ";\">
+               <td>" . ip_trans($myrow["net_ip_address"]) . "&nbsp;</td>
+               <td><a href=\"system.php?pc=" . $myrow["service_uuid"] . "&amp;view=summary\">" . $myrow["system_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
+               <td>" . $myrow["service_display_name"] . "</td>
+               <td><a href= \"http://".$myrow["system_name"]."\" onclick=\"this.target='_blank';\" />" . $myrow["service_started"] . "</td>
+             </tr>\n";
+
+        } while ($myrow = mysql_fetch_array($result));
+        echo "<tr><td>&nbsp;</td></tr>\n";
+      } else {}
+      // Nmap discovered on Audited PC
   $sql = "select sys.net_ip_address,sys.system_name,sys.system_uuid, port.nmap_port_number  from system sys, nmap_ports port where port.nmap_port_number = '80' AND port.nmap_other_id = sys.system_uuid";
   $result = mysql_query($sql, $db);
   if ($myrow = mysql_fetch_array($result)){
