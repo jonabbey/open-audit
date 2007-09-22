@@ -258,7 +258,7 @@ if ($myrow = mysql_fetch_array($result)){
             
             // 
             //
-            for ($textline = 0 ;$textline <= $inkscape_show_maxfields; $textline += 1){
+            for ($textline = 0 ;$textline <= ($inkscape_show_maxfields-1); $textline += 1){
             //
             // Add the text lines, Start with the format
             $inkscape=$inkscape.'      <text'.$inkscape_newline;
