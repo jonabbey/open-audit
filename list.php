@@ -443,7 +443,7 @@ if ($myrow = mysql_fetch_array($result)){
      if(isset($_REQUEST["monitor"])){
          echo "<input type=\"hidden\" name=\"monitor\" value=\"".$_REQUEST["monitor"]."\" />\n";
      }
-     echo "<br /><a href=\"http://www.openoffice.org/\"<img src=\"images/x-office-spreadsheet.png\" alt=\"".__("CSV Spreadsheet")."\" title=\"".__("Click Here for the latest version of Open Office")."\" style=\"border:0px;\" width=\"28\" height=\"28\" /></a><a href=\"#\" onclick=\"document.forms['form_export'].submit();\"> ".__("Export this List to CSV")."</a>\n";
+     echo "<br /><a href=\"http://www.openoffice.org/\"><img src=\"images/x-office-spreadsheet.png\" alt=\"".__("CSV Spreadsheet")."\" title=\"".__("Click Here for the latest version of Open Office")."\" style=\"border:0px;\" width=\"28\" height=\"28\" /></a><a href=\"#\" onclick=\"document.forms['form_export'].submit();\"> ".__("Export this List to CSV")."</a>\n";
     echo "</p></form>\n";
             echo "<td>\n";
     // Export to DIA
@@ -464,7 +464,7 @@ if ($myrow = mysql_fetch_array($result)){
      if(isset($_REQUEST["monitor"])){
          echo "<input type=\"hidden\" name=\"monitor\" value=\"".$_REQUEST["monitor"]."\" />\n";
      }
-     echo "<br /><a href=\"http://live.gnome.org/Dia\" <img src=\"images/gnome-application-x-dia-diagram.png\" alt=\"".__("Dia Diagram")."\" title=\"".__("Click here for the latest version of DIA")."\" style=\"border:0px;\" width=\"28\" height=\"28\" /></a><a href=\"#\" onclick=\"document.forms['form_export_dia'].submit();\"> ".__("Create DIA Network Diagram From List")."</a>\n";
+     echo "<br /><a href=\"http://live.gnome.org/Dia\"><img src=\"images/gnome-application-x-dia-diagram.png\" alt=\"".__("Dia Diagram")."\" title=\"".__("Click here for the latest version of DIA")."\" style=\"border:0px;\" width=\"28\" height=\"28\" /></a><a href=\"#\" onclick=\"document.forms['form_export_dia'].submit();\"> ".__("Create DIA Network Diagram From List")."</a>\n";
     echo "</p></form>\n";
             echo "<td>\n";
     // Export to Inkscape
@@ -480,7 +480,7 @@ if ($myrow = mysql_fetch_array($result)){
      if(isset($_REQUEST["monitor"])){
          echo "<input type=\"hidden\" name=\"monitor\" value=\"".$_REQUEST["monitor"]."\" />\n";
      }
-     echo "<br /><a href=\"http://www.inkscape.org/\" <img src=\"images/inkscape.png\" alt=\"".__("Inkscape Drawing")."\" title=\"".__("Click here for the latest version of Inkscape")."\" style=\"border:0px;\" width=\"28\" height=\"28\" /></a><a href=\"#\" onclick=\"document.forms['form_export_inkscape'].submit();\"> ".__("Create Inkscape (SVG) Picture From List(BETA)")."</a>\n";
+     echo "<br /><a href=\"http://www.inkscape.org/\"><img src=\"images/inkscape.png\" alt=\"".__("Inkscape Drawing")."\" title=\"".__("Click here for the latest version of Inkscape")."\" style=\"border:0px;\" width=\"28\" height=\"28\" /></a><a href=\"#\" onclick=\"document.forms['form_export_inkscape'].submit();\"> ".__("Create Inkscape (SVG) Picture From List(BETA)")."</a>\n";
     echo "</p></form>\n";
                 } else{}
         } else{}
