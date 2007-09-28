@@ -835,7 +835,7 @@ function insert_scsi_controller ($split) {
       $result = mysql_query($sql) or die ('Insert Failed: ' . mysql_error() . '<br />' . $sql);
     }
   }
-
+/*
 function insert_scsi_device ($split) {
     global $timestamp, $uuid, $verbose, $scsi_device_timestamp;
     if ($verbose == "y"){echo "<h2>SCSI Device</h2><br />";}
@@ -853,7 +853,7 @@ function insert_scsi_device ($split) {
     $scsi_device_device = str_replace("\\\\", "\\", $scsi_device_device);
     $scsi_device_device = substr($scsi_device_device, 0, (strlen($scsi_device_device) -2));
 
-echo $scsi_device_controller . "<br />" . $scsi_device_device . "<br />";
+    echo $scsi_device_controller . "<br />" . $scsi_device_device . "<br />";
 
     if (is_null($scsi_device_timestamp)){
       $sql = "SELECT MAX(scsi_device_timestamp) FROM scsi_device WHERE scsi_device_uuid = '$uuid'";
@@ -883,6 +883,58 @@ echo $scsi_device_controller . "<br />" . $scsi_device_device . "<br />";
       if ($verbose == "y"){echo $sql . "<br />\n\n";}
       $result = mysql_query($sql) or die ('Insert Failed: ' . mysql_error() . '<br />' . $sql);
     }
+  }
+*/
+
+function insert_scsi_device ($split) {
+    global $timestamp, $uuid, $verbose, $scsi_device_timestamp;
+    if ($verbose == "y"){echo "<h2>SCSI Device</h2><br />";}
+    $extended = explode('^^^',$split);
+
+    $scsi_device_controller = trim($extended[1]);
+    $first = explode("\'", $scsi_device_controller);
+    if ( isset($first[1])){
+    $scsi_device_controller = $first[1];
+    $scsi_device_controller = str_replace("\\\\", "\\" , $scsi_device_controller);
+    $scsi_device_controller = substr($scsi_device_controller, 0, (strlen($scsi_device_controller) -2));
+
+    $scsi_device_device = trim($extended[2]);
+    $second = explode("\'", $scsi_device_device);
+    $scsi_device_device = $second[1];
+    $scsi_device_device = str_replace("\\\\", "\\", $scsi_device_device);
+    $scsi_device_device = substr($scsi_device_device, 0, (strlen($scsi_device_device) -2));
+
+    echo $scsi_device_controller . "<br />" . $scsi_device_device . "<br />";
+
+    if (is_null($scsi_device_timestamp)){
+      $sql = "SELECT MAX(scsi_device_timestamp) FROM scsi_device WHERE scsi_device_uuid = '$uuid'";
+      if ($verbose == "y"){echo $sql . "<br />\n\n";}
+      $result = mysql_query($sql) or die ('Insert Failed: ' . mysql_error() . '<br />' . $sql);
+      $myrow = mysql_fetch_array($result);
+      if ($myrow["MAX(scsi_device_timestamp)"]) {$scsi_device_timestamp = $myrow["MAX(scsi_device_timestamp)"];} else {$scsi_device_timestamp = "";}
+    } else {}
+    $sql  = "SELECT count(scsi_device_uuid) AS count FROM scsi_device WHERE scsi_device_uuid = '$uuid' AND ";
+    $sql .= "scsi_device_controller = '$scsi_device_controller' AND scsi_device_device = '$scsi_device_device' AND ";
+    $sql .= "(scsi_device_timestamp = '$scsi_device_timestamp' OR scsi_device_timestamp = '$timestamp')";
+    if ($verbose == "y"){echo $sql . "<br />\n\n";}
+    $result = mysql_query($sql) or die ('Insert Failed: ' . mysql_error() . '<br />' . $sql);
+    $myrow = mysql_fetch_array($result);
+    if ($verbose == "y"){echo "Count: " . $myrow['count'] . "<br />\n\n";}
+    if ($myrow['count'] == "0"){
+      // Insert into database
+      $sql  = "INSERT INTO scsi_device (scsi_device_uuid, scsi_device_controller, scsi_device_device, ";
+      $sql .= "scsi_device_timestamp, scsi_device_first_timestamp) VALUES (";
+      $sql .= "'$uuid', '$scsi_device_controller', '$scsi_device_device', '$timestamp', '$timestamp')";
+      if ($verbose == "y"){echo $sql . "<br />\n\n";}
+      $result = mysql_query($sql) or die ('Insert Failed: ' . mysql_error() . '<br />' . $sql);
+    } else {
+      // Already present in database - update timestamp
+      $sql  = "UPDATE scsi_device SET scsi_device_timestamp = '$timestamp' WHERE scsi_device_controller = '$scsi_device_controller' ";
+      $sql .= "AND scsi_device_device = '$scsi_device_device' AND scsi_device_uuid = '$uuid' AND scsi_device_timestamp = '$scsi_device_timestamp'";
+      if ($verbose == "y"){echo $sql . "<br />\n\n";}
+      $result = mysql_query($sql) or die ('Insert Failed: ' . mysql_error() . '<br />' . $sql);
+    }
+   }
   }
 
 function insert_optical ($split) {
