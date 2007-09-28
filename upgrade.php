@@ -68,7 +68,7 @@ $sql = "ALTER TABLE `software` CHANGE `software_name` `software_name` VARCHAR( 2
 upgrade ($version,"07.08.01", $sql);
 
 
-$sql = "ALTER TABLE `sabre`.`software_licenses` MODIFY COLUMN `license_purchase_number` INTEGER  NOT NULL DEFAULT 0,
+$sql = "ALTER TABLE `software_licenses` MODIFY COLUMN `license_purchase_number` INTEGER  NOT NULL DEFAULT 0,
  MODIFY COLUMN `license_purchase_date` DATE  NOT NULL DEFAULT '0000-00-00',
  DROP COLUMN `license_mac_address`;";
  
