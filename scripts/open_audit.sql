@@ -669,10 +669,9 @@ DROP TABLE IF EXISTS `software_licenses`;
 CREATE TABLE `software_licenses` (
   `license_id` int(10) unsigned NOT NULL auto_increment,
   `license_software_id` int(10) unsigned NOT NULL default '0',
-  `license_purchase_cost_each` int(10) unsigned NOT NULL default '0',
+  `license_purchase_cost_each` int(10) NOT NULL default '0',
   `license_purchase_number` int(10) unsigned NOT NULL default '0',
-  `license_purchase_date` datetime NOT NULL default '0000-00-00 00:00:00',
-  `license_mac_address` varchar(100) NOT NULL default '',
+  `license_purchase_date` date NOT NULL default '0000-00-00',
   `license_purchase_vendor` varchar(150) NOT NULL default '',
   `license_comments` varchar(200) NOT NULL default '',
   `license_purchase_type` varchar(50) NOT NULL default '',
@@ -962,7 +961,7 @@ CREATE TABLE `video` (
   KEY `id2` (`video_timestamp`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
-INSERT INTO config (config_name, config_value) VALUES ('version','07.08.01');
+INSERT INTO config (config_name, config_value) VALUES ('version','07.08.28');
 
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
