@@ -260,7 +260,7 @@ function step34SetupDB() {
 ?>
   <span class="contenthead"><?php echo __("Setup") ?></span>
   <p><?php echo __("To perform an automated setup, enter the details on the Database account below. This user must have the privileges to access and modify databases.") ?></p>
-  <p><?php echo __("By clicking 'Submit Cbentials,' you are allowing Open-AudIT to create a Tables for use with Open-AudIT. This is the recommended configuration.") ?></p>
+  <p><?php echo __("By clicking 'Submit Credentials,' you are allowing Open-AudIT to create a Tables for use with Open-AudIT. This is the recommended configuration.") ?></p>
   <hr />
   <?php echo __("Database account details ").":<br />";
 
