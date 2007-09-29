@@ -263,6 +263,9 @@ foreach ($input as $split) {
 
 
 }
+/*
+'Removed this section, and replaced with the one below, from the forums
+' http://www.open-audit.org/phpBB3/viewtopic.php?f=10&t=2240
 
 function insert_network ($split) {
     global $timestamp, $uuid, $verbose, $net_timestamp;
@@ -332,6 +335,79 @@ function insert_network ($split) {
     $result = mysql_query($sql) or die ('Update nmap_ports Failed: ' . mysql_error() . '<br />' . $sql);
   }
 }
+*/
+
+function insert_network ($split) {
+    global $timestamp, $uuid, $verbose, $net_timestamp;
+    $extended = explode('^^^',$split);
+    if ($verbose == "y"){echo "<h2>Network</h2><br />";}
+    $net_mac_address = trim($extended[1]);
+    $net_description = trim($extended[2]);
+    $net_dhcp_enabled = trim($extended[3]);
+    $net_dhcp_server = trim($extended[4]);
+    $net_dns_host_name = trim($extended[5]);
+    $net_dns_server = trim($extended[6]);
+    $net_dns_server_2 = trim($extended[7]);
+    $net_ip_address = trim($extended[8]);
+    $net_ip_subnet = trim($extended[9]);
+    $net_wins_primary = trim($extended[10]);
+    $net_wins_secondary = trim($extended[11]);
+    $net_adapter_type = trim($extended[12]);
+    $net_manufacturer = trim($extended[13]);
+    $net_gateway = trim($extended[14]);
+    if (is_null($net_timestamp)) {
+      $sql  = "SELECT MAX(net_timestamp) FROM network_card WHERE net_uuid = '$uuid'";
+      if ($verbose == "y"){echo $sql . "<br />\n\n";}
+      $result = mysql_query($sql) or die ('Insert Failed: ' . mysql_error() . '<br />' . $sql);
+      $myrow = mysql_fetch_array($result);
+      if ($myrow["MAX(net_timestamp)"]) {$net_timestamp = $myrow["MAX(net_timestamp)"];} else {$net_timestamp = "";}
+    } else {}
+    $sql  = "SELECT count(net_uuid) as count from network_card WHERE net_mac_address = '$net_mac_address' ";
+    $sql .= "AND net_uuid = '$uuid' AND net_description = '$net_description' AND net_dhcp_enabled = '$net_dhcp_enabled' ";
+    $sql .= "AND net_dhcp_server = '$net_dhcp_server' AND net_dns_host_name = '$net_dns_host_name' AND net_dns_server = '$net_dns_server' ";
+    $sql .= "AND net_ip_address = '$net_ip_address' AND net_ip_subnet = '$net_ip_subnet' AND net_wins_primary = '$net_wins_primary' ";
+    $sql .= "AND net_adapter_type = '$net_adapter_type' AND net_manufacturer = '$net_manufacturer' AND net_gateway = '$net_gateway' AND (net_timestamp = '$net_timestamp' OR net_timestamp = '$timestamp')";
+    if ($verbose == "y"){echo $sql . "<br />\n\n";}
+    $result = mysql_query($sql) or die ('Insert Failed: ' . mysql_error() . '<br />' . $sql);
+    $myrow = mysql_fetch_array($result);
+    if ($verbose == "y"){echo "Count: " . $myrow['count'] . "<br />\n\n";}
+    if ($myrow['count'] == "0"){
+      // Insert into database
+      $sql  = "INSERT INTO network_card (net_mac_address, net_uuid, net_description, net_dhcp_enabled,";
+      $sql .= "net_dhcp_server, net_dns_host_name, net_dns_server, net_dns_server_2, net_ip_address, net_ip_subnet,";
+      $sql .= "net_wins_primary, net_wins_secondary, net_adapter_type, net_manufacturer, net_gateway, net_timestamp, net_first_timestamp) VALUES (";
+      $sql .= "'$net_mac_address','$uuid','$net_description','$net_dhcp_enabled',";
+      $sql .= "'$net_dhcp_server','$net_dns_host_name','$net_dns_server','$net_dns_server_2','$net_ip_address','$net_ip_subnet',";
+      $sql .= "'$net_wins_primary','$net_wins_secondary','$net_adapter_type','$net_manufacturer', '$net_gateway', '$timestamp', '$timestamp')";
+      if ($verbose == "y"){echo $sql . "<br />\n\n";}
+      $result = mysql_query($sql) or die ('Insert Failed: ' . mysql_error() . '<br />' . $sql);
+    } else {
+      // Already present in database - update timestamp
+      $sql  = "UPDATE network_card SET net_timestamp = '$timestamp' WHERE net_mac_address = '$net_mac_address' AND net_uuid = '$uuid' AND net_timestamp = '$net_timestamp'";
+      if ($verbose == "y"){echo $sql . "<br />\n\n";}
+      $result = mysql_query($sql) or die ('Insert Failed: ' . mysql_error() . '<br />' . $sql);
+    }
+   
+  // Remove from the 'other' table if exists
+  // First - get the id from the 'other' table - if it exists
+  $other_id = '';
+  $sql = "SELECT other_id FROM other WHERE other_mac_address = '$net_mac_address'";
+  if ($verbose == "y"){echo $sql . "<br />\n\n";}
+  $result = mysql_query($sql) or die ('Check Other table Failed: ' . mysql_error() . '<br />' . $sql);
+  if ($myrow = mysql_fetch_array($result)){$other_id = $myrow['other_id'];}
+  if ($other_id <> ''){
+    // It exists - so update the 'nmap_ports' table to the uuid/mac of the PC - not the other_id
+    $sql = "UPDATE nmap_ports SET nmap_other_id = '$uuid' WHERE nmap_other_id = '$other_id'";
+    if ($verbose == "y"){echo $sql . "<br />\n\n";}
+    $result = mysql_query($sql) or die ('Update nmap_ports Failed: ' . mysql_error() . '<br />' . $sql);
+    // Now remove the entry from the 'other' table
+    $sql = "DELETE FROM other WHERE other_mac_address = '$net_mac_address'";
+    if ($verbose == "y"){echo $sql . "<br />\n\n";}
+    $result = mysql_query($sql) or die ('Update nmap_ports Failed: ' . mysql_error() . '<br />' . $sql);
+  }
+}
+
+
 
 function insert_system01 ($split) {
     global $timestamp, $uuid, $verbose;

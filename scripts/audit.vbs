@@ -486,10 +486,16 @@ For Each objItem in colItems
      if net_ip <> "000.000.000.000" then net_ip_address = net_ip end if
    end if
    if net_dhcp_server <> "255.255.255.255" then
-     form_input = "network^^^" & net_mac            & "^^^" & net_description   & "^^^" & net_dhcp_enabled _
-                       & "^^^" & net_dhcp_server    & "^^^" & net_dns_host_name & "^^^" & net_dns_server _
+    form_input = "network^^^" & net_mac            & "^^^" & net_description   & "^^^" & net_dhcp_enabled _
+                       & "^^^" & net_dhcp_server    & "^^^" & net_dns_host_name & "^^^" & net_dns_server & "^^^" & net_dns_server_2 _
                        & "^^^" & net_ip             & "^^^" & net_ip_subnet     & "^^^" & net_wins_primary _
                        & "^^^" & net_wins_secondary & "^^^" & net_adapter_type  & "^^^" & net_manufacturer & "^^^" & net_gateway & "^^^" 
+' This section replaced by the above, from the forums
+' http://www.open-audit.org/phpBB3/viewtopic.php?f=10&t=2240
+'     form_input = "network^^^" & net_mac            & "^^^" & net_description   & "^^^" & net_dhcp_enabled _
+'                       & "^^^" & net_dhcp_server    & "^^^" & net_dns_host_name & "^^^" & net_dns_server _
+'                       & "^^^" & net_ip             & "^^^" & net_ip_subnet     & "^^^" & net_wins_primary _
+'                       & "^^^" & net_wins_secondary & "^^^" & net_adapter_type  & "^^^" & net_manufacturer & "^^^" & net_gateway & "^^^" 
      entry form_input,comment,objTextFile,oAdd,oComment
      form_input = ""
      if net_mac_uuid = "" then net_mac_uuid = net_mac end if
