@@ -26,9 +26,10 @@ if (isset($_GET['package'])) {
   include "include.php";
   echo "<td valign=\"top\">\n"; 
   echo "<div class=\"main_each\"><p class=\"contenthead\">Add Package to Software License Register.</p>";
-  $sql  = "SELECT count(software_name), software_name from software WHERE software_name NOT LIKE '%hotfix%' ";
+  $sql  = "SELECT count(software_name), software_name FROM software, system WHERE software_name NOT LIKE '%hotfix%' ";
   $sql .= "AND software_name NOT LIKE 'Security Update for Windows%' ";
   $sql .= "AND software_name NOT LIKE 'Update for Windows%' ";
+  $sql .= "AND software_timestamp = system_timestamp ";
   $sql .= "group by software_name ORDER BY software_name";
   $result = mysql_query($sql, $db);
   if ($myrow = mysql_fetch_array($result)){
