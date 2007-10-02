@@ -489,7 +489,7 @@ if ($show_detected_servers == "y"){
     echo "<tr><td>&nbsp;</td></tr>\n";
   } else {}
   // Nmap discovered on Other equipment
-  $sql = "select oth.other_id, oth.other_ip_address, oth.other_network_name, oth.other_mac_address, port.nmap_port_number  from other oth, nmap_ports port where (port.nmap_port_number = '80' OR port.nmap_port_number = '443') AND port.nmap_other_id = oth.other_mac_address";
+  $sql = "select oth.other_id, oth.other_ip_address, oth.other_network_name, oth.other_mac_address, port.nmap_port_number  from other oth, nmap_ports port where (port.nmap_port_number = '80' OR port.nmap_port_number = '443') AND (port.nmap_other_id = oth.other_mac_address OR port.nmap_other_id = oth.other_id)";
   $result = mysql_query($sql, $db);
   if ($myrow = mysql_fetch_array($result)){
     $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
@@ -631,7 +631,7 @@ if ($show_detected_servers == "y"){
   } else {}
 
   // Nmap discovered on Other equipment
-  $sql = "select oth.other_id, oth.other_ip_address, oth.other_network_name, oth.other_mac_address, port.nmap_port_number from other oth, nmap_ports port where port.nmap_port_number = '21' AND port.nmap_other_id = oth.other_mac_address";
+  $sql = "select oth.other_id, oth.other_ip_address, oth.other_network_name, oth.other_mac_address, port.nmap_port_number from other oth, nmap_ports port where port.nmap_port_number = '21' AND (port.nmap_other_id = oth.other_mac_address OR port.nmap_other_id = oth.other_id)";
   $result = mysql_query($sql, $db);
 
   if ($myrow = mysql_fetch_array($result)){
@@ -657,7 +657,7 @@ if ($show_detected_servers == "y"){
     echo
       "<tr style=\"bgcolor:" . $bgcolor . ";\">
          <td>" . ip_trans($myrow["other_ip_address"]) . "&nbsp;</td>
-         <td><a href=\"ftp://".$myrow["other_network_name"]."\" onclick=\"this.target='_blank';\" /a></td>
+         <td ><a href=\"system.php?other=" . $myrow["other_id"] . "&amp;view=other_system\">" . $myrow["other_network_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
          <td>" . $myrow["nmap_port_number"] . "&nbsp;</td>
          <td></td>
          <td></td>
@@ -775,7 +775,7 @@ if ($show_detected_servers == "y"){
 
   } else {}
   // Nmap discovered on Other equipment
-  $sql = "select oth.other_id, oth.other_ip_address, oth.other_network_name, oth.other_mac_address, port.nmap_port_number from other oth, nmap_ports port where port.nmap_port_number = '23' AND port.nmap_other_id = oth.other_id";
+  $sql = "select oth.other_id, oth.other_ip_address, oth.other_network_name, oth.other_mac_address, port.nmap_port_number from other oth, nmap_ports port where port.nmap_port_number = '23' AND (port.nmap_other_id = oth.other_mac_address OR port.nmap_other_id = oth.other_id)";
   $result = mysql_query($sql, $db);
   if ($myrow = mysql_fetch_array($result)){
     $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
@@ -921,7 +921,7 @@ if ($show_detected_servers == "y"){
 
   } else {}
   // Nmap discovered on Other equipment
-  $sql = "select oth.other_id, oth.other_ip_address, oth.other_network_name, oth.other_mac_address, port.nmap_port_number from other oth, nmap_ports port where port.nmap_port_number = '25' AND port.nmap_other_id = oth.other_id";
+  $sql = "select oth.other_id, oth.other_ip_address, oth.other_network_name, oth.other_mac_address, port.nmap_port_number from other oth, nmap_ports port where port.nmap_port_number = '25' AND (port.nmap_other_id = oth.other_mac_address OR port.nmap_other_id = oth.other_id)";
   $result = mysql_query($sql, $db);
   if ($myrow = mysql_fetch_array($result)){
     $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
@@ -1061,7 +1061,7 @@ if ($show_detected_servers == "y"){
 
   } else {}
   // Nmap discovered on Other equipment
-  $sql = "select oth.other_id, oth.other_ip_address, oth.other_network_name, oth.other_mac_address, port.nmap_port_number from other oth, nmap_ports port where port.nmap_port_number = '5900' AND port.nmap_other_id = oth.other_mac_address";
+  $sql = "select oth.other_id, oth.other_ip_address, oth.other_network_name, oth.other_mac_address, port.nmap_port_number from other oth, nmap_ports port where port.nmap_port_number = '5900' AND (port.nmap_other_id = oth.other_mac_address OR port.nmap_other_id = oth.other_id)";
   $result = mysql_query($sql, $db);
   if ($myrow = mysql_fetch_array($result)){
     $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
@@ -1206,7 +1206,7 @@ if ($show_detected_servers == "y"){
 
   } else {}
   // Nmap discovered on Other equipment
-  $sql = "select oth.other_id, oth.other_ip_address, oth.other_network_name, oth.other_mac_address, port.nmap_port_number from other oth, nmap_ports port where port.nmap_port_number = '3389' AND port.nmap_other_id = oth.other_mac_address";
+  $sql = "select oth.other_id, oth.other_ip_address, oth.other_network_name, oth.other_mac_address, port.nmap_port_number from other oth, nmap_ports port where port.nmap_port_number = '3389' AND (port.nmap_other_id = oth.other_mac_address OR port.nmap_other_id = oth.other_id)";
   $result = mysql_query($sql, $db);
   if ($myrow = mysql_fetch_array($result)){
     $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
