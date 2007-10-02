@@ -36,7 +36,7 @@ if ($myrow = mysql_fetch_array($result)){
   echo "<td align=\"center\" width=\"25%\"><b>&nbsp;&nbsp;Used&nbsp;&nbsp;</b></td>\n";
   echo "<td align=\"center\" width=\"25%\"><b>&nbsp;&nbsp;Audit&nbsp;&nbsp;</b></td>\n";
   echo "</tr>\n";
-  do {    $sql2  = "SELECT sum(license_purchase_number) as number_purchased FROM ";
+  do {    $sql2  = "SELECT sum(license_purchase_number) as number_purchased FROM ";
     $sql2 .= "software_licenses, software_register WHERE ";
     $sql2 .= "license_software_id = software_reg_id AND ";
     $sql2 .= "software_title = '" . $myrow['software_title'] . "'";
