@@ -9,6 +9,8 @@ function microtime_float()
 
 include_once("include.php");
 $time_start = microtime_float();
+// set an initial 2 min extra timeout
+set_time_limit(120000);
 
 $count_system_max="10000";
 
@@ -71,6 +73,9 @@ if(is_file($include_filename)){
     //Getting the count of all available items
     $sql_all = $sql_query."\n".$sql_sort;
     $result_all = mysql_query($sql_all, $db);
+    // Add an additional 100ms to our time this should act as a watchdog timer, since we should never 
+    // spend more than an additional 100ms per loop.. If we do... Crunch! We error.
+    set_time_limit(100);
     if(!$result_all) {die( "<br>".__("Fatal Error").":<br><br>".$sql_all."<br><br>".mysql_error()."<br><br>" );};
     $all_page_count = mysql_num_rows($result_all);
     $result = $result_all;
@@ -205,6 +210,9 @@ $headline_2=" ";
 $count_searchboxes=0;
 foreach($viewdef_array["fields"] as $field) {
     if($field["show"]=="y"){
+        // Add an additional 100ms to our time this should act as a watchdog timer, since we should never 
+        // spend more than an additional 100ms per loop.. If we do... Crunch! We error.
+        set_time_limit(100);
         $field_width = "";
         $field_height = "";
         if ( isset($field["width"]) AND $field["width"] <> "") {$field_width = " style=\"width:".$field["width"].";\"";}
