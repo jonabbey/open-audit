@@ -743,7 +743,7 @@ CREATE TABLE `switch_ports` (
   `switch_port` varchar(100) NOT NULL default '',
   `switch_timestamp` varchar(200) NOT NULL default '',
   `switch_first_timestamp` bigint(20) unsigned NOT NULL default '0',
-  PRIMARY KEY  (`spare_id`)
+  PRIMARY KEY  (`switch_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 DROP TABLE IF EXISTS `system`;
