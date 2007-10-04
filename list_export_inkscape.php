@@ -138,6 +138,7 @@ if ($myrow = mysql_fetch_array($result)){
             //
             if ($field["head"]=="Hostname") {
             //
+
             $inkscape_image_icon = determine_inkscape_img($myrow["system_os_name"],$myrow[$field["name"]]);
             //
             $inkscape_this_image = $inkscape_image_folder.$inkscape_image_icon;

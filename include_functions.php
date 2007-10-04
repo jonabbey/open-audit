@@ -447,7 +447,14 @@ function determine_dia_img($os,$system_type) {
 }
 
 function determine_inkscape_img($os,$system_type) {
+
+// Assume we dont know what this is
+    $image="button_fail.png";
+    $title=__("Unknown");
    
+// Now we try to find out..   
+
+// Does the system_type map to a local PNG
     if (is_file("images/o_".$system_type.".png")){
     $image="o_".$system_type.".png";
     $title=__("$system_type");
@@ -457,12 +464,33 @@ function determine_inkscape_img($os,$system_type) {
     $system_type= str_replace(" ","_",$system_type);
     $image="o_".$system_type.".png";
 //    $image="button_fail.png";
-    $title=__("Unknown");  
+    $title=__("Unknown ".$system);  
     }
     if (!is_file("images/o_".$system_type.".png")){
     $image="button_fail.png";
     } else {}
- 
+    
+// Does the os map to a local PNG
+    if (is_file("images/o_".$os.".png")){
+    $image="o_".$os.".png";
+    $title=__("$os");
+    }
+    else
+    {
+    $os= str_replace(" ","_",$os);
+    $image="o_".$os.".png";
+//    $image="button_fail.png";
+    $title=__("Unknown ".$os);  
+    }
+    if (!is_file("images/o_".$os.".png")){
+    $image="button_fail.png";
+    } else {}    
+    
+    
+    
+    
+// Lets see if we can work it out from the OS
+//
     if( ereg("Windows", $os) ){
         $image="desktop.png";
         $title=determine_os($os);
