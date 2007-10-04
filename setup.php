@@ -294,6 +294,14 @@ function step35SetupDB() {
     echo __("Connecting to the MySQL Server... ");
     $db = @mysql_connect($_POST['mysql_server_post'],$_POST['mysql_user_post'],$_POST['mysql_password_post']) or die('Could not connect: ' . mysql_error());
     echo __("Success!") . "<br />";
+    // Added drop existing database code (AJH)
+    if ($_POST['drop_database'] = 'y'){
+    $sql = "DROP DATABASE IF EXISTS`" . $_POST['mysql_new_db'] . "` ";
+    echo __("Dropping existing database... ");
+    $result = mysql_query($sql, $db) or die('Could not drop existing db: ' . mysql_error());
+    echo __("Success!") ."<br />";
+    }
+    //
     $sql = "CREATE DATABASE `" . $_POST['mysql_new_db'] . "` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci";
     echo __("Creating the database... ");
     $result = mysql_query($sql, $db) or die('Could not create db: ' . mysql_error());
