@@ -1,7 +1,8 @@
 <?php
 
-echo "<td style=\"width:170px;\" valign=\"top\" align=\"center\">\n";
+echo "<td style=\"width:170px;\" valign=\"top\" align=\"center\" id=\"rightnav\">\n";
 echo "<div class=\"main_each\">\n";
+
 
 #echo "<center>";
 echo __("Version") . " ";

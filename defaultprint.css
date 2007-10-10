@@ -128,4 +128,6 @@ td.system_tablebody_right{
 
 img { behavior: url(iepngfix.htc); }
 
-
+#nav, #rightnav {
+   display:none;
+}

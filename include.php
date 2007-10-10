@@ -95,7 +95,8 @@ if ($is_refreshable) {
     <link rel="icon" href="favicon.ico" type="image/x-icon">
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon"> 
     <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
-        <link rel="stylesheet" type="text/css" href="default.css" />
+    <link media="screen" rel="stylesheet" type="text/css" href="default.css" />
+    <link media="print" rel="stylesheet" type="text/css" href="defaultprint.css" />
     <script type="text/javascript">
       /*<![CDATA[*/
       function IEHoverPseudo() {
@@ -191,7 +192,7 @@ if ((isset($use_ldap_login) and ($use_ldap_login == 'y'))) {
   </tr>
 
   <tr>
-    <td style="width:170px;" rowspan="12" valign="top">
+    <td style="width:170px;" rowspan="12" valign="top" id="nav">
       <ul id="primary-nav">
         <li><a href="index.php"><?php echo __("Home"); ?></a></li>
         
