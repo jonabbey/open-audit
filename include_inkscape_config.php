@@ -36,10 +36,10 @@
 //
 // For Xampp standard installation path, try 
 //
-//$inkscape_image_folder='C:\\Program Files\\xampp\\htdocs\\openaudit\\images\\';
+$inkscape_image_folder='C:\\Program Files\\xampp\\htdocs\\openaudit\\images\\';
 //
 $inkscape_newline=chr(13);
-$inkscape_image_folder='W:\\htdocs\\openaudit\\images\\';
+//$inkscape_image_folder='W:\\htdocs\\openaudit\\images\\';
 
 // Start offset x/y for first object
 $inkscape_object_start_x = 50.5;

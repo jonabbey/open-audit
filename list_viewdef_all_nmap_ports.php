@@ -1,6 +1,6 @@
 <?php
     $query_array=array("headline"=>__("List all Nmap discovered TCP ports"),
- "sql"=>"SELECT SUM(nmap_count) AS sum_nmap_count, nmap_port_number, nmap_port_name
+                        "sql"=>"SELECT SUM(nmap_count) AS sum_nmap_count, nmap_port_number, nmap_port_name
                                       FROM (SELECT count(DISTINCT nmap_id) AS nmap_count, nmap_port_number, nmap_port_name
                                                    FROM nmap_ports, system
                                                    WHERE nmap_other_id  = system_uuid
@@ -21,7 +21,7 @@
                                                  "headline_addition"=>"%nmap_port_number",
                                                 ),
                                    ),
-                       "fields"=>array("10"=>array("name"=>"nmap_count",
+                       "fields"=>array("10"=>array("name"=>"sum_nmap_count",
                                                    "head"=>__("Count"),
                                                    "show"=>"y",
                                                    "link"=>"y",
