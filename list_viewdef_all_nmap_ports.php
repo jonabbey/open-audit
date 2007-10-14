@@ -1,10 +1,17 @@
 <?php
-
     $query_array=array("headline"=>__("List all Nmap discovered TCP ports"),
-                       "sql"=>"SELECT count(DISTINCT nmap_id) AS nmap_count, nmap_port_number, nmap_port_name
-                               FROM nmap_ports, system, other
-                               WHERE (nmap_other_id  = system_uuid OR nmap_other_id = other_id)
-                               GROUP BY nmap_port_number",
+ "sql"=>"SELECT SUM(nmap_count) AS sum_nmap_count, nmap_port_number, nmap_port_name
+                                      FROM (SELECT count(DISTINCT nmap_id) AS nmap_count, nmap_port_number, nmap_port_name
+                                                   FROM nmap_ports, system
+                                                   WHERE nmap_other_id  = system_uuid
+                                                   GROUP BY nmap_port_number
+                                            UNION
+                                            SELECT count(DISTINCT nmap_id) AS nmap_count, nmap_port_number, nmap_port_name
+                                                   FROM nmap_ports, other
+                                                   WHERE (nmap_other_id = other_mac_address OR nmap_other_id = other_id)
+                                                   GROUP BY nmap_port_number)
+                                            AS TempTable1
+                                      GROUP BY nmap_port_number",
                        "sort"=>"nmap_port_number",
                        "dir"=>"ASC",
                        "get"=>array("file"=>"list.php",
