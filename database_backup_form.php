@@ -32,7 +32,7 @@ echo "<tr><td>".__("Include DROP TABLE IF EXISTS [Table_name] commands in backup
 
 //echo "  <tr><td colspan=\"1\"><hr /></td></tr>";
 $today = date("dmYGis");
-$backup_dir = './/backup//';
+$backup_dir = './backup/';
 
 if (!file_exists($backup_dir)) {
    mkdir($backup_dir) or die(__('Insufficient rights, could not create backup folder, Please create this manually. ') );

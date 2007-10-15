@@ -20,7 +20,7 @@ echo "  <tr><td colspan=\"1\"><hr /></td></tr>";
 echo "<tr><td>".__("Select a backup")."</td>";
 //echo "  <tr><td colspan=\"1\"><hr /></td></tr>";
 $today = date("dmYGis");
-$backup_dir = '.\\backup\\';
+$backup_dir = './backup/';
 
 if (!file_exists($backup_dir)) {
    mkdir($backup_dir);
@@ -36,7 +36,7 @@ echo "<tr>\n";
 echo "<td>".__("Database").":</td>\n";
 echo "<td><select size=\"1\" name=\"backup_name\" class=\"for_forms\">\n";
 
-$handle=opendir('./backup/');
+$handle=opendir($backup_dir);
 while ($file = readdir ($handle)) {
     if ($file != "." && $file != "..") {
         if(substr($file,strlen($file)-4)==".sql"){

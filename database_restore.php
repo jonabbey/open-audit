@@ -20,7 +20,7 @@ echo "  <tr><td colspan=\"1\"><hr /></td></tr>";
 echo "<tr><td>".__("Select a backup")."</td>";
 //echo "  <tr><td colspan=\"1\"><hr /></td></tr>";
 $today = date("dmYGis");
-$backup_dir = '.\\backup\\';
+$backup_dir = './backup/';
 
 if (!file_exists($backup_dir)) {
    mkdir($backup_dir);

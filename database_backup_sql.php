@@ -42,7 +42,7 @@ echo "</tr>\n";
 mysql_select_db($backup_name);
 
 $today = date("_d-m-Y_H-i-s");
-$backup_dir = '.\\backup\\';
+$backup_dir = './backup/';
 
 if (!file_exists($backup_dir)) {
    mkdir($backup_dir);

@@ -39,7 +39,7 @@ $backup_name = $_GET['backup_name'];
 } else {
 
 $backup_name = $_POST['backup_name'];
-$filename = ".\\backup\\".$backup_name.".sql";
+$filename = "./backup/".$backup_name.".sql";
 
   echo "        <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n";
 
