@@ -111,21 +111,20 @@ if ($myrow = mysql_fetch_array($result)){
   echo "</table>";
 } else {}
 
+      $bgcolor = "#F1F1F1";
+      $sql = "select sys.system_uuid, sys.system_os_name, sys.system_description, sys.net_ip_address, sys.system_name, sw.software_name  from software sw, system sys where sw.software_name = '" . addslashes($name) . "' AND sw.software_uuid = sys.system_uuid ORDER BY sys.system_name";
+      $result = mysql_query($sql, $db);
+      if ($myrow = mysql_fetch_array($result)){
+        echo "<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" class=\"content\">\n";
+        echo "<tr><td class=\"contenthead\" colspan=\"3\"><br />Systems with \"" . $name . "\" installed.</td></tr>\n";
+        echo "<tr><td>&nbsp;&nbsp;<b>IP Address</b></td><td>&nbsp;&nbsp;<b>Name</b></td><td>&nbsp;&nbsp;<b>Description</b></td></tr>\n";
+        do {
+          echo "<tr bgcolor=\"" . $bgcolor . "\">\n";
+          echo "  <td width=\"33%\">&nbsp;&nbsp;" . $myrow["net_ip_address"] . "&nbsp;&nbsp;</td>\n";
+          echo "  <td width=\"33%\">&nbsp;&nbsp;<a href=\"system.php?pc=" . $myrow["system_uuid"] . "&amp;view=summary\" class=\"content\">" . $myrow["system_name"] . "</a>&nbsp;&nbsp;</td>\n";
+          echo "  <td width=\"33%\">&nbsp;&nbsp;" . $myrow["system_description"] . "</td>\n";
+          echo "</tr>\n";
 
-
-  $bgcolor = "#F1F1F1";
-  $sql = "select sys.system_uuid, sys.system_description, sys.net_ip_address, sys.system_name, sw.software_name from software sw, system sys where sw.software_name = '" . addslashes($name) . "' AND sw.software_uuid = sys.system_uuid ORDER BY sys.system_name";
-  $result = mysql_query($sql, $db);
-  if ($myrow = mysql_fetch_array($result)){
-    echo "<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" class=\"content\">\n";
-    echo "<tr><td class=\"contenthead\" colspan=\"3\"><br />Systems with \"" . $name . "\" installed.</td></tr>\n";
-    echo "<tr><td>&nbsp;&nbsp;<b>IP Address</b></td><td>&nbsp;&nbsp;<b>Name</b></td><td>&nbsp;&nbsp;<b>Description</b></td></tr>\n";
-    do {
-      echo "<tr bgcolor=\"" . $bgcolor . "\">\n";
-      echo "  <td width=\"33%\">&nbsp;&nbsp;" . $myrow["net_ip_address"] . "&nbsp;&nbsp;</td>\n";
-      echo "  <td width=\"33%\">&nbsp;&nbsp;<a href=\"system_summary.php?pc=" . $myrow["system_uuid"] . "\" class=\"content\">" . $myrow["system_name"] . "</a>&nbsp;&nbsp;</td>\n";
-      echo "  <td width=\"33%\">&nbsp;&nbsp;" . $myrow["system_description"] . "</td>\n";
-      echo "</tr>\n";
       if ($bgcolor == "#F1F1F1") { $bgcolor = "#FFFFFF"; } else { $bgcolor = "#F1F1F1"; }
     } while ($myrow = mysql_fetch_array($result));
   } else {
