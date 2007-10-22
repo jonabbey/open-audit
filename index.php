@@ -410,7 +410,6 @@ if ($show_detected_servers == "y"){
 
 
   //// WEB Servers Detected
-      //// WEB Servers Detected
       $count = 0;
       $bgcolor = "#FFFFFF";
       echo
@@ -459,8 +458,9 @@ if ($show_detected_servers == "y"){
         } while ($myrow = mysql_fetch_array($result));
         echo "<tr><td>&nbsp;</td></tr>\n";
       } else {}
-      // Nmap discovered on Audited PC
-  $sql = "select sys.net_ip_address,sys.system_name,sys.system_uuid, port.nmap_port_number  from system sys, nmap_ports port where port.nmap_port_number = '80' AND port.nmap_other_id = sys.system_uuid";
+     
+  // Nmap discovered on Audited PC
+  $sql = "select sys.net_ip_address,sys.system_name,sys.system_uuid, port.nmap_port_number  from system sys, nmap_ports port where (port.nmap_port_number = '80' OR port.nmap_port_number = '443') AND port.nmap_other_id = sys.system_uuid";
   $result = mysql_query($sql, $db);
   if ($myrow = mysql_fetch_array($result)){
     echo
@@ -471,6 +471,7 @@ if ($show_detected_servers == "y"){
        <tr>
          <td><b>".__("IP Address")."</b></td>
          <td><b>".__("Hostname")."</b></td>
+       <td><b>".__("Port")."</b></td>
        </tr>\n";
 
     do {
@@ -514,8 +515,14 @@ if ($show_detected_servers == "y"){
       "<tr style=\"bgcolor:" . $bgcolor . ";\">
          <td>" . ip_trans($myrow["other_ip_address"]) . "&nbsp;</td>
          <td><a href=\"system.php?other=" . $myrow["other_id"] . "&amp;view=other_system\">" . $myrow["other_network_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
-             <td>" . $myrow["nmap_port_number"] . "&nbsp;</td>
-         <td></td>
+             <td><a href= \""; 
+             if ($myrow["nmap_port_number"] = "80"){
+             echo "http";
+            } else {
+             echo "https";
+             }
+             echo "://".$myrow["other_ip_address"].":".$myrow["nmap_port_number"] ."\" onclick=\"this.target='_blank';\" />" . $myrow["nmap_port_number"] . "&nbsp;</td>
+             <td></td></td>
        </tr>\n";
 
     } while ($myrow = mysql_fetch_array($result));
