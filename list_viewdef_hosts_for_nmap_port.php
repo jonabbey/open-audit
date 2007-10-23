@@ -1,6 +1,6 @@
 <?php
 
-    $query_array=array("headline"=>__("List all Nmap discovered hosts with TCP port"),
+    $query_array=array("headline"=>__("List all Nmap discovered hosts running protocol ".$_REQUEST["headline_addition2"]." TCP port "),
                        "sql"=>"SELECT system_uuid, net_ip_address, system_name, system_os_name, system_system_type
                                       FROM system, nmap_ports
                                       WHERE nmap_port_number = '".$_REQUEST["name"]."' AND nmap_other_id = system_uuid

@@ -19,6 +19,7 @@
                                     "var"=>array("view"=>"hosts_for_nmap_port",
                                                  "name"=>"%nmap_port_number",
                                                  "headline_addition"=>"%nmap_port_number",
+                                                 "headline_addition2"=>"%nmap_port_name",                                                 
                                                 ),
                                    ),
                        "fields"=>array("10"=>array("name"=>"sum_nmap_count",
