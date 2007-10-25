@@ -74,6 +74,49 @@ $sql = "ALTER TABLE `software_licenses` MODIFY COLUMN `license_purchase_number` 
  
 upgrade ($version,"07.08.28", $sql);
 
+
+$sql = "CREATE TABLE `openaudit`.`scan_type` (
+  `scan_type_id` int  NOT NULL AUTO_INCREMENT,
+  `scan_type_uuid` varchar(100)  NOT NULL,
+  `scan_type_ip_address` varchar(16)  NOT NULL,
+  `scan_type` varchar(10)  NOT NULL,
+  `scan_type_detail` VARCHAR(100)  NOT NULL,
+  `scan_type_frequency` TINYINT  NOT NULL,
+  PRIMARY KEY(`scan_type_id`)
+)
+ENGINE = MYISAM;
+CREATE TABLE `openaudit`.`scan_log` (
+  `scan_log_id` int  NOT NULL AUTO_INCREMENT,
+  `scan_log_uuid` varchar(100)  NOT NULL,
+  `scan_log_ip_address` varchar(16)  NOT NULL,
+  `scan_log_type` varchar(10)  NOT NULL,
+  `scan_log_detail` VARCHAR(100)  NOT NULL,
+  `scan_log_frequency` TINYINT  NOT NULL,
+  `scan_log_date_time` datetime  NOT NULL,
+  `scan_log_result` varchar(20)  NOT NULL,
+  `scan_log_success` varchar(2)  NOT NULL,
+  PRIMARY KEY(`scan_log_id`)
+)
+ENGINE = MYISAM;
+CREATE TABLE `openaudit`.`scan_latest` (
+  `scan_latest_id` int  NOT NULL AUTO_INCREMENT,
+  `scan_latest_uuid` varchar(100)  NOT NULL,
+  `scan_latest_ip_address` varchar(16)  NOT NULL,
+  `scan_latest_type` varchar(10)  NOT NULL,
+  `scan_latest_detail` VARCHAR(100)  NOT NULL,
+  `scan_latest_frequency` TINYINT  NOT NULL,
+  `scan_latest_date_time` datetime  NOT NULL,
+  `scan_latest_result` varchar(20)  NOT NULL,
+  `scan_latest_success` varchar(2)  NOT NULL,
+  PRIMARY KEY(`scan_latest_id`)
+)
+ENGINE = MYISAM;";
+
+upgrade ($version,"07.10.25", $sql);
+
+
+
+
 ?>
     <br />Upgrade complete.
     <br /><br /><a href="index.php" alt=""><?php echo __("Return to Index"); ?></a>
