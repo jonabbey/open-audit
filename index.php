@@ -65,7 +65,8 @@ if (versionCheck(get_config("version"), $latest_version)) {
 
 if ($show_system_discovered == "y") {
   $sql  = "SELECT system_name, net_ip_address, system_uuid, system_first_timestamp FROM system ";
-  $sql .= "WHERE system_first_timestamp > '" . adjustdate(0,0,-$system_detected) . "000000' ORDER BY system_name";
+  $sql .= "WHERE system_first_timestamp > '" . adjustdate(0,0,-$system_detected) . "000000' ";
+  $sql .= "ORDER BY system_name";
   $result = mysql_query($sql, $db);
   $bgcolor = "#FFFFFF";
 
@@ -73,12 +74,12 @@ if ($show_system_discovered == "y") {
     "<div class=\"main_each\">
        <table style=\"border:0px;\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">
          <tr>
-           <td class=\"indexheadlines\" colspan=\"3\"><a href=\"rss_new_systems.php\"><img src=\"images/feed-icon.png\" width=\"16\" height=\"16\" style=\"border:0px;\" alt=\"\" /></a>&nbsp;<a href=\"javascript://\" onclick=\"switchUl('f1');\">".__("Systems Discovered in the last")." $system_detected ".__("Days").".</a></td>
-           <td align=\"right\"><a href=\"javascript://\" onclick=\"switchUl('f1');\"><img src=\"images/down.png\" width=\"16\" height=\"16\" style=\"border:0px;\" alt=\"\" /></a></td>
+           <td class=\"indexheadlines\" colspan=\"3\"><a href=\"rss_new_systems.php\"><img src=\"images/feed-icon.png\" width=\"16\" height=\"16\" style=\"border:0px;\" alt=\"\" /></a>&nbsp;<a href=\"javascript://\" onclick=\"switchUl('f0');\">".__("Systems Discovered in the last")." $system_detected ".__("Days").".</a></td>
+           <td align=\"right\"><a href=\"javascript://\" onclick=\"switchUl('f0');\"><img src=\"images/down.png\" width=\"16\" height=\"16\" style=\"border:0px;\" alt=\"\" /></a></td>
           </tr>
        </table>
 
-       <div style=\"display:none;\" id=\"f1\">\n";
+       <div style=\"display:none;\" id=\"f0\">\n";
 
   if ($myrow = mysql_fetch_array($result)){
 
@@ -121,20 +122,21 @@ if ($show_system_discovered == "y") {
 
 
 if ($show_other_discovered == "y") {
-  $sql  = "SELECT * FROM other WHERE (other_ip_address <> '' AND ";
-  $sql .= "other_first_timestamp > '" . adjustdate(0,0,-$other_detected) . "000000') ORDER BY other_ip_address";
+  $sql  = "SELECT * FROM other ";
+  $sql .= "WHERE (other_ip_address <> '' AND other_first_timestamp > '" . adjustdate(0,0,-$other_detected) . "000000') ";
+  $sql .= "ORDER BY other_ip_address";
   $result = mysql_query($sql, $db);
   $bgcolor = "#FFFFFF";
   echo
     "<div class=\"main_each\">
       <table style=\"border:0px;\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" >
         <tr>
-          <td class=\"indexheadlines\" colspan=\"3\"><a href=\"rss_new_other.php\"><img src=\"images/feed-icon.png\" width=\"16\" height=\"16\" style=\"border:0px;\" alt=\"\" /></a>&nbsp;<a href=\"javascript://\" onclick=\"switchUl('f0');\">".__("Other Items Discovered in the last")." $other_detected ".__("Days").".</a></td>
-          <td align=\"right\"><a href=\"javascript://\" onclick=\"switchUl('f0');\"><img src=\"images/down.png\" width=\"16\" height=\"16\" style=\"border:0px;\" alt=\"\" /></a></td>
+          <td class=\"indexheadlines\" colspan=\"3\"><a href=\"rss_new_other.php\"><img src=\"images/feed-icon.png\" width=\"16\" height=\"16\" style=\"border:0px;\" alt=\"\" /></a>&nbsp;<a href=\"javascript://\" onclick=\"switchUl('f1');\">".__("Other Items Discovered in the last")." $other_detected ".__("Days").".</a></td>
+          <td align=\"right\"><a href=\"javascript://\" onclick=\"switchUl('f1');\"><img src=\"images/down.png\" width=\"16\" height=\"16\" style=\"border:0px;\" alt=\"\" /></a></td>
         </tr>
       </table>
 
-      <div style=\"display:none;\" id=\"f0\">\n";
+      <div style=\"display:none;\" id=\"f1\">\n";
 
   if ($myrow = mysql_fetch_array($result)){
     echo
@@ -176,8 +178,9 @@ if ($show_other_discovered == "y") {
 
 
 if ($show_systems_not_audited == "y") {
-  $sql  = "SELECT system_name, net_ip_address, system_uuid, system_timestamp FROM system WHERE ";
-  $sql .= "system_timestamp < '" . adjustdate(0,0,-$days_systems_not_audited) . "000000' ORDER BY system_name";
+  $sql  = "SELECT system_name, net_ip_address, system_uuid, system_timestamp FROM system ";
+  $sql .= "WHERE system_timestamp < '" . adjustdate(0,0,-$days_systems_not_audited) . "000000' ";
+  $sql .= "ORDER BY system_name";
   $result = mysql_query($sql, $db);
   $bgcolor = "#FFFFFF";
 
@@ -237,10 +240,9 @@ if ($show_systems_not_audited == "y") {
 
 
 if ($show_partition_usage == "y") {
-  $sql  = "SELECT sys.system_name, sys.net_ip_address, par.partition_uuid, par.partition_volume_name, ";
-  $sql .= "par.partition_caption, par.partition_free_space, par.partition_size, par.partition_timestamp ";
-  $sql .= "FROM system sys, partition par WHERE par.partition_free_space < '$partition_free_space' ";
-  $sql .= "AND sys.system_uuid = par.partition_uuid AND par.partition_timestamp = sys.system_timestamp ";
+  $sql  = "SELECT sys.system_name, sys.net_ip_address, par.partition_uuid, par.partition_volume_name, par.partition_caption, par.partition_free_space, par.partition_size, par.partition_timestamp ";
+  $sql .= "FROM system sys, partition par ";
+  $sql .= "WHERE par.partition_free_space < '$partition_free_space' AND sys.system_uuid = par.partition_uuid AND par.partition_timestamp = sys.system_timestamp ";
   $sql .= "ORDER BY sys.system_name, par.partition_caption";
   $result = mysql_query($sql, $db);
     $bgcolor = "#FFFFFF";
@@ -262,7 +264,7 @@ if ($show_partition_usage == "y") {
              <td style=\"width:150px;\"><b>".__("IP Address")."</b></td>
              <td style=\"width:150px;\"><b>".__("Hostname")."</b></td>
              <td style=\"width:150px;\"><b>".__("Free Space")." ".__("MB")."</b></td>
-             <td style=\"width:150px;\"><b>".__("Size")."</b></td>
+             <td style=\"width:150px;\"><b>".__("Size")." ".__("MB")."</b></td>
              <td style=\"width:150px;\"><b>".__("Free Space")." %</b></td>
              <td style=\"width:150px;\"><b>".__("Drive Letter")."</b></td>
              <td style=\"width:150px;\"><b>".__("Volume Name")."</b></td>
@@ -279,8 +281,8 @@ if ($show_partition_usage == "y") {
           "<tr style=\"bgcolor:" . $bgcolor . ";\">
              <td>" . ip_trans($myrow["net_ip_address"]) . "</td>
              <td><a href=\"system.php?pc=" . $myrow["partition_uuid"] . "&amp;view=summary\">" . $myrow["system_name"] . "</a></td>
-             <td>" . $myrow["partition_free_space"] . " Mb</td>
-             <td>" . $myrow["partition_size"] . " Mb</td>
+             <td>" . $myrow["partition_free_space"] . " MB</td>
+             <td>" . $myrow["partition_size"] . " MB</td>
              <td>" . $percent_free . " %</td>
              <td>" . $myrow["partition_caption"] . " </td>
              <td>" . $myrow["partition_volume_name"] . " </td>
@@ -303,13 +305,14 @@ if ($show_partition_usage == "y") {
 } else {}
 
 if ($show_software_detected == "y"){
-  $sql  = "SELECT sw.software_name, sw.software_first_timestamp, sys.system_name, sys.system_uuid, ";
-  $sql .= "sys.net_ip_address FROM software sw, system sys WHERE ";
-  $sql .= "software_first_timestamp >= '" . adjustdate(0,0,-$days_software_detected) . "000000' ";
+  $sql  = "SELECT sw.software_name, sw.software_first_timestamp, sys.system_name, sys.system_uuid, sys.net_ip_address ";
+  $sql .= "FROM software sw, system sys ";
+  $sql .= "WHERE software_first_timestamp >= '" . adjustdate(0,0,-$days_software_detected) . "000000' ";
   $sql .= "AND sys.system_first_timestamp < '" . adjustdate(0,0,-$days_software_detected) . "000000' ";
   $sql .= "AND sw.software_name NOT LIKE '%Hotfix%' AND sw.software_name NOT LIKE '%Update%' AND ";
   $sql .= "sw.software_timestamp = sys.system_timestamp AND ";
   $sql .= "sw.software_uuid = sys.system_uuid ";
+  $sql .= "ORDER BY sw.software_name";
   $result = mysql_query($sql, $db);
   $bgcolor = "#FFFFFF";
 
@@ -416,31 +419,32 @@ if ($show_detected_servers == "y"){
         "<div class=\"main_each\">
            <table style=\"border:0px;\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" >
               <tr>
-                <td class=\"indexheadlines\" colspan=\"4\"><a href=\"javascript://\" onclick=\"switchUl('f6');\">".__("WEB Servers").".</a></td>
-                <td align=\"right\"><a href=\"javascript://\" onclick=\"switchUl('f6');\"><img src=\"images/down.png\" width=\"16\" height=\"16\" style=\"border:0px;\" alt=\"\" /></a></td>
+                <td class=\"indexheadlines\" colspan=\"4\"><a href=\"javascript://\" onclick=\"switchUl('f5');\">".__("WEB Servers").".</a></td>
+                <td align=\"right\"><a href=\"javascript://\" onclick=\"switchUl('f5');\"><img src=\"images/down.png\" width=\"16\" height=\"16\" style=\"border:0px;\" alt=\"\" /></a></td>
               </tr>
             </table>
 
-            <div style=\"display:none;\" id=\"f6\">
+            <div style=\"display:none;\" id=\"f5\">
               <table style=\"border:0px;\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" >
                 <tr>
                   <td colspan=\"2\"><b>".__("Windows")." ".__("Services")."</b></td>
                 </tr>\n";
 
-      $sql  = "SELECT DISTINCT ser.service_uuid, ser.service_name, ser.service_display_name, ser.service_started, sys.system_name, sys.net_ip_address FROM service ser, system sys
-               WHERE (ser.service_name LIKE 'IISAdmin%' OR ser.service_name LIKE 'Apache%') AND
-               ser.service_uuid = sys.system_uuid AND
-               ser.service_timestamp = sys.system_timestamp ORDER BY system_name";
+      $sql  = "SELECT DISTINCT ser.service_uuid, ser.service_name, ser.service_display_name, ser.service_started, sys.system_name, sys.net_ip_address ";
+      $sql .= "FROM service ser, system sys ";
+      $sql .= "WHERE (ser.service_name = 'W3Svc' OR ser.service_name LIKE '%Apache%' OR ser.service_name LIKE 'Oracle%ServerProcessManager') ";
+      $sql .= "AND ser.service_uuid = sys.system_uuid AND ser.service_timestamp = sys.system_timestamp ";
+      $sql .= "ORDER BY system_name";
 
       $result = mysql_query($sql, $db);
       if ($myrow = mysql_fetch_array($result)){
-        // Service Detected
+        // Web Service Detected
         echo
           "<tr>
              <td><b>".__("IP Address")."</b></td>
              <td><b>".__("Hostname")."</b></td>
              <td><b>".__("Service")."</b></td>
-             <td><b>".__("State")."</b></td>
+             <td><b>".__("Started")."</b></td>
            </tr>\n";
 
         do {
@@ -452,15 +456,18 @@ if ($show_detected_servers == "y"){
                <td>" . ip_trans($myrow["net_ip_address"]) . "&nbsp;</td>
                <td><a href=\"system.php?pc=" . $myrow["service_uuid"] . "&amp;view=summary\">" . $myrow["system_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
                <td>" . $myrow["service_display_name"] . "</td>
-               <td><a href= \"http://".$myrow["system_name"]."\" onclick=\"this.target='_blank';\" />" . $myrow["service_started"] . "</td>
+               <td>" . $myrow["service_started"] . "</td>
              </tr>\n";
 
         } while ($myrow = mysql_fetch_array($result));
         echo "<tr><td>&nbsp;</td></tr>\n";
       } else {}
      
-  // Nmap discovered on Audited PC
-  $sql = "select sys.net_ip_address,sys.system_name,sys.system_uuid, port.nmap_port_number  from system sys, nmap_ports port where (port.nmap_port_number = '80' OR port.nmap_port_number = '443') AND port.nmap_other_id = sys.system_uuid";
+  // WS - Nmap discovered on Audited PC
+  $sql  = "SELECT sys.net_ip_address, sys.system_name, sys.system_uuid, sys.net_domain, port.nmap_port_number, port.nmap_port_name ";
+  $sql .= "FROM system sys, nmap_ports port ";
+  $sql .= "WHERE (port.nmap_port_number = '80' OR port.nmap_port_number = '443') AND port.nmap_other_id = sys.system_uuid ";
+  $sql .= "ORDER BY sys.system_name";
   $result = mysql_query($sql, $db);
   if ($myrow = mysql_fetch_array($result)){
     echo
@@ -471,26 +478,33 @@ if ($show_detected_servers == "y"){
        <tr>
          <td><b>".__("IP Address")."</b></td>
          <td><b>".__("Hostname")."</b></td>
-       <td><b>".__("Port")."</b></td>
+         <td><b>".__("TCP Port")."</b></td>
+		 <td><b>".__("Port Name")."</b></td>
        </tr>\n";
 
     do {
         $count = $count + 1;
         $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
-
+		
+        $app = "http";
+	    if ($myrow["nmap_port_number"] <> "80") { $app = "https"; }
+		
         echo
           "<tr style=\"bgcolor:" . $bgcolor . ";\">
              <td>" . ip_trans($myrow["net_ip_address"]) . "&nbsp;</td>
              <td><a href=\"system.php?pc=" . $myrow["system_uuid"] . "&amp;view=summary\">" . $myrow["system_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
-             <td>" . $myrow["nmap_port_number"] . "&nbsp;</td>
-             <td></td>
-           </tr>\n";
+             <td><a href= \"launch.php?hostname=".$myrow["system_name"]."&amp;domain=".$myrow["net_domain"]."&amp;application=".$app."\"/>" . $myrow["nmap_port_number"] . "&nbsp;</td>
+             <td>" . $myrow["nmap_port_name"] . "&nbsp;</td>
+          </tr>\n";
 
     } while ($myrow = mysql_fetch_array($result));
     echo "<tr><td>&nbsp;</td></tr>\n";
   } else {}
-  // Nmap discovered on Other equipment
-  $sql = "select oth.other_id, oth.other_ip_address, oth.other_network_name, oth.other_mac_address, port.nmap_port_number  from other oth, nmap_ports port where (port.nmap_port_number = '80' OR port.nmap_port_number = '443') AND (port.nmap_other_id = oth.other_mac_address OR port.nmap_other_id = oth.other_id)";
+  // WS - Nmap discovered on Other equipment
+  $sql  = "SELECT oth.other_id, oth.other_ip_address, oth.other_network_name, oth.other_mac_address, port.nmap_port_number, port.nmap_port_name ";
+  $sql .= "FROM other oth, nmap_ports port ";
+  $sql .= "WHERE (port.nmap_port_number = '80' OR port.nmap_port_number = '443') AND (port.nmap_other_id = oth.other_mac_address OR port.nmap_other_id = oth.other_id) ";
+  $sql .= "ORDER BY oth.other_network_name";
   $result = mysql_query($sql, $db);
   if ($myrow = mysql_fetch_array($result)){
     $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
@@ -503,26 +517,23 @@ if ($show_detected_servers == "y"){
        <tr style=\"bgcolor:" . $bgcolor . ";\">
          <td><b>".__("IP Address")."</b></td>
          <td><b>".__("Hostname")."</b></td>
-         <td><b>".__("Port")."</b></td>
-         <td></td>
+         <td><b>".__("TCP Port")."</b></td>
+         <td><b>".__("Port Name")."</b></td>
        </tr>\n";
 
     do {
       $count = $count + 1;
       $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
-
-    echo
+	  
+      $app = "http";
+	  if ($myrow["nmap_port_number"] <> "80") { $app = "https"; } 
+	
+      echo
       "<tr style=\"bgcolor:" . $bgcolor . ";\">
          <td>" . ip_trans($myrow["other_ip_address"]) . "&nbsp;</td>
          <td><a href=\"system.php?other=" . $myrow["other_id"] . "&amp;view=other_system\">" . $myrow["other_network_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
-             <td><a href= \""; 
-             if ($myrow["nmap_port_number"] = "80"){
-             echo "http";
-            } else {
-             echo "https";
-             }
-             echo "://".$myrow["other_ip_address"].":".$myrow["nmap_port_number"] ."\" onclick=\"this.target='_blank';\" />" . $myrow["nmap_port_number"] . "&nbsp;</td>
-             <td></td></td>
+         <td><a href= \"launch_other.php?hostname=".$myrow["other_ip_address"]."&amp;application=".$app."\"/>" . $myrow["nmap_port_number"] . "&nbsp;&nbsp;&nbsp;</td>
+         <td>" . $myrow["nmap_port_name"] . "&nbsp;</td>
        </tr>\n";
 
     } while ($myrow = mysql_fetch_array($result));
@@ -560,21 +571,22 @@ if ($show_detected_servers == "y"){
     "<div class=\"main_each\">
        <table style=\"border:0px;\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" >
          <tr>
-           <td class=\"indexheadlines\" colspan=\"4\"><a href=\"javascript://\" onclick=\"switchUl('f7');\">".__("FTP Servers").".</a></td>
-           <td align=\"right\"><a href=\"javascript://\" onclick=\"switchUl('f7');\"><img src=\"images/down.png\" width=\"16\" height=\"16\" style=\"border:0px;\" alt=\"\" /></a></td>
+           <td class=\"indexheadlines\" colspan=\"4\"><a href=\"javascript://\" onclick=\"switchUl('f6');\">".__("FTP Servers").".</a></td>
+           <td align=\"right\"><a href=\"javascript://\" onclick=\"switchUl('f6');\"><img src=\"images/down.png\" width=\"16\" height=\"16\" style=\"border:0px;\" alt=\"\" /></a></td>
          </tr>
         </table>
 
-        <div style=\"display:none;\" id=\"f7\">
+        <div style=\"display:none;\" id=\"f6\">
          <table style=\"border:0px;\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" >\n";
 
-  $sql = "SELECT DISTINCT service_uuid, service_display_name, service_started, system_name, net_ip_address FROM service, system
-          WHERE service_display_name LIKE 'FTP%' AND service_uuid = system_uuid AND service_timestamp = system_timestamp
-          ORDER BY system_name";
+  $sql  = "SELECT DISTINCT ser.service_uuid, ser.service_display_name, ser.service_started, sys.system_name, sys.net_ip_address ";
+  $sql .= "FROM service ser, system sys ";
+  $sql .= "WHERE ser.service_display_name LIKE 'FTP%' AND ser.service_uuid = sys.system_uuid AND ser.service_timestamp = sys.system_timestamp ";
+  $sql .= "ORDER BY sys.system_name";
   $result = mysql_query($sql, $db);
 
   if ($myrow = mysql_fetch_array($result)){
-    // Service Detected
+    // FTP Service Detected
 
         echo
            "<tr>
@@ -585,7 +597,7 @@ if ($show_detected_servers == "y"){
             <td><b>".__("IP Address")."</b></td>
             <td><b>".__("Hostname")."</b></td>
             <td><b>".__("Service")."</b></td>
-            <td><b>".__("State")."</b></td>
+            <td><b>".__("Started")."</b></td>
            </tr>\n";
 
     do {$bgcolor = change_row_color($bgcolor,$bg1,$bg2);
@@ -596,7 +608,7 @@ if ($show_detected_servers == "y"){
            <td>" . ip_trans($myrow["net_ip_address"]) . "&nbsp;</td>
            <td><a href=\"system.php?pc=" . $myrow["service_uuid"] . "&amp;view=summary\">" . $myrow["system_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
            <td>" . $myrow["service_display_name"] . "</td>
-           <td><a href=\"ftp://".$myrow["system_name"]."\" onclick=\"this.target='_blank';\" />" . $myrow["service_started"] . "</td>
+           <td>" . $myrow["service_started"] . "</td>
          </tr>\n";
 
     } while ($myrow = mysql_fetch_array($result));
@@ -604,8 +616,11 @@ if ($show_detected_servers == "y"){
   } else {}
 
 
-  // Nmap discovered on Audited PC
-  $sql = "select sys.net_ip_address,sys.system_name,sys.system_uuid, port.nmap_port_number from system sys, nmap_ports port where port.nmap_port_number = '21' AND port.nmap_other_id = sys.system_uuid";
+  // FTP - Nmap discovered on Audited PC
+  $sql  = "SELECT sys.net_ip_address, sys.system_name, sys.system_uuid, sys.net_domain, port.nmap_port_number, port.nmap_port_name ";
+  $sql .= "FROM system sys, nmap_ports port ";
+  $sql .= "WHERE port.nmap_port_number = '21' AND port.nmap_other_id = sys.system_uuid ";
+  $sql .= "ORDER BY sys.system_name";
   $result = mysql_query($sql, $db);
   if ($myrow = mysql_fetch_array($result)){
 
@@ -617,8 +632,8 @@ if ($show_detected_servers == "y"){
        <tr>
          <td><b>".__("IP Address")."</b></td>
          <td><b>".__("Hostname")."</b></td>
-         <td><b>".__("Port")."</b></td>
-         <td></td>
+         <td><b>".__("TCP Port")."</b></td>
+         <td><b>".__("Port Name")."</b></td>
        </tr>\n";
 
     do {
@@ -629,16 +644,19 @@ if ($show_detected_servers == "y"){
           "<tr style=\"bgcolor:" . $bgcolor . ";\">
              <td>" . ip_trans($myrow["net_ip_address"]) . "&nbsp;</td>
              <td><a href=\"system.php?pc=" . $myrow["system_uuid"] . "&amp;view=summary\">" . $myrow["system_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
-             <td>" . $myrow["nmap_port_number"] . "&nbsp;</td>
-             <td>&nbsp;</td>
+             <td><a href= \"launch.php?hostname=".$myrow["system_name"]."&amp;domain=".$myrow["net_domain"]."&amp;application=ftp\"/>" . $myrow["nmap_port_number"] . "&nbsp;</td>
+             <td>" . $myrow["nmap_port_name"] . "&nbsp;</td>
            </tr>\n";
 
     } while ($myrow = mysql_fetch_array($result));
     echo "<tr><td>&nbsp;</td></tr>\n";
   } else {}
 
-  // Nmap discovered on Other equipment
-  $sql = "select oth.other_id, oth.other_ip_address, oth.other_network_name, oth.other_mac_address, port.nmap_port_number from other oth, nmap_ports port where port.nmap_port_number = '21' AND (port.nmap_other_id = oth.other_mac_address OR port.nmap_other_id = oth.other_id)";
+  // FTP - Nmap discovered on Other equipment
+  $sql  = "SELECT oth.other_id, oth.other_ip_address, oth.other_network_name, oth.other_mac_address, port.nmap_port_number, port.nmap_port_name ";
+  $sql .= "FROM other oth, nmap_ports port ";
+  $sql .= "WHERE port.nmap_port_number = '21' AND (port.nmap_other_id = oth.other_mac_address OR port.nmap_other_id = oth.other_id) ";
+  $sql .= "ORDER BY oth.other_network_name";
   $result = mysql_query($sql, $db);
 
   if ($myrow = mysql_fetch_array($result)){
@@ -652,8 +670,8 @@ if ($show_detected_servers == "y"){
        <tr style=\"bgcolor:" . $bgcolor . ";\">
          <td><b>".__("IP Address")."</b></td>
          <td><b>".__("Hostname")."</b></td>
-         <td><b>".__("Port")."</b></td>
-         <td></td>
+         <td><b>".__("TCP Port")."</b></td>
+         <td><b>".__("Port Name")."</b></td>
        </tr>\n";
 
     do {
@@ -665,9 +683,8 @@ if ($show_detected_servers == "y"){
       "<tr style=\"bgcolor:" . $bgcolor . ";\">
          <td>" . ip_trans($myrow["other_ip_address"]) . "&nbsp;</td>
          <td ><a href=\"system.php?other=" . $myrow["other_id"] . "&amp;view=other_system\">" . $myrow["other_network_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
-         <td>" . $myrow["nmap_port_number"] . "&nbsp;</td>
-         <td></td>
-         <td></td>
+         <td><a href= \"launch_other.php?hostname=".$myrow["other_ip_address"]."&amp;application=ftp\"/>" . $myrow["nmap_port_number"] . "&nbsp;</td>
+         <td>" . $myrow["nmap_port_name"] . "&nbsp;</td>
        </tr>\n";
 
     } while ($myrow = mysql_fetch_array($result));
@@ -705,20 +722,21 @@ if ($show_detected_servers == "y"){
     "<div class=\"main_each\">
        <table style=\"border:0px;\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" >
          <tr>
-           <td class=\"indexheadlines\" colspan=\"4\"><a href=\"javascript://\" onclick=\"switchUl('f8');\">".__("Telnet Servers")."</a></td>
-           <td align=\"right\"><a href=\"javascript://\" onclick=\"switchUl('f8');\"><img src=\"images/down.png\" width=\"16\" height=\"16\" style=\"border:0px;\" alt=\"\" /></a></td>
+           <td class=\"indexheadlines\" colspan=\"4\"><a href=\"javascript://\" onclick=\"switchUl('f7');\">".__("Telnet Servers")."</a></td>
+           <td align=\"right\"><a href=\"javascript://\" onclick=\"switchUl('f7');\"><img src=\"images/down.png\" width=\"16\" height=\"16\" style=\"border:0px;\" alt=\"\" /></a></td>
          </tr>
        </table>
 
-       <div style=\"display:none;\" id=\"f8\">
+       <div style=\"display:none;\" id=\"f7\">
          <table style=\"border:0px;\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" >\n";
 
-  $sql = "SELECT DISTINCT service_uuid, service_display_name, service_started, system_name, net_ip_address FROM service, system
-          WHERE service_display_name = 'Telnet' AND service_started = 'True' AND service_timestamp = system_timestamp
-          AND service_uuid = system_uuid ORDER BY system_name";
+  $sql  = "SELECT DISTINCT ser.service_uuid, ser.service_display_name, ser.service_started, sys.system_name, sys.net_ip_address ";
+  $sql .= "FROM service ser, system sys ";
+  $sql .= "WHERE ser.service_display_name = 'Telnet' AND ser.service_started = 'True' AND ser.service_timestamp = sys.system_timestamp AND ser.service_uuid = sys.system_uuid ";
+  $sql .= "ORDER BY sys.system_name";
   $result = mysql_query($sql, $db);
   if ($myrow = mysql_fetch_array($result)){
-    // Service Detected and Started
+    // Telnet Service Detected and Started
 
         echo
            "<tr>
@@ -729,7 +747,7 @@ if ($show_detected_servers == "y"){
             <td><b>".__("IP Address")."</b></td>
             <td><b>".__("Hostname")."</b></td>
             <td><b>".__("Service")."</b></td>
-            <td><b>".__("State")."</b></td>
+            <td><b>".__("Started")."</b></td>
            </tr>\n";
 
     do {
@@ -741,15 +759,18 @@ if ($show_detected_servers == "y"){
            <td>" . ip_trans($myrow["net_ip_address"]) . "&nbsp;</td>
            <td><a href=\"system.php?pc=" . $myrow["service_uuid"] . "&amp;view=summary\">" . $myrow["system_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
            <td>" . $myrow["service_display_name"] . "</td>
-           <td><a href=\"telnet://".$myrow["system_name"]."\" onclick=\"this.target='_blank';\" />" . $myrow["service_started"] . "</td>
+           <td>" . $myrow["service_started"] . "</td>
          </tr>\n";
 
     } while ($myrow = mysql_fetch_array($result));
     echo "<tr><td>&nbsp;</td></tr>\n";
   } else {}
 
-  // Nmap discovered on Audited PC
-  $sql = "select sys.net_ip_address,sys.system_name,sys.system_uuid, port.nmap_port_number from system sys, nmap_ports port where port.nmap_port_number = '23' AND port.nmap_other_id = sys.system_uuid";
+  // Telnet - Nmap discovered on Audited PC
+  $sql  = "SELECT sys.net_ip_address, sys.system_name, sys.system_uuid, sys.net_domain, port.nmap_port_number, port.nmap_port_name ";
+  $sql .= "FROM system sys, nmap_ports port ";
+  $sql .= "WHERE port.nmap_port_number = '23' AND port.nmap_other_id = sys.system_uuid ";
+  $sql .= "ORDER BY sys.system_name";
   $result = mysql_query($sql, $db);
   if ($myrow = mysql_fetch_array($result)){
 
@@ -761,8 +782,8 @@ if ($show_detected_servers == "y"){
        <tr>
          <td><b>".__("IP Address")."</b></td>
          <td><b>".__("Hostname")."</b></td>
-         <td><b>".__("Port")."</b></td>
-         <td></td>
+         <td><b>".__("TCP Port")."</b></td>
+         <td><b>".__("Port Name")."</b></td>
        </tr>\n";
 
     do {
@@ -771,9 +792,10 @@ if ($show_detected_servers == "y"){
 
     echo
       "<tr style=\"bgcolor:" . $bgcolor . ";\">
-         <td><a href=\"telnet://".$myrow["system_name"]."\" onclick=\"this.target='_blank';\" />" . ip_trans($myrow["net_ip_address"]) . "&nbsp;</td>
+         <td>" . ip_trans($myrow["net_ip_address"]) . "&nbsp;</td>
          <td><a href=\"system.php?pc=" . $myrow["system_uuid"] . "&amp;view=summary\">" . $myrow["system_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
-         <td>" . $myrow["nmap_port_number"] . "&nbsp;</td>
+         <td><a href= \"launch.php?hostname=".$myrow["system_name"]."&amp;domain=".$myrow["net_domain"]."&amp;application=telnet&amp;ext=vbs\"/>" . $myrow["nmap_port_number"] . "&nbsp;</td>
+         <td>" . $myrow["nmap_port_name"] . "&nbsp;</td>
        </tr>\n";
 
     } while ($myrow = mysql_fetch_array($result));
@@ -781,8 +803,11 @@ if ($show_detected_servers == "y"){
     echo "<tr><td>&nbsp;</td></tr>\n";
 
   } else {}
-  // Nmap discovered on Other equipment
-  $sql = "select oth.other_id, oth.other_ip_address, oth.other_network_name, oth.other_mac_address, port.nmap_port_number from other oth, nmap_ports port where port.nmap_port_number = '23' AND (port.nmap_other_id = oth.other_mac_address OR port.nmap_other_id = oth.other_id)";
+  // Telnet - Nmap discovered on Other equipment
+  $sql  = "SELECT oth.other_id, oth.other_ip_address, oth.other_network_name, oth.other_mac_address, port.nmap_port_number, port.nmap_port_name ";
+  $sql .= "FROM other oth, nmap_ports port ";
+  $sql .= "WHERE port.nmap_port_number = '23' AND (port.nmap_other_id = oth.other_mac_address OR port.nmap_other_id = oth.other_id) ";
+  $sql .= "ORDER BY oth.other_network_name";
   $result = mysql_query($sql, $db);
   if ($myrow = mysql_fetch_array($result)){
     $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
@@ -795,8 +820,8 @@ if ($show_detected_servers == "y"){
        <tr style=\"bgcolor:" . $bgcolor . ";\">
          <td><b>".__("IP Address")."</b></td>
          <td><b>".__("Hostname")."</b></td>
-         <td><b>".__("Port")."</b></td>
-         <td></td>
+         <td><b>".__("TCP Port")."</b></td>
+         <td><b>".__("Port Name")."</b></td>
        </tr>\n";
 
     do {
@@ -805,10 +830,10 @@ if ($show_detected_servers == "y"){
 
     echo
       "<tr style=\"bgcolor:" . $bgcolor . ";\">
-         <td><a href=\"telnet://".$myrow["other_network_name"]."\" onclick=\"this.target='_blank';\" />" . ip_trans($myrow["other_ip_address"]) . "&nbsp;</td>
+         <td>" . ip_trans($myrow["other_ip_address"]) . "&nbsp;</td>
          <td><a href=\"system.php?other=" . $myrow["other_id"] . "&amp;view=other_system\">" . $myrow["other_network_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
-         <td>" . $myrow["nmap_port_number"] . "&nbsp;</td>
-         <td></td>
+         <td><a href= \"launch_other.php?hostname=".$myrow["other_ip_address"]."&amp;application=telnet&amp;ext=vbs\"/>" . $myrow["nmap_port_number"] . "&nbsp;</td>
+         <td>" . $myrow["nmap_port_name"] . "&nbsp;</td>
        </tr>\n";
 
     } while ($myrow = mysql_fetch_array($result));
@@ -847,23 +872,22 @@ if ($show_detected_servers == "y"){
     "<div class=\"main_each\">
        <table style=\"border:0px;\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" >
          <tr>
-           <td class=\"indexheadlines\" colspan=\"4\"><a href=\"javascript://\" onclick=\"switchUl('f9');\">".__("Email Servers")."</a></td>
-           <td align=\"right\"><a href=\"javascript://\" onclick=\"switchUl('f9');\"><img src=\"images/down.png\" width=\"16\" height=\"16\" style=\"border:0px;\" alt=\"\" /></a></td>
+           <td class=\"indexheadlines\" colspan=\"4\"><a href=\"javascript://\" onclick=\"switchUl('f8');\">".__("Email Servers")."</a></td>
+           <td align=\"right\"><a href=\"javascript://\" onclick=\"switchUl('f8');\"><img src=\"images/down.png\" width=\"16\" height=\"16\" style=\"border:0px;\" alt=\"\" /></a></td>
          </tr>
        </table>
 
-       <div style=\"display:none;\" id=\"f9\">
+       <div style=\"display:none;\" id=\"f8\">
          <table style=\"border:0px;\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" >\n";
 
-  $sql  = "SELECT DISTINCT service_uuid, service_display_name, service_started, system_name, net_ip_address FROM service, system WHERE
-           (service_display_name = 'Microsoft Exchange Information Store' OR
-           service_display_name = 'Simple Mail Transport Protocol (SMTP)' OR
-           service_display_name LIKE '%Lotus%Domino%' OR
-           service_display_name = 'Simple Mail Transfer Protocol (SMTP)')
-           AND service_timestamp = system_timestamp AND service_uuid = system_uuid ORDER BY system_name";
+  $sql  = "SELECT DISTINCT ser.service_uuid, ser.service_display_name, ser.service_name, ser.service_started, sys.system_name, sys.net_ip_address ";
+  $sql .= "FROM service ser, system sys ";
+  $sql .= "WHERE (ser.service_name = 'MSExchangeIS' OR ser.service_name = 'SMTPSvc' OR ser.service_display_name LIKE 'SMTP' OR ser.service_display_name LIKE '%Lotus%Domino%') ";
+  $sql .= "AND ser.service_timestamp = sys.system_timestamp AND ser.service_uuid = sys.system_uuid ";
+  $sql .= "ORDER BY sys.system_name";
   $result = mysql_query($sql, $db);
   if ($myrow = mysql_fetch_array($result)){
-    // Service Detected
+    // Email - Service Detected
         echo
            "<tr>
               <td colspan=\"2\"><b>".__("Windows")." ".__("Services")."</b></td>
@@ -873,7 +897,7 @@ if ($show_detected_servers == "y"){
             <td><b>".__("IP Address")."</b></td>
             <td><b>".__("Hostname")."</b></td>
             <td><b>".__("Service")."</b></td>
-            <td><b>".__("State")."</b></td>
+            <td><b>".__("Started")."</b></td>
            </tr>\n";
 
     do {
@@ -885,7 +909,7 @@ if ($show_detected_servers == "y"){
            <td>" . ip_trans($myrow["net_ip_address"]) . "&nbsp;</td>
            <td><a href=\"system.php?pc=" . $myrow["service_uuid"] . "&amp;view=summary\">" . $myrow["system_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
            <td>" . $myrow["service_display_name"] . "</td>
-           <td><a href=\"telnet://".$myrow["system_name"].":25\" onclick=\"this.target='_blank';\" />" . $myrow["service_started"] . "</td>
+           <td>" . $myrow["service_started"] . "</td>
          </tr>\n";
 
     } while ($myrow = mysql_fetch_array($result));
@@ -894,8 +918,11 @@ if ($show_detected_servers == "y"){
 
   } else {}
 
-  // Nmap discovered on Audited PC
-  $sql = "select sys.net_ip_address,sys.system_name,sys.system_uuid, port.nmap_port_number from system sys, nmap_ports port where port.nmap_port_number = '25' AND port.nmap_other_id = sys.system_uuid";
+  // Email - Nmap discovered on Audited PC
+  $sql  = "SELECT sys.net_ip_address, sys.system_name, sys.system_uuid, sys.net_domain, port.nmap_port_number, port.nmap_port_name ";
+  $sql .= "FROM system sys, nmap_ports port ";
+  $sql .= "WHERE port.nmap_port_number = '25' AND port.nmap_other_id = sys.system_uuid ";
+  $sql .= "ORDER BY sys.system_name";
   $result = mysql_query($sql, $db);
   if ($myrow = mysql_fetch_array($result)){
 
@@ -907,8 +934,8 @@ if ($show_detected_servers == "y"){
        <tr>
          <td><b>".__("IP Address")."</b></td>
          <td><b>".__("Hostname")."</b></td>
-         <td><b>".__("Port")."</b></td>
-         <td></td>
+         <td><b>".__("TCP Port")."</b></td>
+         <td><b>".__("Port Name")."</b></td>
        </tr>\n";
 
     do {
@@ -917,9 +944,10 @@ if ($show_detected_servers == "y"){
 
     echo
       "<tr style=\"bgcolor:" . $bgcolor . ";\">
-         <td><a href=\"telnet://".$myrow["system_name"].":25\" onclick=\"this.target='_blank';\" />" . ip_trans($myrow["net_ip_address"]) . "&nbsp;</td>
+         <td>" . ip_trans($myrow["net_ip_address"]) . "&nbsp;</td>
          <td><a href=\"system.php?pc=" . $myrow["system_uuid"] . "&amp;view=summary\">" . $myrow["system_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
-         <td>" . $myrow["nmap_port_number"] . "&nbsp;</td>
+         <td><a href= \"launch.php?hostname=".$myrow["system_name"]."&amp;domain=".$myrow["net_domain"]."&amp;application=telnet&amp;ext=vbs\"/>" . $myrow["nmap_port_number"] . "&nbsp;</td>
+         <td>" . $myrow["nmap_port_name"] . "&nbsp;</td>
        </tr>\n";
 
     } while ($myrow = mysql_fetch_array($result));
@@ -927,8 +955,11 @@ if ($show_detected_servers == "y"){
     echo "<tr><td>&nbsp;</td></tr>\n";
 
   } else {}
-  // Nmap discovered on Other equipment
-  $sql = "select oth.other_id, oth.other_ip_address, oth.other_network_name, oth.other_mac_address, port.nmap_port_number from other oth, nmap_ports port where port.nmap_port_number = '25' AND (port.nmap_other_id = oth.other_mac_address OR port.nmap_other_id = oth.other_id)";
+  // Email - Nmap discovered on Other equipment
+  $sql  = "SELECT oth.other_id, oth.other_ip_address, oth.other_network_name, oth.other_mac_address, port.nmap_port_number, port.nmap_port_name ";
+  $sql .= "FROM other oth, nmap_ports port ";
+  $sql .= "WHERE port.nmap_port_number = '25' AND (port.nmap_other_id = oth.other_mac_address OR port.nmap_other_id = oth.other_id) ";
+  $sql .= "ORDER BY oth.other_network_name";
   $result = mysql_query($sql, $db);
   if ($myrow = mysql_fetch_array($result)){
     $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
@@ -941,8 +972,8 @@ if ($show_detected_servers == "y"){
        <tr style=\"bgcolor:" . $bgcolor . ";\">
          <td><b>".__("IP Address")."</b></td>
          <td><b>".__("Hostname")."</b></td>
-         <td><b>".__("Port")."</b></td>
-         <td></td>
+         <td><b>".__("TCP Port")."</b></td>
+         <td><b>".__("Port Name")."</b></td>
        </tr>\n";
 
     do {
@@ -951,9 +982,10 @@ if ($show_detected_servers == "y"){
 
     echo
         "<tr style=\"bgcolor:" . $bgcolor . ";\">
-           <td><a href=\"telnet://".$myrow["other_network_name"].":25\" onclick=\"this.target='_blank';\" />" . ip_trans($myrow["other_ip_address"]) . "&nbsp;</td>
-             <td><a href=\"system.php?other=" . $myrow["other_id"] . "&amp;view=other_system\">" . $myrow["other_network_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
-           <td>" . $myrow["nmap_port_number"] . "&nbsp;</td>
+           <td>" . ip_trans($myrow["other_ip_address"]) . "&nbsp;</td>
+           <td><a href=\"system.php?other=" . $myrow["other_id"] . "&amp;view=other_system\">" . $myrow["other_network_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
+           <td><a href= \"launch_other.php?hostname=".$myrow["other_ip_address"]."&amp;application=telnet&amp;ext=vbs\"/>" . $myrow["nmap_port_number"] . "&nbsp;</td>
+           <td>" . $myrow["nmap_port_name"] . "&nbsp;</td>
          </tr>\n";
 
     } while ($myrow = mysql_fetch_array($result));
@@ -990,20 +1022,21 @@ if ($show_detected_servers == "y"){
     "<div class=\"main_each\">
        <table style=\"border:0px;\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" >
          <tr>
-           <td class=\"indexheadlines\" colspan=\"4\"><a href=\"javascript://\" onclick=\"switchUl('f10');\">".__("VNC Servers")."</a></td>
-           <td align=\"right\"><a href=\"javascript://\" onclick=\"switchUl('f10');\"><img src=\"images/down.png\" width=\"16\" height=\"16\" style=\"border:0px;\" alt=\"\" /></a></td>
+           <td class=\"indexheadlines\" colspan=\"4\"><a href=\"javascript://\" onclick=\"switchUl('f9');\">".__("VNC Servers")."</a></td>
+           <td align=\"right\"><a href=\"javascript://\" onclick=\"switchUl('f9');\"><img src=\"images/down.png\" width=\"16\" height=\"16\" style=\"border:0px;\" alt=\"\" /></a></td>
          </tr>
        </table>
 
-       <div style=\"display:none;\" id=\"f10\">
+       <div style=\"display:none;\" id=\"f9\">
          <table style=\"border:0px;\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" >\n";
 
-  $sql  = "SELECT DISTINCT service_uuid, service_display_name, service_started, system_name, net_ip_address FROM service, system WHERE
-           service_display_name LIKE '%VNC%' AND
-           service_timestamp = system_timestamp AND service_uuid = system_uuid ORDER BY system_name";
+  $sql  = "SELECT DISTINCT ser.service_uuid, ser.service_display_name, ser.service_name, ser.service_started, sys.system_name, sys.net_ip_address ";
+  $sql .= "FROM service ser, system sys ";
+  $sql .= "WHERE ser.service_name LIKE '%VNC%' AND ser.service_timestamp = sys.system_timestamp AND ser.service_uuid = sys.system_uuid ";
+  $sql .= "ORDER BY sys.system_name";
   $result = mysql_query($sql, $db);
   if ($myrow = mysql_fetch_array($result)){
-    // Service Detected
+    // VNC - Service Detected
 
         echo
            "<tr>
@@ -1014,7 +1047,7 @@ if ($show_detected_servers == "y"){
             <td><b>".__("IP Address")."</b></td>
             <td><b>".__("Hostname")."</b></td>
             <td><b>".__("Service")."</b></td>
-            <td><b>".__("State")."</b></td>
+            <td><b>".__("Started")."</b></td>
            </tr>\n";
 
     do {
@@ -1026,7 +1059,7 @@ if ($show_detected_servers == "y"){
            <td>" . ip_trans($myrow["net_ip_address"]) . "&nbsp;</td>
            <td><a href=\"system.php?pc=" . $myrow["service_uuid"] . "&amp;view=summary\">" . $myrow["system_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
            <td>" . $myrow["service_display_name"] . "</td>
-           <td><a href=\"launch.php?hostname=".$myrow["system_name"]."&amp;application=vnc&amp;ext=vnc\"/>" . $myrow["service_started"] . "</td>
+           <td>" . $myrow["service_started"] . "</td>
          </tr>\n";
 
     } while ($myrow = mysql_fetch_array($result));
@@ -1034,8 +1067,11 @@ if ($show_detected_servers == "y"){
     echo "<tr><td>&nbsp;</td></tr>\n";
 
   } else {}
-  // Nmap discovered on Audited PC
-  $sql = "select sys.net_ip_address,sys.system_name,sys.system_uuid, port.nmap_port_number from system sys, nmap_ports port where port.nmap_port_number = '5900' AND port.nmap_other_id = sys.system_uuid";
+  // VNC - Nmap discovered on Audited PC
+  $sql  = "SELECT sys.net_ip_address, sys.system_name, sys.system_uuid, sys.net_domain, port.nmap_port_number, port.nmap_port_name ";
+  $sql .= "FROM system sys, nmap_ports port ";
+  $sql .= "WHERE port.nmap_port_number = '5900' AND port.nmap_other_id = sys.system_uuid ";
+  $sql .= "ORDER BY sys.system_name";
   $result = mysql_query($sql, $db);
   if ($myrow = mysql_fetch_array($result)){
 
@@ -1047,8 +1083,8 @@ if ($show_detected_servers == "y"){
        <tr>
          <td><b>".__("IP Address")."</b></td>
          <td><b>".__("Hostname")."</b></td>
-         <td><b>".__("Port")."</b></td>
-         <td></td>
+         <td><b>".__("TCP Port")."</b></td>
+         <td><b>".__("Port Name")."</b></td>
        </tr>\n";
 
     do {
@@ -1059,7 +1095,8 @@ if ($show_detected_servers == "y"){
           "<tr style=\"bgcolor:" . $bgcolor . ";\">
              <td>" . ip_trans($myrow["net_ip_address"]) . "&nbsp;</td>
              <td><a href=\"system.php?pc=" . $myrow["system_uuid"] . "&amp;view=summary\">" . $myrow["system_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
-             <td>" . $myrow["nmap_port_number"] . "&nbsp;</td>
+             <td><a href= \"launch.php?hostname=".$myrow["system_name"]."&amp;domain=".$myrow["net_domain"]."&amp;application=".$vnc_type."_"."vnc&amp;ext=vnc\"/>" . $myrow["nmap_port_number"] . "&nbsp;</td>
+             <td>" . $myrow["nmap_port_name"] . "&nbsp;</td>
            </tr>\n";
 
     } while ($myrow = mysql_fetch_array($result));
@@ -1067,8 +1104,11 @@ if ($show_detected_servers == "y"){
     echo "<tr><td>&nbsp;</td></tr>\n";
 
   } else {}
-  // Nmap discovered on Other equipment
-  $sql = "select oth.other_id, oth.other_ip_address, oth.other_network_name, oth.other_mac_address, port.nmap_port_number from other oth, nmap_ports port where port.nmap_port_number = '5900' AND (port.nmap_other_id = oth.other_mac_address OR port.nmap_other_id = oth.other_id)";
+  // VNC - Nmap discovered on Other equipment
+  $sql  = "SELECT oth.other_id, oth.other_ip_address, oth.other_network_name, oth.other_mac_address, port.nmap_port_number, port.nmap_port_name ";
+  $sql .= "FROM other oth, nmap_ports port ";
+  $sql .= "WHERE port.nmap_port_number = '5900' AND (port.nmap_other_id = oth.other_mac_address OR port.nmap_other_id = oth.other_id) ";
+  $sql .= "ORDER BY oth.other_network_name";
   $result = mysql_query($sql, $db);
   if ($myrow = mysql_fetch_array($result)){
     $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
@@ -1081,8 +1121,8 @@ if ($show_detected_servers == "y"){
        <tr style=\"bgcolor:" . $bgcolor . ";\">
          <td><b>".__("IP Address")."</b></td>
          <td><b>".__("Hostname")."</b></td>
-         <td><b>".__("Port")."</b></td>
-         <td></td>
+         <td><b>".__("TCP Port")."</b></td>
+         <td><b>".__("Port Name")."</b></td>
        </tr>\n";
 
     do {
@@ -1092,8 +1132,9 @@ if ($show_detected_servers == "y"){
       echo
         "<tr style=\"bgcolor:" . $bgcolor . ";\">
            <td>" . ip_trans($myrow["other_ip_address"]) . "&nbsp;</td>
-            <td><a href=\"system.php?other=" . $myrow["other_id"] . "&amp;view=other_system\">" . $myrow["other_network_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
-           <td>" . $myrow["nmap_port_number"] . "&nbsp;</td>
+           <td><a href=\"system.php?other=" . $myrow["other_id"] . "&amp;view=other_system\">" . $myrow["other_network_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
+           <td><a href= \"launch_other.php?hostname=".$myrow["other_ip_address"]."&amp;application=".$vnc_type."_"."vnc&amp;ext=vnc\"/>" . $myrow["nmap_port_number"] . "&nbsp;</td>
+           <td>" . $myrow["nmap_port_name"] . "&nbsp;</td>
          </tr>\n";
 
     } while ($myrow = mysql_fetch_array($result));
@@ -1113,9 +1154,6 @@ if ($show_detected_servers == "y"){
          </table>
        </div>\n";
 
-
-} else {}
-//
 
 
 
@@ -1136,20 +1174,21 @@ if ($show_detected_servers == "y"){
     "<div class=\"main_each\">
        <table style=\"border:0px;\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" >
          <tr>
-           <td class=\"indexheadlines\" colspan=\"4\"><a href=\"javascript://\" onclick=\"switchUl('f11');\">".__("RDP and Terminal Servers").".</a></td>
-           <td align=\"right\"><a href=\"javascript://\" onclick=\"switchUl('f11');\"><img src=\"images/down.png\" width=\"16\" height=\"16\" style=\"border:0px;\" alt=\"\" /></a></td>
+           <td class=\"indexheadlines\" colspan=\"4\"><a href=\"javascript://\" onclick=\"switchUl('f10');\">".__("RDP and Terminal Servers").".</a></td>
+           <td align=\"right\"><a href=\"javascript://\" onclick=\"switchUl('f10');\"><img src=\"images/down.png\" width=\"16\" height=\"16\" style=\"border:0px;\" alt=\"\" /></a></td>
          </tr>
        </table>
 
-       <div style=\"display:none;\" id=\"f11\">
+       <div style=\"display:none;\" id=\"f10\">
          <table style=\"border:0px;\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" >\n";
 
-  $sql  = "SELECT DISTINCT service_uuid, service_display_name, service_started, system_name, net_ip_address FROM service, system WHERE
-           service_display_name LIKE '%Terminal Services%' AND
-           service_timestamp = system_timestamp AND service_uuid = system_uuid ORDER BY system_name";
+  $sql  = "SELECT DISTINCT ser.service_uuid, ser.service_display_name, ser.service_name, ser.service_started, sys.system_name, sys.net_ip_address ";
+  $sql .= "FROM service ser, system sys ";
+  $sql .= "WHERE ser.service_name LIKE '%TermService%' AND ser.service_timestamp = sys.system_timestamp AND ser.service_uuid = sys.system_uuid ";
+  $sql .= "ORDER BY sys.system_name";
   $result = mysql_query($sql, $db);
   if ($myrow = mysql_fetch_array($result)){
-    // Service Detected
+    // TS Service Detected
 
         echo
            "<tr>
@@ -1160,7 +1199,7 @@ if ($show_detected_servers == "y"){
             <td><b>".__("IP Address")."</b></td>
             <td><b>".__("Hostname")."</b></td>
             <td><b>".__("Service")."</b></td>
-            <td><b>".__("State")."</b></td>
+            <td><b>".__("Started")."</b></td>
            </tr>\n";
 
     do {
@@ -1172,7 +1211,7 @@ if ($show_detected_servers == "y"){
            <td>" . ip_trans($myrow["net_ip_address"]) . "&nbsp;</td>
            <td><a href=\"system.php?pc=" . $myrow["service_uuid"] . "&amp;view=summary\">" . $myrow["system_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
            <td>" . $myrow["service_display_name"] . "</td>
-           <td><a href=\"launch.php?hostname=".$myrow["system_name"]."&amp;application=rdp&amp;ext=rdp\"/>" . $myrow["service_started"] . "</td>
+           <td>" . $myrow["service_started"] . "</td>
          </tr>\n";
 
     } while ($myrow = mysql_fetch_array($result));
@@ -1180,8 +1219,11 @@ if ($show_detected_servers == "y"){
     echo "<tr><td>&nbsp;</td></tr>\n";
 
   } else {}
-  // Nmap discovered on Audited PC
-  $sql = "select sys.net_ip_address,sys.system_name,sys.system_uuid, port.nmap_port_number from system sys, nmap_ports port where port.nmap_port_number = '3389' AND port.nmap_other_id = sys.system_uuid";
+  // TS - Nmap discovered on Audited PC
+  $sql  = "SELECT sys.net_ip_address, sys.system_name, sys.system_uuid, sys.net_domain, port.nmap_port_number, port.nmap_port_name ";
+  $sql .= "FROM system sys, nmap_ports port ";
+  $sql .= "WHERE port.nmap_port_number = '3389' AND port.nmap_other_id = sys.system_uuid ";
+  $sql .= "ORDER BY sys.system_name";
   $result = mysql_query($sql, $db);
   if ($myrow = mysql_fetch_array($result)){
 
@@ -1193,8 +1235,8 @@ if ($show_detected_servers == "y"){
        <tr>
          <td><b>".__("IP Address")."</b></td>
          <td><b>".__("Hostname")."</b></td>
-         <td><b>".__("Port")."</b></td>
-         <td></td>
+         <td><b>".__("TCP Port")."</b></td>
+         <td><b>".__("Port Name")."</b></td>
        </tr>\n";
 
     do {
@@ -1202,9 +1244,10 @@ if ($show_detected_servers == "y"){
       $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
         echo
           "<tr style=\"bgcolor:" . $bgcolor . ";\">
-             <td><a href= \"launch.php?hostname=".$myrow["system_name"]."&amp;application=rdp&amp;ext=rdp\"/>" . ip_trans($myrow["net_ip_address"]) . "&nbsp;</td>
+             <td>" . ip_trans($myrow["net_ip_address"]) . "&nbsp;</td>
              <td ><a href=\"system.php?pc=" . $myrow["system_uuid"] . "&amp;view=summary\">" . $myrow["system_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
-             <td>" . $myrow["nmap_port_number"] . "&nbsp;</td>
+             <td><a href= \"launch.php?hostname=".$myrow["system_name"]."&amp;domain=".$myrow["net_domain"]."&amp;application=rdp&amp;ext=rdp\"/>" . $myrow["nmap_port_number"] . "&nbsp;</td>
+             <td>" . $myrow["nmap_port_name"] . "&nbsp;</td>
             </tr>\n";
 
     } while ($myrow = mysql_fetch_array($result));
@@ -1212,8 +1255,11 @@ if ($show_detected_servers == "y"){
     echo "<tr><td>&nbsp;</td></tr>\n";
 
   } else {}
-  // Nmap discovered on Other equipment
-  $sql = "select oth.other_id, oth.other_ip_address, oth.other_network_name, oth.other_mac_address, port.nmap_port_number from other oth, nmap_ports port where port.nmap_port_number = '3389' AND (port.nmap_other_id = oth.other_mac_address OR port.nmap_other_id = oth.other_id)";
+  // TS - Nmap discovered on Other equipment
+  $sql  = "SELECT oth.other_id, oth.other_ip_address, oth.other_network_name, oth.other_mac_address, port.nmap_port_number, port.nmap_port_name ";
+  $sql .= "FROM other oth, nmap_ports port ";
+  $sql .= "WHERE port.nmap_port_number = '3389' AND (port.nmap_other_id = oth.other_mac_address OR port.nmap_other_id = oth.other_id) ";
+  $sql .= "ORDER BY oth.other_network_name";
   $result = mysql_query($sql, $db);
   if ($myrow = mysql_fetch_array($result)){
     $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
@@ -1226,8 +1272,155 @@ if ($show_detected_servers == "y"){
        <tr style=\"bgcolor:" . $bgcolor . ";\">
          <td><b>".__("IP Address")."</b></td>
          <td><b>".__("Hostname")."</b></td>
-         <td><b>".__("Port")."</b></td>
-         <td></td>
+         <td><b>".__("TCP Port")."</b></td>
+         <td><b>".__("Port Name")."</b></td>
+       </tr>\n";
+
+    do {
+      $count = $count + 1;
+      $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
+
+      echo
+        "<tr style=\"bgcolor:" . $bgcolor . ";\">
+           <td>" . ip_trans($myrow["other_ip_address"]) . "&nbsp;</td>
+           <td ><a href=\"system.php?other=" . $myrow["other_id"] . "&amp;view=other_system\">" . $myrow["other_network_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
+           <td><a href= \"launch_other.php?hostname=".$myrow["other_ip_address"]."&amp;application=rdp&amp;ext=rdp\"/>" . $myrow["nmap_port_number"] . "&nbsp;</td>
+           <td>" . $myrow["nmap_port_name"] . "&nbsp;</td>
+         </tr>\n";
+
+    } while ($myrow = mysql_fetch_array($result));
+
+    echo "<tr><td>&nbsp;</td></tr>\n";
+
+  } else {}
+
+  echo
+          "</table>
+         </div>
+
+         <table style=\"border:0px;\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" >
+           <tr>
+             <td colspan=\"3\"><b>".__("Systems").": " . $count . "</b></td>
+           </tr>
+         </table>
+       </div>\n";
+
+} else {}
+//
+
+
+
+
+
+  //// Database Servers Detected
+  //if (isset($show_detected_db) AND $show_detected_db == "y"){
+  $count = 0;
+  $bgcolor = "#FFFFFF";
+
+  echo
+    "<div class=\"main_each\">
+       <table style=\"border:0px;\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" >
+         <tr>
+           <td class=\"indexheadlines\" colspan=\"4\"><a href=\"javascript://\" onclick=\"switchUl('f11');\">".__("Database Servers").".</a></td>
+           <td align=\"right\"><a href=\"javascript://\" onclick=\"switchUl('f11');\"><img src=\"images/down.png\" width=\"16\" height=\"16\" style=\"border:0px;\" alt=\"\" /></a></td>
+         </tr>
+       </table>
+
+       <div style=\"display:none;\" id=\"f11\">
+         <table style=\"border:0px;\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" >\n";
+
+  $sql  = "SELECT DISTINCT ser.service_uuid, ser.service_display_name, ser.service_name, ser.service_started, sys.system_name, sys.net_ip_address ";
+  $sql .= "FROM service ser, system sys ";
+  $sql .= "WHERE (ser.service_name LIKE '%MySql%' OR ser.service_name = 'MSSQLSERVER' OR ser.service_name LIKE 'MSSQL$%' OR ser.service_name LIKE 'Oracle%TNSListener' OR ser.service_name = 'DB2') AND ser.service_timestamp = sys.system_timestamp AND ser.service_uuid = sys.system_uuid ";
+  $sql .= "ORDER BY sys.system_name";
+  $result = mysql_query($sql, $db);
+  if ($myrow = mysql_fetch_array($result)){
+    // DB Service Detected
+
+        echo
+           "<tr>
+              <td colspan=\"2\"><b>".__("Windows")." ".__("Services")."</b></td>
+           </tr>
+
+           <tr>
+            <td><b>".__("IP Address")."</b></td>
+            <td><b>".__("Hostname")."</b></td>
+            <td><b>".__("Service")."</b></td>
+            <td><b>".__("Started")."</b></td>
+           </tr>\n";
+
+    do {
+      $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
+      $count = $count + 1;
+
+      echo
+        "<tr style=\"bgcolor:" . $bgcolor . ";\">
+           <td>" . ip_trans($myrow["net_ip_address"]) . "&nbsp;</td>
+           <td><a href=\"system.php?pc=" . $myrow["service_uuid"] . "&amp;view=summary\">" . $myrow["system_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
+           <td>" . $myrow["service_display_name"] . "</td>
+           <td>" . $myrow["service_started"] . "</td>
+         </tr>\n";
+
+    } while ($myrow = mysql_fetch_array($result));
+
+    echo "<tr><td>&nbsp;</td></tr>\n";
+
+  } else {}
+  // DB - Nmap discovered on Audited PC
+  $sql  = "SELECT sys.net_ip_address, sys.system_name, sys.system_uuid, sys.net_domain, port.nmap_port_number, port.nmap_port_name ";
+  $sql .= "FROM system sys, nmap_ports port ";
+  $sql .= "WHERE (port.nmap_port_number = '3306' OR port.nmap_port_number = '1433' OR port.nmap_port_number = '1521' OR port.nmap_port_number = '523') AND port.nmap_other_id = sys.system_uuid ";
+  $sql .= "ORDER BY sys.system_name";
+  $result = mysql_query($sql, $db);
+  if ($myrow = mysql_fetch_array($result)){
+
+    echo
+      "<tr>
+         <td colspan=\"4\"><b>".__("Nmap discovered on Audited PC")."</b></td>
+       </tr>
+
+       <tr>
+         <td><b>".__("IP Address")."</b></td>
+         <td><b>".__("Hostname")."</b></td>
+         <td><b>".__("TCP Port")."</b></td>
+         <td><b>".__("Port Name")."</b></td>
+       </tr>\n";
+
+    do {
+      $count = $count + 1;
+      $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
+        echo
+          "<tr style=\"bgcolor:" . $bgcolor . ";\">
+             <td>" . ip_trans($myrow["net_ip_address"]) . "&nbsp;</td>
+             <td ><a href=\"system.php?pc=" . $myrow["system_uuid"] . "&amp;view=summary\">" . $myrow["system_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
+             <td>" . $myrow["nmap_port_number"] . "&nbsp;</td>
+             <td>" . $myrow["nmap_port_name"] . "&nbsp;</td>
+            </tr>\n";
+
+    } while ($myrow = mysql_fetch_array($result));
+
+    echo "<tr><td>&nbsp;</td></tr>\n";
+
+  } else {}
+  // DB - Nmap discovered on Other equipment
+  $sql  = "SELECT oth.other_id, oth.other_ip_address, oth.other_network_name, oth.other_mac_address, port.nmap_port_number, port.nmap_port_name ";
+  $sql .= "FROM other oth, nmap_ports port ";
+  $sql .= "WHERE (port.nmap_port_number = '3306' OR port.nmap_port_number = '1433' OR port.nmap_port_number = '1521' OR port.nmap_port_number = '523') AND (port.nmap_other_id = oth.other_mac_address OR port.nmap_other_id = oth.other_id) ";
+  $sql .= "ORDER BY oth.other_network_name";
+  $result = mysql_query($sql, $db);
+  if ($myrow = mysql_fetch_array($result)){
+    $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
+
+    echo
+      "<tr>
+         <td colspan=\"4\"><b>".__("Nmap discovered on Other equipment")."</b></td>
+       </tr>
+
+       <tr style=\"bgcolor:" . $bgcolor . ";\">
+         <td><b>".__("IP Address")."</b></td>
+         <td><b>".__("Hostname")."</b></td>
+         <td><b>".__("TCP Port")."</b></td>
+         <td><b>".__("Port Name")."</b></td>
        </tr>\n";
 
     do {
@@ -1239,6 +1432,7 @@ if ($show_detected_servers == "y"){
            <td>" . ip_trans($myrow["other_ip_address"]) . "&nbsp;</td>
            <td ><a href=\"system.php?other=" . $myrow["other_id"] . "&amp;view=other_system\">" . $myrow["other_network_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
            <td>" . $myrow["nmap_port_number"] . "&nbsp;</td>
+           <td>" . $myrow["nmap_port_name"] . "&nbsp;</td>
          </tr>\n";
 
     } while ($myrow = mysql_fetch_array($result));
@@ -1261,13 +1455,16 @@ if ($show_detected_servers == "y"){
 } else {}
 
 
-//
+// End show detected servers
+
 
 
 
 //// XP SP2 without up to date AV
 if (isset($show_detected_xp_av) AND $show_detected_xp_av == "y"){
-  $sql = "SELECT system_name, net_ip_address, system_uuid, virus_name, virus_uptodate FROM system WHERE (virus_name = '' OR virus_uptodate = 'False') AND system_service_pack = '2.0' AND system_os_name LIKE 'Microsoft Windows XP%' ORDER BY system_name";
+  $sql  = "SELECT system_name, net_ip_address, system_uuid, virus_name, virus_uptodate FROM system ";
+  $sql .= "WHERE (virus_name = '' OR virus_uptodate = 'False') AND system_service_pack = '2.0' AND system_os_name LIKE 'Microsoft Windows XP%' ";
+  $sql .= "ORDER BY system_name";
   $result = mysql_query($sql, $db);
   $bgcolor = "#FFFFFF";
 
