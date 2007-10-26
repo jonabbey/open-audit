@@ -75,7 +75,7 @@ $sql = "ALTER TABLE `software_licenses` MODIFY COLUMN `license_purchase_number` 
 upgrade ($version,"07.08.28", $sql);
 
 
-$sql = "CREATE TABLE `openaudit`.`scan_type` (
+$sql = "CREATE TABLE `scan_type` (
   `scan_type_id` int  NOT NULL AUTO_INCREMENT,
   `scan_type_uuid` varchar(100)  NOT NULL,
   `scan_type_ip_address` varchar(16)  NOT NULL,
@@ -85,7 +85,7 @@ $sql = "CREATE TABLE `openaudit`.`scan_type` (
   PRIMARY KEY(`scan_type_id`)
 )
 ENGINE = MYISAM;
-CREATE TABLE `openaudit`.`scan_log` (
+CREATE TABLE `scan_log` (
   `scan_log_id` int  NOT NULL AUTO_INCREMENT,
   `scan_log_uuid` varchar(100)  NOT NULL,
   `scan_log_ip_address` varchar(16)  NOT NULL,
@@ -98,7 +98,7 @@ CREATE TABLE `openaudit`.`scan_log` (
   PRIMARY KEY(`scan_log_id`)
 )
 ENGINE = MYISAM;
-CREATE TABLE `openaudit`.`scan_latest` (
+CREATE TABLE `scan_latest` (
   `scan_latest_id` int  NOT NULL AUTO_INCREMENT,
   `scan_latest_uuid` varchar(100)  NOT NULL,
   `scan_latest_ip_address` varchar(16)  NOT NULL,
