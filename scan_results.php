@@ -21,7 +21,9 @@ echo "<td align=\"center\" width=\"20%\"><b>Time</b></td>\n";
 echo "<td align=\"center\" width=\"20%\"><b>Result</b></td>\n";
 echo "</tr>\n";
 
-cho "</table>";
+include "scan_results_include.php";
+
+echo "</table>";
 echo "</div>";
 echo "</td>";
 include "include_right_column.php";

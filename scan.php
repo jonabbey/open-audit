@@ -149,13 +149,13 @@ if (substr($whoami,0,4) <> 'root') {
 #}
 
 // Make the page for the scan_latest.sql results
-$filename = "scan_results_include.php";
-$handle = fopen($filename, "rb");
-$content = fread($handle, filesize($filename));
-fclose($handle);
+// The page is called scan_results_include and contains only table rows.
+// this can be called from scan_results.php - or included on index.php, etc
+// No need for seperate SQL queries each time a page is called - just include this file
 $sql = "SELECT scan_latest_uuid, scan_latest_ip_address, scan_latest_type, scan_latest_detail, scan_latest_date_time, scan_latest_success FROM scan_latest ORDER BY scan_latest_date_time, scan_latest_success, scan_latest_frequency";
 $result = mysql_query($sql);
 $bgcolor = "#FFFFFF";
+$content = "<?php \n";
 if ($myrow = mysql_fetch_array($result)){
   do{
     if ($bgcolor == "#F1F1F1") { $bgcolor = "#FFFFFF"; } else { $bgcolor = "#F1F1F1"; }
@@ -169,17 +169,10 @@ if ($myrow = mysql_fetch_array($result)){
     $content .= "</td>" . $success . "</tr>\";\n";
   } while ($myrow = mysql_fetch_array($result));
 }
-$content .= "echo \"</table>\";\n";
-$content .= "echo \"</div>\";\n";
-$content .= "echo \"</td>\";\n";
-$content .= "include \"include_right_column.php\";\n";
-$content .= "echo \"</body>\";\n";
-$content .= "echo \"</html>\";\n";
-$content .= "?>\n";
 
-#echo $content;
+$content .= "?>";
 
-$filename = "scan_results.php";
+$filename = "scan_results_include.php";
 if (!file_exists($filename) or is_writable($filename)) {
   $handle = @fopen($filename, 'w') or die(writeConfigHtml());
   @fwrite($handle, $content) or die(writeConfigHtml());

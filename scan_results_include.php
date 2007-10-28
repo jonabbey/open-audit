@@ -1,23 +1,7 @@
-<?php
-$page = "";
-$extra = "";
-$software = "";
-$count = -1;
-if (isset($_GET['software'])) {$software = $_GET['software'];} else {}
-if (isset($_GET['sort'])) {$sort = $_GET['sort'];} else {$sort= "system_name";}
-include "include.php";
-
-echo "<td valign=\"top\">\n";
-echo "<div class=\"main_each\">";
-echo "<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\">\n";
-echo "<tr>\n";
-echo "  <td class=\"contenthead\">Network Monitoring.<br />&nbsp;</td>\n";
-echo "</tr>\n";
-echo "<tr>\n";
-echo "<td width=\"20%\"><b>Host</b></td>\n";
-echo "<td align=\"center\" width=\"20%\"><b>Type</b></td>\n";
-echo "<td align=\"center\" width=\"20%\"><b>Detail</b></td>\n";
-echo "<td align=\"center\" width=\"20%\"><b>Time</b></td>\n";
-echo "<td align=\"center\" width=\"20%\"><b>Result</b></td>\n";
-echo "</tr>\n";
-
+<?php 
+echo "<tr bgcolor=\"#F1F1F1\"><td><a href=\"system.php?pc=00:09:6B:B0:95:5A\">192.168.0.1</td><td align=\"center\">port</td><td align=\"center\">80</td><td align=\"center\">2007-10-25 12:45:00</td><td align=\"center\" bgcolor=\"green\" style=\"color: white;\">UP</td></tr>";
+echo "<tr bgcolor=\"#FFFFFF\"><td><a href=\"system.php?pc=00:09:6B:B0:95:5A\">192.168.0.6</td><td align=\"center\">port</td><td align=\"center\">25</td><td align=\"center\">2007-10-25 13:40:00</td><td align=\"center\" bgcolor=\"green\" style=\"color: white;\">UP</td></tr>";
+echo "<tr bgcolor=\"#F1F1F1\"><td><a href=\"system.php?pc=00:09:6B:B0:95:5A\">192.168.0.2</td><td align=\"center\">port</td><td align=\"center\">80</td><td align=\"center\">2007-10-28 13:35:00</td><td align=\"center\" bgcolor=\"green\" style=\"color: white;\">UP</td></tr>";
+echo "<tr bgcolor=\"#FFFFFF\"><td><a href=\"system.php?pc=00:09:6B:B0:95:5A\">192.168.0.1</td><td align=\"center\">port</td><td align=\"center\">22</td><td align=\"center\">2007-10-28 13:36:00</td><td align=\"center\" bgcolor=\"red\" style=\"color: white;\">DOWN</td></tr>";
+echo "<tr bgcolor=\"#F1F1F1\"><td><a href=\"system.php?pc=00:09:6B:B0:95:5A\">192.168.0.3</td><td align=\"center\">port</td><td align=\"center\">80</td><td align=\"center\">2007-10-28 13:36:00</td><td align=\"center\" bgcolor=\"green\" style=\"color: white;\">UP</td></tr>";
+?>
