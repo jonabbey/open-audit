@@ -4,6 +4,40 @@ $extra = "";
 $software = "";
 $count = 0;
 
+function div_clean($div)
+{
+$div_clean = str_replace ('%','',$div);
+$div_clean = str_replace ('(','',$div_clean);
+$div_clean = str_replace (')','',$div_clean);
+$div_clean = str_replace ('`','',$div_clean);
+$div_clean = str_replace ('_','',$div_clean);
+$div_clean = str_replace ('!','',$div_clean);
+$div_clean = str_replace ("'","",$div_clean);
+$div_clean = str_replace ('$','',$div_clean);
+$div_clean = str_replace (' ','',$div_clean);
+$div_clean = str_replace ('+','',$div_clean);
+$div_clean = str_replace ('&','',$div_clean);
+$div_clean = str_replace (',','',$div_clean);
+$div_clean = str_replace ('/','',$div_clean);
+$div_clean = str_replace (':','',$div_clean);
+$div_clean = str_replace ('=','',$div_clean);
+$div_clean = str_replace ('?','',$div_clean);
+$div_clean = str_replace ('<','',$div_clean);
+$div_clean = str_replace ('>','',$div_clean);
+$div_clean = str_replace ('#','',$div_clean);
+$div_clean = str_replace ('{','',$div_clean);
+$div_clean = str_replace ('}','',$div_clean);
+$div_clean = str_replace ('|','',$div_clean);
+$div_clean = str_replace ('\\','',$div_clean);
+$div_clean = str_replace ('^','',$div_clean);
+$div_clean = str_replace ('~','',$div_clean);
+$div_clean = str_replace ('[','',$div_clean);
+$div_clean = str_replace (']','',$div_clean);
+$div_clean = str_replace ('`','',$div_clean);
+return $div_clean;
+}
+
+/*
 if (isset($_GET['package'])) {
   $package = $_GET['package'];
   include "include_config.php";
@@ -22,10 +56,17 @@ if (isset($_GET['package'])) {
   header("Location: software_register.php");
 
 } else {
-
+*/
   include "include.php";
   echo "<td valign=\"top\">\n"; 
-  echo "<div class=\"main_each\"><p class=\"contenthead\">Add Package to Software License Register.</p>";
+  echo "<div class=\"main_each\">";
+  echo "<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\">\n";
+  echo "<tr>\n";
+  echo "  <td class=\"contenthead\" colspan=\"3\">Add Package to Software License Register.<br />&nbsp;</td>\n";
+  echo "</tr>\n";
+  echo "<tr>\n";
+  echo "<td colspan=\"3\"><div id=\"ajaxTest\"><br /> </div></td>\n";
+  echo "</tr>\n";
   $sql  = "SELECT count(software_name), software_name FROM software, system WHERE software_name NOT LIKE '%hotfix%' ";
   $sql .= "AND software_name NOT LIKE 'Security Update for Windows%' ";
   $sql .= "AND software_name NOT LIKE 'Update for Windows%' ";
@@ -33,18 +74,22 @@ if (isset($_GET['package'])) {
   $sql .= "group by software_name ORDER BY software_name";
   $result = mysql_query($sql, $db);
   if ($myrow = mysql_fetch_array($result)){
-    echo "<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\">";
     echo "  <tr>\n";
-    echo "    <td>Count</td>\n";
-    echo "    <td>Package Name</td>\n";
-    echo "    <td align=\"center\">Click to Add</td>\n";
+    echo "    <td><b>Count</b></td>\n";
+    echo "    <td>&nbsp;&nbsp;<b>Package Name</b></td>\n";
+    echo "    <td align=\"center\"><b>Tick to Add</b></td>\n";
     echo "  </tr>\n";
     do {
       if ($bgcolor == "#F1F1F1") { $bgcolor = "#FFFFFF"; } else { $bgcolor = "#F1F1F1"; }
       echo "<tr bgcolor=\"" . $bgcolor . "\">\n";
       echo "  <td align=\"center\">" . $myrow["count(software_name)"] . "</td>\n";
       echo "  <td>&nbsp;&nbsp;" . $myrow["software_name"] . "</td>\n";
-      echo "  <td align=\"center\"><a href=\"software_register_add.php?package=" . url_clean($myrow["software_name"]) . "\"><img border=\"0\" src=\"images/button_success.png\" width=\"16\" height=\"16\" alt=\"\" /></a></td>\n";
+      echo "<td align=\"center\">";
+      echo "<div id=\"s" . div_clean($myrow["software_name"]) . "\">";
+      echo "<a href=\"#\" onclick=\"sendRequest('" . url_clean($myrow["software_name"]) . "');\"><img border=\"0\" src=\"images/button_success.png\" width=\"16\" height=\"16\" alt=\"\" /></a>";
+      echo "</div>\n";
+      echo "</td>\n";
+#      echo "  <td align=\"center\"><a href=\"software_register_add.php?package=" . url_clean($myrow["software_name"]) . "\"><img border=\"0\" src=\"images/button_success.png\" width=\"16\" height=\"16\" alt=\"\" /></a></td>\n";
       echo "<td valign=\"top\">\n";
       echo "</tr>";
     } while ($myrow = mysql_fetch_array($result));
@@ -55,8 +100,63 @@ if (isset($_GET['package'])) {
 echo "</div>\n";
 echo "</td>\n";
 include "include_right_column.php";
-echo "</body>\n";
-echo "</html>\n";
+?>
+<script language="javascript" TYPE="text/javascript">
+
+function createRequestObject() {
+  var req;
+  if(window.XMLHttpRequest){
+    // Firefox, Safari, Opera...
+    req = new XMLHttpRequest();
+  } else if(window.ActiveXObject) {
+    // Internet Explorer 5+
+    req = new ActiveXObject("Microsoft.XMLHTTP");
+    } else {
+      // There is an error creating the object,
+      // just as an old browser is being used.
+      alert('Problem creating the XMLHttpRequest object');
+    }
+  return req;
 }
 
+// Make the XMLHttpRequest object
+var http = createRequestObject();
+
+function sendRequest(act) {
+  // Open PHP script for requests
+  http.open('get', 'software_register_add_ajax.php?act='+act);
+  http.onreadystatechange = handleResponse;
+  http.send(null);
+}
+/*
+function handleResponse() {
+  if(http.readyState == 4 && http.status == 200){
+    // Text returned FROM the PHP script
+    var response = http.responseText;
+    if(response) {
+      // UPDATE ajaxTest content
+      document.getElementById("ajaxTest").innerHTML = response;
+    }
+  }
+}
+*/
+
+function handleResponse() {
+  if(http.readyState == 4 && http.status == 200){
+    // Text returned FROM the PHP script
+    var response = http.responseText;
+    if(response) {
+      // UPDATE ajaxTest content
+      document.getElementById(response).innerHTML = "Added";
+    }
+  }
+}
+
+</script>
+<?php
+echo "</body>\n";
+echo "</html>\n";
+/*
+}
+*/
 ?>
