@@ -88,9 +88,9 @@ if (isset($_POST['username'])) {
                 $sr=ldap_search($connect, $basedn, "(&(objectClass=group)(sAMAccountName=" . $user_list[$j] . "))");
                 $info = ldap_get_entries($connect, $sr);
                 for ($i=0; $i<$info["count"]; $i++) {
-                    for ($j=0; $j<count($info[$i]["member"])-1; $j++) {
+                    for ($k=0; $k<count($info[$i]["member"])-1; $k++) {
                         // Create SESSION variable if username is a member $user_list
-                        if ($info[$i]["member"][$j] == $fqdn) {
+                        if ($info[$i]["member"][$k] == $fqdn) {
                             $_SESSION["role"]="user";
                             break 3;
                         }
@@ -106,9 +106,9 @@ if (isset($_POST['username'])) {
                 $sr=ldap_search($connect, $basedn, "(&(objectClass=group)(sAMAccountName=" . $admin_list[$j] . "))");
                 $info = ldap_get_entries($connect, $sr);
                 for ($i=0; $i<$info["count"]; $i++) {
-                    for ($j=0; $j<count($info[$i]["member"])-1; $j++) {
+                    for ($k=0; $k<count($info[$i]["member"])-1; $k++) {
                         // Create SESSION variable if username is a member of $admin_list
-                        if ($info[$i]["member"][$j] == $fqdn) {
+                        if ($info[$i]["member"][$k] == $fqdn) {
                             $_SESSION["role"]="admin";
                             break 3;
                         }
