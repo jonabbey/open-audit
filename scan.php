@@ -152,7 +152,7 @@ if (substr($whoami,0,4) <> 'root') {
 // The page is called scan_results_include and contains only table rows.
 // this can be called from scan_results.php - or included on index.php, etc
 // No need for seperate SQL queries each time a page is called - just include this file
-$sql = "SELECT scan_latest_uuid, scan_latest_ip_address, scan_latest_type, scan_latest_detail, scan_latest_date_time, scan_latest_success FROM scan_latest ORDER BY scan_latest_date_time, scan_latest_success, scan_latest_frequency";
+$sql = "SELECT scan_latest_uuid, scan_latest_ip_address, scan_latest_type, scan_latest_detail, scan_latest_date_time, scan_latest_success, system_name FROM scan_latest, system WHERE scan_latest_uuid = system_uuid ORDER BY scan_latest_date_time, scan_latest_success, scan_latest_frequency";
 $result = mysql_query($sql);
 $bgcolor = "#FFFFFF";
 $content = "<?php \n";
@@ -160,13 +160,20 @@ if ($myrow = mysql_fetch_array($result)){
   do{
     if ($bgcolor == "#F1F1F1") { $bgcolor = "#FFFFFF"; } else { $bgcolor = "#F1F1F1"; }
     if ($myrow['scan_latest_success'] == "y"){
-      $success = "<td align=\\\"center\\\" bgcolor=\\\"green\\\" style=\\\"color: white;\\\">UP</td>";
+      #$success = "<td align=\\\"center\\\" bgcolor=\\\"green\\\" style=\\\"color: white;\\\">UP</td>";
+      $success = "<td align=\\\"center\\\" style=\\\"color: green;\\\"><b>UP</b></td>";
     } else {
-      $success = "<td align=\\\"center\\\" bgcolor=\\\"red\\\" style=\\\"color: white;\\\">DOWN</td>";
+      #$success = "<td align=\\\"center\\\" bgcolor=\\\"red\\\" style=\\\"color: white;\\\">DOWN</td>";
+      $success = "<td align=\\\"center\\\" style=\\\"color: red;\\\"><b>DOWN</b></td>";
     }
-    $content .= "echo \"<tr bgcolor=\\\"" . $bgcolor . "\\\"><td><a href=\\\"system.php?pc=" . $myrow['scan_latest_uuid'] . "\\\">" . $myrow['scan_latest_ip_address'] . "</td><td align=\\\"center\\\">" . $myrow['scan_latest_type'];
-    $content .= "</td><td align=\\\"center\\\">" . $myrow['scan_latest_detail'] . "</td><td align=\\\"center\\\">" . $myrow['scan_latest_date_time'];
-    $content .= "</td>" . $success . "</tr>\";\n";
+    $content .= "echo \"<tr bgcolor=\\\"" . $bgcolor . "\\\">";
+    $content .= "<td><a href=\\\"system.php?pc=" . $myrow['scan_latest_uuid'] . "\\\">" . $myrow['system_name'] . "</a></td>";
+    $content .= "<td align=\\\"center\\\">" . $myrow['scan_latest_ip_address'] . "</td>";
+    $content .= "<td align=\\\"center\\\">" . $myrow['scan_latest_type'] . "</td>";
+    $content .= "<td align=\\\"center\\\">" . $myrow['scan_latest_detail'] . "</td>";
+    $content .= "<td align=\\\"center\\\">" . $myrow['scan_latest_date_time'] . "</td>";
+    $content .= $success;
+    $content .= "</tr>\";\n";
   } while ($myrow = mysql_fetch_array($result));
 }
 
@@ -202,3 +209,7 @@ function port_scan($ip,$port){
 $secs_total = array_sum(explode(' ', microtime())) - $tm_start;
 echo "Elapsed time in seconds: " . substr($secs_total, 0, 5) . "<br />";
 ?> 
+<script language="JavaScript">
+setTimeout("top.location.href = 'http://localhost/trunk/scan_results.php'",5000);
+</script>
+
