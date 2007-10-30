@@ -62,7 +62,7 @@ $sql .= "system_id_number, system_vendor, time_caption, system_os_name, system_c
 $sql .= "system_organisation, system_registered_user, system_serial_number, system_version, system_windows_directory ";
 $sql .= "FROM system WHERE ";
 $sql .= "system_name LIKE '%$search%' OR ";
-$sql .= "net_ip_address LIKE '%$search%' OR ";
+// removed by ef $sql .= "net_ip_address LIKE '%$search%' OR ";
 $sql .= "net_domain LIKE '%$search%' OR ";
 $sql .= "net_user_name LIKE '%$search%' OR ";
 $sql .= "system_model LIKE '%$search%' OR ";
@@ -84,7 +84,7 @@ $result = mysql_query($sql, $db);
 if ($myrow = mysql_fetch_array($result)){
   do {
     if (strpos(strtoupper($myrow["system_name"]), $search) !== false){$search_field = "System Name"; $search_result = $myrow["system_name"];}
-    if (strpos(strtoupper($myrow["net_ip_address"]), $search) !== false){$search_field = "IP Address"; $search_result = $myrow["net_ip_address"];}
+    // removed by ef if (strpos(strtoupper($myrow["net_ip_address"]), $search) !== false){$search_field = "IP Address"; $search_result = $myrow["net_ip_address"];}
     if (strpos(strtoupper($myrow["net_domain"]), $search) !== false){$search_field = "Domain"; $search_result = $myrow["net_domain"];}
     if (strpos(strtoupper($myrow["net_user_name"]), $search) !== false){$search_field = "Network User"; $search_result = $myrow["net_user_name"];}
     if (strpos(strtoupper($myrow["system_model"]), $search) !== false){$search_field = "System Model"; $search_result = $myrow["system_model"];}
@@ -193,6 +193,53 @@ $result = mysql_query($sql, $db);
 if ($myrow = mysql_fetch_array($result)){
   do {
     if (strpos(strtoupper($myrow["other_mac_address"]), $search) !== false){$search_field = "Device MAC Address"; $search_result = $myrow["other_mac_address"];}
+    $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
+    $result_set[] = array($myrow["other_network_name"], $myrow["other_id"], ip_trans($myrow["other_ip_address"]), $search_field, $search_result);
+  } while ($myrow = mysql_fetch_array($result));
+
+} else {}
+// Search for IP address into "system"  table
+
+$search_padded = ip_trans_to($search);
+
+$sql  = "SELECT DISTINCT system_name, system_uuid, net_ip_address ";
+$sql .= "FROM system WHERE ";
+$sql .= "net_ip_address LIKE '%$search%' OR ";
+$sql .= "net_ip_address LIKE '%$search_padded%'";
+
+$result = mysql_query($sql, $db);
+if ($myrow = mysql_fetch_array($result)){
+  do {
+    if (strpos(strtoupper($myrow["net_ip_address"]), $search) !== false)
+      {$search_field = "IP Address"; $search_result = $myrow["net_ip_address"];}
+   else
+      {if (strpos(strtoupper($myrow["net_ip_address"]), $search_padded) !== false)
+        {$search_field = "IP Address"; $search_result = ip_trans($myrow["net_ip_address"]);}
+    }
+    $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
+    $result_set[] = array($myrow["system_name"], $myrow["system_uuid"], ip_trans($myrow["net_ip_address"]), $search_field, $search_result);
+  } while ($myrow = mysql_fetch_array($result));
+
+} else {}
+
+// Search for IP address into "other" table
+
+$search_padded = ip_trans_to($search);
+
+$sql  = "SELECT DISTINCT other_network_name, other_id, other_ip_address ";
+$sql .= "FROM other WHERE ";
+$sql .= "other_ip_address LIKE '%$search%' OR ";
+$sql .= "other_ip_address LIKE '%$search_padded%'";
+
+$result = mysql_query($sql, $db);
+if ($myrow = mysql_fetch_array($result)){
+  do {
+    if (strpos(strtoupper($myrow["other_ip_address"]), $search) !== false)
+      {$search_field = "Device IP Address"; $search_result = $myrow["other_ip_address"];}
+   else
+      {if (strpos(strtoupper($myrow["other_ip_address"]), $search_padded) !== false)
+        {$search_field = "Device IP Address"; $search_result = ip_trans($myrow["other_ip_address"]);}
+    }
     $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
     $result_set[] = array($myrow["other_network_name"], $myrow["other_id"], ip_trans($myrow["other_ip_address"]), $search_field, $search_result);
   } while ($myrow = mysql_fetch_array($result));

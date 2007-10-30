@@ -30,11 +30,16 @@ function ip_trans_to($ip)
 {
   if (($ip <> "") AND (!(is_null($ip)))){
    $myip = explode(".",$ip);
-   $myip[0] = substr("000" . $myip[0], -3);
-   $myip[1] = substr("000" . $myip[1], -3);
-   $myip[2] = substr("000" . $myip[2], -3);
-   $myip[3] = substr("000" . $myip[3], -3);
-   $ip = $myip[0] . "." . $myip[1] . "." . $myip[2] . "." . $myip[3];
+   $ip = substr("000" . $myip[0], -3);
+   if(isset($myip[1])){
+     $myip[1] = substr("000" . $myip[1], -3);
+     $ip = $ip . "." . $myip[1];}
+   if(isset($myip[2])){
+     $myip[2] = substr("000" . $myip[2], -3);
+     $ip = $ip . "." . $myip[2];}
+   if(isset($myip[3])){
+     $myip[3] = substr("000" . $myip[3], -3);
+     $ip = $ip . "." . $myip[3];}
   } else {
    $ip = " Not-Networked";
   }
