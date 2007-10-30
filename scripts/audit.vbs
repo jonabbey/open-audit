@@ -769,7 +769,9 @@ On Error Resume Next
 
 Set colSMBIOS = objWMIService.ExecQuery ("Select * from Win32_SystemEnclosure",,48)
 For Each objSMBIOS in colSMBIOS
-bios_asset = objSMBIOS.SMBIOSAssetTag
+  if bios_asset = "" then
+    bios_asset = objSMBIOS.SMBIOSAssetTag
+  end if
 Next
 
 Set colItems = objWMIService.ExecQuery("Select * from Win32_BIOS",,48)
