@@ -1,6 +1,6 @@
 <?php
 $query_array=array("headline"=>__("List Systems with Gateway"),
-                   "sql"=>"SELECT * FROM 'system', 'network_card'
+                   "sql"=>"SELECT * FROM system, network_card
                            WHERE net_uuid  = system_uuid
                            AND system_timestamp  = net_timestamp
                            AND net_gateway = '" . $_GET["net_gateway"] . "'  ",
