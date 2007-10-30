@@ -37,26 +37,6 @@ $div_clean = str_replace ('`','',$div_clean);
 return $div_clean;
 }
 
-/*
-if (isset($_GET['package'])) {
-  $package = $_GET['package'];
-  include "include_config.php";
-  $sql = "SELECT count(*) AS count FROM software_register WHERE software_title = '$package'";
-  mysql_connect($mysql_server, $mysql_user, $mysql_password) or die("Could not connect");
-  mysql_select_db($mysql_database) or die("Could not select database");
-  $result = mysql_query($sql);
-  $myrow = mysql_fetch_array($result);
-  if ($myrow["count"] == "0") {
-    $sql = "INSERT INTO software_register (software_title) VALUES ('$package')"; 
-    $result = mysql_query($sql);
-    $id = mysql_insert_id();
-    $sql = "INSERT INTO software_licenses (license_software_id, license_purchase_number, license_comments) VALUES ('$id', '0', 'OA initial license')";
-    $result = mysql_query($sql);
-  } else {} 
-  header("Location: software_register.php");
-
-} else {
-*/
   include "include.php";
   echo "<td valign=\"top\">\n"; 
   echo "<div class=\"main_each\">";
@@ -67,11 +47,17 @@ if (isset($_GET['package'])) {
   echo "<tr>\n";
   echo "<td colspan=\"3\"><div id=\"ajaxTest\"><br /> </div></td>\n";
   echo "</tr>\n";
-  $sql  = "SELECT count(software_name), software_name FROM software, system WHERE software_name NOT LIKE '%hotfix%' ";
-  $sql .= "AND software_name NOT LIKE 'Security Update for Windows%' ";
-  $sql .= "AND software_name NOT LIKE 'Update for Windows%' ";
-  $sql .= "AND software_timestamp = system_timestamp ";
+
+#  $sql  = "SELECT count(software_name), software_name FROM software, system WHERE software_name NOT LIKE '%hotfix%' ";
+#  $sql .= "AND software_name NOT LIKE '%Update for Windows%' ";
+#  $sql .= "AND software_timestamp = system_timestamp ";
+#  $sql .= "group by software_name ORDER BY software_name";
+
+  $sql = "SELECT count(software_name), software_name FROM software ";
+  $sql .= "LEFT JOIN software_register ON (software.software_name = software_register.software_title) ";
+  $sql .= "WHERE software_title IS NULL AND software_name NOT LIKE '%Update for Windows%' ";
   $sql .= "group by software_name ORDER BY software_name";
+
   $result = mysql_query($sql, $db);
   if ($myrow = mysql_fetch_array($result)){
     echo "  <tr>\n";
@@ -89,7 +75,6 @@ if (isset($_GET['package'])) {
       echo "<a href=\"#\" onclick=\"sendRequest('" . url_clean($myrow["software_name"]) . "');\"><img border=\"0\" src=\"images/button_success.png\" width=\"16\" height=\"16\" alt=\"\" /></a>";
       echo "</div>\n";
       echo "</td>\n";
-#      echo "  <td align=\"center\"><a href=\"software_register_add.php?package=" . url_clean($myrow["software_name"]) . "\"><img border=\"0\" src=\"images/button_success.png\" width=\"16\" height=\"16\" alt=\"\" /></a></td>\n";
       echo "<td valign=\"top\">\n";
       echo "</tr>";
     } while ($myrow = mysql_fetch_array($result));
@@ -156,7 +141,4 @@ function handleResponse() {
 <?php
 echo "</body>\n";
 echo "</html>\n";
-/*
-}
-*/
 ?>
