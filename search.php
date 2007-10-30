@@ -170,19 +170,22 @@ if ($myrow = mysql_fetch_array($result)){
   } while ($myrow = mysql_fetch_array($result));
 } else {}
 
-$sql  = "SELECT DISTINCT system_name, system_uuid, net_ip_address, system_man_description, system_man_value, system_man_serial_number FROM system, system_man WHERE ";
+$sql  = "SELECT DISTINCT system_name, system_uuid, net_ip_address, system_man_description, system_man_location, system_man_value, system_man_serial_number FROM system, system_man WHERE ";
 $sql .= "system_man_uuid = system_uuid AND (";
 $sql .= "system_man_description LIKE '%$search%' OR ";
+$sql .= "system_man_location LIKE '%$search%' OR ";
 $sql .= "system_man_serial_number LIKE '%$search%')";
 $result = mysql_query($sql, $db);
-if ($myrow = mysql_fetch_array($result)){
-  do {
-    if (strpos(strtoupper($myrow["system_man_description"]), $search) !== false){$search_field = "Man Description"; $search_result = $myrow["system_man_description"];}
-    if (strpos(strtoupper($myrow["system_man_serial_number"]), $search) !== false){$search_field = "System Serial Number"; $search_result = $myrow["system_man_serial_number"];}
-    $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
-    $result_set[] = array($myrow["system_name"], $myrow["system_uuid"], ip_trans($myrow["net_ip_address"]), $search_field, $search_result);
-  } while ($myrow = mysql_fetch_array($result));
+    if ($myrow = mysql_fetch_array($result)){
+      do {
+        if (strpos(strtoupper($myrow["system_man_description"]), $search) !== false){$search_field = "Manual Description"; $search_result = $myrow["system_man_description"];}
+        if (strpos(strtoupper($myrow["system_man_location"]), $search) !== false){$search_field = "Manual Location"; $search_result = $myrow["system_man_location"];}
+        if (strpos(strtoupper($myrow["system_man_serial_number"]), $search) !== false){$search_field = "System Serial Number"; $search_result = $myrow["system_man_serial_number"];}
+        $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
+        $result_set[] = array($myrow["system_name"], $myrow["system_uuid"], ip_trans($myrow["net_ip_address"]), $search_field, $search_result);
+   } while ($myrow = mysql_fetch_array($result));
 }
+
 $sql  = "SELECT DISTINCT other_network_name, other_id, other_ip_address, other_mac_address, other_description FROM other WHERE ";
 $sql .= "other_mac_address LIKE '%$search%'";
 
