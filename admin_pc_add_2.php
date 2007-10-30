@@ -549,6 +549,7 @@ function insert_bios ($split){
     $bios_serial_number = trim($extended[3]);
     $bios_sm_bios_version = trim($extended[4]);
     $bios_version = trim($extended[5]);
+    $bios_asset = trim($extended[6]);
     if (is_null($bios_timestamp)){
       $sql  = "SELECT MAX(bios_timestamp) FROM bios WHERE bios_uuid = '$uuid'";
       if ($verbose == "y"){echo $sql . "<br />\n\n";}
@@ -559,7 +560,7 @@ function insert_bios ($split){
     $sql  = "SELECT count(bios_uuid) as count FROM bios WHERE ";
     $sql .= "bios_description = '$bios_description' AND bios_manufacturer = '$bios_manufacturer' AND ";
     $sql .= "bios_serial_number = '$bios_serial_number' AND bios_sm_bios_version = '$bios_sm_bios_version' AND ";
-    $sql .= "bios_version = '$bios_version' AND (bios_timestamp = '$timestamp' OR bios_timestamp = '$bios_timestamp')";
+    $sql .= "bios_version = '$bios_version' AND bios_asset_tag = '$bios_asset' AND (bios_timestamp = '$timestamp' OR bios_timestamp = '$bios_timestamp')";
     if ($verbose == "y"){echo $sql . "<br />\n\n";}
     $result = mysql_query($sql) or die ('Insert Failed: ' . mysql_error() . '<br />' . $sql);
     $myrow = mysql_fetch_array($result);
@@ -567,9 +568,9 @@ function insert_bios ($split){
     if ($myrow['count'] == "0"){
       // Insert into database
       $sql  = "INSERT INTO bios (bios_uuid, bios_description, bios_manufacturer, bios_serial_number, ";
-      $sql .= "bios_sm_bios_version, bios_version, bios_first_timestamp, bios_timestamp) VALUES (";
+      $sql .= "bios_sm_bios_version, bios_version, bios_asset_tag, bios_first_timestamp, bios_timestamp) VALUES (";
       $sql .= "'$uuid', '$bios_description', '$bios_manufacturer', '$bios_serial_number', ";
-      $sql .= "'$bios_sm_bios_version', '$bios_version', '$timestamp', '$timestamp')";
+      $sql .= "'$bios_sm_bios_version', '$bios_version', '$bios_asset', '$timestamp', '$timestamp')";
       if ($verbose == "y"){echo $sql . "<br />\n\n";}
       $result = mysql_query($sql) or die ('Insert Failed: ' . mysql_error() . '<br />' . $sql);
     } else {
