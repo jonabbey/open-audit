@@ -3,6 +3,7 @@ session_start();
 // Include LDAP settings from config file
 include "include_config.php";
 include "include_lang.php";
+if (($_SERVER["SERVER_PORT"]!=443) && ($use_https == "y")){ header("Location: https://".$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF']); exit(); }
 // Set variables to those defined in include_config.php
 $server = $ldap_server;
 $domain = $management_domain_suffix;
