@@ -2362,6 +2362,36 @@ comment = "CD Keys"
 if verbose = "y" then
   wscript.echo comment
 end if
+
+''''''''''''''''''''''''''''''''
+'   MS CD Keys for Office 2007 '
+''''''''''''''''''''''''''''''''
+strKeyPath = "SOFTWARE\Microsoft\Office\12.0\Registration"
+oReg.EnumKey HKEY_LOCAL_MACHINE, strKeyPath, arrSubKeys
+For Each subkey In arrSubKeys
+  name_2007 = get_sku_2007(subkey)
+  release_type = get_release_type(subkey)
+  edition_type = get_edition_type(subkey)
+  path = strKeyPath & "\" & subkey
+  strOffXPRU = "HKLM\" & path & "\DigitalProductId"
+  subKey = "DigitalProductId"
+  oReg.GetBinaryValue HKEY_LOCAL_MACHINE,path,subKey,key
+  if IsNull(key) then
+  else
+    strOffXPRUKey=GetKey(key)
+      form_input = "ms_keys^^^" & name_2007     & "^^^" _
+                                & strOffXPRUKey & "^^^" _
+                                & release_type  & "^^^" _
+                                & edition_type  & "^^^" _
+                                & "office_2007" & "^^^"
+      entry form_input,comment,objTextFile,oAdd,oComment
+      strOffXPRUKey = ""
+      release_type = ""
+      edition_type = ""
+      form_input = ""
+  end if
+Next
+
 ''''''''''''''''''''''''''''''''
 '   MS CD Keys for Office 2003 '
 ''''''''''''''''''''''''''''''''
@@ -3207,6 +3237,53 @@ Function IsConnectible(sHost,iPings,iTO)
 End Function
 
 
+
+function get_sku_2007(subkey)
+  vers = mid(subkey,11,4)
+if vers = "0011" then vers_name = "Microsoft Office Professional Plus 2007" end if
+if vers = "0012" then vers_name = "Microsoft Office Standard 2007" end if
+if vers = "0013" then vers_name = "Microsoft Office Basic 2007" end if
+if vers = "0014" then vers_name = "Microsoft Office Professional 2007" end if
+if vers = "0015" then vers_name = "Microsoft Office Access 2007" end if
+if vers = "0016" then vers_name = "Microsoft Office Excel 2007" end if
+if vers = "0017" then vers_name = "Microsoft Office SharePoint Designer 2007" end if
+if vers = "0018" then vers_name = "Microsoft Office PowerPoint 2007" end if
+if vers = "0019" then vers_name = "Microsoft Office Publisher 2007" end if
+if vers = "001A" then vers_name = "Microsoft Office Outlook 2007" end if
+if vers = "001B" then vers_name = "Microsoft Office Word 2007" end if
+if vers = "001C" then vers_name = "Microsoft Office Access Runtime 2007" end if
+if vers = "0020" then vers_name = "Microsoft Office Compatibility Pack for Word, Excel, and PowerPoint 2007 File Formats" end if
+if vers = "0026" then vers_name = "Microsoft Expression Web" end if
+if vers = "0029" then vers_name = "Microsoft Office Excel 2007" end if
+if vers = "002B" then vers_name = "Microsoft Office Word 2007" end if
+if vers = "002E" then vers_name = "Microsoft Office Ultimate 2007" end if
+if vers = "002F" then vers_name = "Microsoft Office Home and Student 2007" end if
+if vers = "0030" then vers_name = "Microsoft Office Enterprise 2007" end if
+if vers = "0031" then vers_name = "Microsoft Office Professional Hybrid 2007" end if
+if vers = "0033" then vers_name = "Microsoft Office Personal 2007" end if
+if vers = "0035" then vers_name = "Microsoft Office Professional Hybrid 2007" end if
+if vers = "0037" then vers_name = "Microsoft Office PowerPoint 2007" end if
+if vers = "003A" then vers_name = "Microsoft Office Project Standard 2007" end if
+if vers = "003B" then vers_name = "Microsoft Office Project Professional 2007" end if
+if vers = "0044" then vers_name = "Microsoft Office InfoPath 2007" end if
+if vers = "0051" then vers_name = "Microsoft Office Visio Professional 2007" end if
+if vers = "0052" then vers_name = "Microsoft Office Visio Viewer 2007" end if
+if vers = "0053" then vers_name = "Microsoft Office Visio Standard 2007" end if
+if vers = "00A1" then vers_name = "Microsoft Office OneNote 2007" end if
+if vers = "00A3" then vers_name = "Microsoft Office OneNote Home Student 2007" end if
+if vers = "00A7" then vers_name = "Calendar Printing Assistant for Microsoft Office Outlook 2007" end if
+if vers = "00A9" then vers_name = "Microsoft Office InterConnect 2007" end if
+if vers = "00AF" then vers_name = "Microsoft Office PowerPoint Viewer 2007 (English)" end if
+if vers = "00B0" then vers_name = "The Microsoft Save as PDF add-in" end if
+if vers = "00B1" then vers_name = "The Microsoft Save as XPS add-in" end if
+if vers = "00B2" then vers_name = "The Microsoft Save as PDF or XPS add-in" end if
+if vers = "00BA" then vers_name = "Microsoft Office Groove 2007" end if
+if vers = "00CA" then vers_name = "Microsoft Office Small Business 2007" end if
+if vers = "00E0" then vers_name = "Microsoft Office Outlook 2007" end if
+if vers = "10D7" then vers_name = "Microsoft Office InfoPath Forms Services" end if
+if vers = "110D" then vers_name = "Microsoft Office SharePoint Server 2007" end if
+get_sku_2007 = vers_name
+end function
 
 
 function get_sku_2003(subkey)
