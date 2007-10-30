@@ -1,7 +1,6 @@
 <?php
-
 $query_array=array("headline"=>__("List Systems with Gateway"),
-                   "sql"=>"SELECT * FROM system, network_card
+                   "sql"=>"SELECT * FROM 'system', 'network_card'
                            WHERE net_uuid  = system_uuid
                            AND system_timestamp  = net_timestamp
                            AND net_gateway = '" . $_GET["net_gateway"] . "'  ",
@@ -32,6 +31,31 @@ $query_array=array("headline"=>__("List Systems with Gateway"),
                                                "show"=>"y",
                                                "link"=>"n",
                                               ),
+                                    "50"=>array("name"=>"net_domain",
+                                               "head"=>__("Domain"),
+                                               "show"=>$show_domain,
+                                              ),
+                                   "60"=>array("name"=>"system_os_name",
+                                               "head"=>__("OS"),
+                                               "show"=>$show_os,
+                                              ),
+                                   "70"=>array("name"=>"system_service_pack",
+                                               "head"=>__("Servicepack"),
+                                               "show"=>$show_service_pack,
+                                              ),
+                                   "80"=>array("name"=>"system_timestamp",
+                                               "head"=>__("Date Audited"),
+                                               "show"=>$show_date_audited,
+                                              ),
+                                   "90"=>array("name"=>"system_system_type",
+                                               "head"=>__("System Type"),
+                                               "show"=>$show_type,
+                                               "align"=>"center",
+                                              ),
+                                   "100"=>array("name"=>"system_description",
+                                               "head"=>__("Description"),
+                                               "show"=>$show_description,
+                                              ),
                                   ),
                   );
-?> 
+?>

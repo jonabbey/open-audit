@@ -458,7 +458,7 @@ if ($myrow = mysql_fetch_array($result)){
     
     if (isset($_REQUEST["view"])) {
     // Check to be sure that we are looking at something which we can make a diagram of
-    $pos= (strpos($_REQUEST["view"], "systems") or strpos($_REQUEST["view"], "laptops") or strpos($_REQUEST["view"], "servers") or strpos($_REQUEST["view"], "workstations") or strpos($_REQUEST["view"], "networked") or strpos($_REQUEST["view"], "hosts") or strpos($_REQUEST["view"], "printers") or strpos($_REQUEST["view"], "port") or strpos($_REQUEST["view"], "_all"));
+    $pos= (strpos($_REQUEST["view"], "systems") or strpos($_REQUEST["view"], "laptops") or strpos($_REQUEST["view"], "servers") or strpos($_REQUEST["view"], "workstations") or strpos($_REQUEST["view"], "for_gateway") or strpos($_REQUEST["view"], "networked") or strpos($_REQUEST["view"], "hosts") or strpos($_REQUEST["view"], "printers") or strpos($_REQUEST["view"], "port") or strpos($_REQUEST["view"], "_all"));
     if ($pos === true) {
     echo "<form method=\"post\" id=\"form_export_dia\" action=\"list_export_dia.php\">\n";
     echo "<p><input type=\"hidden\" name=\"sql\" value=\"".urlencode($sql)."\" />\n";
