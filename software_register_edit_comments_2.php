@@ -1,6 +1,6 @@
 <?php
 
-if (isset($_GET['id']){
+if (isset($_GET['id'])) {
   $id = $_GET['id'];
 } else {
   header("Location: software_register.php?pc=");
