@@ -8,11 +8,11 @@ echo "<p class=\"contenthead\">".__("NMap")."</p>\n";
 //
 // Avoid undeclared vars warnings (AJH).
 //
-$device_type="unknown";
-$running="unknown";
-$ip_address="000.000.000.000";
-$manufacturer="unknown";
-$mac="00:00:00:00:00:00";
+$device_type="na";
+$running="na";
+$ip_address="255.255.255.255";
+$manufacturer="na";
+$mac="ff:ff:ff:ff:ff:ff";
 //
 $timestamp = date("YmdHis");
 $uuid = "";
