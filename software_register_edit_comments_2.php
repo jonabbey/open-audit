@@ -6,7 +6,7 @@ if (isset($_GET['id'])) {
   header("Location: software_register.php?pc=");
 }
 
-if (isset($_GET['comments']){
+if (isset($_GET['comments'])){
   $comments = $_GET['comments'];
 } else {
   $comments = "";
