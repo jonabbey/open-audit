@@ -8,11 +8,11 @@ echo "<p class=\"contenthead\">".__("NMap")."</p>\n";
 //
 // Avoid undeclared vars warnings (AJH).
 //
-$device_type="na";
-$running="na";
-$ip_address="255.255.255.255";
-$manufacturer="na";
-$mac="ff:ff:ff:ff:ff:ff";
+$device_type="unknown";
+$running="unknown";
+$ip_address="000.000.000.000";
+$manufacturer="unknown";
+$mac="00:00:00:00:00:00";
 //
 $timestamp = date("YmdHis");
 $uuid = "";
@@ -58,6 +58,34 @@ if (isset($_POST["submit"])){
         $temp2 = $temp[3];
         $temp = explode(":",$temp2);
         $ip_address = $temp[0];
+        $ip_explode = explode(".",$ip_address);
+        if (strlen($ip_explode[0]) < 2){$ip_explode[0] = "0" . $ip_explode[0];}
+        if (strlen($ip_explode[0]) < 3){$ip_explode[0] = "0" . $ip_explode[0];}
+        if (strlen($ip_explode[1]) < 2){$ip_explode[1] = "0" . $ip_explode[1];}
+        if (strlen($ip_explode[1]) < 3){$ip_explode[1] = "0" . $ip_explode[1];}
+        if (strlen($ip_explode[2]) < 2){$ip_explode[2] = "0" . $ip_explode[2];}
+        if (strlen($ip_explode[2]) < 3){$ip_explode[2] = "0" . $ip_explode[2];}
+        if (strlen($ip_explode[3]) < 2){$ip_explode[3] = "0" . $ip_explode[3];}
+        if (strlen($ip_explode[3]) < 3){$ip_explode[3] = "0" . $ip_explode[3];}
+        $ip_address = $ip_explode[0] . "." . $ip_explode[1] . "." . $ip_explode[2] . "." . $ip_explode[3];
+        echo "IP Address: " . $ip_address . "<br />";
+        $name = $ip_address;
+        echo "Name: " . $name . "<br />";
+      }
+    }
+	if (substr($split, 0, 25) == "All 1697 scanned ports on") {
+      // OK - we have a hit (all scanned ports are closed or filtered).
+      if (strpos($split, ")") !== false){
+        $temp = explode(")",substr($split, strpos($split, "(")+1));
+        $ip_address = $temp[0];
+        echo "IP Address: " . $ip_address . "<br />";
+        $temp = explode(" ", $split);
+        $temp2 = explode(".", $temp[5]);
+        $name = $temp2[0];
+        echo "Name: " . $name . "<br />";
+      } else {
+        $temp = explode(" ",$split);
+        $ip_address = $temp[5];
         $ip_explode = explode(".",$ip_address);
         if (strlen($ip_explode[0]) < 2){$ip_explode[0] = "0" . $ip_explode[0];}
         if (strlen($ip_explode[0]) < 3){$ip_explode[0] = "0" . $ip_explode[0];}
@@ -129,7 +157,7 @@ if (isset($_POST["submit"])){
   } else {}
 
 
-  if ($uuid == ""){
+  if ($uuid == "" and $mac <> "00:00:00:00:00:00") {
     // Insert into other table
     $sql  = "INSERT INTO other (other_network_name, other_ip_address, other_mac_address, ";
     $sql .= "other_description, other_manufacturer, other_type, ";
