@@ -307,7 +307,8 @@ if ($show_partition_usage == "y") {
 if ($show_software_detected == "y"){
   $sql  = "SELECT sw.software_name, sw.software_first_timestamp, sys.system_name, sys.system_uuid, sys.net_ip_address ";
   $sql .= "FROM software sw, system sys ";
-  $sql .= "WHERE software_first_timestamp >= '" . adjustdate(0,0,-$days_software_detected) . "000000' ";
+  $sql .= "WHERE sw.software_first_timestamp >= '" . adjustdate(0,0,-$days_software_detected) . "000000' ";
+  //$sql .= "WHERE software_first_timestamp >= '" . adjustdate(0,0,-$days_software_detected) . "000000' ";
   $sql .= "AND sys.system_first_timestamp < '" . adjustdate(0,0,-$days_software_detected) . "000000' ";
   $sql .= "AND sw.software_name NOT LIKE '%Hotfix%' AND sw.software_name NOT LIKE '%Update%' AND ";
   $sql .= "sw.software_timestamp = sys.system_timestamp AND ";
