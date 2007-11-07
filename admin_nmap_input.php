@@ -113,7 +113,7 @@ if (isset($_POST["submit"])){
     if (substr_count($running, "SCO UnixWare") > "0"){ $device_type = "os_unix";}
   } else {}
 
-  if (isset($mac) AND $mac <> ""){
+    if (isset($mac) AND $mac <> "00:00:00:00:00:00"){
     // First check the network_card table
     $sql = "SELECT net_uuid FROM network_card WHERE net_mac_address = '" . $mac . "'";
     echo $sql . "<br />";
@@ -136,7 +136,7 @@ if (isset($_POST["submit"])){
     }
   } else {}
 
-  if ($mac == ""){
+  if ($mac == "00:00:00:00:00:00"){
     $sql = "SELECT net_uuid FROM network_card WHERE net_ip_address = '" . $ip_address . "'";
     echo $sql . "<br />";
     $result = mysql_query($sql) or die ('Query Failed: <br />$sql<br />' . mysql_error() . '<br />' . $sql);
