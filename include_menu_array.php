@@ -189,7 +189,7 @@ $menue_array = array(
                     "childs"=>array("10"=>array("name"=>"Frequently Asked Questions", "link"=>"http://www.open-audit.org/phpBB3/viewforum.php?f=6", "image"=>"images/summary_l.png", "title"=>"Browse the FAQs at open-audit.org",),
 //                                    "20"=>array("name"=>"Audit Config", "link"=>"setup_audit.php", "image"=>"images/settings_2.png", "title"=>"",),
                                     "30"=>array("name"=>"Support", "link"=>"http://www.open-audit.org/phpBB3/viewforum.php?f=10", "image"=>"images/browser_bho_l.png", "title"=>"Support from Open-Adudit.org",),
-                                    "40"=>array("name"=>"OpenOffice Tutorial", "link"=>"./tutorials/Open Audit Battery Report.htm", "image"=>"images/x-office-spreadsheet.png", "title"=>"Support from Open-Adudit.org",),
+                                    "40"=>array("name"=>"Using Open-Audit with OpenOffice", "link"=>"./tutorials/Open Audit Battery Report.htm", "image"=>"images/x-office-spreadsheet.png", "title"=>"Using the Open-Audit database from OpenOffice to create more complex reports.",),
                              ),       
               ),
   ),
