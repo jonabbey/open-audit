@@ -450,12 +450,15 @@ DROP TABLE IF EXISTS `nmap_ports`;
 CREATE TABLE `nmap_ports` (
   `nmap_id` int(10) unsigned NOT NULL auto_increment,
   `nmap_port_number` int(10) unsigned NOT NULL default '0',
+  `nmap_port_proto` varchar(10) NOT NULL default '',
   `nmap_other_id` varchar(100) NOT NULL default '',
   `nmap_port_name` varchar(45) NOT NULL default '',
+  `nmap_port_version` varchar(100) NOT NULL default '',
   `nmap_timestamp` bigint(20) unsigned NOT NULL default '0',
   PRIMARY KEY  (`nmap_id`),
   KEY `id` (`nmap_other_id`),
-  KEY `id2` (`nmap_port_number`)
+  KEY `id2` (`nmap_port_number`),
+  KEY `id3` (`nmap_port_proto`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 DROP TABLE IF EXISTS `notes`;
@@ -1003,7 +1006,7 @@ CREATE TABLE `video` (
   KEY `id2` (`video_timestamp`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
-INSERT INTO config (config_name, config_value) VALUES ('version','07.08.28');
+INSERT INTO config (config_name, config_value) VALUES ('version','07.11.15');
 
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 

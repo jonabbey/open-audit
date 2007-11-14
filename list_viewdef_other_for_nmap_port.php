@@ -1,9 +1,9 @@
 <?php
 
-    $query_array=array("headline"=>__("List Nmap discovered other hosts with TCP port"),
+    $query_array=array("headline"=>__("List other hosts running Nmap discovered service '".$_REQUEST["headline_addition2"]."' (version '".$_REQUEST["headline_addition3"]."') on ".strtoupper($_REQUEST["headline_addition1"])." port"),
                        "sql"=>"SELECT other_id, other_ip_address, other_network_name, other_description, other_type
                                       FROM other, nmap_ports
-                                      WHERE nmap_port_number = '".$_REQUEST["name"]."' AND (nmap_other_id = other_mac_address OR nmap_other_id = other_id)",
+                                      WHERE nmap_port_number = '".$_REQUEST["name"]."' AND nmap_port_proto = '".$_REQUEST["headline_addition1"]."' AND nmap_port_version = '".$_REQUEST["headline_addition3"]."' AND (nmap_other_id = other_mac_address OR nmap_other_id = other_id)",
                        "sort"=>"other_network_name",
                        "dir"=>"ASC",
                        "get"=>array("file"=>"system.php",
@@ -34,7 +34,7 @@
                                        "50"=>array("name"=>"other_type",
                                                    "head"=>__("Type"),
                                                    "show"=>"y",
-                                        "link"=>"n",
+                                                   "link"=>"n",
                                                   ),                                             
                                       ),
                       );

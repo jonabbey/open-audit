@@ -46,6 +46,7 @@ if (isset($_POST["submit"])){
     if (substr($split, 0, 20) == "Interesting ports on") {
       // OK - we have a hit.
       if (strpos($split, ")") !== false){
+        // Name resolution succeeded 
         $temp = explode(")",substr($split, strpos($split, "(")+1));
         $ip_address = $temp[0];
         echo "IP Address: " . $ip_address . "<br />";
@@ -54,6 +55,7 @@ if (isset($_POST["submit"])){
         $name = $temp2[0];
         echo "Name: " . $name . "<br />";
       } else {
+        // No name resolution
         $temp = explode(" ",$split);
         $temp2 = $temp[3];
         $temp = explode(":",$temp2);
@@ -73,9 +75,12 @@ if (isset($_POST["submit"])){
         echo "Name: " . $name . "<br />";
       }
     }
-	if (substr($split, 0, 25) == "All 1697 scanned ports on") {
+    if ((substr($split, 0, 25) == "All 1697 scanned ports on") or (substr($split, 0, 25) == "All 1488 scanned ports on") or (substr($split, 0, 25) == "All 3185 scanned ports on")) {
       // OK - we have a hit (all scanned ports are closed or filtered).
-      if (strpos($split, ")") !== false){
+      $temp = explode(" ", $split);
+      $temp2 = $temp[6];
+      if (strpos($temp2, ")") !== false){
+        // Name resolution succeeded 
         $temp = explode(")",substr($split, strpos($split, "(")+1));
         $ip_address = $temp[0];
         echo "IP Address: " . $ip_address . "<br />";
@@ -84,6 +89,7 @@ if (isset($_POST["submit"])){
         $name = $temp2[0];
         echo "Name: " . $name . "<br />";
       } else {
+        // No name resolution
         $temp = explode(" ",$split);
         $ip_address = $temp[5];
         $ip_explode = explode(".",$ip_address);
@@ -189,30 +195,55 @@ if (isset($_POST["submit"])){
     echo $sql . "<br />\n";
     $result = mysql_query($sql) or die ('Delete Failed: <br />' . $sql . '<br />' . mysql_error());
     foreach ($input as $split) {
-      if ((strpos($split, "open") === false) OR (strpos($split, "/tcp") === false)){
-      } else {
-        $temp = explode("/", $split);
-        $port_number = $temp[0];
-        $pos = intval(strpos($split, "open")) + 6;
-        $port_name = rtrim(substr($split, $pos));
-        $sql  = "INSERT INTO nmap_ports (nmap_other_id, nmap_port_number, nmap_port_name, nmap_timestamp) VALUES (";
-        $sql .= "'" . $uuid . "','" . $port_number . "','" . $port_name . "','" . $timestamp . "')";
-        $result = mysql_query($sql) or die ('Insert Failed: <br />' . $sql . '<br />' . mysql_error());
-        echo $sql . "<br />";
-      }
-    } // End of for each
-  } // End of isset($mac)
+      // Search every row for tcp/udp open or open|filtered  ports
+      if (strpos($split, "open") === false) {
+      } else if ((strpos($split, "/tcp") === false) and (strpos($split, "/udp") === false)) {
+             } else {
+               $temp = explode(" ", $split);
+               $temp1 = explode("/", $temp[0]);
+               $port_number = $temp1[0];
+               $port_proto = $temp1[1];
+               $pos = strlen($temp[0]) + 1;
+               while (substr($split, $pos, 1) == " ") {
+                 $pos++; }
+               $temp = substr($split, $pos);
+               $temp1 = explode(" ", $temp);
+               $port_state = $temp1[0];
+               $pos = $pos + strlen($port_state);
+               while (substr($split, $pos, 1) == " ") {
+                 $pos++; } 
+               $temp = substr($split, $pos);
+               $temp1 = explode(" ", $temp);
+               $port_name = $temp1[0];
+               $pos = $pos + strlen($port_name);
+               while (substr($split, $pos, 1) == " ") {
+                 $pos++; } 
+               $port_version = rtrim(substr($split, $pos));
+               if ($port_version == "") {
+                 $port_version = "Not detected"; }
+               else { }
+
+               echo "<br /> Port found. <br />";
+               echo "Port: " . $port_number . "<br />";
+               echo "Protocol: " . $port_proto . "<br />";
+               echo "State: " . $port_state . "<br />";
+               echo "Service: " . $port_name . "<br />";
+               echo "Version: " . $port_version . "<br />";
+
+               $sql  = "INSERT INTO nmap_ports (nmap_other_id, nmap_port_number, nmap_port_proto, nmap_port_name, nmap_port_version, nmap_timestamp) VALUES (";
+               $sql .= "'" . $uuid . "','" . $port_number . "','" . $port_proto . "','" . $port_name . "','" . $port_version . "','" . $timestamp . "')";
+               $result = mysql_query($sql) or die ('Insert Failed: <br />' . $sql . '<br />' . mysql_error());
+               echo "<br />" . $sql . "<br />";
+               } 
+    }// End of foreach
+  }//End of if ($process <> "")
+ 
+
+//echo "<br />" .$sql . "<br />";
 
 
-
-
-echo "<br />" .$sql . "<br />";
-
-
-
-
-
-} else {
+} // End of isset($_POST["submit"])
+  else {
 
   echo "<form action=\"admin_nmap_input.php\" method=\"post\">\n";
   echo "<table>\n";

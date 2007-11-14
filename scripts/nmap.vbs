@@ -39,8 +39,17 @@ sTempFile = sTemp & "\" & oFS.GetTempName
 
 
 sTempFile = "temp.txt"
-
-nmap = "nmap.exe -O -v -oN " & sTempFile & " " & nmap_subnet
+nmap = "nmap.exe " 
+if nmap_syn_scan = "y" then
+  nmap = nmap & "-sS "
+end if
+if nmap_udp_scan = "y" then
+  nmap = nmap & "-sU "
+end if
+if nmap_srv_ver_scan = "y" then
+  nmap = nmap & "-sV --version-intensity " & nmap_srv_ver_int & " "
+end if
+nmap = nmap & "-O -v -oN " & sTempFile & " " & nmap_subnet
 
 '''''''''''''''''''''''''''''''''''
 ' Script loop starts here         '

@@ -21,7 +21,7 @@ $extra = "";
 $software = "";
 $count = 0;
 $total_rows = 0;
-$latest_version = "07.10.25";
+$latest_version = "07.11.15";
 
 // Check for config, otherwise run setup
 @(include_once "include_config.php") OR die(header("Location: setup.php"));
@@ -465,9 +465,9 @@ if ($show_detected_servers == "y"){
       } else {}
      
   // WS - Nmap discovered on Audited PC
-  $sql  = "SELECT sys.net_ip_address, sys.system_name, sys.system_uuid, sys.net_domain, port.nmap_port_number, port.nmap_port_name ";
+  $sql  = "SELECT sys.net_ip_address, sys.system_name, sys.system_uuid, sys.net_domain, port.nmap_port_number, port.nmap_port_proto, port.nmap_port_name, port.nmap_port_version ";
   $sql .= "FROM system sys, nmap_ports port ";
-  $sql .= "WHERE (port.nmap_port_number = '80' OR port.nmap_port_number = '443') AND port.nmap_other_id = sys.system_uuid ";
+  $sql .= "WHERE (port.nmap_port_number = '80' OR port.nmap_port_number = '443') AND port.nmap_port_proto = 'tcp' AND port.nmap_other_id = sys.system_uuid ";
   $sql .= "ORDER BY sys.system_name";
   $result = mysql_query($sql, $db);
   if ($myrow = mysql_fetch_array($result)){
@@ -480,7 +480,8 @@ if ($show_detected_servers == "y"){
          <td><b>".__("IP Address")."</b></td>
          <td><b>".__("Hostname")."</b></td>
          <td><b>".__("TCP Port")."</b></td>
-		 <td><b>".__("Port Name")."</b></td>
+		 <td><b>".__("Service")."</b></td>
+         <td><b>".__("Version")."</b></td>
        </tr>\n";
 
     do {
@@ -496,15 +497,16 @@ if ($show_detected_servers == "y"){
              <td><a href=\"system.php?pc=" . $myrow["system_uuid"] . "&amp;view=summary\">" . $myrow["system_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
              <td><a href= \"launch.php?hostname=".$myrow["system_name"]."&amp;domain=".$myrow["net_domain"]."&amp;application=".$app."\"/>" . $myrow["nmap_port_number"] . "&nbsp;</td>
              <td>" . $myrow["nmap_port_name"] . "&nbsp;</td>
+             <td>" . $myrow["nmap_port_version"] . "&nbsp;</td>
           </tr>\n";
 
     } while ($myrow = mysql_fetch_array($result));
     echo "<tr><td>&nbsp;</td></tr>\n";
   } else {}
   // WS - Nmap discovered on Other equipment
-  $sql  = "SELECT oth.other_id, oth.other_ip_address, oth.other_network_name, oth.other_mac_address, port.nmap_port_number, port.nmap_port_name ";
+  $sql  = "SELECT oth.other_id, oth.other_ip_address, oth.other_network_name, oth.other_mac_address, port.nmap_port_number, port.nmap_port_proto, port.nmap_port_name, port.nmap_port_version ";
   $sql .= "FROM other oth, nmap_ports port ";
-  $sql .= "WHERE (port.nmap_port_number = '80' OR port.nmap_port_number = '443') AND (port.nmap_other_id = oth.other_mac_address OR port.nmap_other_id = oth.other_id) ";
+  $sql .= "WHERE (port.nmap_port_number = '80' OR port.nmap_port_number = '443') AND port.nmap_port_proto = 'tcp' AND (port.nmap_other_id = oth.other_mac_address OR port.nmap_other_id = oth.other_id) ";
   $sql .= "ORDER BY oth.other_network_name";
   $result = mysql_query($sql, $db);
   if ($myrow = mysql_fetch_array($result)){
@@ -519,7 +521,8 @@ if ($show_detected_servers == "y"){
          <td><b>".__("IP Address")."</b></td>
          <td><b>".__("Hostname")."</b></td>
          <td><b>".__("TCP Port")."</b></td>
-         <td><b>".__("Port Name")."</b></td>
+         <td><b>".__("Service")."</b></td>
+         <td><b>".__("Version")."</b></td>
        </tr>\n";
 
     do {
@@ -535,6 +538,7 @@ if ($show_detected_servers == "y"){
          <td><a href=\"system.php?other=" . $myrow["other_id"] . "&amp;view=other_system\">" . $myrow["other_network_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
          <td><a href= \"launch_other.php?hostname=".$myrow["other_ip_address"]."&amp;application=".$app."\"/>" . $myrow["nmap_port_number"] . "&nbsp;&nbsp;&nbsp;</td>
          <td>" . $myrow["nmap_port_name"] . "&nbsp;</td>
+         <td>" . $myrow["nmap_port_version"] . "&nbsp;</td>
        </tr>\n";
 
     } while ($myrow = mysql_fetch_array($result));
@@ -618,9 +622,9 @@ if ($show_detected_servers == "y"){
 
 
   // FTP - Nmap discovered on Audited PC
-  $sql  = "SELECT sys.net_ip_address, sys.system_name, sys.system_uuid, sys.net_domain, port.nmap_port_number, port.nmap_port_name ";
+  $sql  = "SELECT sys.net_ip_address, sys.system_name, sys.system_uuid, sys.net_domain, port.nmap_port_number, port.nmap_port_proto, port.nmap_port_name, port.nmap_port_version ";
   $sql .= "FROM system sys, nmap_ports port ";
-  $sql .= "WHERE port.nmap_port_number = '21' AND port.nmap_other_id = sys.system_uuid ";
+  $sql .= "WHERE port.nmap_port_number = '21' AND port.nmap_port_proto = 'tcp' AND port.nmap_other_id = sys.system_uuid ";
   $sql .= "ORDER BY sys.system_name";
   $result = mysql_query($sql, $db);
   if ($myrow = mysql_fetch_array($result)){
@@ -634,7 +638,8 @@ if ($show_detected_servers == "y"){
          <td><b>".__("IP Address")."</b></td>
          <td><b>".__("Hostname")."</b></td>
          <td><b>".__("TCP Port")."</b></td>
-         <td><b>".__("Port Name")."</b></td>
+		 <td><b>".__("Service")."</b></td>
+         <td><b>".__("Version")."</b></td>
        </tr>\n";
 
     do {
@@ -647,6 +652,7 @@ if ($show_detected_servers == "y"){
              <td><a href=\"system.php?pc=" . $myrow["system_uuid"] . "&amp;view=summary\">" . $myrow["system_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
              <td><a href= \"launch.php?hostname=".$myrow["system_name"]."&amp;domain=".$myrow["net_domain"]."&amp;application=ftp\"/>" . $myrow["nmap_port_number"] . "&nbsp;</td>
              <td>" . $myrow["nmap_port_name"] . "&nbsp;</td>
+             <td>" . $myrow["nmap_port_version"] . "&nbsp;</td>
            </tr>\n";
 
     } while ($myrow = mysql_fetch_array($result));
@@ -654,9 +660,9 @@ if ($show_detected_servers == "y"){
   } else {}
 
   // FTP - Nmap discovered on Other equipment
-  $sql  = "SELECT oth.other_id, oth.other_ip_address, oth.other_network_name, oth.other_mac_address, port.nmap_port_number, port.nmap_port_name ";
+  $sql  = "SELECT oth.other_id, oth.other_ip_address, oth.other_network_name, oth.other_mac_address, port.nmap_port_number, port.nmap_port_proto, port.nmap_port_name, port.nmap_port_version ";
   $sql .= "FROM other oth, nmap_ports port ";
-  $sql .= "WHERE port.nmap_port_number = '21' AND (port.nmap_other_id = oth.other_mac_address OR port.nmap_other_id = oth.other_id) ";
+  $sql .= "WHERE port.nmap_port_number = '21' AND port.nmap_port_proto = 'tcp' AND (port.nmap_other_id = oth.other_mac_address OR port.nmap_other_id = oth.other_id) ";
   $sql .= "ORDER BY oth.other_network_name";
   $result = mysql_query($sql, $db);
 
@@ -672,7 +678,8 @@ if ($show_detected_servers == "y"){
          <td><b>".__("IP Address")."</b></td>
          <td><b>".__("Hostname")."</b></td>
          <td><b>".__("TCP Port")."</b></td>
-         <td><b>".__("Port Name")."</b></td>
+         <td><b>".__("Service")."</b></td>
+         <td><b>".__("Version")."</b></td>
        </tr>\n";
 
     do {
@@ -686,6 +693,7 @@ if ($show_detected_servers == "y"){
          <td ><a href=\"system.php?other=" . $myrow["other_id"] . "&amp;view=other_system\">" . $myrow["other_network_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
          <td><a href= \"launch_other.php?hostname=".$myrow["other_ip_address"]."&amp;application=ftp\"/>" . $myrow["nmap_port_number"] . "&nbsp;</td>
          <td>" . $myrow["nmap_port_name"] . "&nbsp;</td>
+         <td>" . $myrow["nmap_port_version"] . "&nbsp;</td>
        </tr>\n";
 
     } while ($myrow = mysql_fetch_array($result));
@@ -768,9 +776,9 @@ if ($show_detected_servers == "y"){
   } else {}
 
   // Telnet - Nmap discovered on Audited PC
-  $sql  = "SELECT sys.net_ip_address, sys.system_name, sys.system_uuid, sys.net_domain, port.nmap_port_number, port.nmap_port_name ";
+  $sql  = "SELECT sys.net_ip_address, sys.system_name, sys.system_uuid, sys.net_domain, port.nmap_port_number, port.nmap_port_proto, port.nmap_port_name, port.nmap_port_version ";
   $sql .= "FROM system sys, nmap_ports port ";
-  $sql .= "WHERE port.nmap_port_number = '23' AND port.nmap_other_id = sys.system_uuid ";
+  $sql .= "WHERE port.nmap_port_number = '23' AND port.nmap_port_proto = 'tcp' AND port.nmap_other_id = sys.system_uuid ";
   $sql .= "ORDER BY sys.system_name";
   $result = mysql_query($sql, $db);
   if ($myrow = mysql_fetch_array($result)){
@@ -784,7 +792,8 @@ if ($show_detected_servers == "y"){
          <td><b>".__("IP Address")."</b></td>
          <td><b>".__("Hostname")."</b></td>
          <td><b>".__("TCP Port")."</b></td>
-         <td><b>".__("Port Name")."</b></td>
+		 <td><b>".__("Service")."</b></td>
+         <td><b>".__("Version")."</b></td>
        </tr>\n";
 
     do {
@@ -797,6 +806,8 @@ if ($show_detected_servers == "y"){
          <td><a href=\"system.php?pc=" . $myrow["system_uuid"] . "&amp;view=summary\">" . $myrow["system_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
          <td><a href= \"launch.php?hostname=".$myrow["system_name"]."&amp;domain=".$myrow["net_domain"]."&amp;application=telnet&amp;ext=vbs\"/>" . $myrow["nmap_port_number"] . "&nbsp;</td>
          <td>" . $myrow["nmap_port_name"] . "&nbsp;</td>
+         <td>" . $myrow["nmap_port_version"] . "&nbsp;</td>
+
        </tr>\n";
 
     } while ($myrow = mysql_fetch_array($result));
@@ -805,9 +816,9 @@ if ($show_detected_servers == "y"){
 
   } else {}
   // Telnet - Nmap discovered on Other equipment
-  $sql  = "SELECT oth.other_id, oth.other_ip_address, oth.other_network_name, oth.other_mac_address, port.nmap_port_number, port.nmap_port_name ";
+  $sql  = "SELECT oth.other_id, oth.other_ip_address, oth.other_network_name, oth.other_mac_address, port.nmap_port_number, port.nmap_port_proto, port.nmap_port_name, port.nmap_port_version ";
   $sql .= "FROM other oth, nmap_ports port ";
-  $sql .= "WHERE port.nmap_port_number = '23' AND (port.nmap_other_id = oth.other_mac_address OR port.nmap_other_id = oth.other_id) ";
+  $sql .= "WHERE port.nmap_port_number = '23' AND port.nmap_port_proto = 'tcp' AND (port.nmap_other_id = oth.other_mac_address OR port.nmap_other_id = oth.other_id) ";
   $sql .= "ORDER BY oth.other_network_name";
   $result = mysql_query($sql, $db);
   if ($myrow = mysql_fetch_array($result)){
@@ -822,7 +833,8 @@ if ($show_detected_servers == "y"){
          <td><b>".__("IP Address")."</b></td>
          <td><b>".__("Hostname")."</b></td>
          <td><b>".__("TCP Port")."</b></td>
-         <td><b>".__("Port Name")."</b></td>
+         <td><b>".__("Service")."</b></td>
+         <td><b>".__("Version")."</b></td>
        </tr>\n";
 
     do {
@@ -835,6 +847,7 @@ if ($show_detected_servers == "y"){
          <td><a href=\"system.php?other=" . $myrow["other_id"] . "&amp;view=other_system\">" . $myrow["other_network_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
          <td><a href= \"launch_other.php?hostname=".$myrow["other_ip_address"]."&amp;application=telnet&amp;ext=vbs\"/>" . $myrow["nmap_port_number"] . "&nbsp;</td>
          <td>" . $myrow["nmap_port_name"] . "&nbsp;</td>
+         <td>" . $myrow["nmap_port_version"] . "&nbsp;</td>
        </tr>\n";
 
     } while ($myrow = mysql_fetch_array($result));
@@ -920,9 +933,9 @@ if ($show_detected_servers == "y"){
   } else {}
 
   // Email - Nmap discovered on Audited PC
-  $sql  = "SELECT sys.net_ip_address, sys.system_name, sys.system_uuid, sys.net_domain, port.nmap_port_number, port.nmap_port_name ";
+  $sql  = "SELECT sys.net_ip_address, sys.system_name, sys.system_uuid, sys.net_domain, port.nmap_port_number, port.nmap_port_proto, port.nmap_port_name, port.nmap_port_version ";
   $sql .= "FROM system sys, nmap_ports port ";
-  $sql .= "WHERE port.nmap_port_number = '25' AND port.nmap_other_id = sys.system_uuid ";
+  $sql .= "WHERE port.nmap_port_number = '25' AND port.nmap_port_proto = 'tcp' AND port.nmap_other_id = sys.system_uuid ";
   $sql .= "ORDER BY sys.system_name";
   $result = mysql_query($sql, $db);
   if ($myrow = mysql_fetch_array($result)){
@@ -936,7 +949,8 @@ if ($show_detected_servers == "y"){
          <td><b>".__("IP Address")."</b></td>
          <td><b>".__("Hostname")."</b></td>
          <td><b>".__("TCP Port")."</b></td>
-         <td><b>".__("Port Name")."</b></td>
+		 <td><b>".__("Service")."</b></td>
+         <td><b>".__("Version")."</b></td>
        </tr>\n";
 
     do {
@@ -949,6 +963,7 @@ if ($show_detected_servers == "y"){
          <td><a href=\"system.php?pc=" . $myrow["system_uuid"] . "&amp;view=summary\">" . $myrow["system_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
          <td><a href= \"launch.php?hostname=".$myrow["system_name"]."&amp;domain=".$myrow["net_domain"]."&amp;application=telnet&amp;ext=vbs\"/>" . $myrow["nmap_port_number"] . "&nbsp;</td>
          <td>" . $myrow["nmap_port_name"] . "&nbsp;</td>
+         <td>" . $myrow["nmap_port_version"] . "&nbsp;</td>
        </tr>\n";
 
     } while ($myrow = mysql_fetch_array($result));
@@ -957,9 +972,9 @@ if ($show_detected_servers == "y"){
 
   } else {}
   // Email - Nmap discovered on Other equipment
-  $sql  = "SELECT oth.other_id, oth.other_ip_address, oth.other_network_name, oth.other_mac_address, port.nmap_port_number, port.nmap_port_name ";
+  $sql  = "SELECT oth.other_id, oth.other_ip_address, oth.other_network_name, oth.other_mac_address, port.nmap_port_number, port.nmap_port_proto, port.nmap_port_name, port.nmap_port_version ";
   $sql .= "FROM other oth, nmap_ports port ";
-  $sql .= "WHERE port.nmap_port_number = '25' AND (port.nmap_other_id = oth.other_mac_address OR port.nmap_other_id = oth.other_id) ";
+  $sql .= "WHERE port.nmap_port_number = '25' AND port.nmap_port_proto = 'tcp' AND (port.nmap_other_id = oth.other_mac_address OR port.nmap_other_id = oth.other_id) ";
   $sql .= "ORDER BY oth.other_network_name";
   $result = mysql_query($sql, $db);
   if ($myrow = mysql_fetch_array($result)){
@@ -974,7 +989,8 @@ if ($show_detected_servers == "y"){
          <td><b>".__("IP Address")."</b></td>
          <td><b>".__("Hostname")."</b></td>
          <td><b>".__("TCP Port")."</b></td>
-         <td><b>".__("Port Name")."</b></td>
+         <td><b>".__("Service")."</b></td>
+         <td><b>".__("Version")."</b></td>
        </tr>\n";
 
     do {
@@ -987,6 +1003,7 @@ if ($show_detected_servers == "y"){
            <td><a href=\"system.php?other=" . $myrow["other_id"] . "&amp;view=other_system\">" . $myrow["other_network_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
            <td><a href= \"launch_other.php?hostname=".$myrow["other_ip_address"]."&amp;application=telnet&amp;ext=vbs\"/>" . $myrow["nmap_port_number"] . "&nbsp;</td>
            <td>" . $myrow["nmap_port_name"] . "&nbsp;</td>
+           <td>" . $myrow["nmap_port_version"] . "&nbsp;</td>
          </tr>\n";
 
     } while ($myrow = mysql_fetch_array($result));
@@ -1069,9 +1086,9 @@ if ($show_detected_servers == "y"){
 
   } else {}
   // VNC - Nmap discovered on Audited PC
-  $sql  = "SELECT sys.net_ip_address, sys.system_name, sys.system_uuid, sys.net_domain, port.nmap_port_number, port.nmap_port_name ";
+  $sql  = "SELECT sys.net_ip_address, sys.system_name, sys.system_uuid, sys.net_domain, port.nmap_port_number, port.nmap_port_proto, port.nmap_port_name, port.nmap_port_version ";
   $sql .= "FROM system sys, nmap_ports port ";
-  $sql .= "WHERE port.nmap_port_number = '5900' AND port.nmap_other_id = sys.system_uuid ";
+  $sql .= "WHERE port.nmap_port_number = '5900' AND port.nmap_port_proto = 'tcp' AND port.nmap_other_id = sys.system_uuid ";
   $sql .= "ORDER BY sys.system_name";
   $result = mysql_query($sql, $db);
   if ($myrow = mysql_fetch_array($result)){
@@ -1085,7 +1102,8 @@ if ($show_detected_servers == "y"){
          <td><b>".__("IP Address")."</b></td>
          <td><b>".__("Hostname")."</b></td>
          <td><b>".__("TCP Port")."</b></td>
-         <td><b>".__("Port Name")."</b></td>
+		 <td><b>".__("Service")."</b></td>
+         <td><b>".__("Version")."</b></td>
        </tr>\n";
 
     do {
@@ -1098,6 +1116,7 @@ if ($show_detected_servers == "y"){
              <td><a href=\"system.php?pc=" . $myrow["system_uuid"] . "&amp;view=summary\">" . $myrow["system_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
              <td><a href= \"launch.php?hostname=".$myrow["system_name"]."&amp;domain=".$myrow["net_domain"]."&amp;application=".$vnc_type."_"."vnc&amp;ext=vnc\"/>" . $myrow["nmap_port_number"] . "&nbsp;</td>
              <td>" . $myrow["nmap_port_name"] . "&nbsp;</td>
+             <td>" . $myrow["nmap_port_version"] . "&nbsp;</td>
            </tr>\n";
 
     } while ($myrow = mysql_fetch_array($result));
@@ -1106,9 +1125,9 @@ if ($show_detected_servers == "y"){
 
   } else {}
   // VNC - Nmap discovered on Other equipment
-  $sql  = "SELECT oth.other_id, oth.other_ip_address, oth.other_network_name, oth.other_mac_address, port.nmap_port_number, port.nmap_port_name ";
+  $sql  = "SELECT oth.other_id, oth.other_ip_address, oth.other_network_name, oth.other_mac_address, port.nmap_port_number, port.nmap_port_proto, port.nmap_port_name, port.nmap_port_version ";
   $sql .= "FROM other oth, nmap_ports port ";
-  $sql .= "WHERE port.nmap_port_number = '5900' AND (port.nmap_other_id = oth.other_mac_address OR port.nmap_other_id = oth.other_id) ";
+  $sql .= "WHERE port.nmap_port_number = '5900' AND port.nmap_port_proto = 'tcp' AND (port.nmap_other_id = oth.other_mac_address OR port.nmap_other_id = oth.other_id) ";
   $sql .= "ORDER BY oth.other_network_name";
   $result = mysql_query($sql, $db);
   if ($myrow = mysql_fetch_array($result)){
@@ -1123,7 +1142,8 @@ if ($show_detected_servers == "y"){
          <td><b>".__("IP Address")."</b></td>
          <td><b>".__("Hostname")."</b></td>
          <td><b>".__("TCP Port")."</b></td>
-         <td><b>".__("Port Name")."</b></td>
+         <td><b>".__("Service")."</b></td>
+         <td><b>".__("Version")."</b></td>
        </tr>\n";
 
     do {
@@ -1136,6 +1156,7 @@ if ($show_detected_servers == "y"){
            <td><a href=\"system.php?other=" . $myrow["other_id"] . "&amp;view=other_system\">" . $myrow["other_network_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
            <td><a href= \"launch_other.php?hostname=".$myrow["other_ip_address"]."&amp;application=".$vnc_type."_"."vnc&amp;ext=vnc\"/>" . $myrow["nmap_port_number"] . "&nbsp;</td>
            <td>" . $myrow["nmap_port_name"] . "&nbsp;</td>
+           <td>" . $myrow["nmap_port_version"] . "&nbsp;</td>
          </tr>\n";
 
     } while ($myrow = mysql_fetch_array($result));
@@ -1221,9 +1242,9 @@ if ($show_detected_servers == "y"){
 
   } else {}
   // TS - Nmap discovered on Audited PC
-  $sql  = "SELECT sys.net_ip_address, sys.system_name, sys.system_uuid, sys.net_domain, port.nmap_port_number, port.nmap_port_name ";
+  $sql  = "SELECT sys.net_ip_address, sys.system_name, sys.system_uuid, sys.net_domain, port.nmap_port_number, port.nmap_port_proto, port.nmap_port_name, port.nmap_port_version ";
   $sql .= "FROM system sys, nmap_ports port ";
-  $sql .= "WHERE port.nmap_port_number = '3389' AND port.nmap_other_id = sys.system_uuid ";
+  $sql .= "WHERE port.nmap_port_number = '3389' AND port.nmap_port_proto = 'tcp' AND port.nmap_other_id = sys.system_uuid ";
   $sql .= "ORDER BY sys.system_name";
   $result = mysql_query($sql, $db);
   if ($myrow = mysql_fetch_array($result)){
@@ -1237,7 +1258,8 @@ if ($show_detected_servers == "y"){
          <td><b>".__("IP Address")."</b></td>
          <td><b>".__("Hostname")."</b></td>
          <td><b>".__("TCP Port")."</b></td>
-         <td><b>".__("Port Name")."</b></td>
+		 <td><b>".__("Service")."</b></td>
+         <td><b>".__("Version")."</b></td>
        </tr>\n";
 
     do {
@@ -1249,6 +1271,7 @@ if ($show_detected_servers == "y"){
              <td ><a href=\"system.php?pc=" . $myrow["system_uuid"] . "&amp;view=summary\">" . $myrow["system_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
              <td><a href= \"launch.php?hostname=".$myrow["system_name"]."&amp;domain=".$myrow["net_domain"]."&amp;application=rdp&amp;ext=rdp\"/>" . $myrow["nmap_port_number"] . "&nbsp;</td>
              <td>" . $myrow["nmap_port_name"] . "&nbsp;</td>
+             <td>" . $myrow["nmap_port_version"] . "&nbsp;</td>
             </tr>\n";
 
     } while ($myrow = mysql_fetch_array($result));
@@ -1257,9 +1280,9 @@ if ($show_detected_servers == "y"){
 
   } else {}
   // TS - Nmap discovered on Other equipment
-  $sql  = "SELECT oth.other_id, oth.other_ip_address, oth.other_network_name, oth.other_mac_address, port.nmap_port_number, port.nmap_port_name ";
+  $sql  = "SELECT oth.other_id, oth.other_ip_address, oth.other_network_name, oth.other_mac_address, port.nmap_port_number, port.nmap_port_proto, port.nmap_port_name, port.nmap_port_version ";
   $sql .= "FROM other oth, nmap_ports port ";
-  $sql .= "WHERE port.nmap_port_number = '3389' AND (port.nmap_other_id = oth.other_mac_address OR port.nmap_other_id = oth.other_id) ";
+  $sql .= "WHERE port.nmap_port_number = '3389' AND port.nmap_port_proto = 'tcp' AND (port.nmap_other_id = oth.other_mac_address OR port.nmap_other_id = oth.other_id) ";
   $sql .= "ORDER BY oth.other_network_name";
   $result = mysql_query($sql, $db);
   if ($myrow = mysql_fetch_array($result)){
@@ -1274,7 +1297,8 @@ if ($show_detected_servers == "y"){
          <td><b>".__("IP Address")."</b></td>
          <td><b>".__("Hostname")."</b></td>
          <td><b>".__("TCP Port")."</b></td>
-         <td><b>".__("Port Name")."</b></td>
+         <td><b>".__("Service")."</b></td>
+         <td><b>".__("Version")."</b></td>
        </tr>\n";
 
     do {
@@ -1287,6 +1311,7 @@ if ($show_detected_servers == "y"){
            <td ><a href=\"system.php?other=" . $myrow["other_id"] . "&amp;view=other_system\">" . $myrow["other_network_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
            <td><a href= \"launch_other.php?hostname=".$myrow["other_ip_address"]."&amp;application=rdp&amp;ext=rdp\"/>" . $myrow["nmap_port_number"] . "&nbsp;</td>
            <td>" . $myrow["nmap_port_name"] . "&nbsp;</td>
+           <td>" . $myrow["nmap_port_version"] . "&nbsp;</td>
          </tr>\n";
 
     } while ($myrow = mysql_fetch_array($result));
@@ -1368,9 +1393,9 @@ if ($show_detected_servers == "y"){
 
   } else {}
   // DB - Nmap discovered on Audited PC
-  $sql  = "SELECT sys.net_ip_address, sys.system_name, sys.system_uuid, sys.net_domain, port.nmap_port_number, port.nmap_port_name ";
+  $sql  = "SELECT sys.net_ip_address, sys.system_name, sys.system_uuid, sys.net_domain, port.nmap_port_number, port.nmap_port_proto, port.nmap_port_name, port.nmap_port_version ";
   $sql .= "FROM system sys, nmap_ports port ";
-  $sql .= "WHERE (port.nmap_port_number = '3306' OR port.nmap_port_number = '1433' OR port.nmap_port_number = '1521' OR port.nmap_port_number = '523') AND port.nmap_other_id = sys.system_uuid ";
+  $sql .= "WHERE (port.nmap_port_number = '3306' OR port.nmap_port_number = '1433' OR port.nmap_port_number = '1521' OR port.nmap_port_number = '523') AND port.nmap_port_proto = 'tcp' AND port.nmap_other_id = sys.system_uuid ";
   $sql .= "ORDER BY sys.system_name";
   $result = mysql_query($sql, $db);
   if ($myrow = mysql_fetch_array($result)){
@@ -1384,7 +1409,8 @@ if ($show_detected_servers == "y"){
          <td><b>".__("IP Address")."</b></td>
          <td><b>".__("Hostname")."</b></td>
          <td><b>".__("TCP Port")."</b></td>
-         <td><b>".__("Port Name")."</b></td>
+		 <td><b>".__("Service")."</b></td>
+         <td><b>".__("Version")."</b></td>
        </tr>\n";
 
     do {
@@ -1396,6 +1422,7 @@ if ($show_detected_servers == "y"){
              <td ><a href=\"system.php?pc=" . $myrow["system_uuid"] . "&amp;view=summary\">" . $myrow["system_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
              <td>" . $myrow["nmap_port_number"] . "&nbsp;</td>
              <td>" . $myrow["nmap_port_name"] . "&nbsp;</td>
+             <td>" . $myrow["nmap_port_version"] . "&nbsp;</td>
             </tr>\n";
 
     } while ($myrow = mysql_fetch_array($result));
@@ -1404,9 +1431,9 @@ if ($show_detected_servers == "y"){
 
   } else {}
   // DB - Nmap discovered on Other equipment
-  $sql  = "SELECT oth.other_id, oth.other_ip_address, oth.other_network_name, oth.other_mac_address, port.nmap_port_number, port.nmap_port_name ";
+  $sql  = "SELECT oth.other_id, oth.other_ip_address, oth.other_network_name, oth.other_mac_address, port.nmap_port_number, port.nmap_port_proto, port.nmap_port_name, port.nmap_port_version ";
   $sql .= "FROM other oth, nmap_ports port ";
-  $sql .= "WHERE (port.nmap_port_number = '3306' OR port.nmap_port_number = '1433' OR port.nmap_port_number = '1521' OR port.nmap_port_number = '523') AND (port.nmap_other_id = oth.other_mac_address OR port.nmap_other_id = oth.other_id) ";
+  $sql .= "WHERE (port.nmap_port_number = '3306' OR port.nmap_port_number = '1433' OR port.nmap_port_number = '1521' OR port.nmap_port_number = '523') AND port.nmap_port_proto = 'tcp' AND (port.nmap_other_id = oth.other_mac_address OR port.nmap_other_id = oth.other_id) ";
   $sql .= "ORDER BY oth.other_network_name";
   $result = mysql_query($sql, $db);
   if ($myrow = mysql_fetch_array($result)){
@@ -1421,7 +1448,8 @@ if ($show_detected_servers == "y"){
          <td><b>".__("IP Address")."</b></td>
          <td><b>".__("Hostname")."</b></td>
          <td><b>".__("TCP Port")."</b></td>
-         <td><b>".__("Port Name")."</b></td>
+         <td><b>".__("Service")."</b></td>
+         <td><b>".__("Version")."</b></td>
        </tr>\n";
 
     do {
@@ -1434,6 +1462,7 @@ if ($show_detected_servers == "y"){
            <td ><a href=\"system.php?other=" . $myrow["other_id"] . "&amp;view=other_system\">" . $myrow["other_network_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
            <td>" . $myrow["nmap_port_number"] . "&nbsp;</td>
            <td>" . $myrow["nmap_port_name"] . "&nbsp;</td>
+           <td>" . $myrow["nmap_port_version"] . "&nbsp;</td>
          </tr>\n";
 
     } while ($myrow = mysql_fetch_array($result));

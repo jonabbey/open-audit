@@ -114,7 +114,11 @@ ENGINE = MYISAM;";
 
 upgrade ($version,"07.10.25", $sql);
 
-
+$sql = "ALTER TABLE `nmap_ports` ADD COLUMN `nmap_port_proto` varchar(10) NOT NULL default '' AFTER `nmap_port_number`, 
+                                 ADD COLUMN `nmap_port_version` varchar(100) NOT NULL default '' AFTER `nmap_port_name`, 
+                                 ADD KEY `id3` (`nmap_port_proto`);";
+ 
+upgrade ($version,"07.11.15", $sql);
 
 
 ?>

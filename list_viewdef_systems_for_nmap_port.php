@@ -1,9 +1,9 @@
 <?php
 
-    $query_array=array("headline"=>__("List Nmap discovered systems with TCP port"),
+    $query_array=array("headline"=>__("List systems running Nmap discovered service '".$_REQUEST["headline_addition2"]."' (version '".$_REQUEST["headline_addition3"]."') on ".strtoupper($_REQUEST["headline_addition1"])." port"),
                        "sql"=>"SELECT system_uuid, net_ip_address, system_name, system_os_name, system_system_type
                                       FROM system, nmap_ports
-                                      WHERE nmap_port_number = '".$_REQUEST["name"]."' AND nmap_other_id = system_uuid",
+                                      WHERE nmap_port_number = '".$_REQUEST["name"]."' AND nmap_port_proto = '".$_REQUEST["headline_addition1"]."' AND nmap_port_version = '".$_REQUEST["headline_addition3"]."' AND nmap_other_id = system_uuid",
                        "sort"=>"system_name",
                        "dir"=>"ASC",
                        "get"=>array("file"=>"system.php",
