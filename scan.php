@@ -1,4 +1,6 @@
 <?php
+include "include.php";
+
 $tm_start = array_sum(explode(' ', microtime()));
 $whoami =  shell_exec('whoami');
 $minute = date('i');

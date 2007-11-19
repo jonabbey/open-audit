@@ -35,10 +35,9 @@ Const ForAppending = 8
 Set oShell = CreateObject("Wscript.Shell")
 Set oFS = CreateObject("Scripting.FileSystemObject")
 sTemp = oShell.ExpandEnvironmentStrings("%TEMP%")
-sTempFile = sTemp & "\" & oFS.GetTempName
+sTempFile = sTemp & "\" & oFS.GetTempName 
 
-
-sTempFile = "temp.txt"
+sTempFile = sTempFile & "temp.txt"
 nmap = "nmap.exe " 
 if nmap_syn_scan = "y" then
   nmap = nmap & "-sS "
