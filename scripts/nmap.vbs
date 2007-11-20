@@ -13,7 +13,7 @@
 ' Below calls the file audit_include.vbs to setup the variables.
 ExecuteGlobal CreateObject("Scripting.FileSystemObject").OpenTextFile("audit.config").ReadAll 
 
-
+nmap_tmp_cleanup = false
 'nmap_subnet = "192.168.10."            ' The subnet you wish to scan
 'nmap_subnet_formatted = "192.168.010."    ' The subnet padded with 0's
 'nmap_ie_form_page = "http://192.168.10.28/oa/admin_nmap_input.php"
@@ -34,25 +34,6 @@ Const ForAppending = 8
 
 Set oShell = CreateObject("Wscript.Shell")
 Set oFS = CreateObject("Scripting.FileSystemObject")
-dim dt : dt = Now()
-timestamp = Year(dt) & Right("0" & Month(dt),2) & Right("0" & Day(dt),2) & Right("0" & Hour(dt),2) & Right("0" & Minute(dt),2) & Right("0" & Second(dt),2)
-sTemp = oShell.ExpandEnvironmentStrings("%TEMP%")
-sTempFile = sTemp & "\" & "nmap_" & timestamp & oFS.GetTempName
-
-
-
-
-nmap = "nmap.exe " 
-if nmap_syn_scan = "y" then
-  nmap = nmap & "-sS "
-end if
-if nmap_udp_scan = "y" then
-  nmap = nmap & "-sU "
-end if
-if nmap_srv_ver_scan = "y" then
-  nmap = nmap & "-sV --version-intensity " & nmap_srv_ver_int & " "
-end if
-nmap = nmap & "-O -v -oN " & sTempFile & " " & nmap_subnet
 
 '''''''''''''''''''''''''''''''''''
 ' Script loop starts here         '
@@ -63,6 +44,27 @@ for ip = nmap_ip_start to nmap_ip_end
   else
     Dim ie
     Dim oDoc
+    '
+    ' Create a valid tmp file.
+    dim dt : dt = Now()
+    timestamp = Year(dt) & Right("0" & Month(dt),2) & Right("0" & Day(dt),2) & Right("0" & Hour(dt),2) & Right("0" & Minute(dt),2) & Right("0" & Second(dt),2)
+    sTemp = oShell.ExpandEnvironmentStrings("%TEMP%")
+    sTempFile = sTemp & "\" & "nmap_" & nmap_subnet  & ip & "_" & timestamp & ".tmp"
+    '
+    'Create a valid nmap.exe string 
+    nmap = "nmap.exe " 
+    if nmap_syn_scan = "y" then
+    nmap = nmap & "-sS "
+    end if
+    if nmap_udp_scan = "y" then
+    nmap = nmap & "-sU "
+    end if
+    if nmap_srv_ver_scan = "y" then
+    nmap = nmap & "-sV --version-intensity " & nmap_srv_ver_int & " "
+    end if
+    nmap = nmap & "-O -v -oN " & sTempFile & " " & nmap_subnet
+    '
+    '
     scan = nmap & ip
     wscript.echo scan
     Set sh=WScript.CreateObject("WScript.Shell")
@@ -94,7 +96,10 @@ for ip = nmap_ip_start to nmap_ip_end
       WScript.sleep(5000)
       ie.Quit
     end if
-
+    ' Cleanup the text file if requested 
+    if nmap_tmp_cleanup = true then
+    objFSO.DeleteFile(sTempFile)
+    end if
   end if ' excluded ip number
 next
 
