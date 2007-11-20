@@ -13,7 +13,7 @@
 ' Below calls the file audit_include.vbs to setup the variables.
 ExecuteGlobal CreateObject("Scripting.FileSystemObject").OpenTextFile("audit.config").ReadAll 
 
-nmap_tmp_cleanup = false
+'nmap_tmp_cleanup = false           ' Set this false if you want to leave the tmp files for analysis in your tmp folder
 'nmap_subnet = "192.168.10."            ' The subnet you wish to scan
 'nmap_subnet_formatted = "192.168.010."    ' The subnet padded with 0's
 'nmap_ie_form_page = "http://192.168.10.28/oa/admin_nmap_input.php"

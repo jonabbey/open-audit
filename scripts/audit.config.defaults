@@ -5,7 +5,7 @@ audit_location = "r"
 verbose = "y" 
 audit_host="http://localhost.local"
 online = "yesxml" 
-strComputer = "" 
+strComputer = "." 
 ie_visible = "n" 
 ie_auto_submit = "y" 
 ie_submit_verbose = "n" 
@@ -28,10 +28,15 @@ uuid_type = "uuid"
 '
 ' Nmap section
 '
+nmap_tmp_cleanup = true           ' Set this false if you want to leave the tmp files for analysis in your tmp folder
 nmap_subnet = "192.168.0."            ' The subnet you wish to scan
 nmap_subnet_formatted = "192.168.000."    ' The subnet padded with 0's
-nmap_ie_form_page = audit_host + "/openaudit/admin_nmap_input.php"
-nmap_ie_visible = "n"
+nmap_ie_form_page = audit_host + "/openaudit/admin_nmap_input.php" 
+nmap_ie_visible = "n"  
 nmap_ie_auto_close = "y"
 nmap_ip_start = 1
 nmap_ip_end = 254
+nmap_syn_scan = "n"      ' Tcp Syn scan
+nmap_udp_scan = "n"      ' UDP scan
+nmap_srv_ver_scan = "n"  ' Service version detection.
+nmap_srv_ver_int = 0     ' Service version detection intensity level. Values 0-9, 0=fast
