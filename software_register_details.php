@@ -112,7 +112,13 @@ if ($myrow = mysql_fetch_array($result)){
 } else {}
 
       $bgcolor = "#F1F1F1";
-      $sql = "select sys.system_uuid, sys.system_os_name, sys.system_description, sys.net_ip_address, sys.system_name, sw.software_name  from software sw, system sys where sw.software_name = '" . addslashes($name) . "' AND sw.software_uuid = sys.system_uuid ORDER BY sys.system_name";
+$sql = "select sys.system_uuid, sys.system_os_name, sys.system_description, sys.net_ip_address, sys.system_name, sw.software_name  from ";
+$sql .= "software sw, system sys where ";
+$sql .= "sw.software_name = '" . addslashes($name) . "' AND ";
+$sql .= "sw.software_uuid = sys.system_uuid AND ";
+$sql .= "software_timestamp = system_timestamp ";
+$sql .= "ORDER BY sys.system_name";      
+      
       $result = mysql_query($sql, $db);
       if ($myrow = mysql_fetch_array($result)){
         echo "<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" class=\"content\">\n";
