@@ -48,16 +48,13 @@ return $div_clean;
   echo "<td colspan=\"3\"><div id=\"ajaxTest\"><br /> </div></td>\n";
   echo "</tr>\n";
 
-#  $sql  = "SELECT count(software_name), software_name FROM software, system WHERE software_name NOT LIKE '%hotfix%' ";
-#  $sql .= "AND software_name NOT LIKE '%Update for Windows%' ";
-#  $sql .= "AND software_timestamp = system_timestamp ";
-#  $sql .= "group by software_name ORDER BY software_name";
-
   $sql = "SELECT count(software_name), software_name FROM software ";
+  $sql .= "INNER JOIN system ON (software_uuid = system_uuid AND ";
+  $sql .= "software_timestamp = system_timestamp ) ";
   $sql .= "LEFT JOIN software_register ON (software.software_name = software_register.software_title) ";
   $sql .= "WHERE software_title IS NULL AND software_name NOT LIKE '%Update for Windows%' ";
   $sql .= "group by software_name ORDER BY software_name";
-
+  
   $result = mysql_query($sql, $db);
   if ($myrow = mysql_fetch_array($result)){
     echo "  <tr>\n";
