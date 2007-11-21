@@ -1700,7 +1700,7 @@ end if 'QPCU
 '''''''''''''''''
 '  AV Settings  '
 '''''''''''''''''
-if (ServicePack = "2" AND SystemBuildNumber = "2600") then
+if ((ServicePack = "2" AND SystemBuildNumber = "2600") OR (SystemBuildNumber = "6000")) then
   Set objWMIService_AV = GetObject("winmgmts:\\" & strComputer & "\root\SecurityCenter")
   comment = "AV - XP sp2 Settings"
   if verbose = "y" then
@@ -2229,10 +2229,10 @@ end if
 
 
 '''''''''''''''''''''''''''
-'XP SP2 Firewall Settings '
+'Windows Firewall Settings '
 '''''''''''''''''''''''''''
-if (ServicePack = "2" AND SystemBuildNumber = "2600") then
-  comment = "Firewall Settings"
+if ((ServicePack = "2" AND SystemBuildNumber = "2600") OR (SystemBuildNumber = "3790" AND ServicePack = "1" OR ServicePack = "2") OR (SystemBuildNumber = "6000")) then
+  comment = "Windows Firewall Settings"
   if verbose = "y" then
     wscript.echo comment
   end if
