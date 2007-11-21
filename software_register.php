@@ -40,7 +40,7 @@ if ($myrow = mysql_fetch_array($result)){
   do {    $sql2  = "SELECT sum(license_purchase_number) as number_purchased FROM ";
     $sql2 .= "software_licenses, software_register WHERE ";
     $sql2 .= "license_software_id = software_reg_id AND ";
-    $sql2 .= "software_title = '" . $myrow['software_title'] . "'";
+    $sql2 .= "software_reg_id = '" . $myrow['software_reg_id'] . "'";
     $result2 = mysql_query($sql2, $db);
     $myrow2 = mysql_fetch_array($result2);
     
