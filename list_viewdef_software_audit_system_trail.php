@@ -3,11 +3,11 @@
 $query_array=array("headline"=>array("name"=>__("Audit-Trail for Software"),
                                      "sql"=>"SELECT `system_name` FROM `system` WHERE `system_uuid` = '" . $_REQUEST["pc"] . "'",
                                      ),
-                   "sql"=>"
-                          SELECT software_name, software_version, software_first_timestamp, system_name, system_uuid, net_ip_address
-                          FROM software, system
-                          WHERE software_name NOT LIKE '%Hotfix%' AND software_name NOT LIKE '%Update%' AND software_uuid = system_uuid AND software_uuid = '".$_REQUEST["pc"]."' AND software_timestamp = system_timestamp
-                          ",
+                       "sql"=>"
+                              SELECT software_name, software_version, software_first_timestamp, system_name, system_uuid, net_ip_address
+                              FROM software, system
+                              WHERE software_uuid = system_uuid AND software_uuid = '".$_REQUEST["pc"]."' AND software_timestamp = system_timestamp
+                              ",
                    "sort"=>"software_first_timestamp",
                    "dir"=>"DESC",
                    "get"=>array("file"=>"list.php",

@@ -304,16 +304,16 @@ if ($show_partition_usage == "y") {
 
 } else {}
 
-if ($show_software_detected == "y"){
-  $sql  = "SELECT sw.software_name, sw.software_first_timestamp, sys.system_name, sys.system_uuid, sys.net_ip_address ";
-  $sql .= "FROM software sw, system sys ";
-  $sql .= "WHERE sw.software_first_timestamp >= '" . adjustdate(0,0,-$days_software_detected) . "000000' ";
-  //$sql .= "WHERE software_first_timestamp >= '" . adjustdate(0,0,-$days_software_detected) . "000000' ";
-  $sql .= "AND sys.system_first_timestamp < '" . adjustdate(0,0,-$days_software_detected) . "000000' ";
-  $sql .= "AND sw.software_name NOT LIKE '%Hotfix%' AND sw.software_name NOT LIKE '%Update%' AND ";
-  $sql .= "sw.software_timestamp = sys.system_timestamp AND ";
-  $sql .= "sw.software_uuid = sys.system_uuid ";
-  $sql .= "ORDER BY sw.software_name";
+  if ($show_software_detected == "y"){
+      $sql  = "SELECT sw.software_name, sw.software_first_timestamp, sys.system_name, sys.system_uuid, sys.net_ip_address ";
+      $sql .= "FROM software sw, system sys ";
+      $sql .= "WHERE sw.software_first_timestamp >= '" . adjustdate(0,0,-$days_software_detected) . "000000' ";
+      //$sql .= "WHERE software_first_timestamp >= '" . adjustdate(0,0,-$days_software_detected) . "000000' ";
+      $sql .= "AND sys.system_first_timestamp < '" . adjustdate(0,0,-$days_software_detected) . "000000' ";
+      $sql .= "AND sw.software_name NOT LIKE '%Hotfix%' AND sw.software_name NOT LIKE '%Update%' AND software_name NOT REGEXP '[KB|Q][0-9]{6,}' ";
+      $sql .= "AND sw.software_timestamp = sys.system_timestamp ";
+      $sql .= "AND sw.software_uuid = sys.system_uuid ";
+      $sql .= "ORDER BY sw.software_name";
   $result = mysql_query($sql, $db);
   $bgcolor = "#FFFFFF";
 

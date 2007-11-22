@@ -1,7 +1,6 @@
 <?php
-
 $query_array=array("headline"=>__("List all Software"),
-                   "sql"=>"SELECT count(software_name) AS software_count, software_name, software_version, software_publisher, software_url FROM software, system where software_name NOT LIKE '%hotfix%' AND software_name NOT LIKE '%update%' AND software_name NOT LIKE '%Service Pack%' AND software_uuid = system_uuid AND software_timestamp = system_timestamp GROUP BY software_name, software_version ",
+                   "sql"=>"SELECT count(software_name) AS software_count, software_name, software_version, software_publisher, software_url FROM software, system where software_name NOT LIKE '%hotfix%' AND software_name NOT LIKE '%update%' AND software_name NOT LIKE '%Service Pack%' AND software_name NOT REGEXP '[KB|Q][0-9]{6,}' AND software_uuid = system_uuid AND software_timestamp = system_timestamp GROUP BY software_name, software_version ",
                    "sort"=>"software_name",
                    "dir"=>"ASC",
                    "get"=>array("file"=>"list.php",

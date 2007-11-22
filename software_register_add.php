@@ -52,7 +52,7 @@ return $div_clean;
   $sql .= "INNER JOIN system ON (software_uuid = system_uuid AND ";
   $sql .= "software_timestamp = system_timestamp ) ";
   $sql .= "LEFT JOIN software_register ON (software.software_name = software_register.software_title) ";
-  $sql .= "WHERE software_title IS NULL AND software_name NOT LIKE '%Update for Windows%' ";
+  $sql .= "WHERE software_title IS NULL AND software_name NOT LIKE '%hotfix%' AND software_name NOT LIKE '%update%' AND software_name NOT LIKE '%Service Pack%' AND software_name NOT REGEXP '[KB|Q][0-9]{6,}' ";
   $sql .= "group by software_name ORDER BY software_name";
   
   $result = mysql_query($sql, $db);

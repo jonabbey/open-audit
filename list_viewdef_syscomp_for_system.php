@@ -3,7 +3,7 @@
 $query_array=array("headline"=>array("name"=>__("System Components"),
                                      "sql"=>"SELECT `system_name` FROM `system` WHERE `system_uuid` = '" . $_REQUEST["pc"] . "'",
                                      ),
-                   "sql"=>"SELECT software_name, software_version, software_url, software_publisher FROM software, system WHERE software_uuid = '".$_REQUEST["pc"]."' AND software_uuid = system_uuid AND software_timestamp = system_timestamp AND software_name NOT LIKE '%codec%' AND software_name NOT LIKE '%hotfix%' AND software_name NOT LIKE '%update%' AND software_name NOT LIKE '%Service Pack%' AND software_system_component <> '1' ",
+                   "sql"=>"SELECT software_name, software_version, software_url, software_publisher FROM software, system WHERE software_uuid = '".$_REQUEST["pc"]."' AND software_uuid = system_uuid AND software_timestamp = system_timestamp AND software_name NOT LIKE '%codec%' AND software_name NOT LIKE '%hotfix%' AND software_name NOT LIKE '%update%' AND software_name NOT LIKE '%Service Pack%' AND software_name NOT REGEXP '[KB|Q][0-9]{6,}' AND software_system_component <> '1' ",
                    "sort"=>"software_name",
                    "dir"=>"ASC",
                    "get"=>array("file"=>"list.php",
