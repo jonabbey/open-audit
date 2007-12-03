@@ -1,5 +1,4 @@
 <?php
-
 $GLOBALS["lang"]["Home"]="Startseite";
 $GLOBALS["lang"]["Queries"]="Berichte";
 $GLOBALS["lang"]["All Audited Systems"]="Alle überprüfte Systeme";
@@ -190,7 +189,7 @@ $GLOBALS["lang"]["Language"]="Sprache";
 $GLOBALS["lang"]["Server"]="Server";
 $GLOBALS["lang"]["Password"]="Kennwort";
 $GLOBALS["lang"]["Database"]="Datenbank";
-$GLOBALS["lang"]["Use https://"]="Benutze https://";
+$GLOBALS["lang"]["Use https:"]="Benutze https:";
 $GLOBALS["lang"]["Use Passwords"]="Benutze Passwörter";
 $GLOBALS["lang"]["Username"]="Benutzername";
 $GLOBALS["lang"]["Display 'Other Items Discovered in the last' on homepage"]="Zeige 'Zuletzt entdeckte andere Geräte' auf der Homepage an";
@@ -400,7 +399,7 @@ $GLOBALS["lang"]["If no command line arguement is given, audit.vbs audits the lo
 $GLOBALS["lang"]["Do you wish to audit the domain ?"]="Möchten sie die Domain überprüfen ?";
 $GLOBALS["lang"]["What is the name of the AD-Domain ?"]="Wie ist der Name der AD-Domain ?";
 $GLOBALS["lang"]["What is the name of the text file for non-domain PCs (if any) ?"]="Wie ist der Name der Textdatei für Non-Domain PCs (alls vorhanden) ?";
-$GLOBALS["lang"]["Make sure to remove this if you don't use it."]="Stellen Sie sicher das die entfernt wird, falls Sie das nicht benutzen.";
+$GLOBALS["lang"]["Make sure to remove this if you dont use it."]="Stellen Sie sicher das die entfernt wird, falls Sie das nicht benutzen.";
 $GLOBALS["lang"]["A sample is in pc_list_file.txt in the scripts directory"]="Ein Beispiel ist in der pc_list_file.txt in dem scripts Verzeichnis";
 $GLOBALS["lang"]["How many simultaneous audits do you wish to run ?"]="Wie viele simultane Prüfungen möchten Sie starten?";
 $GLOBALS["lang"]["When you run a domain audit, or use a pc list text file."]="Wenn Sie eine Domainprüfung starten, oder eine PC-liste Textdatei benutzen.";
@@ -419,8 +418,8 @@ $GLOBALS["lang"]["is not writable"]="ist nicht beschreibbar";
 $GLOBALS["lang"]["Now make sure you go and download the following:"]="Jetzt stellen Sie sicher das Sie folgendes runterladen:";
 $GLOBALS["lang"]["Extract hfnetchk.exe and put it in your scripts directory."]="Extrahieren Sie hfnetchk.exe und packen Sie die Datei in Ihren Scripts Verzeichnis.";
 $GLOBALS["lang"]["Extract MSSecure.XML from mssecure.cab, and put it in your scripts directory."]="Extrahieren Sie MSSecure.XML von mssecure.cab, und packen Sie die Datei in Ihren Scripts Verzeichnis.";
-$GLOBALS["lang"]["Extract the pstools .exe's and put them in your web root."]="Extrahieren Sie die pstools .exe's und packen Sie diese in Ihren Web root.";
-$GLOBALS["lang"]["Install NMap, and make sure it's in your command path."]="Installieren Sie NMap, und stellen Sie sicher das diese in Ihren Commandpfad ist.";
+$GLOBALS["lang"]["Extract the pstools .exes and put them in your web root."]="Extrahieren Sie die pstools .exes und packen Sie diese in Ihren Web root.";
+$GLOBALS["lang"]["Install NMap, and make sure its in your command path."]="Installieren Sie NMap, und stellen Sie sicher das diese in Ihren Commandpfad ist.";
 $GLOBALS["lang"]["Install WinPcap (for NMap to use)"]="Installiere WinPcap (für NMap zu benutzen)";
 $GLOBALS["lang"]["START AUDITING !!!"]="START ÜBERPRÜFUNG !!!";
 $GLOBALS["lang"]["Add a PC"]="PC hinzufügen";
@@ -535,5 +534,4 @@ $GLOBALS["lang"]["usncreated"]="Update-Sequenz-Nummer erstellt";
 $GLOBALS["lang"]["whenchanged"]="Wann verändert";   
 $GLOBALS["lang"]["whencreated"]="Wann erstellt ";   
 $GLOBALS["lang"]["memberof"]="Mitglied der Gruppe";
-
-?> 
+?>
