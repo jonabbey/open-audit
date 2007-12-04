@@ -1225,49 +1225,75 @@ For Each objItem in colItems
    end if
 Next
 
-'''''''''''''''''''''''''''
-'   Partition Information '
-'''''''''''''''''''''''''''
-comment = "Partition Info"
-if verbose = "y" then
-   wscript.echo comment
-end if
+    '''''''''''''''''''''''''''
+    '   Partition Information '
+    '''''''''''''''''''''''''''
+    comment = "Partition Info"
+    if verbose = "y" then
+       wscript.echo comment
+    end if
 
+    ' Get the LogicalDisk's Path
+    strQueryFields = "DeviceID,Caption,FileSystem,FreeSpace,Size,VolumeName"
+    Set objEnumLogicalDisk = objWMIService.ExecQuery _
+      ("Select " & strQueryFields & " from Win32_LogicalDisk where DriveType = 3", "WQL", 0)
+    ' Get the DiskPartition's path
+    strQueryFields = "Bootable,BootPartition,DeviceID,DiskIndex,Index,PrimaryPartition"
+    Set objEnumDiskPartition = objWMIService.ExecQuery _
+      ("Select " & strQueryFields & " from Win32_DiskPartition", "WQL", 0)
 
-   On Error Resume Next
-   Set colItems = objWMIService.ExecQuery("Select * from Win32_DiskPartition WHERE DriveType=3",,48)
-   For Each objItem in colItems 
-     partition_bootable = objItem.Bootable
-     if ((partition_bootable <> "True") OR isnull(partition_bootable)) then partition_bootable = "False" end if
-     partition_boot_partition = objItem.BootPartition
-     if ((partition_boot_partition <> "True") OR isnull(partition_boot_partition)) then partition_boot_partition = "False" end if
-     partition_device_id = objItem.DeviceID
-     partition_disk_index = objItem.DiskIndex
-     partition_index = objItem.Index
-     partition_primary_partition = objItem.PrimaryPartition
-   Next
-   On Error Resume Next
-   Set colItems = objWMIService.ExecQuery("Select * from Win32_LogicalDisk WHERE DriveType=3",,48)
-   For Each objItem in colItems 
-     partition_caption = objItem.Caption
-     partition_file_system = objItem.FileSystem
-     partition_free_space = 0
-     partition_free_space = int(objItem.FreeSpace /1024 /1024)
-     partition_size = 0
-     partition_size = int(objItem.Size /1024 /1024)
-     partition_volume_name = objItem.VolumeName
-     partition_percent = 0
-     partition_percent = round(((partition_size - partition_free_space) / partition_size) * 100 ,0)
+    For Each objItem in objEnumLogicalDisk
+      partition_caption = objItem.Caption
+      partition_file_system = objItem.FileSystem
+      partition_free_space = 0
+      partition_free_space = int(objItem.FreeSpace /1024 /1024)
+      partition_size = 0
+      partition_size = int(objItem.Size /1024 /1024)
+      partition_volume_name = objItem.VolumeName
+      partition_percent = 0
+      partition_percent = round(((partition_size - partition_free_space) / partition_size) * 100 ,0)
+     
+    ' Associate with Device_ID in Win32_DiskPartition using objLogicalDiskToPartition
 
-   form_input = "partition^^^" & partition_bootable & "^^^"  & partition_boot_partition            & "^^^" _
-                               & partition_device_id         & "^^^" & partition_disk_index        & "^^^" _
-                               & partition_percent           & "^^^" & partition_primary_partition & "^^^" _
-                               & partition_caption           & "^^^" & partition_file_system       & "^^^" _
-                               & partition_free_space        & "^^^" & partition_size              & "^^^" _
-                               & partition_volume_name       & "^^^"
-   entry form_input,comment,objTextFile,oAdd,oComment
-   form_input = ""
-Next
+      For Each objDiskPartition in objEnumDiskPartition
+        ' This is expected to fail once in a while since we are
+        ' concatonating a possible path to avoid hitting the floppy
+        On Error Resume Next
+        ' Associate the two sets
+        Set objLogicalDiskToPartition = objWMIService.Get _
+         (Fixpath(objItem.Path_.relpath,objDiskPartition.path_.relpath), 0)
+        If Err.Number = 0 Then
+        partition_bootable = objDiskPartition.Bootable
+        if isnull(partition_bootable) then partition_bootable = "False" end if
+        partition_boot_partition = objDiskPartition.BootPartition
+         if isnull(partition_boot_partition) then partition_boot_partition = "False" end if
+          partition_device_id = objDiskPartition.DeviceID
+          partition_disk_index = objDiskPartition.DiskIndex
+          partition_index = objDiskPartition.Index
+          partition_primary_partition = objDiskPartition.PrimaryPartition
+          'wscript.echo objLogicalDiskToPartition.path_.relpath
+          splitpath = split(objLogicalDiskToPartition.path_.relpath,"=")
+          LogicalDisk_DeviceID = ""
+          'LogicalDisk_DeviceID = splitpath(ubound(splitpath))
+          LogicalDisk_DeviceID = splitpath(2)
+          LogicalDisk_DeviceID = replace(LogicalDisk_DeviceID,"\","")
+          LogicalDisk_DeviceID = replace(LogicalDisk_DeviceID,"""","")
+          wscript.echo LogicalDisk_DeviceID & VBCRLF
+        Else
+          Err.Clear
+        End If
+        On Error Goto 0:
+      ' END Associate with Device_ID in Win32_DiskPartition using objLogicalDiskToPartition
+      Next
+      form_input = "partition^^^" & partition_bootable & "^^^"  & partition_boot_partition            & "^^^" _
+      & partition_device_id         & "^^^" & partition_disk_index        & "^^^" _
+      & partition_index             & "^^^" & partition_percent           & "^^^" _
+      & partition_primary_partition & "^^^" & partition_caption           & "^^^" _
+      & partition_file_system       & "^^^" & partition_free_space        & "^^^" _
+      & partition_size              & "^^^" & partition_volume_name       & "^^^"
+      entry form_input,comment,objTextFile,oAdd,oComment
+      form_input = ""
+    Next
 
 '''''''''''''''''''''''''''''''''
 '   SCSI Cards                  '
@@ -3657,4 +3683,10 @@ Function urlEncode(sString)
 
 End Function
 
+Function FixPath(ByRef sPathDisk, ByRef sPathPart)
+  Fixpath = "Win32_LogicalDiskToPartition.Antecedent=" & chr(34) & _
+    Replace(sPathPart,chr(34), "\" & chr(34)) & chr(34) & "," & _
+    "Dependent=" & chr(34) & Replace(sPathDisk,chr(34), "\" & _
+    chr(34)) & chr(34)
+End Function
 

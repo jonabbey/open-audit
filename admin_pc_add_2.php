@@ -817,65 +817,66 @@ function insert_harddrive ($split){
 
 
 function insert_partition ($split){
-    global $timestamp, $uuid, $verbose, $partition_timestamp;
-    if ($verbose == "y"){echo "<h2>Partition</h2><br />";}
-    $extended                    = explode('^^^',$split);
-    $partition_bootable          = trim($extended[1]);
-    $partition_boot_partition    = trim($extended[2]);
-    $partition_device_id         = trim($extended[3]);
-    $partition_disk_index        = trim($extended[4]);
-    $partition_percent           = trim($extended[5]);
-    $partition_primary_partition = trim($extended[6]);
-    $partition_caption           = trim($extended[7]);
-    $partition_file_system       = trim($extended[8]);
-    $partition_free_space        = trim($extended[9]);
-    $partition_size              = trim($extended[10]);
-    $partition_volume_name       = trim($extended[11]);
-    if (is_null($partition_timestamp)){
-      $sql = "SELECT MAX(partition_timestamp) FROM partition WHERE partition_uuid = '$uuid'";
-      if ($verbose == "y"){echo $sql . "<br />\n\n";}
-      $result = mysql_query($sql) or die ('Insert Failed: ' . mysql_error() . '<br />' . $sql);
-      $myrow = mysql_fetch_array($result);
-      if ($myrow["MAX(partition_timestamp)"]) {$partition_timestamp = $myrow["MAX(partition_timestamp)"];} else {$partition_timestamp = "";}
-    } else {}
-    $sql  = "SELECT count(partition_uuid) AS count FROM partition WHERE partition_uuid = '$uuid' AND partition_bootable = '$partition_bootable' AND ";
-    $sql .= "partition_boot_partition = '$partition_boot_partition' AND partition_device_id = '$partition_device_id' AND ";
-    $sql .= "partition_disk_index = '$partition_disk_index' AND ";
-    $sql .= "partition_primary_partition = '$partition_primary_partition' AND partition_caption = '$partition_caption' AND ";
-    $sql .= "partition_file_system = '$partition_file_system' AND partition_size = '$partition_size' AND ";
-    $sql .= "partition_volume_name = '$partition_volume_name' AND (partition_timestamp = '$partition_timestamp' OR partition_timestamp = '$timestamp')";
-    if ($verbose == "y"){echo $sql . "<br />\n\n";}
-    $result = mysql_query($sql) or die ('Insert Failed: ' . mysql_error() . '<br />' . $sql);
-    $myrow = mysql_fetch_array($result);
-    if ($verbose == "y"){echo "Count: " . $myrow['count'] . "<br />\n\n";}
-    if ($myrow['count'] == "0"){
-      // Insert into database
-      $sql  = "INSERT INTO partition (partition_uuid, partition_bootable, partition_boot_partition, ";
-      $sql .= "partition_device_id, partition_disk_index, ";
-      $sql .= "partition_primary_partition, partition_caption, partition_file_system, ";
-      $sql .= "partition_free_space, partition_size, partition_volume_name, ";
-      $sql .= "partition_timestamp, partition_first_timestamp) VALUES (";
-      $sql .= "'$uuid', '$partition_bootable', '$partition_boot_partition', ";
-      $sql .= "'$partition_device_id', '$partition_disk_index', ";
-      $sql .= "'$partition_primary_partition', '$partition_caption', '$partition_file_system', ";
-      $sql .= "'$partition_free_space', '$partition_size', '$partition_volume_name', ";
-      $sql .= "'$timestamp', '$timestamp')";
-      if ($verbose == "y"){echo $sql . "<br />\n\n";}
-      $result = mysql_query($sql) or die ('Insert Failed: ' . mysql_error() . '<br />' . $sql);
-    } else {
-      // Already present in database - update timestamp & freespace
-      $sql  = "UPDATE partition SET partition_timestamp = '$timestamp', ";
-      $sql .= "partition_free_space = '$partition_free_space' ";
-      $sql .= "WHERE partition_device_id = '$partition_device_id ' AND partition_uuid = '$uuid' AND partition_timestamp = '$partition_timestamp'";
-      if ($verbose == "y"){echo $sql . "<br />\n\n";}
-      $result = mysql_query($sql) or die ('Insert Failed: ' . mysql_error() . '<br />' . $sql);
-    }
-    $sql  = "INSERT INTO graphs_disk (disk_uuid, disk_timestamp, disk_letter, disk_percent) VALUES (";
-    $sql .= "'$uuid', '$timestamp', '$partition_caption', '$partition_percent')";
-    if ($verbose == "y"){echo "<br />" . $sql . "<br />\n\n";}
-    $result = mysql_query($sql) or die ('Insert Failed: ' . mysql_error() . '<br />' . $sql);
-  }
-
+        global $timestamp, $uuid, $verbose, $partition_timestamp;
+        if ($verbose == "y"){echo "<h2>Partition</h2><br />";}
+        $extended                    = explode('^^^',$split);
+        $partition_bootable          = trim($extended[1]);
+        $partition_boot_partition    = trim($extended[2]);
+        $partition_device_id         = trim($extended[3]);
+        $partition_disk_index        = trim($extended[4]);
+        $partition_index             = trim($extended[5]);
+        $partition_percent           = trim($extended[6]);
+        $partition_primary_partition = trim($extended[7]);
+        $partition_caption           = trim($extended[8]);
+        $partition_file_system       = trim($extended[9]);
+        $partition_free_space        = trim($extended[10]);
+        $partition_size              = trim($extended[11]);
+        $partition_volume_name       = trim($extended[12]);
+        if (is_null($partition_timestamp)){
+          $sql = "SELECT MAX(partition_timestamp) FROM partition WHERE partition_uuid = '$uuid'";
+          if ($verbose == "y"){echo $sql . "<br />\n\n";}
+          $result = mysql_query($sql) or die ('Insert Failed: ' . mysql_error() . '<br />' . $sql);
+          $myrow = mysql_fetch_array($result);
+          if ($myrow["MAX(partition_timestamp)"]) {$partition_timestamp = $myrow["MAX(partition_timestamp)"];} else {$partition_timestamp = "";}
+        } else {}
+        $sql  = "SELECT count(partition_uuid) AS count FROM partition WHERE partition_uuid = '$uuid' AND ";
+        $sql .= "partition_caption = '$partition_caption' AND partition_file_system = '$partition_file_system' AND ";
+        $sql .= "partition_size = '$partition_size' AND partition_volume_name = '$partition_volume_name' AND ";
+        $sql .= "(partition_timestamp = '$partition_timestamp' OR partition_timestamp = '$timestamp')";
+        if ($verbose == "y"){echo $sql . "<br />\n\n";}
+        $result = mysql_query($sql) or die ('Insert Failed: ' . mysql_error() . '<br />' . $sql);
+        $myrow = mysql_fetch_array($result);
+        if ($verbose == "y"){echo "Count: " . $myrow['count'] . "<br />\n\n";}
+        if ($myrow['count'] == "0"){
+          // Insert into database
+          $sql  = "INSERT INTO partition (partition_uuid, partition_bootable, partition_boot_partition, ";
+          $sql .= "partition_device_id, partition_disk_index, partition_index, ";
+          $sql .= "partition_primary_partition, partition_caption, partition_file_system, ";
+          $sql .= "partition_free_space, partition_size, partition_volume_name, ";
+          $sql .= "partition_timestamp, partition_first_timestamp) VALUES (";
+          $sql .= "'$uuid', '$partition_bootable', '$partition_boot_partition', ";
+          $sql .= "'$partition_device_id', '$partition_disk_index', '$partition_index', ";
+          $sql .= "'$partition_primary_partition', '$partition_caption', '$partition_file_system', ";
+          $sql .= "'$partition_free_space', '$partition_size', '$partition_volume_name', ";
+          $sql .= "'$timestamp', '$timestamp')";
+          if ($verbose == "y"){echo $sql . "<br />\n\n";}
+          $result = mysql_query($sql) or die ('Insert Failed: ' . mysql_error() . '<br />' . $sql);
+        } else {
+          // Already present in database - update timestamp & freespace & Win32_DiskPartition info
+          $sql  = "UPDATE partition SET partition_timestamp = '$timestamp', partition_bootable = '$partition_bootable', ";
+          $sql .= "partition_boot_partition = '$partition_boot_partition', partition_device_id = '$partition_device_id', ";
+          $sql .= "partition_disk_index = '$partition_disk_index', partition_index = '$partition_index', ";
+          $sql .= "partition_primary_partition = '$partition_primary_partition', ";
+          $sql .= "partition_free_space = '$partition_free_space' WHERE partition_caption = '$partition_caption' AND ";
+          $sql .= "partition_uuid = '$uuid' AND partition_timestamp = '$partition_timestamp'";
+          if ($verbose == "y"){echo $sql . "<br />\n\n";}
+          $result = mysql_query($sql) or die ('Insert Failed: ' . mysql_error() . '<br />' . $sql);
+        }
+        $sql  = "INSERT INTO graphs_disk (disk_uuid, disk_timestamp, disk_letter, disk_percent) VALUES (";
+        $sql .= "'$uuid', '$timestamp', '$partition_caption', '$partition_percent')";
+        if ($verbose == "y"){echo "<br />" . $sql . "<br />\n\n";}
+        $result = mysql_query($sql) or die ('Insert Failed: ' . mysql_error() . '<br />' . $sql);
+}
 
 function insert_scsi_controller ($split) {
     global $timestamp, $uuid, $verbose, $scsi_controller_timestamp;
