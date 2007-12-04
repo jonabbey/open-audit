@@ -133,9 +133,21 @@ end if
 '  have the script ask for a PC    '
 '  to audit (name or IP)           '
 ''''''''''''''''''''''''''''''''''''
-'strAnswer = InputBox("PC to run audit on:", "Audit Script")
-'Wscript.Echo "Input PC Name: " & strAnswer
-'strComputer = strAnswer
+strAnswer = InputBox("PC to run audit on:", "Audit Script")
+Wscript.Echo "Input PC Name: " & strAnswer
+strComputer = strAnswer
+
+strAnswer = InputBox("PC User:", "Audit Script")
+Wscript.Echo "Input PC User Name: " & strAnswer
+strUser = strAnswer
+
+strAnswer = InputBox("PC User Password:", "Audit Script")
+Wscript.Echo "Input Password: " & strAnswer
+strPass = strAnswer
+
+
+
+
 
 ''''''''''''''''''''''''''''''''''''
 ' Check that softwarefiles.xml     '
@@ -1224,7 +1236,6 @@ For Each objItem in colItems
      oIE.document.WriteLn "<tr><td>Hard Drive Partitions: </td><td>" & clean(objItem.Partitions) & "</td></tr>"
    end if
 Next
-
     '''''''''''''''''''''''''''
     '   Partition Information '
     '''''''''''''''''''''''''''
@@ -1263,10 +1274,10 @@ Next
         Set objLogicalDiskToPartition = objWMIService.Get _
          (Fixpath(objItem.Path_.relpath,objDiskPartition.path_.relpath), 0)
         If Err.Number = 0 Then
-        partition_bootable = objDiskPartition.Bootable
-        if isnull(partition_bootable) then partition_bootable = "False" end if
-        partition_boot_partition = objDiskPartition.BootPartition
-         if isnull(partition_boot_partition) then partition_boot_partition = "False" end if
+          partition_bootable = objDiskPartition.Bootable
+          if isnull(partition_bootable) then partition_bootable = "False" end if
+          partition_boot_partition = objDiskPartition.BootPartition
+          if isnull(partition_boot_partition) then partition_boot_partition = "False" end if
           partition_device_id = objDiskPartition.DeviceID
           partition_disk_index = objDiskPartition.DiskIndex
           partition_index = objDiskPartition.Index
@@ -1278,7 +1289,7 @@ Next
           LogicalDisk_DeviceID = splitpath(2)
           LogicalDisk_DeviceID = replace(LogicalDisk_DeviceID,"\","")
           LogicalDisk_DeviceID = replace(LogicalDisk_DeviceID,"""","")
-          wscript.echo LogicalDisk_DeviceID & VBCRLF
+          'wscript.echo LogicalDisk_DeviceID & VBCRLF
         Else
           Err.Clear
         End If
