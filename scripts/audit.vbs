@@ -129,21 +129,21 @@ end if
 
 
 ''''''''''''''''''''''''''''''''''''
-' Uncomment the 3 lines below to   '
+' Uncomment the 3 sections below to   '
 '  have the script ask for a PC    '
 '  to audit (name or IP)           '
 ''''''''''''''''''''''''''''''''''''
-strAnswer = InputBox("PC to run audit on:", "Audit Script")
-Wscript.Echo "Input PC Name: " & strAnswer
-strComputer = strAnswer
+'strAnswer = InputBox("PC to run audit on:", "Audit Script")
+'Wscript.Echo "Input PC Name: " & strAnswer
+'strComputer = strAnswer
 
-strAnswer = InputBox("PC User:", "Audit Script")
-Wscript.Echo "Input PC User Name: " & strAnswer
-strUser = strAnswer
+'strAnswer = InputBox("PC User:", "Audit Script")
+'Wscript.Echo "Input PC User Name: " & strAnswer
+'strUser = strAnswer
 
-strAnswer = InputBox("PC User Password:", "Audit Script")
-Wscript.Echo "Input Password: " & strAnswer
-strPass = strAnswer
+'strAnswer = InputBox("PC User Password:", "Audit Script")
+'Wscript.Echo "Input Password: " & strAnswer
+'strPass = strAnswer
 
 
 
