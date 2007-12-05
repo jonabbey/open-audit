@@ -6,7 +6,7 @@ $query_array=array("name"=>array("name"=>__("Summary"),
                    "views"=>array("summary"=>array(
                                                     "headline"=>__("System"),
                                                     "sql"=>"SELECT * FROM system
-                                                            LEFT JOIN network_card ON (system_uuid=net_uuid AND system_timestamp=net_timestamp)
+                                                            LEFT JOIN network_card ON (system_uuid=net_uuid AND system_timestamp=net_timestamp AND system.net_ip_address = network_card.net_ip_address)
                                                             WHERE system_uuid = '" . $_REQUEST["pc"] . "' AND  system_timestamp = '".$GLOBAL["system_timestamp"]."'
                                                             LIMIT 0,1",
                                                     "image"=>"images/os_l.png",

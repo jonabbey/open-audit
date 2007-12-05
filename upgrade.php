@@ -120,6 +120,37 @@ $sql = "ALTER TABLE `nmap_ports` ADD COLUMN `nmap_port_proto` varchar(10) NOT NU
  
 upgrade ($version,"07.11.15", $sql);
 
+$sql = "ALTER TABLE `network_card` ADD COLUMN `net_ip_enabled` varchar(10) NOT NULL default '' AFTER `net_uuid`,
+                                       ADD COLUMN `net_index` varchar(10) NOT NULL default '' AFTER `net_ip_enabled`,
+                                       ADD COLUMN `net_service_name` varchar(30) NOT NULL default '' AFTER `net_index`,
+                                       ADD COLUMN `net_dhcp_lease_obtained` varchar(14) NOT NULL default '' AFTER `net_dhcp_server`,
+                                       ADD COLUMN `net_dhcp_lease_expires` varchar(14) NOT NULL default '' AFTER `net_dhcp_lease_obtained`,
+                                       ADD COLUMN `net_dns_server_3` varchar(30) NOT NULL default '' AFTER `net_dns_server_2`,
+                                       ADD COLUMN `net_dns_domain` varchar(100) NOT NULL default '' AFTER `net_dns_server_3`,
+                                       ADD COLUMN `net_dns_domain_suffix` varchar(100) NOT NULL default '' AFTER `net_dns_domain`,
+                                       ADD COLUMN `net_dns_domain_suffix_2` varchar(100) NOT NULL default '' AFTER `net_dns_domain_suffix`,
+                                       ADD COLUMN `net_dns_domain_suffix_3` varchar(100) NOT NULL default '' AFTER `net_dns_domain_suffix_2`,
+                                       ADD COLUMN `net_dns_domain_reg_enabled` varchar(10) NOT NULL default '' AFTER `net_dns_domain_suffix_3`,
+                                       ADD COLUMN `net_dns_domain_full_reg_enabled` varchar(10) NOT NULL default '' AFTER `net_dns_domain_reg_enabled`,
+                                       ADD COLUMN `net_ip_address_2` varchar(30) NOT NULL default '' AFTER `net_ip_subnet`,
+                                       ADD COLUMN `net_ip_subnet_2` varchar(30) NOT NULL default '' AFTER `net_ip_address_2`,
+                                       ADD COLUMN `net_ip_address_3` varchar(30) NOT NULL default '' AFTER `net_ip_subnet_2`,
+                                       ADD COLUMN `net_ip_subnet_3` varchar(30) NOT NULL default '' AFTER `net_ip_address_3`,
+                                       ADD COLUMN `net_wins_lmhosts_enabled` varchar(10) NOT NULL default '' AFTER `net_wins_secondary`,
+                                       ADD COLUMN `net_netbios_options` varchar(10) NOT NULL default '' AFTER `net_wins_lmhosts_enabled`,
+                                       ADD COLUMN `net_connection_id` varchar(255) NOT NULL default '' AFTER `net_manufacturer`,
+                                       ADD COLUMN `net_connection_status` varchar(30) NOT NULL default '' AFTER `net_connection_id`,
+                                       ADD COLUMN `net_speed` varchar(10) NOT NULL default '' AFTER `net_connection_status`,
+                                       ADD COLUMN `net_gateway_metric` varchar(10) NOT NULL default '' AFTER `net_gateway`,
+                                       ADD COLUMN `net_gateway_2` varchar(100) NOT NULL default '' AFTER `net_gateway_metric`,
+                                       ADD COLUMN `net_gateway_metric_2` varchar(10) NOT NULL default '' AFTER `net_gateway_2`,
+                                       ADD COLUMN `net_gateway_3` varchar(100) NOT NULL default '' AFTER `net_gateway_metric_2`,
+                                       ADD COLUMN `net_gateway_metric_3` varchar(10) NOT NULL default '' AFTER `net_gateway_3`,
+                                       ADD COLUMN `net_ip_metric` varchar(10) NOT NULL default '' AFTER `net_gateway_metric_3`;";
+
+upgrade ($version,"07.12.09", $sql);
+
+
 
 ?>
     <br />Upgrade complete.

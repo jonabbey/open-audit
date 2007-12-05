@@ -423,27 +423,54 @@ CREATE TABLE `ms_keys` (
 
 DROP TABLE IF EXISTS `network_card`;
 CREATE TABLE `network_card` (
-  `net_id` int(10) unsigned NOT NULL auto_increment,
-  `net_mac_address` varchar(17) NOT NULL default '',
-  `net_uuid` varchar(100) NOT NULL default '',
-  `net_description` varchar(255) NOT NULL default '',
-  `net_dhcp_enabled` varchar(100) NOT NULL default '',
-  `net_dhcp_server` varchar(30) NOT NULL default '',
-  `net_dns_host_name` varchar(100) NOT NULL default '',
-  `net_dns_server` varchar(30) NOT NULL default '',
-  `net_dns_server_2` varchar(30) NOT NULL default '',
-  `net_ip_address` varchar(30) NOT NULL default '',
-  `net_ip_subnet` varchar(30) NOT NULL default '',
-  `net_wins_primary` varchar(30) NOT NULL default '',
-  `net_wins_secondary` varchar(30) NOT NULL default '',
-  `net_adapter_type` varchar(100) NOT NULL default '',
-  `net_manufacturer` varchar(100) NOT NULL default '',
-  `net_gateway` varchar(100) NOT NULL default '',
-  `net_timestamp` bigint(20) unsigned NOT NULL default '0',
-  `net_first_timestamp` bigint(20) unsigned NOT NULL default '0',
-  PRIMARY KEY  (`net_id`),
-  KEY `id` (`net_mac_address`),
-  KEY `id2` (`net_timestamp`)
+      `net_id` int(10) unsigned NOT NULL auto_increment,
+      `net_mac_address` varchar(17) NOT NULL default '',
+      `net_uuid` varchar(100) NOT NULL default '',
+      `net_ip_enabled` varchar(10) NOT NULL default '',
+      `net_index` varchar(10) NOT NULL default '',
+      `net_service_name` varchar(30) NOT NULL default '',
+      `net_description` varchar(255) NOT NULL default '',
+      `net_dhcp_enabled` varchar(100) NOT NULL default '',
+      `net_dhcp_server` varchar(30) NOT NULL default '',
+      `net_dhcp_lease_obtained` varchar(14) NOT NULL default '',
+      `net_dhcp_lease_expires` varchar(14) NOT NULL default '',
+      `net_dns_host_name` varchar(100) NOT NULL default '',
+      `net_dns_server` varchar(30) NOT NULL default '',
+      `net_dns_server_2` varchar(30) NOT NULL default '',
+      `net_dns_server_3` varchar(30) NOT NULL default '',
+      `net_dns_domain` varchar(100) NOT NULL default '',
+      `net_dns_domain_suffix` varchar(100) NOT NULL default '',
+      `net_dns_domain_suffix_2` varchar(100) NOT NULL default '',
+      `net_dns_domain_suffix_3` varchar(100) NOT NULL default '',
+      `net_dns_domain_reg_enabled` varchar(10) NOT NULL default '',
+      `net_dns_domain_full_reg_enabled` varchar(10) NOT NULL default '',
+      `net_ip_address` varchar(30) NOT NULL default '',
+      `net_ip_subnet` varchar(30) NOT NULL default '',
+      `net_ip_address_2` varchar(30) NOT NULL default '',
+      `net_ip_subnet_2` varchar(30) NOT NULL default '',
+      `net_ip_address_3` varchar(30) NOT NULL default '',
+      `net_ip_subnet_3` varchar(30) NOT NULL default '',
+      `net_wins_primary` varchar(30) NOT NULL default '',
+      `net_wins_secondary` varchar(30) NOT NULL default '',
+      `net_wins_lmhosts_enabled` varchar(10) NOT NULL default '',
+      `net_netbios_options` varchar(10) NOT NULL default '',
+      `net_adapter_type` varchar(100) NOT NULL default '',
+      `net_manufacturer` varchar(100) NOT NULL default '',
+      `net_connection_id` varchar(255) NOT NULL default '',
+      `net_connection_status` varchar(30) NOT NULL default '',
+      `net_speed` varchar(10) NOT NULL default '',
+      `net_gateway` varchar(100) NOT NULL default '',
+      `net_gateway_metric` varchar(10) NOT NULL default '',
+      `net_gateway_2` varchar(100) NOT NULL default '',
+      `net_gateway_metric_2` varchar(10) NOT NULL default '',
+      `net_gateway_3` varchar(100) NOT NULL default '',
+      `net_gateway_metric_3` varchar(10) NOT NULL default '',
+      `net_ip_metric` varchar(10) NOT NULL default '',
+      `net_timestamp` bigint(20) unsigned NOT NULL default '0',
+      `net_first_timestamp` bigint(20) unsigned NOT NULL default '0',
+      PRIMARY KEY  (`net_id`),
+      KEY `id` (`net_mac_address`),
+      KEY `id2` (`net_timestamp`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 DROP TABLE IF EXISTS `nmap_ports`;
@@ -568,44 +595,41 @@ CREATE TABLE `processor` (
 
 DROP TABLE IF EXISTS `scan_type`;
 CREATE TABLE `scan_type` (
-  `scan_type_id` int  NOT NULL AUTO_INCREMENT,
-  `scan_type_uuid` varchar(100)  NOT NULL,
-  `scan_type_ip_address` varchar(16)  NOT NULL,
-  `scan_type` varchar(10)  NOT NULL,
-  `scan_type_detail` VARCHAR(100)  NOT NULL,
-  `scan_type_frequency` TINYINT  NOT NULL,
-  PRIMARY KEY(`scan_type_id`)
-)
+      `scan_type_id` int  NOT NULL AUTO_INCREMENT,
+      `scan_type_uuid` varchar(100)  NOT NULL,
+      `scan_type_ip_address` varchar(16)  NOT NULL,
+      `scan_type` varchar(10)  NOT NULL,
+      `scan_type_detail` VARCHAR(100)  NOT NULL,
+      `scan_type_frequency` TINYINT  NOT NULL,
+      PRIMARY KEY(`scan_type_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 DROP TABLE IF EXISTS `scan_log`;
 CREATE TABLE `scan_log` (
-  `scan_log_id` int  NOT NULL AUTO_INCREMENT,
-  `scan_log_uuid` varchar(100)  NOT NULL,
-  `scan_log_ip_address` varchar(16)  NOT NULL,
-  `scan_log_type` varchar(10)  NOT NULL,
-  `scan_log_detail` VARCHAR(100)  NOT NULL,
-  `scan_log_frequency` TINYINT  NOT NULL,
-  `scan_log_date_time` datetime  NOT NULL,
-  `scan_log_result` varchar(20)  NOT NULL,
-  `scan_log_success` varchar(2)  NOT NULL,
-  PRIMARY KEY(`scan_log_id`)
-)
+      `scan_log_id` int  NOT NULL AUTO_INCREMENT,
+      `scan_log_uuid` varchar(100)  NOT NULL,
+      `scan_log_ip_address` varchar(16)  NOT NULL,
+      `scan_log_type` varchar(10)  NOT NULL,
+      `scan_log_detail` VARCHAR(100)  NOT NULL,
+      `scan_log_frequency` TINYINT  NOT NULL,
+      `scan_log_date_time` datetime  NOT NULL,
+      `scan_log_result` varchar(20)  NOT NULL,
+      `scan_log_success` varchar(2)  NOT NULL,
+      PRIMARY KEY(`scan_log_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 DROP TABLE IF EXISTS `scan_latest`;
 CREATE TABLE `scan_latest` (
-  `scan_latest_id` int  NOT NULL AUTO_INCREMENT,
-  `scan_latest_uuid` varchar(100)  NOT NULL,
-  `scan_latest_ip_address` varchar(16)  NOT NULL,
-  `scan_latest_type` varchar(10)  NOT NULL,
-  `scan_latest_detail` VARCHAR(100)  NOT NULL,
-  `scan_latest_frequency` TINYINT  NOT NULL,
-  `scan_latest_date_time` datetime  NOT NULL,
-  `scan_latest_result` varchar(20)  NOT NULL,
-  `scan_latest_success` varchar(2)  NOT NULL,
-  PRIMARY KEY(`scan_latest_id`)
-)
+      `scan_latest_id` int  NOT NULL AUTO_INCREMENT,
+      `scan_latest_uuid` varchar(100)  NOT NULL,
+      `scan_latest_ip_address` varchar(16)  NOT NULL,
+      `scan_latest_type` varchar(10)  NOT NULL,
+      `scan_latest_detail` VARCHAR(100)  NOT NULL,
+      `scan_latest_frequency` TINYINT  NOT NULL,
+      `scan_latest_date_time` datetime  NOT NULL,
+      `scan_latest_result` varchar(20)  NOT NULL,
+      `scan_latest_success` varchar(2)  NOT NULL,
+      PRIMARY KEY(`scan_latest_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 DROP TABLE IF EXISTS `scsi_controller`;

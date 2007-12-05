@@ -447,107 +447,206 @@ end if
 '''''''''''''''''''''''''''
 '   Network Information   '
 '''''''''''''''''''''''''''
+
+dim net_mac, net_ip_enabled, net_index, net_service_name, net_description, net_dhcp_enabled, net_dhcp_server
+dim net_dhcp_lease_obtained, net_dhcp_lease_expires, net_dns_host_name, net_dns_server(2), net_dns_domain
+dim net_dns_domain_suffix(2), net_dns_domain_reg_enabled, net_dns_domain_full_reg_enabled, net_ip(2)
+dim net_ip_subnet(2), net_wins_primary, net_wins_secondary, net_wins_lmhosts_enabled, net_netbios_options
+dim net_adapter_type, net_manufacturer, net_connection_id, net_connection_status, net_speed, net_gateway(2)
+dim net_gateway_metric(2), net_ip_metric, net_ip_address, net_ip_mask, is_installed
+
 comment = "Network Info"
 if verbose = "y" then
   wscript.echo comment
 end if
 On Error Resume Next
-Set colItems = objWMIService.ExecQuery("select * from win32_networkadapterconfiguration WHERE IPEnabled='TRUE' " _
-   & "AND ServiceName<>'AsyncMac' AND ServiceName<>'VMnetx' " _
-   & "AND ServiceName<>'VMnetadapter' AND ServiceName<>'Rasl2tp' " _
-   & "AND ServiceName<>'msloop' " _
+
+Set objWMIService_WMI = GetObject("winmgmts:\\" & strComputer & "\root\WMI")
+Set colItems = objWMIService.ExecQuery("Select * from Win32_NetworkAdapterConfiguration " _
+   & "WHERE ServiceName<>'' AND ServiceName<>'AsyncMac' " _
+   & "AND ServiceName<>'VMnetx' AND ServiceName<>'VMnetadapter' " _
+   & "AND ServiceName<>'Rasl2tp' AND ServiceName<>'msloop' " _
    & "AND ServiceName<>'PptpMiniport' AND ServiceName<>'Raspti' " _
    & "AND ServiceName<>'NDISWan' AND ServiceName<>'NdisWan4' AND ServiceName<>'RasPppoe' " _
-   & "AND ServiceName<>'NdisIP' AND ServiceName<>'' AND Description<>'PPP Adapter.'",,48)
+   & "AND ServiceName<>'NdisIP' AND Description<>'PPP Adapter.'",,48)
 For Each objItem in colItems
-   net_gateway = objItem.DefaultIPGateway(0)
-   net_ip = objItem.IPAddress(0)
-   net_mac = objItem.MACAddress
+   net_index = objItem.Index
    net_description = objItem.Description
-   net_dhcp_enabled = objItem.DHCPEnabled
-   net_dhcp_server = objItem.DHCPServer
-   net_dns_host_name = objItem.DNSHostName
-   if isarray(objItem.DNSServerSearchOrder) then
-     net_dns_server = objItem.DNSServerSearchOrder(0)
-     net_dns_server_2 = objItem.DNSServerSearchOrder(1)
-   end if
-   net_ip_subnet = objItem.IPSubnet(0)
-   net_wins_primary = objItem.WINSPrimaryServer
-   net_wins_secondary = objItem.WINSSecondaryServer
-   Set colItems2 = objWMIService.ExecQuery("Select * from Win32_NetworkAdapter WHERE MACAddress='" & objItem.MACAddress & "'",,48)
+   is_installed = "false"
+   Set colItems2 = objWMIService.ExecQuery("Select * from Win32_NetworkAdapter WHERE Index='" & net_index & "'",,48)
    For Each objItem2 in colItems2
-       net_adapter_type = objItem2.AdapterType
-       net_manufacturer = objItem2.Manufacturer
+      if (not isnull(objItem2.Manufacturer) or objItem2.Manufacturer <> "") then
+        ' Found a  currently installed NIC
+        is_installed = "true"
+        net_manufacturer = objItem2.Manufacturer
+        net_adapter_type = objItem2.AdapterType
+        net_connection_id = objItem2.NetConnectionId
+        net_connection_status = objItem2.NetConnectionStatus
+        if net_connection_status = "2" then
+          ' Found a connected NIC: detecting link speed
+          Set colItems3 = objWMIService_WMI.ExecQuery("Select * from MSNdis_LinkSpeed ",,48)
+          For Each objItem3 in colItems3
+            if objItem3.InstanceName = net_description then net_speed = objItem3.NdisLinkSpeed  end if
+          Next
+        end if
+      end if
    Next
-  ' Below is to account for a NULL in various items
-   if net_ip = "" then net_ip = "0.0.0.0"
-   if isnull(net_dns_server_2) then net_dns_server_2 = "none"
-   if isnull(net_dhcp_server) then net_dhcp_server = "none"
-   if net_dhcp_server = "" then net_dhcp_server = "none"
-   if isnull(net_dns_server) then net_dns_server = "none"
-   if isnull(net_ip_subnet) then net_ip_subnet = "none"
-   net_description = clean(net_description)
-   ' IP Address padded with zeros so it sorts properly
-   MyIP = Split(net_ip, ".", -1, 1)
-   if MyIP(0) <> "169" AND MyIP(1) <> "254" then
-     MyIP(0) = right("000" & MyIP(0),3)
-     MyIP(1) = right("000" & MyIP(1),3)
-     MyIP(2) = right("000" & MyIP(2),3)
-     MyIP(3) = right("000" & MyIP(3),3)
-     net_ip = MyIP(0) & "." & MyIP(1) & "." & MyIP(2) & "." & MyIP(3)
-     if net_ip <> "000.000.000.000" then net_ip_address = net_ip end if
-   end if
-   if net_dhcp_server <> "255.255.255.255" then
-    form_input = "network^^^" & net_mac            & "^^^" & net_description   & "^^^" & net_dhcp_enabled _
-                       & "^^^" & net_dhcp_server    & "^^^" & net_dns_host_name & "^^^" & net_dns_server & "^^^" & net_dns_server_2 _
-                       & "^^^" & net_ip             & "^^^" & net_ip_subnet     & "^^^" & net_wins_primary _
-                       & "^^^" & net_wins_secondary & "^^^" & net_adapter_type  & "^^^" & net_manufacturer & "^^^" & net_gateway & "^^^" 
-' This section replaced by the above, from the forums
-' http://www.open-audit.org/phpBB3/viewtopic.php?f=10&t=2240
-'     form_input = "network^^^" & net_mac            & "^^^" & net_description   & "^^^" & net_dhcp_enabled _
-'                       & "^^^" & net_dhcp_server    & "^^^" & net_dns_host_name & "^^^" & net_dns_server _
-'                       & "^^^" & net_ip             & "^^^" & net_ip_subnet     & "^^^" & net_wins_primary _
-'                       & "^^^" & net_wins_secondary & "^^^" & net_adapter_type  & "^^^" & net_manufacturer & "^^^" & net_gateway & "^^^" 
-     entry form_input,comment,objTextFile,oAdd,oComment
-     form_input = ""
-     if net_mac_uuid = "" then net_mac_uuid = net_mac end if
-   end if
+   if is_installed = "true" then
+     net_mac = objItem.MACAddress
+     net_ip_enabled = objItem.IPEnabled
+     net_service_name = objItem.ServiceName
+     net_dhcp_enabled = objItem.DHCPEnabled
+     net_dhcp_server = objItem.DHCPServer
+     net_dhcp_lease_obtained = objItem.DHCPLeaseObtained
+     net_dhcp_lease_expires = objItem.DHCPLeaseExpires
+     net_dns_host_name = objItem.DNSHostName
+     For i = LBound(objItem.DNSServerSearchOrder) to UBound(objItem.DNSServerSearchOrder)
+        if i > 2 then exit for End if
+        net_dns_server(i) = objItem.DNSServerSearchOrder(i)
+     Next
+     net_dns_domain = objItem.DNSDomain
+     For i = LBound(objItem.DNSDomainSuffixSearchOrder) to UBound(objItem.DNSDomainSuffixSearchOrder)
+        if i > 2 then exit for End if
+        net_dns_domain_suffix(i) = objItem.DNSDomainSuffixSearchOrder(i)
+     Next
+     net_dns_domain_reg_enabled = objItem.DomainDNSRegistrationEnabled
+     net_dns_domain_full_reg_enabled = objItem.FullDNSRegistrationEnabled
+     For i = LBound(objItem.IPAddress) to UBound(objItem.IPAddress)
+        if i > 2 then exit for End if
+        net_ip(i) = objItem.IPAddress(i)
+     Next
+     For i = LBound(objItem.IPSubnet) to UBound(objItem.IPSubnet)
+        if i > 2 then exit for End if
+        net_ip_subnet(i) = objItem.IPSubnet(i)
+     Next
+     net_wins_primary = objItem.WINSPrimaryServer
+     net_wins_secondary = objItem.WINSSecondaryServer
+     net_wins_secondary = objItem.WINSSecondaryServer
+     net_wins_lmhosts_enabled = objItem.WINSEnableLMHostsLookup
+     net_netbios_options = objItem.TcpipNetbiosOptions
+     For i = LBound(objItem.DefaultIPGateway) to UBound(objItem.DefaultIPGateway)
+        if i > 2 then exit for End if
+        net_gateway(i) = objItem.DefaultIPGateway(i)
+     Next
+     For i = LBound(objItem.GatewayCostMetric) to UBound(objItem.GatewayCostMetric)
+        if i > 2 then exit for End if
+        net_gateway_metric(i) = objItem.GatewayCostMetric(i)
+     Next
+     net_ip_metric = objItem.IpConnectionMetric
+     
+     ' Below is to account for a NULL in various items or converting values
+     if (isnull(net_mac) or net_mac = "") then net_mac = "unknown" End if
+     if (isnull(net_ip_enabled) or net_ip_enabled = "") then net_ip_enabled = "unknown" End if
+     if (isnull(net_description) or net_description = "") then net_description = "unknown" End if
+     if (isnull(net_dhcp_enabled) or net_dhcp_enabled = "") then net_dhcp_enabled = "false" End if
+     if (isnull(net_dhcp_server) or net_dhcp_server = "") then net_dhcp_server = "none" End if
+     if isnull(net_dhcp_lease_obtained) then net_dhcp_lease_obtained = "" End if
+     if isnull(net_dhcp_lease_expires) then net_dhcp_lease_expires = "" End if
+     if (isnull(net_dns_host_name) or net_dns_host_name = "") then net_dns_host_name = "none" End if
+     if (isnull(net_dns_domain) or net_dns_domain = "") then net_dns_domain = "none" End if
+     if (isnull(net_dns_domain_reg_enabled) or net_dns_domain_reg_enabled = "") then net_dns_domain_reg_enabled = "false" End if
+     if (isnull(net_dns_domain_full_reg_enabled) or net_dns_domain_full_reg_enabled = "") then net_dns_domain_full_reg_enabled = "false" End if
+     if (isnull(net_wins_primary) or net_wins_primary = "") then net_wins_primary = "none" End if
+     if (isnull(net_wins_secondary) or net_wins_secondary = "") then net_wins_secondary = "none" End if
+     if (isnull(net_wins_lmhosts_enabled) or net_wins_lmhosts_enabled = "") then net_wins_lmhosts_enabled = "false"  End if
+     Select Case net_netbios_options
+        Case "0" net_netbios_options = "defaults"
+        Case "1" net_netbios_options = "enabled"
+        Case "2" net_netbios_options = "disabled"
+        Case Else net_netbios_options = "unknown"
+     End Select
+     if (isnull(net_adapter_type) or net_adapter_type = "") then net_adapter_type = "unknown" End if
+     if (isnull(net_connection_id) or net_connection_id = "") then net_connection_id = "unknown" End if
+     Select Case net_connection_status
+        Case "0"  net_connection_status = "Disconnected"
+        Case "1"  net_connection_status = "Connecting"
+        Case "2"  net_connection_status = "Connected"
+        Case "3"  net_connection_status = "Disconnecting"
+        Case "4"  net_connection_status = "Hardware not present"
+        Case "5"  net_connection_status = "Hardware disabled"
+        Case "6"  net_connection_status = "Hardware malfunction"
+        Case "7"  net_connection_status = "Media disconnected"
+        Case "8"  net_connection_status = "Authenticating"
+        Case "9"  net_connection_status = "Authentication succeeded"
+        Case "10" net_connection_status = "Authentication failed"
+        Case "11" net_connection_status = "Invalid address"
+        Case "12" net_connection_status = "Credentials required"
+        Case Else net_connection_status = "unknown"
+     End Select
+     if (isnull(net_speed) or net_speed = "") then
+       net_speed = "unknown"
+     else  net_speed = int(net_speed)/10000 End if
+     if (isnull(net_ip_metric) or net_ip_metric = "") then net_ip_metric = "unknown" End if
+     For i = 0 to 2
+        if (isnull(net_dns_server(i)) or net_dns_server(i) = "") then net_dns_server(i) = "none" End if
+        if (isnull(net_dns_domain_suffix(i)) or net_dns_domain_suffix(i) = "") then net_dns_domain_suffix(i) = "none" End if
+        if (isnull(net_ip(i)) or net_ip(i) = "") then net_ip(i) = "0.0.0.0" End if
+        if (isnull(net_ip_subnet(i)) or net_ip_subnet(i) = "") then net_ip_subnet(i) = "none" End if
+        if (isnull(net_gateway(i)) or net_gateway(i) = "") then net_gateway(i) = "none" End if
+        if (isnull(net_gateway_metric(i)) or net_gateway_metric(i) = "") then net_gateway_metric(i) = "none" End if
+     Next
+
+     ' IP Address are padded with zeros so they sort properly
+     MyIP = Split(net_ip(0), ".", -1, 1)
+     if MyIP(0) <> "169" AND MyIP(1) <> "254" then
+       MyIP(0) = right("000" & MyIP(0),3)
+       MyIP(1) = right("000" & MyIP(1),3)
+       MyIP(2) = right("000" & MyIP(2),3)
+       MyIP(3) = right("000" & MyIP(3),3)
+       net_ip(0) = MyIP(0) & "." & MyIP(1) & "." & MyIP(2) & "." & MyIP(3)
+       ' The first detected IP address / Subnet mask become the system IP/Mask
+       if (net_ip(0) <> "000.000.000.000" and net_ip_address = "") then
+         net_ip_address = net_ip(0)
+         net_ip_mask = net_ip_subnet(0)
+       elseif net_ip(0) = "000.000.000.000" then net_ip(0) = "none" end if
+     end if
+     MyIP = Split(net_ip(1), ".", -1, 1)
+     if MyIP(0) <> "169" AND MyIP(1) <> "254" then
+       MyIP(0) = right("000" & MyIP(0),3)
+       MyIP(1) = right("000" & MyIP(1),3)
+       MyIP(2) = right("000" & MyIP(2),3)
+       MyIP(3) = right("000" & MyIP(3),3)
+       net_ip(1) = MyIP(0) & "." & MyIP(1) & "." & MyIP(2) & "." & MyIP(3)
+       if net_ip(1) = "000.000.000.000" then net_ip(1) = "none" end if
+     end if
+     MyIP = Split(net_ip(2), ".", -1, 1)
+     if MyIP(0) <> "169" AND MyIP(1) <> "254" then
+       MyIP(0) = right("000" & MyIP(0),3)
+       MyIP(1) = right("000" & MyIP(1),3)
+       MyIP(2) = right("000" & MyIP(2),3)
+       MyIP(3) = right("000" & MyIP(3),3)
+       net_ip(2) = MyIP(0) & "." & MyIP(1) & "." & MyIP(2) & "." & MyIP(3)
+       if net_ip(2) = "000.000.000.000" then net_ip(2) = "none" end if
+     end if
+
+     if net_dhcp_server <> "255.255.255.255" then
+       form_input = "network^^^" & net_mac                    & "^^^" & net_description                 & "^^^" & net_dhcp_enabled         & "^^^" _
+                                 & net_dhcp_server            & "^^^" & net_dns_host_name               & "^^^" & net_dns_server(0)        & "^^^" _
+                                 & net_dns_server(1)          & "^^^" & net_ip(0)                       & "^^^" & net_ip_subnet(0)         & "^^^" _
+                                 & net_wins_primary           & "^^^" & net_wins_secondary              & "^^^" & net_adapter_type         & "^^^" _
+                                 & net_manufacturer           & "^^^" & net_gateway(0)                  & "^^^" & net_ip_enabled              & "^^^" _
+                                 & net_index                  & "^^^" & net_service_name                & "^^^" & net_dhcp_lease_obtained  & "^^^" _
+                                 & net_dhcp_lease_expires     & "^^^" & net_dns_server(2)               & "^^^" & net_dns_domain           & "^^^" _
+                                 & net_dns_domain_suffix(0)   & "^^^" & net_dns_domain_suffix(1)        & "^^^" & net_dns_domain_suffix(2) & "^^^" _
+                                 & net_dns_domain_reg_enabled & "^^^" & net_dns_domain_full_reg_enabled & "^^^" & net_ip(1)                & "^^^" _
+                                 & net_ip_subnet(1)           & "^^^" & net_ip(2)                       & "^^^" & net_ip_subnet(2)         & "^^^" _
+                                 & net_wins_lmhosts_enabled   & "^^^" & net_netbios_options             & "^^^" & net_gateway_metric(0)    & "^^^" _   
+                                 & net_gateway(1)             & "^^^" & net_gateway_metric(1)           & "^^^" & net_gateway(2)           & "^^^" _
+                                 & net_gateway_metric(2)      & "^^^" & net_ip_metric                   & "^^^" & net_connection_id        & "^^^" _ 
+                                 & net_connection_status      & "^^^" & net_speed                       & "^^^"   
+       entry form_input,comment,objTextFile,oAdd,oComment
+       form_input = ""
+       erase net_dns_server
+       erase net_dns_domain_suffix
+       erase net_ip
+       erase net_ip_subnet
+       erase net_gateway
+       erase net_gateway_metric
+       ' The first valid MAC Address becomes the MAC_UUID
+       if (net_mac <> "unknown" and net_mac_uuid = "") then net_mac_uuid = net_mac end if
+     end if
+   end if 'is_installed = "true"
 Next
-
-On Error Resume Next
-Set colItems = objWMIService.ExecQuery("Select * from Win32_ComputerSystem",,48)
-For Each objItem in colItems
-   net_domain = objItem.Domain
-   net_user_name = objItem.UserName
-Next
-On Error Resume Next
-Set colItems = objWMIService.ExecQuery("Select * from Win32_NTDomain",,48)
-For Each objItem in colItems
-   net_client_site_name = objItem.ClientSiteName
-   net_domain_controller_address = objItem.DomainControllerAddress
-   net_domain_controller_name = objItem.DomainControllerName
-Next
-
-if isnull(net_ip_address) then net_ip_address = "" end if
-
-if isnull(net_domain) then
-  oReg.GetStringValue HKEY_LOCAL_MACHINE, "SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon", "DefaultDomainName", net_domain
-  if isnull(net_domain) then net_domain = "" end if
-end if
-if isnull(net_user_name) then
-  oReg.GetStringValue HKEY_LOCAL_MACHINE, "SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon", "DefaultUserName", net_user_name
-  if isnull(net_user_name) then net_user_name = "" end if
-end if 
-
-if isnull(net_client_site_name) then net_client_site_name = "" end if
-if isnull(net_domain_controller_address) then net_domain_controller_address = "" end if
-if isnull(net_domain_controller_name) then net_domain_controller_name = "" end if
-
-form_input = "system01^^^" & clean(net_ip_address) & "^^^" & clean(net_domain) _
-                   & "^^^" & clean(net_user_name) & "^^^" & clean(net_client_site_name) _
-                   & "^^^" & clean(Replace(net_domain_controller_address, "\\", "")) & "^^^" & clean(Replace(net_domain_controller_name, "\\", "")) & "^^^"
-entry form_input,comment,objTextFile,oAdd,oComment
-form_input = ""
 
 '''''''''''''''''
 ' Make the UUID '
@@ -721,7 +820,7 @@ if online = "p" then
     oIE.document.WriteLn "<tr bgcolor=""#F1F1F1""><td>Description: </td><td>" & system_description & "</td></tr>"
     oIE.document.WriteLn "<tr><td>MAC Address: </td><td>" & net_mac & "</td></tr>"
     oIE.document.WriteLn "<tr bgcolor=""#F1F1F1""><td>IP Address: </td><td> " & net_ip_address & "</td></tr>"
-    oIE.document.WriteLn "<tr><td>Subnet: </td><td>" & net_ip_subnet & "</td></tr>"
+    oIE.document.WriteLn "<tr><td>Subnet: </td><td>" & net_ip_mask & "</td></tr>"
     oIE.document.WriteLn "<tr bgcolor=""#F1F1F1""><td>DHCP Enabled: </td><td>" & net_dhcp_enabled & "</td></tr>"
     oIE.document.WriteLn "<tr><td>DHCP Server: </td><td>" & net_dhcp_server & "</td></tr>"
     oIE.document.WriteLn "<tr bgcolor=""#F1F1F1""><td>WINS Server: </td><td>" & net_wins_primary & "</td></tr>"

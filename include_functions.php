@@ -153,8 +153,12 @@ function special_field_converting($myrow, $field, $db, $page){
   if(isset($field["name"])){
     if($field["name"]=="system_os_name"){
         $show_value=determine_os($myrow[$field["name"]]);
-    }elseif($field["name"]=="system_timestamp"){
+     }elseif($field["name"]=="system_timestamp" OR
+            $field["name"]=="net_dhcp_lease_obtained" OR
+            $field["name"]=="net_dhcp_lease_expires"){
         $show_value=return_date($myrow[$field["name"]]);
+    }elseif($field["name"]=="net_speed"){
+        $show_value=number_format($myrow[$field["name"]])." Mbps";
     }elseif($field["name"]=="software_first_timestamp" OR
             $field["name"]=="software_timestamp" OR
             $field["name"]=="system_first_timestamp" OR
@@ -454,13 +458,15 @@ function determine_dia_img($os,$system_type) {
 function determine_inkscape_img($os,$system_type) {
 
 // Assume we dont know what this is
+    $image_folder="images";
+    
     $image="button_fail.png";
     $title=__("Unknown");
    
 // Now we try to find out..   
 
 // Does the system_type map to a local PNG
-    if (is_file("images/o_".$system_type.".png")){
+    if (is_file($image_folder."/o_".$system_type.".png")){
     $image="o_".$system_type.".png";
     $title=__("$system_type");
     }
@@ -471,12 +477,12 @@ function determine_inkscape_img($os,$system_type) {
 //    $image="button_fail.png";
     $title=__("Unknown ".$system);  
     }
-    if (!is_file("images/o_".$system_type.".png")){
+    if (!is_file($image_folder."/o_".$system_type.".png")){
     $image="button_fail.png";
     } else {}
     
 // Does the os map to a local PNG
-    if (is_file("images/o_".$os.".png")){
+    if (is_file($image_folder."/o_".$os.".png")){
     $image="o_".$os.".png";
     $title=__("$os");
     }
@@ -487,21 +493,18 @@ function determine_inkscape_img($os,$system_type) {
 //    $image="button_fail.png";
     $title=__("Unknown ".$os);  
     }
-    if (!is_file("images/o_".$os.".png")){
+    if (!is_file($image_folder."/o_".$os.".png")){
     $image="button_fail.png";
     } else {}    
-    
-    
-    
-    
+  
 // Lets see if we can work it out from the OS
 //
     if( ereg("Windows", $os) ){
-        $image="desktop.png";
+        $image="computer.png";
         $title=determine_os($os);
     }
     if( ereg("Server", $os) ){
-        $image="server.png";
+        $image="network-server.png";
         $title=determine_os($os);
     }
     if( ereg("Laptop|Expansion Chassis|Notebook|Sub Notebook|Portable|Docking Station", $system_type) ){
@@ -530,7 +533,25 @@ function determine_inkscape_img($os,$system_type) {
             $title=determine_os($os);
         }
     }
-
+// If we got here, we must have a .png image, even if it is not what we want.
+// So now we will look to see if we can find a scaleable image to give is a better looking output
+// In other words, lets take the name of the .png, and replace it with a suitable Tango .svg if it exists. 
+/*
+if (is_file($image_folder."\dell-ultrasharp.svg")){
+    switch($image){
+    case "laptop.png" :
+        $image = "computer-laptop-dell-inspiron.svg";
+        break;
+    case "computer.png" :
+        $image = "computer-dell-dimension-E521.svg";
+        break;
+    case "network-server.png" :
+        $image = "dell-ultrasharp.svg";
+        break;
+    }
+    
+   }
+*/   
     $ret = $image;
     return $ret;
 
