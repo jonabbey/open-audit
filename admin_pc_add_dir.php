@@ -239,57 +239,129 @@ echo "<tr><td>You should now remove these files.</td></tr>\n";
 echo "</table>\n";
 exit;
 
-
-
 function insert_network ($split) {
     global $timestamp, $uuid, $verbose, $net_timestamp;
     $extended = explode('^^^',$split);
-if ($verbose == "y"){echo "<h2>Network</h2><br />";}
+    if ($verbose == "y"){echo "<h2>Network</h2><br />";}
     $net_mac_address = trim($extended[1]);
     $net_description = trim($extended[2]);
     $net_dhcp_enabled = trim($extended[3]);
     $net_dhcp_server = trim($extended[4]);
     $net_dns_host_name = trim($extended[5]);
     $net_dns_server = trim($extended[6]);
-    $net_ip_address = trim($extended[7]);
-    $net_ip_subnet = trim($extended[8]);
-    $net_wins_primary = trim($extended[9]);
-    $net_wins_secondary = trim($extended[10]);
-    $net_adapter_type = trim($extended[11]);
-    $net_manufacturer = trim($extended[12]);
+    $net_dns_server_2 = trim($extended[7]);
+    $net_ip_address = trim($extended[8]);
+    $net_ip_subnet = trim($extended[9]);
+    $net_wins_primary = trim($extended[10]);
+    $net_wins_secondary = trim($extended[11]);
+    $net_adapter_type = trim($extended[12]);
+    $net_manufacturer = trim($extended[13]);
+    $net_gateway = trim($extended[14]);
+    $net_ip_enabled = trim($extended[15]);
+    $net_index = trim($extended[16]);
+    $net_service_name = trim($extended[17]);
+    $net_dhcp_lease_obtained = trim($extended[18]);
+    $net_dhcp_lease_expires = trim($extended[19]);
+    $net_dns_server_3 = trim($extended[20]);
+    $net_dns_domain = trim($extended[21]);
+    $net_dns_domain_suffix = trim($extended[22]);
+    $net_dns_domain_suffix_2 = trim($extended[23]);
+    $net_dns_domain_suffix_3 = trim($extended[24]);
+    $net_dns_domain_reg_enabled = trim($extended[25]);
+    $net_dns_domain_full_reg_enabled = trim($extended[26]);
+    $net_ip_address_2 = trim($extended[27]);
+    $net_ip_subnet_2 = trim($extended[28]);
+    $net_ip_address_3 = trim($extended[29]);
+    $net_ip_subnet_3 = trim($extended[30]);
+    $net_wins_lmhosts_enabled = trim($extended[31]);
+    $net_netbios_options = trim($extended[32]);
+    $net_gateway_metric = trim($extended[33]);
+    $net_gateway_2 = trim($extended[34]);
+    $net_gateway_metric_2 = trim($extended[35]);
+    $net_gateway_3 = trim($extended[36]);
+    $net_gateway_metric_3 = trim($extended[37]);
+    $net_ip_metric = trim($extended[38]);
+    $net_connection_id = trim($extended[39]);
+    $net_connection_status = trim($extended[40]);
+    $net_speed = trim($extended[41]);
+
     if (is_null($net_timestamp)) {
       $sql  = "SELECT MAX(net_timestamp) FROM network_card WHERE net_uuid = '$uuid'";
       if ($verbose == "y"){echo $sql . "<br />\n\n";}
-      $result = mysql_query($sql) or die ('Insert Failed: ' . mysql_error() . '<br />' . $sql);;
+      $result = mysql_query($sql) or die ('Insert Failed: ' . mysql_error() . '<br />' . $sql);
       $myrow = mysql_fetch_array($result);
       if ($myrow["MAX(net_timestamp)"]) {$net_timestamp = $myrow["MAX(net_timestamp)"];} else {$net_timestamp = "";}
     } else {}
-    $sql  = "SELECT count(net_uuid) as count from network_card WHERE net_mac_address = '$net_mac_address' ";
-    $sql .= "AND net_uuid = '$uuid' AND net_description = '$net_description' AND net_dhcp_enabled = '$net_dhcp_enabled' ";
-    $sql .= "AND net_dhcp_server = '$net_dhcp_server' AND net_dns_host_name = '$net_dns_host_name' AND net_dns_server = '$net_dns_server' ";
-    $sql .= "AND net_ip_address = '$net_ip_address' AND net_ip_subnet = '$net_ip_subnet' AND net_wins_primary = '$net_wins_primary' ";
-    $sql .= "AND net_adapter_type = '$net_adapter_type' AND net_manufacturer = '$net_manufacturer' AND (net_timestamp = '$net_timestamp' OR net_timestamp = '$timestamp')";
+    $sql  = "SELECT count(net_uuid) as count from network_card ";
+    $sql .= "WHERE net_mac_address = '$net_mac_address' AND net_uuid = '$uuid' AND net_description = '$net_description' ";
+    $sql .= "AND net_dhcp_enabled = '$net_dhcp_enabled' AND net_dns_host_name = '$net_dns_host_name' AND net_adapter_type = '$net_adapter_type' ";
+    $sql .= "AND net_manufacturer = '$net_manufacturer' AND net_ip_enabled = '$net_ip_enabled' AND net_index = '$net_index' ";
+    $sql .= "AND net_service_name = '$net_service_name' AND net_connection_id = '$net_connection_id' ";
+    $sql .= "AND (net_timestamp = '$net_timestamp' OR net_timestamp = '$timestamp')";
     if ($verbose == "y"){echo $sql . "<br />\n\n";}
-     $result = mysql_query($sql) or die ('Insert Failed: ' . mysql_error() . '<br />' . $sql);
+    $result = mysql_query($sql) or die ('Insert Failed: ' . mysql_error() . '<br />' . $sql);
     $myrow = mysql_fetch_array($result);
     if ($verbose == "y"){echo "Count: " . $myrow['count'] . "<br />\n\n";}
     if ($myrow['count'] == "0"){
-      // Insert into database
-      $sql  = "INSERT INTO network_card (net_mac_address, net_uuid, net_description, net_dhcp_enabled,";
-      $sql .= "net_dhcp_server, net_dns_host_name, net_dns_server, net_ip_address, net_ip_subnet,";
-      $sql .= "net_wins_primary, net_adapter_type, net_manufacturer, net_timestamp, net_first_timestamp) VALUES (";
-      $sql .= "'$net_mac_address','$uuid','$net_description','$net_dhcp_enabled',";
-      $sql .= "'$net_dhcp_server','$net_dns_host_name','$net_dns_server','$net_ip_address','$net_ip_subnet',";
-      $sql .= "'$net_wins_primary','$net_adapter_type','$net_manufacturer','$timestamp', '$timestamp')";
+      // New NIC or DHCP or TCP/IP status changed - Insert into database
+      $sql  = "INSERT INTO network_card (";
+      $sql .= "net_mac_address, net_uuid, net_ip_enabled, net_index, net_service_name, net_description, net_dhcp_enabled, net_dhcp_server, ";
+      $sql .= "net_dhcp_lease_obtained, net_dhcp_lease_expires, net_dns_host_name, net_dns_server, net_dns_server_2, net_dns_server_3, ";
+      $sql .= "net_dns_domain, net_dns_domain_suffix, net_dns_domain_suffix_2, net_dns_domain_suffix_3, net_dns_domain_reg_enabled, ";
+      $sql .= "net_dns_domain_full_reg_enabled, net_ip_address, net_ip_subnet, net_ip_address_2, net_ip_subnet_2, net_ip_address_3, ";
+      $sql .= "net_ip_subnet_3, net_wins_primary, net_wins_secondary, net_wins_lmhosts_enabled, net_netbios_options, net_adapter_type, ";
+      $sql .= "net_manufacturer, net_connection_id, net_connection_status, net_speed, net_gateway, net_gateway_metric, net_gateway_2, ";
+      $sql .= "net_gateway_metric_2, net_gateway_3, net_gateway_metric_3, net_ip_metric, net_timestamp, net_first_timestamp) VALUES (";
+      $sql .= "'$net_mac_address', '$uuid', '$net_ip_enabled', '$net_index', '$net_service_name', '$net_description', '$net_dhcp_enabled', '$net_dhcp_server', ";
+      $sql .= "'$net_dhcp_lease_obtained', '$net_dhcp_lease_expires', '$net_dns_host_name', '$net_dns_server', '$net_dns_server_2', '$net_dns_server_3', ";
+      $sql .= "'$net_dns_domain', '$net_dns_domain_suffix', '$net_dns_domain_suffix_2', '$net_dns_domain_suffix_3', '$net_dns_domain_reg_enabled', ";
+      $sql .= "'$net_dns_domain_full_reg_enabled', '$net_ip_address', '$net_ip_subnet', '$net_ip_address_2', '$net_ip_subnet_2', '$net_ip_address_3', ";
+      $sql .= "'$net_ip_subnet_3', '$net_wins_primary', '$net_wins_secondary', '$net_wins_lmhosts_enabled', '$net_netbios_options', '$net_adapter_type', ";
+      $sql .= "'$net_manufacturer', '$net_connection_id', '$net_connection_status', '$net_speed', '$net_gateway', '$net_gateway_metric', '$net_gateway_2', ";
+      $sql .= "'$net_gateway_metric_2', '$net_gateway_3', '$net_gateway_metric_3', '$net_ip_metric', '$timestamp', '$timestamp') ";
+
       if ($verbose == "y"){echo $sql . "<br />\n\n";}
-      $result = mysql_query($sql) or die ('Insert Failed: ' . mysql_error() . '<br />' . $sql);;
+      $result = mysql_query($sql) or die ('Insert Failed: ' . mysql_error() . '<br />' . $sql);
     } else {
-      // Already present in database - update timestamp
-      $sql  = "UPDATE network_card SET net_timestamp = '$timestamp' WHERE net_mac_address = '$net_mac_address' AND net_uuid = '$uuid' AND net_timestamp = '$net_timestamp'";
+      // Already present in database - Update timestamp and dynamic fields
+      $sql  = "UPDATE network_card SET ";
+      $sql .= "net_timestamp = '$timestamp', net_dhcp_server = '$net_dhcp_server', net_dhcp_lease_obtained = '$net_dhcp_lease_obtained', ";
+      $sql .= "net_dhcp_lease_expires = '$net_dhcp_lease_expires', net_dns_server = '$net_dns_server', net_dns_server_2 = '$net_dns_server_2', ";
+      $sql .= "net_dns_server_3 = '$net_dns_server_3', net_dns_domain = '$net_dns_domain', net_dns_domain_suffix = '$net_dns_domain_suffix', ";
+      $sql .= "net_dns_domain_suffix_2 = '$net_dns_domain_suffix_2', net_dns_domain_suffix_3 = '$net_dns_domain_suffix_3', net_dns_domain_reg_enabled = '$net_dns_domain_reg_enabled', ";
+      $sql .= "net_dns_domain_full_reg_enabled = '$net_dns_domain_full_reg_enabled', net_ip_address = '$net_ip_address', net_ip_subnet = '$net_ip_subnet', ";
+      $sql .= "net_ip_address_2 = '$net_ip_address_2', net_ip_subnet_2 = '$net_ip_subnet_2', net_ip_address_3 = '$net_ip_address_3', "; 
+      $sql .= "net_ip_subnet_3 = '$net_ip_subnet_3', net_wins_primary = '$net_wins_primary', net_wins_secondary = '$net_wins_secondary', ";
+      $sql .= "net_wins_lmhosts_enabled = '$net_wins_lmhosts_enabled', net_netbios_options = '$net_netbios_options', net_gateway = '$net_gateway', ";
+      $sql .= "net_connection_status = '$net_connection_status', net_speed = '$net_speed', net_gateway_metric = '$net_gateway_metric', net_gateway_2 = '$net_gateway_2', ";
+      $sql .= "net_gateway_metric_2 = '$net_gateway_metric_2', net_gateway_3 = '$net_gateway_3', net_gateway_metric_3 = '$net_gateway_metric_3', net_ip_metric = '$net_ip_metric' ";
+      $sql .= "WHERE net_mac_address = '$net_mac_address' AND net_uuid = '$uuid' AND net_description = '$net_description' ";
+      $sql .= "AND net_dhcp_enabled = '$net_dhcp_enabled' AND net_dns_host_name = '$net_dns_host_name' AND net_adapter_type = '$net_adapter_type' ";
+      $sql .= "AND net_manufacturer = '$net_manufacturer' AND net_ip_enabled = '$net_ip_enabled' AND net_index = '$net_index' ";
+      $sql .= "AND net_service_name = '$net_service_name' AND net_connection_id = '$net_connection_id' ";
+      $sql .= "AND net_timestamp = '$net_timestamp'";
       if ($verbose == "y"){echo $sql . "<br />\n\n";}
-      $result = mysql_query($sql) or die ('Insert Failed: ' . mysql_error() . '<br />' . $sql);;
+      $result = mysql_query($sql) or die ('Insert Failed: ' . mysql_error() . '<br />' . $sql);
     }
+   
+  // Remove from the 'other' table if exists
+  // First - get the id from the 'other' table - if it exists
+  $other_id = '';
+  $sql = "SELECT other_id FROM other WHERE other_mac_address = '$net_mac_address'";
+  if ($verbose == "y"){echo $sql . "<br />\n\n";}
+  $result = mysql_query($sql) or die ('Check Other table Failed: ' . mysql_error() . '<br />' . $sql);
+  if ($myrow = mysql_fetch_array($result)){$other_id = $myrow['other_id'];}
+  if ($other_id <> ''){
+    // It exists - so update the 'nmap_ports' table to the uuid/mac of the PC - not the other_id
+    $sql = "UPDATE nmap_ports SET nmap_other_id = '$uuid' WHERE nmap_other_id = '$other_id'";
+    if ($verbose == "y"){echo $sql . "<br />\n\n";}
+    $result = mysql_query($sql) or die ('Update nmap_ports Failed: ' . mysql_error() . '<br />' . $sql);
+    // Now remove the entry from the 'other' table
+    $sql = "DELETE FROM other WHERE other_mac_address = '$net_mac_address'";
+    if ($verbose == "y"){echo $sql . "<br />\n\n";}
+    $result = mysql_query($sql) or die ('Update nmap_ports Failed: ' . mysql_error() . '<br />' . $sql);
   }
+}
 
 function insert_system01 ($split) {
     global $timestamp, $uuid, $verbose;
