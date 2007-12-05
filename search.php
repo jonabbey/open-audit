@@ -39,19 +39,21 @@ $search = strtoupper($search);
 
 if ($search != "") {
 
-$sql  = "SELECT DISTINCT system_name, system_uuid, net_ip_address, bios_description, bios_manufacturer, bios_serial_number FROM system, bios WHERE ";
-$sql .= "bios_uuid = system_uuid AND ";
-$sql .= "bios_timestamp = system_timestamp AND (";
-$sql .= "bios_description LIKE '%$search%' OR ";
-$sql .= "bios_manufacturer LIKE '%$search%' OR ";
-$sql .= "bios_serial_number LIKE '%$search%')";
-$result = mysql_query($sql, $db);
-if ($myrow = mysql_fetch_array($result)){
-  do {
-    if(!isset($myrow["software_name"])) $myrow["software_name"]=" ";
-    if (strpos(strtoupper($myrow["bios_description"]), $search) !== false){$search_field = "Bios Description"; $search_result = $myrow["bios_description"] . " - " . $myrow["software_name"];}
-    if (strpos(strtoupper($myrow["bios_manufacturer"]), $search) !== false){$search_field = "Bios Manufacturer"; $search_result = $myrow["bios_manufacturer"];}
-    if (strpos(strtoupper($myrow["bios_serial_number"]), $search) !== false){$search_field = "Bios Serial"; $search_result = $myrow["bios_serial_number"];}
+    $sql  = "SELECT DISTINCT system_name, system_uuid, net_ip_address, bios_asset_tag, bios_description, bios_manufacturer, bios_serial_number FROM system, bios WHERE ";
+    $sql .= "bios_uuid = system_uuid AND ";
+    $sql .= "bios_timestamp = system_timestamp AND (";
+    $sql .= "bios_asset_tag LIKE '%$search%' OR ";
+    $sql .= "bios_description LIKE '%$search%' OR ";
+    $sql .= "bios_manufacturer LIKE '%$search%' OR ";
+    $sql .= "bios_serial_number LIKE '%$search%')";
+    $result = mysql_query($sql, $db);
+    if ($myrow = mysql_fetch_array($result)){
+      do {
+        if(!isset($myrow["software_name"])) $myrow["software_name"]=" ";
+        if (strpos(strtoupper($myrow["bios_description"]), $search) !== false){$search_field = "Bios Description"; $search_result = $myrow["bios_description"] . " - " . $myrow["software_name"];}
+        if (strpos(strtoupper($myrow["bios_manufacturer"]), $search) !== false){$search_field = "Bios Manufacturer"; $search_result = $myrow["bios_manufacturer"];}
+        if (strpos(strtoupper($myrow["bios_serial_number"]), $search) !== false){$search_field = "Bios Serial"; $search_result = $myrow["bios_serial_number"];}
+        if (strpos(strtoupper($myrow["bios_asset_tag"]), $search) !== false){$search_field = "Asset Tag"; $search_result = $myrow["bios_asset_tag"];}
     $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
     $result_set[] = array($myrow["system_name"], $myrow["system_uuid"], ip_trans($myrow["net_ip_address"]), $search_field, $search_result);
   } while ($myrow = mysql_fetch_array($result));
