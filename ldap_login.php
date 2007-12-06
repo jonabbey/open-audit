@@ -1,4 +1,21 @@
 <?php
+/**
+*
+* @version $Id: ldap_login.php  6th Dec 2007
+*
+* @author The Open Audit Developer Team
+* @objective Index Page for Open Audit.
+* @package open-audit (www.open-audit.org)
+* @copyright Copyright (C) open-audit.org All rights reserved.
+* @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see ../gpl.txt
+* Open-Audit is free software. This version may have been modified pursuant
+* to the GNU General Public License, and as distributed it includes or
+* is derivative of works licensed under the GNU General Public License or
+* other free or open source software licenses.
+* See www.open-audit.org for further copyright notices and details.
+*
+*/ 
+
 session_start();
 // Include LDAP settings from config file
 include "include_config.php";
@@ -193,13 +210,23 @@ if (isset($_POST['username'])) {
  color="gray"><?php echo __("Please login using your LDAP or Active Directory User Name and Password.");?></font>
 </td></tr><td align="center">
 <?php 
+//
+// Look for Result=false in the calling URI (actually just look for 'sult' cos we aren't that bothered ;} )
+// This method seems to work regardless of register_globals, see http://uk2.php.net/manual/en/reserved.variables.php
+//
 if (preg_match("/sult/i",$_SERVER['REQUEST_URI'])) {
+// Warn them off if they screwed up the login.
 echo '<br><font face="Verdana,Tahoma,Arial,sans-serif" size="1" color="gray">'. __("Unauthorised use of this site may be a criminal offence.").'</font>';
-echo '<br><font face="Verdana,Tahoma,Arial,sans-serif" size="1" color="gray">'. __("Your IP address and browser details will be logged.").'</font>';
+echo '<br><font face="Verdana,Tahoma,Arial,sans-serif" size="1" color="gray">'.__(" Access attempt from ").' '.$_SERVER['REMOTE_ADDR']."<br>".__("Your IP address and browser details will be logged.").'</font>';
 echo '<br><font face="Verdana,Tahoma,Arial,sans-serif" size="1" color="gray">'. __("Any malicious attempt to access this site will be investigated.").'</font>';
 echo '<br><font face="Verdana,Tahoma,Arial,sans-serif" size="1" color="gray">'. __("Please contact the administrator if you are having problems logging in.").'</font>';
 
-}else{echo '<br><font face="Verdana,Tahoma,Arial,sans-serif" size="1" color="gray">'. __("Use of this site is subject to legal restrictions.").'</font>';}
+//
+}else{
+// Be gentle with them the first time.
+echo '<br><font face="Verdana,Tahoma,Arial,sans-serif" size="1" color="gray">'. __("Use of this site is subject to legal restrictions.").'</font>';
+//
+}
 ?>
 </td>
 </tr></table>
