@@ -14,6 +14,17 @@ Dim email_to
 Dim email_from
 Dim email_failed
 Dim email_server
+
+Dim email_port
+Dim email_auth
+Dim email_user_id
+Dim email_user_pwd 
+Dim email_use_ssl 
+Dim email_timeout 
+
+
+
+
 Dim audit_local_domain
 Dim local_domain
 Dim sql
@@ -369,18 +380,35 @@ objFile.Close
 ' Send an email of failed audits '
 ' if there are any               '
 ''''''''''''''''''''''''''''''''''
+
 if email_failed <> "" then
+  On Error Resume Next
+  wscript.echo "This system failed to audit."
   Set objEmail = CreateObject("CDO.Message")
   objEmail.From = email_from
   objEmail.To   = email_to
-  objEmail.Subject = "Failed Open Audits."
+  'objEmail.Sender   = email_sender
+  objEmail.Subject = "Open-AudIT - Failed Audits."
   objEmail.Textbody = "The following systems failed to audit: " & vbCRLF & email_failed
   objEmail.Configuration.Fields.Item ("http://schemas.microsoft.com/cdo/configuration/sendusing") = 2
   objEmail.Configuration.Fields.Item ("http://schemas.microsoft.com/cdo/configuration/smtpserver") = email_server
-  objEmail.Configuration.Fields.Item ("http://schemas.microsoft.com/cdo/configuration/smtpserverport") = 25
+  objEmail.Configuration.Fields.Item ("http://schemas.microsoft.com/cdo/configuration/smtpserverport") = email_port
+  objEmail.Configuration.Fields.Item ("http://schemas.microsoft.com/cdo/configuration/smtpauthenticate") = email_auth
+  objEmail.Configuration.Fields.Item ("http://schemas.microsoft.com/cdo/configuration/sendusername") = email_user_id
+  objEmail.Configuration.Fields.Item ("http://schemas.microsoft.com/cdo/configuration/sendpassword") = email_user_pwd
+  objEmail.Configuration.Fields.Item ("http://schemas.microsoft.com/cdo/configuration/smtpusessl") = email_use_ssl
+  objEmail.Configuration.Fields.Item ("http://schemas.microsoft.com/cdo/configuration/smtpconnectiontimeout") = email_timeout
   objEmail.Configuration.Fields.Update
   objEmail.Send
+  if Err.Number <> 0 then
+    wscript.echo "Error sending email: " & Err.Description
+  else wscript.echo "Email sent." end if
+  Err.Clear
 end if
+
+' Exit the script
+wscript.quit
+
 
 ' Exit the script
 wscript.quit

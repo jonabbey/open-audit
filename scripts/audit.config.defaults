@@ -12,9 +12,23 @@ ie_submit_verbose = "n"
 ie_form_page = audit_host + "/openaudit/admin_pc_add_1.php" 
 non_ie_page = audit_host + "/openaudit/admin_pc_add_2.php" 
 input_file = "" 
-email_to = "" 
-email_from = "" 
-email_server = "" 
+
+'
+' Email authentication 
+'
+'
+
+email_to = "user@domain"     
+email_from = "user@domain"
+'email_sender = "Open-AudIT"
+email_server = "aaa.bbb.ccc.ddd"  ' IP address or FQDN
+email_port = "25"                 ' The SMTP port
+email_auth = "1"                  ' 0 = Anonymous, 1 = Clear-text Authentication, 2 = NTLM
+email_user_id = "user@domain"     ' A valid Email account in user@domain format
+email_user_pwd = "abc123"         ' The SMTP email password
+email_use_ssl = "false"           ' True/False
+email_timeout = "60"              ' In seconds
+
 audit_local_domain = "y" 
 local_domain = "LDAP://localhost.local" 
 hfnet = "n" 
