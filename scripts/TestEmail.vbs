@@ -32,7 +32,7 @@ On Error Resume Next
   objEmail.To   = email_to
   objEmail.Sender   = email_sender
   objEmail.Subject = "Open-AudIT - Email Tester."
-  objEmail.Textbody = "Email sent from" & email_from & " Via Mail Server" & email_server & " : " & vbCRLF & email_failed
+  objEmail.Textbody = "Email sent from" & email_from & " Via Mail Server " & email_server & " : " & vbCRLF & email_failed
   objEmail.Configuration.Fields.Item ("http://schemas.microsoft.com/cdo/configuration/sendusing") = 2
   objEmail.Configuration.Fields.Item ("http://schemas.microsoft.com/cdo/configuration/smtpserver") = email_server
   objEmail.Configuration.Fields.Item ("http://schemas.microsoft.com/cdo/configuration/smtpserverport") = email_port
@@ -49,4 +49,3 @@ On Error Resume Next
   else wscript.echo "Email sent sucessfully." end if
   Err.Clear
   else wscript.echo "Email not sent. Please check your settings." end if 
-  
