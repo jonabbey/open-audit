@@ -58,12 +58,13 @@ if (isset($_POST['username'])) {
     ldap_set_option($connect, LDAP_OPT_PROTOCOL_VERSION, 3);
     ldap_set_option($connect, LDAP_OPT_REFERRALS, 0);
     // Bind to directory using username and password
+    error_reporting(E_ERROR | E_PARSE);
     $bind = ldap_bind($connect, $username_plus_upn, $password);
     if (!($bind) || ($username=="") || ($password=="")) {
         session_destroy();
         // Close the connection
         ldap_unbind($connect);
-        header('Location: '.$script);
+        header('Location: '.$script.'?Result=Failed');
         die ("Could not bind with account $username");
     }
 
@@ -191,8 +192,15 @@ if (isset($_POST['username'])) {
 <font face="Verdana,Tahoma,Arial,sans-serif" size="1"
  color="gray"><?php echo __("Please login using your LDAP or Active Directory User Name and Password.");?></font>
 </td></tr><td align="center">
-<font face="Verdana,Tahoma,Arial,sans-serif" size="1"
- color="gray"><?php echo __("Unauthorised use of this site may be a criminal offence.");?></font>
+<?php 
+if (preg_match("/sult/i",$_SERVER['REQUEST_URI'])) {
+echo '<br><font face="Verdana,Tahoma,Arial,sans-serif" size="1" color="gray">'. __("Unauthorised use of this site may be a criminal offence.").'</font>';
+echo '<br><font face="Verdana,Tahoma,Arial,sans-serif" size="1" color="gray">'. __("Your IP address and browser details will be logged.").'</font>';
+echo '<br><font face="Verdana,Tahoma,Arial,sans-serif" size="1" color="gray">'. __("Any malicious attempt to access this site will be investigated.").'</font>';
+echo '<br><font face="Verdana,Tahoma,Arial,sans-serif" size="1" color="gray">'. __("Please contact the administrator if you are having problems logging in.").'</font>';
+
+}else{echo '<br><font face="Verdana,Tahoma,Arial,sans-serif" size="1" color="gray">'. __("Use of this site is subject to legal restrictions.").'</font>';}
+?>
 </td>
 </tr></table>
 </div>
