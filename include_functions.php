@@ -475,7 +475,7 @@ function determine_inkscape_img($os,$system_type) {
     $system_type= str_replace(" ","_",$system_type);
     $image="o_".$system_type.".png";
 //    $image="button_fail.png";
-    $title=__("Unknown ".$system);  
+    $title=__("Unknown ".$system_type);  
     }
     if (!is_file($image_folder."/o_".$system_type.".png")){
     $image="button_fail.png";
@@ -504,7 +504,7 @@ function determine_inkscape_img($os,$system_type) {
         $title=determine_os($os);
     }
     if( ereg("Server", $os) ){
-        $image="network-server.png";
+        $image="server.png";
         $title=determine_os($os);
     }
     if( ereg("Laptop|Expansion Chassis|Notebook|Sub Notebook|Portable|Docking Station", $system_type) ){
