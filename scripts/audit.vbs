@@ -410,9 +410,6 @@ end if
 wscript.quit
 
 
-' Exit the script
-wscript.quit
-
 function Audit(strComputer)
 start_time = Timer
 dim dt : dt = Now()
