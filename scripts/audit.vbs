@@ -673,6 +673,43 @@ For Each objItem in colItems
    end if 'is_installed = "true"
 Next
 
+On Error Resume Next
+Set colItems = objWMIService.ExecQuery("Select * from Win32_ComputerSystem",,48)
+For Each objItem in colItems
+   net_domain = objItem.Domain
+   net_user_name = objItem.UserName
+Next
+On Error Resume Next
+Set colItems = objWMIService.ExecQuery("Select * from Win32_NTDomain",,48)
+For Each objItem in colItems
+   net_client_site_name = objItem.ClientSiteName
+   net_domain_controller_address = objItem.DomainControllerAddress
+   net_domain_controller_name = objItem.DomainControllerName
+Next
+
+if isnull(net_ip_address) then net_ip_address = "" end if
+
+if isnull(net_domain) then
+  oReg.GetStringValue HKEY_LOCAL_MACHINE, "SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon", "DefaultDomainName", net_domain
+  if isnull(net_domain) then net_domain = "" end if
+end if
+if isnull(net_user_name) then
+  oReg.GetStringValue HKEY_LOCAL_MACHINE, "SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon", "DefaultUserName", net_user_name
+  if isnull(net_user_name) then net_user_name = "" end if
+end if
+
+if isnull(net_client_site_name) then net_client_site_name = "" end if
+if isnull(net_domain_controller_address) then net_domain_controller_address = "" end if
+if isnull(net_domain_controller_name) then net_domain_controller_name = "" end if
+
+form_input = "system01^^^" & clean(net_ip_address) & "^^^" & clean(net_domain) _
+                   & "^^^" & clean(net_user_name) & "^^^" & clean(net_client_site_name) _
+                   & "^^^" & clean(Replace(net_domain_controller_address, "\\", "")) & "^^^" & clean(Replace(net_domain_controller_name, "\\", "")) & "^^^"
+entry form_input,comment,objTextFile,oAdd,oComment
+form_input = ""
+
+
+
 '''''''''''''''''
 ' Make the UUID '
 '''''''''''''''''
