@@ -30,7 +30,20 @@ email_use_ssl = "false"           ' True/False
 email_timeout = "60"              ' In seconds
 
 audit_local_domain = "y" 
+'
+' Set domain_type = 'nt' for NT4 or SAMBA otherwise leave blank or set to ldap
+'domain_type = "nt"
+
 local_domain = "LDAP://localhost.local" 
+
+'
+' Example Set Domain name for NT ONLY for LDAP use the above format
+' NOTE This is Case Sensetive. See the example below.
+'
+'local_domain = "WinNT://IEXPLORE"
+'local_domain = "WinNT://<domainname>"
+' 
+
 hfnet = "n" 
 Count = 0 
 number_of_audits = 10 

@@ -5,6 +5,7 @@ this_config_url = "http://localhost/openaudit/list_export_config.php"
 ' Outputs into MySQL              '
 ' (c) Mark Unwin 2003             '
 '''''''''''''''''''''''''''''''''''
+'
 Dim verbose
 Public online
 Dim strComputer
@@ -251,6 +252,9 @@ end if
 ' Audit the local domain, if requested '
 ''''''''''''''''''''''''''''''''''''''''
 if audit_local_domain = "y" then
+  if domain_type = "nt" then
+      comparray = GetDomainComputers(local_domain)
+  elseif domain_type = "ldap" then
   Const ADS_SCOPE_SUBTREE = 2
   Set objConnection = CreateObject("ADODB.Connection")
   Set objCommand =   CreateObject("ADODB.Command")
@@ -283,6 +287,7 @@ if audit_local_domain = "y" then
     wscript.echo "Number of systems retrieved from ldap: " & Ubound(comparray)
     wscript.echo "--------------"
   end if
+end if 
 
   For i = 0 To Ubound(comparray)
 '  For i = 118 To 128
@@ -309,7 +314,6 @@ if audit_local_domain = "y" then
     end if
   Next
 end if
-
 
 '''''''''''''''''''''''''''''''''''
 ' Read the text file if requested '
@@ -3860,5 +3864,36 @@ Function FixPath(ByRef sPathDisk, ByRef sPathPart)
     Replace(sPathPart,chr(34), "\" & chr(34)) & chr(34) & "," & _
     "Dependent=" & chr(34) & Replace(sPathDisk,chr(34), "\" & _
     chr(34)) & chr(34)
+End Function
+
+'-------------------------------------------------------------------------------
+' Function:     GetDomainComputers
+' Description:  Returns a listing of NT Computer Accounts for a given domain
+' Parameters:   ByVal strDomain - Name of an NT Domain to retrieve the
+'                list of Computer from.
+' Returns:      Variant array of NT Computer names for the specified domain.
+'-------------------------------------------------------------------------------
+Function GetDomainComputers(ByVal local_domain)
+   Dim objIADsContainer          ' ActiveDs.IADsDomain
+   Dim objIADsComputer           ' ActiveDs.IADsComputer
+   Dim vReturn                   ' Variant
+   
+   ' connect to the computer.
+   Set objIADsContainer = GetObject(local_domain)
+
+   ' set the filter to retrieve only objects of class Computer
+   objIADsContainer.Filter = Array("Computer")
+
+   ReDim vReturn(0)
+   For Each objIADsComputer In objIADsContainer
+      If Trim(vReturn(0)) <> "" Then
+         ReDim Preserve vReturn(UBound(vReturn) + 1)
+      End If
+      vReturn(UBound(vReturn)) = objIADsComputer.Name
+   Next
+   
+   GetDomainComputers = vReturn
+   Set objIADsComputer = Nothing
+   Set objIADsContainer = Nothing
 End Function
 
