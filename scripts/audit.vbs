@@ -251,10 +251,17 @@ end if
 ''''''''''''''''''''''''''''''''''''''''
 ' Audit the local domain, if requested '
 ''''''''''''''''''''''''''''''''''''''''
+
+
 if audit_local_domain = "y" then
+  domain_type = LCase(domain_type)
+  if domain_type <> "nt" then 
+  domain_type = "ldap"
+  end if
   if domain_type = "nt" then
       comparray = GetDomainComputers(local_domain)
-  elseif domain_type = "ldap" then
+  end if
+  if domain_type = "ldap" then
   Const ADS_SCOPE_SUBTREE = 2
   Set objConnection = CreateObject("ADODB.Connection")
   Set objCommand =   CreateObject("ADODB.Command")
@@ -267,7 +274,7 @@ if audit_local_domain = "y" then
   objCommand.Properties("Sort On") = "name"
   Set objRecordSet = objCommand.Execute
   objRecordSet.MoveFirst
-
+  
   totcomp = objRecordset.recordcount -1
   Redim comparray(totcomp) ' set array to computer count
 
@@ -280,17 +287,16 @@ if audit_local_domain = "y" then
       wscript.echo "Computer Name from ldap: " & strComputer
     end if
     objRecordSet.MoveNext
-  Loop
+   Loop
 
-  num_running = HowMany
-  if verbose = "y" then
+   num_running = HowMany
+   if verbose = "y" then
     wscript.echo "Number of systems retrieved from ldap: " & Ubound(comparray)
     wscript.echo "--------------"
-  end if
-end if 
-
-  For i = 0 To Ubound(comparray)
-'  For i = 118 To 128
+   end if
+  end if 
+    For i = 0 To Ubound(comparray)
+   '  For i = 118 To 128
     while num_running > number_of_audits
       if verbose = "y" then
         wscript.echo "Processes running (" & num_running & ") greater than number wanted (" & number_of_audits & ")"
