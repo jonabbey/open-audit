@@ -1008,117 +1008,90 @@ comment = "Memory Info"
 if verbose = "y" then
    wscript.echo comment
 end if
-Set colItems = objWMIService.ExecQuery("Select MemoryDevices FROM Win32_PhysicalMemoryArray WHERE Use = '3'",,48)
+Set colItems = objWMIService.ExecQuery("Select MemoryDevices FROM Win32_PhysicalMemoryArray ",,48)
 For Each objItem in colItems
-   system_memory_banks = objItem.MemoryDevices
+   memory_slots = objItem.MemoryDevices
 Next
 On Error Resume Next
 Set colItems = objWMIService.ExecQuery("Select Capacity,DeviceLocator,FormFactor,MemoryType,TypeDetail,Speed FROM Win32_PhysicalMemory",,48)
-mem_count = 0
 mem_size = 0
 
 For Each objItem in colItems
-   mem_count = mem_count + 1
+   Select Case objItem.FormFactor
+     Case "1"  mem_formfactor = "Other"
+     Case "2"  mem_formfactor = "SIP"
+     Case "3"  mem_formfactor = "DIP"
+     Case "4"  mem_formfactor = "ZIP"
+     Case "5"  mem_formfactor = "SOJ"
+     Case "6"  mem_formfactor = "Proprietary"
+     Case "7"  mem_formfactor = "SIMM"
+     Case "8"  mem_formfactor = "DIMM"
+     Case "9"  mem_formfactor = "TSOP"
+     Case "10" mem_formfactor = "PGA"
+     Case "11" mem_formfactor = "RIMM"
+     Case "12" mem_formfactor = "SODIMM"
+     Case "13" mem_formfactor = "SRIMM"
+     Case "14" mem_formfactor = "SMD"
+     Case "15" mem_formfactor = "SSMP"
+     Case "16" mem_formfactor = "QFP"
+     Case "17" mem_formfactor = "TQFP"
+     Case "18" mem_formfactor = "SOIC"
+     Case "19" mem_formfactor = "LCC"
+     Case "20" mem_formfactor = "PLCC"
+     Case "21" mem_formfactor = "BGA"
+     Case "22" mem_formfactor = "FPBGA"
+     Case "23" mem_formfactor = "LGA"
+     Case Else mem_formfactor = "Unknown"
+   End Select
 
-   If mem_count > int(system_memory_banks) then
-     if verbose = "y" then
-        wscript.echo "mem_count: " & mem_count & "   - system_memory_banks: " & int(system_memory_banks)
-     End If
-     Exit For
-   End If
+   Select Case objItem.MemoryType
+     Case "1"  mem_detail = "Other"
+     Case "2"  mem_detail = "DRAM"
+     Case "3"  mem_detail = "Synchronous DRAM"
+     Case "4"  mem_detail = "Cache DRAM"
+     Case "5"  mem_detail = "EDO"
+     Case "6"  mem_detail = "EDRAM"
+     Case "7"  mem_detail = "VRAM"
+     Case "8"  mem_detail = "SRAM"
+     Case "9"  mem_detail = "RAM"
+     Case "10" mem_detail = "ROM"
+     Case "11" mem_detail = "Flash"
+     Case "12" mem_detail = "EEPROM"
+     Case "13" mem_detail = "FEPROM"
+     Case "14" mem_detail = "EPROM"
+     Case "15" mem_detail = "CDRAM"
+     Case "16" mem_detail = "3DRAM"
+     Case "17" mem_detail = "SDRAM"
+     Case "18" mem_detail = "SGRAM"
+     Case "19" mem_detail = "RDRAM"
+     Case "20" mem_detail = "DDR"
+     Case "21" mem_detail = "DDR-2"
+     Case Else mem_detail = "Unknown"
+   End Select
 
-   If objItem.FormFactor = "7" then
-      mem_formfactor = "SIMM"
-   ElseIf objItem.FormFactor = "8" then
-      mem_formfactor = "DIMM"
-   ElseIf objItem.FormFactor = "11" then
-      mem_formfactor = "RIMM"
-   ElseIf objItem.FormFactor = "12" then
-      mem_formfactor = "SODIMM"
-   ElseIf objItem.FormFactor = "13" then
-      mem_formfactor = "SRIMM"
-   Else
-      mem_formfactor = "Unknown"
-   End If
+   Select Case objItem.TypeDetail
+     Case "1"     mem_typedetail = "Reserved"
+     Case "2"     mem_typedetail = "Other"
+     Case "4"     mem_typedetail = "Unknown"
+     Case "8"     mem_typedetail = "Fast-paged"
+     Case "16"    mem_typedetail = "Static column"
+     Case "32"    mem_typedetail = "Pseudo-static"
+     Case "64"    mem_typedetail = "RAMBUS"
+     Case "128"   mem_typedetail = "Synchronous"
+     Case "256"   mem_typedetail = "CMOS"
+     Case "512"   mem_typedetail = "EDO"
+     Case "1024"  mem_typedetail = "Window DRAM"
+     Case "2048"  mem_typedetail = "Cache DRAM"
+     Case "4096"  mem_typedetail = "Non-volatile"
+     Case Else    mem_typedetail = "Unknown"
+   End Select
 
-   If objItem.MemoryType = "0" then
-      mem_detail = "Unknown"
-   ElseIf objItem.MemoryType = "1" then
-      mem_detail = "Other"
-   ElseIf objItem.MemoryType = "2" then
-      mem_detail = "DRAM"
-   ElseIf objItem.MemoryType = "3" then
-      mem_detail = "Synchronous DRAM"
-   ElseIf objItem.MemoryType = "4" then
-      mem_detail = "Cache DRAM"
-   ElseIf objItem.MemoryType = "5" then
-      mem_detail = "EDO"
-   ElseIf objItem.MemoryType = "6" then
-      mem_detail = "EDRAM"
-   ElseIf objItem.MemoryType = "7" then
-      mem_detail = "VRAM"
-   ElseIf objItem.MemoryType = "8" then
-      mem_detail = "SRAM"
-   ElseIf objItem.MemoryType = "9" then
-      mem_detail = "RAM"
-   ElseIf objItem.MemoryType = "10" then
-      mem_detail = "ROM"
-   ElseIf objItem.MemoryType = "11" then
-      mem_detail = "Flash"
-   ElseIf objItem.MemoryType = "12" then
-      mem_detail = "EEPROM"
-   ElseIf objItem.MemoryType = "13" then
-      mem_detail = "FEPROM"
-   ElseIf objItem.MemoryType = "14" then
-      mem_detail = "EPROM"
-   ElseIf objItem.MemoryType = "15" then
-      mem_detail = "CDRAM"
-   ElseIf objItem.MemoryType = "16" then
-      mem_detail = "3DRAM"
-   ElseIf objItem.MemoryType = "17" then
-      mem_detail = "SDRAM"
-   ElseIf objItem.MemoryType = "18" then
-      mem_detail = "SGRAM"
-   ElseIf objItem.MemoryType = "19" then
-      mem_detail = "RDRAM"
-   ElseIf objItem.MemoryType = "20" then
-      mem_detail = "DDR"
-   End If
-
-   If objItem.TypeDetail = "1" then
-      mem_typedetail = "Reserved"
-   ElseIf objItem.TypeDetail = "2" then
-      mem_typedetail = "Other"
-   ElseIf objItem.TypeDetail = "4" then
-      mem_typedetail = "Unknown"
-   ElseIf objItem.TypeDetail = "8" then
-      mem_typedetail = "Fast-paged"
-   ElseIf objItem.TypeDetail = "16" then
-      mem_typedetail = "Static column"
-   ElseIf objItem.TypeDetail = "32" then
-      mem_typedetail = "Pseudo-static"
-   ElseIf objItem.TypeDetail = "64" then
-      mem_typedetail = "RAMBUS"
-   ElseIf objItem.TypeDetail = "128" then
-      mem_typedetail = "Synchronous"
-   ElseIf objItem.TypeDetail = "256" then
-      mem_typedetail = "CMOS"
-   ElseIf objItem.TypeDetail = "512" then
-      mem_typedetail = "EDO"
-   ElseIf objItem.TypeDetail = "1024" then
-      mem_typedetail = "Window DRAM"
-   ElseIf objItem.TypeDetail = "2048" then
-      mem_typedetail = "Cache DRAM"
-   ElseIf objItem.TypeDetail = "4096" then
-      mem_typedetail = "Non-volatile"
-   Else
-      mem_typedetail = "Unknown"
-   End If
-   mem_bank = objItem.DeviceLocator
+   mem_bank = objItem.DeviceLocator & "/" & memory_slots
    mem_size = int(objItem.Capacity /1024 /1024)
+   mem_speed = clean(objItem.Speed)
 
    form_input = "memory^^^" & mem_bank       & "^^^" & mem_formfactor & "^^^" & mem_detail & "^^^" _
-                            & mem_typedetail & "^^^" & mem_size       & "^^^" & clean(objItem.Speed) & "^^^"
+                            & mem_typedetail & "^^^" & mem_size       & "^^^" & mem_speed  & "^^^"
    entry form_input,comment,objTextFile,oAdd,oComment
    form_input = ""
    if online = "p" then
@@ -1134,9 +1107,10 @@ If mem_size = 0 Then
       mem_size = objItem.TotalPhysicalMemory
    Next
    mem_size = int(mem_size /1024)
+   mem_bank = "Unknown (out of " & memory_slots & " slots)"
 
-   form_input = "memory^^^" & "Unknown" & "^^^" & "Unknown" & "^^^" & "Unknown" & "^^^" _
-                            & "Unknown" & "^^^" & mem_size  & "^^^" & "0" & "^^^"
+   form_input = "memory^^^" & mem_bank  & "^^^" & "Unknown" & "^^^" & "Unknown" & "^^^" _
+                            & "Unknown" & "^^^" & mem_size  & "^^^" & "0"       & "^^^"
    entry form_input,comment,objTextFile,oAdd,oComment
    form_input = ""
 
@@ -1145,6 +1119,7 @@ If mem_size = 0 Then
       oIE.document.WriteLn "<tr bgcolor=""#F1F1F1""><td>Memory Size: </td><td>" & mem_size & "</td></tr>"
    end if
 End If
+
 
 
 '''''''''''''''''''''''''''
