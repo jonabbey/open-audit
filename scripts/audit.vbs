@@ -222,7 +222,7 @@ Else
 End If
 if keep_audit_log <> "y" then
   Set objFile = objFSO.CreateTextFile(this_audit_log, ForWriting)
-  objFile.WriteLine
+  objFile.WriteLine "TIME,MACHINE,RESULT"
   objFile.Close
 End If  
 
@@ -424,14 +424,14 @@ objFile.Close
 if email_failed <> "" then
   On Error Resume Next
   if verbose = "y" then
-  wscript.echo "Some systems failed to audit. See " & this_audit_log & " for details."
+  wscript.echo "Some systems may have failed to audit. See " & this_audit_log & " for details."
   end if
   Set objEmail = CreateObject("CDO.Message")
   objEmail.From = email_from
   objEmail.To   = email_to
   'objEmail.Sender   = email_sender
-  objEmail.Subject = "Open-AudIT - Failed Audits."
-  objEmail.Textbody = "The following systems failed to audit: " & vbCRLF & email_failed
+  objEmail.Subject = "Open-AudIT - Audit Results."
+  objEmail.Textbody = "The following systems were audited: " & vbCRLF & email_failed
   objEmail.Configuration.Fields.Item ("http://schemas.microsoft.com/cdo/configuration/sendusing") = 2
   objEmail.Configuration.Fields.Item ("http://schemas.microsoft.com/cdo/configuration/smtpserver") = email_server
   objEmail.Configuration.Fields.Item ("http://schemas.microsoft.com/cdo/configuration/smtpserverport") = email_port
