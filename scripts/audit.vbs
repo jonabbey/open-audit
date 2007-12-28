@@ -38,7 +38,8 @@ Const ForReading = 1, ForWriting = 2, ForAppending = 8
 
 form_total = ""
 this_config = "audit.config"
-
+this_audit_log = "audit_log.txt"
+keep_audit_log = "y"
 '
 ' This takes no account of the command line switches added to a forked version, but in principal
 ' The logic should be...
@@ -196,18 +197,34 @@ Const HKEY_USERS         = &H80000003
 '''''''''''''''''''''''''''''
 ' Clear Failed Audits File  '
 '''''''''''''''''''''''''''''
-' Check if failed_audits.txt exists, and create it if need be.
-' If file exists - remove contents
+' Check if this_audit_log exists, and create it if need be.
+' 28th Dec 2007 (AJH) Changed default behaviour, we used to clear this at the start of every run.
+' Currently this file will grow forever, unless we set keep_audit_log <> "y".
+'
+' This is in order to ensure we see results, even if we bomb spectacularly
+' Previously we just assumed we had a good audit if we didn't fail. This included the situation where we started
+' an audit, but it never completed. 
+' 
+' Now we log the start, finish or no connection.
+' A start but no finish is also a failure, just sort the file by field 2 first, 1 second and it should show every 
+' start and finish, any missing finishes mean disaster. 
+'''''''''''''''''''''''''''''
+
 Set objFSO = CreateObject("Scripting.FileSystemObject")
-If objFSO.FileExists("failed_audits.txt") Then
-  Set objFile = objFSO.OpenTextFile("failed_audits.txt", 2)
-  objFile.WriteLine
+If objFSO.FileExists(this_audit_log) Then
+  Set objFile = objFSO.OpenTextFile(this_audit_log, ForAppending)
+'  objFile.WriteLine
   objFile.Close
 Else
-  Set objFile = objFSO.CreateTextFile("failed_audits.txt", 2)
-  objFile.WriteLine
+  Set objFile = objFSO.CreateTextFile(this_audit_log, ForAppending)
+'  objFile.WriteLine
   objFile.Close
 End If
+if keep_audit_log <> "y" then
+  Set objFile = objFSO.CreateTextFile(this_audit_log, ForWriting)
+  objFile.WriteLine
+  objFile.Close
+End If  
 
 
 '''''''''''''''''''''''''''''
@@ -234,14 +251,23 @@ if strComputer <> "" then
       Set oReg=GetObject("winmgmts:{impersonationLevel=impersonate}!\\" & strComputer & "\root\default:StdRegProv")
       Set objWMIService = GetObject("winmgmts:\\" & strComputer & "\root\cimv2")
     end if
+    Set objFSO = CreateObject("Scripting.FileSystemObject")
+    Set objFile = objFSO.OpenTextFile(this_audit_log, 8)
+    objFile.WriteLine "" & Now & "," & strComputer  & ",Started"
+    objFile.Close
     Audit (strComputer)
+        Set objFSO = CreateObject("Scripting.FileSystemObject")
+    Set objFile = objFSO.OpenTextFile(this_audit_log, 8)
+    objFile.WriteLine "" & Now & "," & strComputer  & ",Completed"
+    objFile.Close
+    
   else
     if verbose = "y" then
       wscript.echo strComputer & " not available."
     end if
     Set objFSO = CreateObject("Scripting.FileSystemObject")
-    Set objFile = objFSO.OpenTextFile("failed_audits.txt", 8)
-    objFile.WriteLine strComputer
+    Set objFile = objFSO.OpenTextFile(this_audit_log, 8)
+    objFile.WriteLine "" & Now & "," & strComputer  & ",Failed not available" 
     objFile.Close
   end if
   wscript.quit
@@ -378,22 +404,28 @@ end if
 
 
 
+
 ' Give the spawned scripts time to fail before emailing
 wscript.Sleep 6000
-
-' Open the file failed_audits.txt, read the contents and store in failed_audits variable
-Set objFile = objFSO.OpenTextFile("failed_audits.txt", 1)
-email_failed = objFile.ReadAll
-objFile.Close
 
 ''''''''''''''''''''''''''''''''''
 ' Send an email of failed audits '
 ' if there are any               '
 ''''''''''''''''''''''''''''''''''
 
+
+' Open the file this_audit_log, read the contents and store in this_audit_log variable
+Set objFile = objFSO.OpenTextFile(this_audit_log, 1)
+email_failed = objFile.ReadAll
+objFile.Close
+
+
+
 if email_failed <> "" then
   On Error Resume Next
-  wscript.echo "This system failed to audit."
+  if verbose = "y" then
+  wscript.echo "Some systems failed to audit. See " & this_audit_log & " for details."
+  end if
   Set objEmail = CreateObject("CDO.Message")
   objEmail.From = email_from
   objEmail.To   = email_to
