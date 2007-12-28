@@ -199,11 +199,13 @@ Const HKEY_USERS         = &H80000003
 '''''''''''''''''''''''''''''
 ' Check if this_audit_log exists, and create it if need be.
 ' 28th Dec 2007 (AJH) Changed default behaviour, we used to clear this at the start of every run.
-' Currently this file will grow forever, unless we set keep_audit_log <> "y".
+' Currently this file will grow forever, even if we set keep_audit_log <> "y".
 '
 ' This is in order to ensure we see results, even if we bomb spectacularly
 ' Previously we just assumed we had a good audit if we didn't fail. This included the situation where we started
 ' an audit, but it never completed. 
+' Simply clearing the log at the start is not going to work, since this will clear it every time the script calls itself. 
+' We must clear it after the email is sent. 
 ' 
 ' Now we log the start, finish or no connection.
 ' A start but no finish is also a failure, just sort the file by field 2 first, 1 second and it should show every 
@@ -218,13 +220,9 @@ If objFSO.FileExists(this_audit_log) Then
 Else
   Set objFile = objFSO.CreateTextFile(this_audit_log, ForAppending)
 '  objFile.WriteLine
-  objFile.Close
-End If
-if keep_audit_log <> "y" then
-  Set objFile = objFSO.CreateTextFile(this_audit_log, ForWriting)
   objFile.WriteLine "TIME,MACHINE,RESULT"
   objFile.Close
-End If  
+End If
 
 
 '''''''''''''''''''''''''''''
@@ -431,7 +429,7 @@ if email_failed <> "" then
   objEmail.To   = email_to
   'objEmail.Sender   = email_sender
   objEmail.Subject = "Open-AudIT - Audit Results."
-  objEmail.Textbody = "The following systems were audited: " & vbCRLF & email_failed
+  objEmail.Textbody =  email_failed
   objEmail.Configuration.Fields.Item ("http://schemas.microsoft.com/cdo/configuration/sendusing") = 2
   objEmail.Configuration.Fields.Item ("http://schemas.microsoft.com/cdo/configuration/smtpserver") = email_server
   objEmail.Configuration.Fields.Item ("http://schemas.microsoft.com/cdo/configuration/smtpserverport") = email_port
@@ -447,7 +445,19 @@ if email_failed <> "" then
   else wscript.echo "Email sent." end if
   Err.Clear
 end if
+'
+' Now we can remove the log... if requested,  but we actually just blank it...
+' Keeps it tidy, and is slightly more secure.
+'
+if keep_audit_log <> "y" then 
+  Set objFile = objFSO.CreateTextFile(this_audit_log, ForWriting)
+'  objFile.WriteLine
+  objFile.WriteLine "TIME,MACHINE,RESULT"
+  objFile.Close
 
+end if
+'
+' Nothing more to do so we quit
 ' Exit the script
 wscript.quit
 
