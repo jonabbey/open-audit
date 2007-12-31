@@ -229,7 +229,25 @@ End If
 ' Process the manual input  '
 '''''''''''''''''''''''''''''
 if strComputer <> "" then
-  if (IsConnectible(strComputer, "", "") OR (strComputer = ".")) Then
+  if (IsConnectible(strComputer, "", "")  OR (strComputer = ".")) then
+    thisresult = IsWMIConnectible(strComputer,strUser,strPass)
+    if thisresult = False then
+        Set objFSO = CreateObject("Scripting.FileSystemObject")
+    Set objFile = objFSO.OpenTextFile(this_audit_log, 8)
+    objFile.WriteLine "" & Now & "," & strComputer & " - Unable to connect to WMI. Error ="  & Err.Number & "-" & Err.Description
+    objFile.Close
+    end if
+    if thisresult = True then
+        Set objFSO = CreateObject("Scripting.FileSystemObject")
+    Set objFile = objFSO.OpenTextFile(this_audit_log, 8)
+    objFile.WriteLine "" & Now & "," & strComputer & " - Able to connect to WMI. "
+    objFile.Close
+    
+    if verbose = "y" then 
+    wscript.echo "" & Now & "," & strComputer & " - Able to connect to WMI. "
+    end if
+    
+    ' wscript.sleep 10000
     if strUser <> "" and strPass <> "" then
     ' Username & Password provided - assume not a domain local PC.
       if verbose = "y" then
@@ -258,6 +276,8 @@ if strComputer <> "" then
     Set objFile = objFSO.OpenTextFile(this_audit_log, 8)
     objFile.WriteLine "" & Now & "," & strComputer  & ",Completed"
     objFile.Close
+    
+    end if
     
   else
     if verbose = "y" then
@@ -400,11 +420,14 @@ if input_file <> "" then
   Next
 end if
 
-
-
-
 ' Give the spawned scripts time to fail before emailing
-wscript.Sleep 6000
+' Use 300000ms = 300s = 5mins
+' We can't wait forever, so any audit taking >5 mins will fail to appear in the email.
+' Would be good if Windoze had some sort of interprocess semaphores, but what can you expect ...   ;) 
+if verbose = "y" then 
+wscript.echo "Waiting 5 mins for scripts to complete."
+end if 
+wscript.Sleep 300000
 
 ''''''''''''''''''''''''''''''''''
 ' Send an email of failed audits '
@@ -441,8 +464,14 @@ if email_failed <> "" then
   objEmail.Configuration.Fields.Update
   objEmail.Send
   if Err.Number <> 0 then
+   if verbose = "y" then 
     wscript.echo "Error sending email: " & Err.Description
-  else wscript.echo "Email sent." end if
+   end if
+  else
+    if verbose = "y" then
+        wscript.echo "Email sent."
+     end if
+  end if
   Err.Clear
 end if
 '
@@ -3446,6 +3475,27 @@ Loop While i>=0 'Goto Rep1
 GetKey=szProductKey
 End Function
 
+Function IsWMIConnectible(strComputer, strUser, strPass)
+'
+'Set objWMIService = GetObject("winmgmts:\\" & strComputer &"\root\cimv2") '(*)
+Set objSWbemLocator = CreateObject("WbemScripting.SWbemLocator")
+Set objSWbemServices = objSWbemLocator.ConnectServer(strComputer, "root\cimv2", strUser, strPass, "", "", &h80)
+Set colSWbemObjectSet = objSWbemServices.InstancesOf("Win32_Service")
+
+'Set objWMIService = objSWbemLocator.ConnectServer(strComputer,"root\cimv2",strUser,strPass,"","",&H80 )
+
+If Err.Number > 0 Then
+'WScript.Echo strComputer & " - Unable to connect to WMI. Error ="  & Err.Number & "-" & Err.Description
+Err.Clear
+IsWMIConnectible = False
+Else
+' WScript.Echo strComputer & "Connect to WMI: OK!"
+IsWMIConnectible = True
+End If
+'WScript.Echo strComputer & " - Unable to connect to WMI. Error ="  & Err.Number & "-" & Err.Description
+Err.Clear
+
+End Function
 
 
 Function IsConnectible(sHost,iPings,iTO)
