@@ -37,7 +37,11 @@ Dim net_mac_uuid
 Const ForReading = 1, ForWriting = 2, ForAppending = 8 
 
 form_total = ""
-this_config = "audit.config"
+'
+sScriptPath=Left(WScript.ScriptFullName, InStrRev(WScript.ScriptFullName,"\"))
+this_config = sScriptPath & "audit.config"
+
+'this_config = "audit.config"
 this_audit_log = "audit_log.txt"
 keep_audit_log = "y"
 '
@@ -87,8 +91,13 @@ End If
  '(this is a good point to break if testing the config)
 'wscript.Quit(0)
 ' Below calls the file audit_include.vbs to setup the variables.
-sScriptPath=Left(WScript.ScriptFullName, InStrRev(WScript.ScriptFullName,"\"))
-ExecuteGlobal CreateObject("Scripting.FileSystemObject").OpenTextFile(sScriptPath & this_config).ReadAll
+' 
+'sScriptPath=Left(WScript.ScriptFullName, InStrRev(WScript.ScriptFullName,"\"))
+'ExecuteGlobal CreateObject("Scripting.FileSystemObject").OpenTextFile(sScriptPath & this_config).ReadAll
+
+
+ExecuteGlobal CreateObject("Scripting.FileSystemObject").OpenTextFile(this_config).ReadAll
+
 
 ' If any command line args given - use the first one as strComputer
 If Wscript.Arguments.Count > 0 Then
@@ -451,9 +460,9 @@ Do Until (i = 5 or end_of_audits = "true")
    i = i + 1
 Loop
 
-if verbose = "y" then
-  wscript.echo "Some systems may have failed to audit. See " & this_audit_log & " for details."
-end if
+'if verbose = "y" then
+'  wscript.echo "Some systems may have failed to audit. See " & this_audit_log & " for details."
+'end if
 
 ''''''''''''''''''''''''''''''''''
 ' Send an email of audits results '
@@ -3532,7 +3541,8 @@ Function IsConnectible(sHost,iPings,iTO)
    If iTO = "" Then iTO = 750
     Set oShell = CreateObject("WScript.Shell")
     Set oExCmd = oShell.Exec("ping -n " & iPings & " -w " & iTO & " " & sHost)
-    Select Case InStr(oExCmd.StdOut.Readall,"TTL=")
+    Select Case InStr(UCase(oExCmd.StdOut.Readall),"REPLY FROM")
+'    Select Case InStr(oExCmd.StdOut.Readall,"TTL=")
       Case 0 IsConnectible = False
       Case Else IsConnectible = True
     End Select
