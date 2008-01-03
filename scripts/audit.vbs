@@ -234,13 +234,13 @@ if strComputer <> "" then
     if thisresult = False then
         Set objFSO = CreateObject("Scripting.FileSystemObject")
     Set objFile = objFSO.OpenTextFile(this_audit_log, 8)
-    objFile.WriteLine "" & Now & "," & strComputer & " - Unable to connect to WMI. Error ="  & Err.Number & "-" & Err.Description
+    objFile.WriteLine "" & Now & "," & strComputer & ",Unable to connect to WMI. Error ="  & Err.Number & "-" & Err.Description
     objFile.Close
     end if
     if thisresult = True then
         Set objFSO = CreateObject("Scripting.FileSystemObject")
     Set objFile = objFSO.OpenTextFile(this_audit_log, 8)
-    objFile.WriteLine "" & Now & "," & strComputer & " - Able to connect to WMI. "
+    objFile.WriteLine "" & Now & "," & strComputer & ",Able to connect to WMI. "
     objFile.Close
     
     if verbose = "y" then 
@@ -296,6 +296,14 @@ end if
 ' Audit the local domain, if requested '
 ''''''''''''''''''''''''''''''''''''''''
 
+' Read current script PID
+Set objLocalWMIService = GetObject("winmgmts:root\cimv2")
+Set colItems = objLocalWMIService.ExecQuery("Select * From Win32_Process",,48)
+For Each objItem in colItems
+   If InStr (objItem.CommandLine, WScript.ScriptName) <> 0 Then
+     current_PID = objItem.ProcessId
+   End If
+Next
 
 if audit_local_domain = "y" then
   domain_type = LCase(domain_type)
@@ -421,63 +429,83 @@ if input_file <> "" then
 end if
 
 ' Give the spawned scripts time to fail before emailing
-' Use 300000ms = 300s = 5mins
+' Use 60000ms = 60s = 1min
 ' We can't wait forever, so any audit taking >5 mins will fail to appear in the email.
-' Would be good if Windoze had some sort of interprocess semaphores, but what can you expect ...   ;) 
-if verbose = "y" then 
-wscript.echo "Waiting 5 mins for scripts to complete."
-end if 
-wscript.Sleep 300000
 
-''''''''''''''''''''''''''''''''''
-' Send an email of failed audits '
-' if there are any               '
-''''''''''''''''''''''''''''''''''
+i = 0
+Do Until (i = 5 or end_of_audits = "true")
+   end_of_audits = "true"
+   num_running = HowMany - 1
+   Set colItems = objLocalWMIService.ExecQuery("Select * From Win32_Process Where ProcessId <> '" & current_PID & "'",,48)
+   For Each objItem in colItems
+      If InStr (objItem.CommandLine, "cscript.exe") <> 0 Then
+        end_of_audits = "false"
+      End If
+   Next
+   If end_of_audits = "false"  Then
+     If verbose = "y" then
+       wscript.echo "Waiting 1 min for remaining " & num_running & " scripts to complete."
+     End if
+     wscript.Sleep 60000
+   End if
+   i = i + 1
+Loop
 
-
-' Open the file this_audit_log, read the contents and store in this_audit_log variable
-Set objFile = objFSO.OpenTextFile(this_audit_log, 1)
-email_failed = objFile.ReadAll
-objFile.Close
-
-
-
-if email_failed <> "" then
-  On Error Resume Next
-  if verbose = "y" then
+if verbose = "y" then
   wscript.echo "Some systems may have failed to audit. See " & this_audit_log & " for details."
-  end if
-  Set objEmail = CreateObject("CDO.Message")
-  objEmail.From = email_from
-  objEmail.To   = email_to
-  'objEmail.Sender   = email_sender
-  objEmail.Subject = "Open-AudIT - Audit Results."
-  objEmail.Textbody =  email_failed
-  objEmail.Configuration.Fields.Item ("http://schemas.microsoft.com/cdo/configuration/sendusing") = 2
-  objEmail.Configuration.Fields.Item ("http://schemas.microsoft.com/cdo/configuration/smtpserver") = email_server
-  objEmail.Configuration.Fields.Item ("http://schemas.microsoft.com/cdo/configuration/smtpserverport") = email_port
-  objEmail.Configuration.Fields.Item ("http://schemas.microsoft.com/cdo/configuration/smtpauthenticate") = email_auth
-  objEmail.Configuration.Fields.Item ("http://schemas.microsoft.com/cdo/configuration/sendusername") = email_user_id
-  objEmail.Configuration.Fields.Item ("http://schemas.microsoft.com/cdo/configuration/sendpassword") = email_user_pwd
-  objEmail.Configuration.Fields.Item ("http://schemas.microsoft.com/cdo/configuration/smtpusessl") = email_use_ssl
-  objEmail.Configuration.Fields.Item ("http://schemas.microsoft.com/cdo/configuration/smtpconnectiontimeout") = email_timeout
-  objEmail.Configuration.Fields.Update
-  objEmail.Send
-  if Err.Number <> 0 then
-   if verbose = "y" then 
-    wscript.echo "Error sending email: " & Err.Description
-   end if
-  else
-    if verbose = "y" then
-        wscript.echo "Email sent."
-     end if
-  end if
-  Err.Clear
 end if
+
+''''''''''''''''''''''''''''''''''
+' Send an email of audits results '
+' if requested               '
+''''''''''''''''''''''''''''''''''
+If send_email Then
+
+  ' Open the file this_audit_log, read the contents and store in this_audit_log variable
+  Set objFile = objFSO.OpenTextFile(this_audit_log, 1)
+  email_failed = objFile.ReadAll
+  objFile.Close
+
+  if email_failed <> "" then
+    On Error Resume Next
+    if verbose = "y" then
+    wscript.echo "Some systems may have failed to audit. See " & this_audit_log & " for details."
+    end if
+    Set objEmail = CreateObject("CDO.Message")
+    objEmail.From = email_from
+    objEmail.To   = email_to
+    'objEmail.Sender   = email_sender
+    objEmail.Subject = "Open-AudIT - Audit Results."
+    objEmail.Textbody =  email_failed
+    objEmail.Configuration.Fields.Item ("http://schemas.microsoft.com/cdo/configuration/sendusing") = 2
+    objEmail.Configuration.Fields.Item ("http://schemas.microsoft.com/cdo/configuration/smtpserver") = email_server
+    objEmail.Configuration.Fields.Item ("http://schemas.microsoft.com/cdo/configuration/smtpserverport") = email_port
+    objEmail.Configuration.Fields.Item ("http://schemas.microsoft.com/cdo/configuration/smtpauthenticate") = email_auth
+    objEmail.Configuration.Fields.Item ("http://schemas.microsoft.com/cdo/configuration/sendusername") = email_user_id
+    objEmail.Configuration.Fields.Item ("http://schemas.microsoft.com/cdo/configuration/sendpassword") = email_user_pwd
+    objEmail.Configuration.Fields.Item ("http://schemas.microsoft.com/cdo/configuration/smtpusessl") = email_use_ssl
+    objEmail.Configuration.Fields.Item ("http://schemas.microsoft.com/cdo/configuration/smtpconnectiontimeout") = email_timeout
+    objEmail.Configuration.Fields.Update
+    objEmail.Send
+    if Err.Number <> 0 then
+      if verbose = "y" then
+        wscript.echo "Error sending email: " & Err.Description
+      end if
+    else
+      if verbose = "y" then
+        wscript.echo "Email sent."
+      end if
+    end if
+    Err.Clear
+  end if
+End if 'send_email = "true"
+
 '
 ' Now we can remove the log... if requested,  but we actually just blank it...
 ' Keeps it tidy, and is slightly more secure.
 '
+'
+
 if keep_audit_log <> "y" then 
   Set objFile = objFSO.CreateTextFile(this_audit_log, ForWriting)
 '  objFile.WriteLine
@@ -3481,9 +3509,10 @@ Function IsWMIConnectible(strComputer, strUser, strPass)
 Set objSWbemLocator = CreateObject("WbemScripting.SWbemLocator")
 Set objSWbemServices = objSWbemLocator.ConnectServer(strComputer, "root\cimv2", strUser, strPass, "", "", &h80)
 Set colSWbemObjectSet = objSWbemServices.InstancesOf("Win32_Service")
-
-'Set objWMIService = objSWbemLocator.ConnectServer(strComputer,"root\cimv2",strUser,strPass,"","",&H80 )
-
+'
+'For Each objSWbemObject In colSWbemObjectSet
+'    Wscript.Echo "Name: " & objSWbemObject.Name
+'Next
 If Err.Number > 0 Then
 'WScript.Echo strComputer & " - Unable to connect to WMI. Error ="  & Err.Number & "-" & Err.Description
 Err.Clear
