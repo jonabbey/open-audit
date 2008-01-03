@@ -797,13 +797,34 @@ For Each objItem in colItems
    net_domain = objItem.Domain
    net_user_name = objItem.UserName
 Next
+
+'On Error Resume Next
+'Set colItems = objWMIService.ExecQuery("Select * from Win32_NTDomain",,48)
+'For Each objItem in colItems
+'   net_client_site_name = objItem.ClientSiteName
+'   net_domain_controller_address = objItem.DomainControllerAddress
+'   net_domain_controller_name = objItem.DomainControllerName
+'Next
+
+' Get domain NetBIOS name from domain DNS name
+domain_dn="DC=" & Replace(net_domain,".",",DC=")
+Set oTranslate = CreateObject("NameTranslate")
+hr = oTranslate.Init (3, "")
+hr = oTranslate.Set (1, domain_dn)
+domain_nb = oTranslate.Get(3)
+domain_nb = Left(domain_nb,Len(domain_nb)-1)
+
 On Error Resume Next
-Set colItems = objWMIService.ExecQuery("Select * from Win32_NTDomain",,48)
+Set colItems = objWMIService.ExecQuery("Select * from Win32_NTDomain WHERE DomainName='" & domain_nb & "'",,48)
 For Each objItem in colItems
-   net_client_site_name = objItem.ClientSiteName
-   net_domain_controller_address = objItem.DomainControllerAddress
-   net_domain_controller_name = objItem.DomainControllerName
+  net_client_site_name = objItem.ClientSiteName
+  net_domain_controller_address = objItem.DomainControllerAddress
+  net_domain_controller_name = objItem.DomainControllerName
 Next
+
+
+
+
 
 if isnull(net_ip_address) then net_ip_address = "" end if
 
