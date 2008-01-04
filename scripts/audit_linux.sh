@@ -1,79 +1,9 @@
 #!/bin/bash
 
-if [ $(id -u) != "0" ]; then
-  echo "You must use root privs to run this script."
-  exit 0
-fi
-
 HOSTNAME=`hostname`
 DATE="`date +%d/%m/%Y``date +%H:%M:%S`"
 ReportFile=$HOSTNAME.txt
 audit_date="`date +%Y%m%d``date +%H%M%S`"
-
-
-#Network detection
-pcieth=`lspci -vm | grep -A2 "Ethernet controller"; lspci -vm | grep -A2 "Network controller"`
-for i in `ifconfig -a | grep eth | cut -d" " -f1`
-do 
-  name=`echo "$pcieth" | grep -w "Device:" | cut -d: -f2 | cut -c2-`
-  manufacturer=`echo "$pcieth" | grep -w "Vendor:" | cut -d: -f2 | cut -c2-`
-  ip=`ifconfig $i | grep -w inet | cut -d":" -f2 | cut -d" " -f1`
-  subnet=`ifconfig $i | grep -w inet | cut -d":" -f4 | cut -d" " -f1`
-  mac=`ifconfig $i | grep -w HWaddr | cut -d" " -f11`
-  type="Network Adapter"
-done
-
-for i in `cat /etc/resolv.conf | cut -d" " -f2`
-do
-  dns_server="$i"
-done
-echo "network^^^$mac^^^$name^^^ ^^^ ^^^$HOSTNAME^^^$dns_server^^^$ip^^^$subnet^^^ ^^^ ^^^$type^^^$manufacturer^^^" >> $ReportFile
-# Missing - DHCP Enabled
-#         - DHCP Server
-#         - WINS Primary
-#         - WINS Secondary
-
-# System01
-echo "system01^^^$ip^^^ ^^^$HOSTNAME\ ^^^ ^^^ ^^^ ^^^" >> $ReportFile
-# Missing - Domain
-#         - User
-#         - AD Site
-#         - Domain Controller Address
-#         - Domain Controller Name
-
-
-# Memory
-#RAMsizekb=`cat /proc/meminfo | grep MemTotal |cut -d: -f2 | cut -c8- | cut -d" " -f1`
-RAMsizekb=`cat /proc/meminfo | grep MemTotal |cut -d: -f2 | cut -dk -f1`
-RAMsizekb=`expr $RAMsizekb / 1`
-RAMsize=`expr $RAMsizekb / 1024`
-
-#Number of CPUs
-nbcpu=`cat /proc/cpuinfo | grep "processor" | wc -l`
-
-# System Model
-sys_model=`hal-get-property --udi /org/freedesktop/Hal/devices/computer --key smbios.system.product`
-chassis_type=`hal-get-property --udi /org/freedesktop/Hal/devices/computer --key smbios.chassis.type`
-sys_serial=`hal-get-property --udi /org/freedesktop/Hal/devices/computer --key smbios.system.serial`
-sys_manufacturer=`hal-get-property --udi /org/freedesktop/Hal/devices/computer --key smbios.system.manufacturer`
-country=`cat /etc/timezone`
-timezone=`date | cut -d" " -f5`
-# System02
-echo "system02^^^$sys_model^^^$HOSTNAME^^^$nbcpu^^^ ^^^ ^^^$chassis_type^^^$RAMsize^^^$sys_serial^^^$sys_manufacturer^^^ ^^^$country^^^$timezone^^^^^^" >> $ReportFile
-# Missing - DHCP Enabled
-#         - Registered Owner
-#         - Domain Role
-
-
-bios_date=`hal-get-property --udi /org/freedesktop/Hal/devices/computer --key grep smbios.bios.release_date`
-bios_version=`hal-get-property --udi /org/freedesktop/Hal/devices/computer --key smbios.bios.version`
-bios_serial=`hal-get-property --udi /org/freedesktop/Hal/devices/computer --key smbios.system.serial`
-bios_manufacturer=`hal-get-property --udi /org/freedesktop/Hal/devices/computer --key smbios.bios.vendor`
-bios_description=`hal-get-property --udi /org/freedesktop/Hal/devices/computer --key smbios.system.product`
-
-#Bios
-echo "bios^^^$bios_description^^^$bios_manufacturer^^^$bios_serial^^^$bios_version^^^$bios_version^^^" >> $ReportFile
-
 
 #Operating System
 name=`uname -s`
@@ -82,64 +12,154 @@ version=`uname -r`
 if [ "$name" = "Linux" ]
         then if test -f /etc/redhat-release; then
                 distribution="RedHat"
-                release=`cat /etc/redhat-release`
+                OS_RELEASE=`cat /etc/redhat-release`
+                OS_PCK_MGR='yum'
             elif test -f /etc/redhat-version; then
                 distribution="RedHat"
-                release=`cat /etc/redhat-version`
+                OS_RELEASE=`cat /etc/redhat-version`
+                OS_PCK_MGR='yum'
             elif test -f /etc/fedora-release; then
                 distribution="Fedora"
-                release=`cat /etc/fedora-release`
+                OS_RELEASE=`cat /etc/fedora-release`
+                OS_PCK_MGR='yum'
             elif test -f /etc/mandrake-release; then
                 distribution="Mandrake"
-                release=`cat /etc/mandrake-release`
+                OS_RELEASE=`cat /etc/mandrake-release`
+                OS_PCK_MGR='urpmi'
             elif test -f /etc/SuSE-release; then
                 distribution="Novell SuSE"
-                release=`cat /etc/SuSE-release`
+                OS_RELEASE=`cat /etc/SuSE-release`
+                OS_PCK_MGR='yum'
             elif test -f /etc/issue; then
                 distribution="Ubuntu"
-                release=`cat /etc/issue`
+                OS_RELEASE=`cat /etc/issue`
+                OS_PCK_MGR='dpkg'
             elif test -f /etc/debian_version; then
                 distribution="Debian"
-                release=`cat /etc/debian_version`
+                OS_RELEASE=`cat /etc/debian_version`
+                OS_PCK_MGR='dpkg'
             elif test -f /etc/debian-version; then
                 distribution="Debian"
-                release=`cat /etc/debian-version`
+                OS_RELEASE=`cat /etc/debian-version`
+                OS_PCK_MGR='dpkg'
             elif test -f /etc/arch-release; then
                 distribution="Arch"
-                release=`cat /etc/arch-release`
+                OS_RELEASE=`cat /etc/arch-release`
+                OS_PCK_MGR=''
             elif test -f /etc/gentoo-release; then
                 distribution="Gentoo"
-                release=`cat /etc/gentoo-release`
+                OS_RELEASE=`cat /etc/gentoo-release`
+                OS_PCK_MGR=''
             elif test -f /etc/slackware-release; then
                 distribution="Slackware"
-                release=`cat /etc/slackware-release`
+                OS_RELEASE=`cat /etc/slackware-release`
+                OS_PCK_MGR=''
             elif test -f /etc/slackware-version; then
                 distribution="Slackware"
-                release=`cat /etc/slackware-version`
+                OS_RELEASE=`cat /etc/slackware-version`
+                OS_PCK_MGR=''
             elif test -f /etc/yellowdog-release; then
                 distribution="Yellow dog"
-                release=`cat /etc/yellowdog-release`
+                OS_RELEASE=`cat /etc/yellowdog-release`
+                OS_PCK_MGR=''
             else distribution="unknown"
-                release="unknown"
+                OS_RELEASE="unknown"
+                OS_PCK_MGR=''
             fi
 fi
 
-mount_points=`cat /etc/mtab | cut -d ' ' -f1,2`
-for i in `echo $mount_points | cut -d" " -f2`
+if [ "$OS_RELEASE" = "Ubuntu 5.10 \n \l" ]
+then
+  OS_RELEASE="5.10 (Breezy Badger)"
+fi
+if [ "$OS_RELEASE" = "Ubuntu 6.06 LTS \n \l" ]
+then
+  OS_RELEASE="6.06 (Dapper Drake)"
+fi
+if [ "$OS_RELEASE" = "Ubuntu 6.10 \n \l" ]
+then
+  OS_RELEASE="6.10 (Edgy Eft)"
+fi
+if [ "$OS_RELEASE" = "Ubuntu 7.04 \n \l" ]
+then
+  OS_RELEASE="7.04 (Fiesty Fawn)"
+fi
+if [ "$OS_RELEASE" = "Ubuntu 7.10 \n \l" ]
+then
+  OS_RELEASE="7.10 (Gutsy Gibbon)"
+fi
+
+#Network detection
+for i in `cat /etc/resolv.conf | grep "nameserver" | cut -d" " -f2`
 do
-if [ "$i" = "/" ]
-then
-mount_point=`echo $mount_points | cut -d" " -f1`
-fi
+  NET_DNS="$i"
 done
-mount_point=`grep ' / ' /etc/mtab |cut -d " " -f1`
+for i in `hal-find-by-property --key linux.subsystem --string net`
+do
+  NET_PARENT=`hal-get-property --udi $i --key info.parent`
+  NET_NAME=`hal-get-property --udi $i --key net.interface`
+  NET_MAC=`hal-get-property --udi $i --key net.address`
+  NET_DESCRIPTION=`hal-get-property --udi $i --key info.product`
+  NET_DEVICE=`hal-get-property --udi $NET_PARENT --key info.product`
+  NET_MANUFACTURER=`hal-get-property --udi $NET_PARENT --key info.vendor`
+  NET_IP=`/sbin/ifconfig $NET_NAME | grep -w inet | cut -d":" -f2 | cut -d" " -f1`
+  NET_IPV6=`/sbin/ifconfig $NET_NAME | grep -w inet6 | cut -d" " -f13`
+  NET_SUBNET=`/sbin/ifconfig $NET_NAME | grep -w inet | cut -d":" -f4 | cut -d" " -f1`
+  echo "network^^^$NET_MAC^^^$NET_NAME^^^^^^^^^$HOSTNAME^^^$NET_DNS^^^^^^$NET_IP^^^$NET_SUBNET^^^^^^^^^Network Adapter^^^$NET_MANUFACTURER^^^^^^" >> $ReportFile
+done
 
-if [ "$release" = "Ubuntu 6.06 LTS \n \l" ]
-then
-release="Ubuntu 6.06"
+
+# System01
+echo "system01^^^$NET_IP^^^ ^^^$HOSTNAME^^^ ^^^ ^^^ ^^^" >> $ReportFile
+# Missing - Domain
+#         - User
+#         - AD Site
+#         - Domain Controller Address
+#         - Domain Controller Name
+
+
+# Memory
+RAMsizekb=`cat /proc/meminfo | grep MemTotal |cut -d: -f2 | cut -dk -f1`
+RAMsizekb=`expr $RAMsizekb / 1`
+RAMsize=`expr $RAMsizekb / 1024`
+
+#Number of CPUs
+NUM_CPU=`cat /proc/cpuinfo | grep "processor" | wc -l`
+
+# System Model
+PC=`hal-find-by-property --key info.product --string Computer`
+PC_MANUFACTURER=`hal-get-property --udi $PC --key system.vendor`
+PC_MODEL=`hal-get-property --udi $PC --key system.product`
+PC_TYPE=`hal-get-property --udi $PC --key system.formfactor`
+PC_UUID=`hal-get-property --udi $PC --key smbios.system.uuid`
+PC_SERIAL=`hal-get-property --udi $PC --key smbios.system.serial`
+if test -f /etc/timezone; then
+ PC_COUNTRY=`cat /etc/timezone`
+else
+ PC_COUNTRY=""
 fi
+PC_TIMEZONE=`date +%:z`
+# System02
+echo "system02^^^$PC_MODEL^^^$HOSTNAME^^^$NUM_CPU^^^ ^^^ ^^^$PC_TYPE^^^$RAMsize^^^$PC_SERIAL^^^$PC_MANUFACTURER^^^ ^^^$PC_COUNTRY^^^$PC_TIMEZONE^^^^^^" >> $ReportFile
+# Missing - DHCP Enabled
+#         - Registered Owner
+#         - Domain Role
 
-echo "system03^^^$mount_point^^^$version^^^Linux^^^$distribution ($release)^^^$country^^^ ^^^ ^^^ ^^^ ^^^ ^^^$sys_serial^^^ ^^^$version^^^^^^" >> $ReportFile
+
+#Bios
+PC_UUID=`hal-get-property --udi $PC --key smbios.system.uuid`
+PC_SERIAL=`hal-get-property --udi $PC --key smbios.system.serial`
+PC_BIOS_DATE=`hal-get-property --udi $PC --key smbios.bios.release_date`
+PC_BIOS_VERSION=`hal-get-property --udi $PC --key smbios.bios.version`
+PC_BIOS_SMVERSION=`hal-get-property --udi $PC --key smbios.system.version`
+PC_BIOS_DESCRIPTION=`hal-get-property --udi $PC --key smbios.system.product`
+PC_BIOS_MANUFACTURER=`hal-get-property --udi $PC --key smbios.bios.vendor`
+echo "bios^^^$PC_BIOS_DESCRIPTION^^^$PC_BIOS_MANUFACTURER^^^$PC_SERIAL^^^$PC_BIOS_SMVERSION^^^$PC_BIOS_VERSION^^^" >> $ReportFile
+
+SYSTEM_SERIAL=`hal-get-property --udi $PC --key system.hardware.serial`
+
+mount_point=`grep ' / ' /etc/mtab |cut -d " " -f1`
+echo "system03^^^$mount_point^^^$version^^^Linux^^^$distribution - $OS_RELEASE^^^$country^^^ ^^^ ^^^ ^^^ ^^^ ^^^$SYSTEM_SERIAL^^^ ^^^$version^^^^^^" >> $ReportFile
 # Missing - Description
 #         - Date OS Installed
 #         - Organisation
@@ -160,8 +180,8 @@ for i in $cpu_device_id; do
   #         - Processor Socket
 done
 
-pcilist=`lspci -vm`
-perif=`lspci -vm | grep "[[:digit:]]:[[:digit:]]" | cut -f2`
+pcilist=`/bin/lspci -vm`
+perif=`/bin/lspci -vm | grep "[[:digit:]]:[[:digit:]]" | cut -f2`
 for i in $perif; do
   type=`echo "$pcilist" | grep -w $i -A 4 | grep -w "Class:" | cut -d":" -f2 | cut -f2`
   name=`echo "$pcilist" | grep -w $i -A 4 | grep -v "[[:digit:]]:[[:digit:]]" | grep -w "Device:" | cut -d":" -f2 | cut -f2`
@@ -185,21 +205,41 @@ for i in $perif; do
   #         - Min Refresh Rate
 
   #Sound Card
-  if [ "$type" = "Multimedia audio controller" ]
-  then
-    echo "sound^^^$manufacturer^^^$name^^^$device_id^^^" >> $ReportFile
-  fi
+#  if [ "$type" = "Multimedia audio controller" ]
+#  then
+#    echo "sound^^^$manufacturer^^^$name^^^$device_id^^^" >> $ReportFile
+#  fi
 done
 
-# Software
-packages="apt azureus bash build-essential cdparanoia cdrdao cdrecord cpp cron cupsys cvs dbus dhcp3-client diff dpkg epiphany-browser esound evolution firefox flashplugin-nonfree foomatic-db g++ gaim gcc gdm gedit gimp gnome-about gnucash gnumeric gtk+ httpd inkscape iptables k3b kdebase koffice libgnome2-0 linux-image-386 metacity mozilla-browser mysql-admin mysql-query-browser mysql-server-4.1 nautilus openoffice.org openssh-client openssh-server perl php4 php5 postfix postgresql python python2.4 rdesktop rhythmbox samba-common sendmail smbclient subversion sun-j2re1.5 swf-player synaptic thunderbird tsclient udev vim vlc vnc-common webmin xfce xmms xserver-xorg"
-for name in $packages; do
-  version=`dpkg --list | grep "  $name " |tail -n1|awk '{print $3}' 2> /dev/null`
-  if [ "$version" ] 
-  then
-    echo "software^^^$name^^^$version^^^^^^^^^^^^^^^^^^^^^^^^^^^" >> $ReportFile
-  fi
+
+
+# Sound Card
+for i in `hal-find-by-property --key linux.subsystem --string sound`
+do
+  SOUND_PARENT=`hal-get-property --udi $i --key info.parent`
 done
+if [ "$SOUND_PARENT" != "" ]
+then
+  SOUND_CARD=`hal-get-property --udi $SOUND_PARENT --key info.product`
+  SOUND_VENDOR=`hal-get-property --udi $SOUND_PARENT --key info.vendor`
+  echo "sound^^^$SOUND_VENDOR^^^$SOUND_CARD^^^$i^^^" >> $ReportFile
+fi
+
+
+
+
+# Software
+if [ "$OS_PCK_MGR" = "dpkg" ]
+then
+ packages="apt azureus bash build-essential cdparanoia cdrdao cdrecord cpp cron cupsys cvs dbus dhcp3-client diff dpkg epiphany-browser esound evolution firefox flashplugin-nonfree foomatic-db g++ gaim gcc gdm gedit gimp gnome-about gnucash gnumeric gtk+ httpd inkscape iptables k3b kdebase koffice libgnome2-0 linux-image-386 metacity mozilla-browser mysql-admin mysql-query-browser mysql-server-4.1 nautilus openoffice.org openssh-client openssh-server perl php4 php5 postfix postgresql python python2.4 rdesktop rhythmbox samba-common sendmail smbclient subversion sun-j2re1.5 swf-player synaptic thunderbird tsclient udev vim vlc vnc-common webmin xfce xmms xserver-xorg"
+ for name in $packages; do
+   version=`dpkg --list | grep "  $name " |tail -n1|awk '{print $3}' 2> /dev/null`
+   if [ "$version" ] 
+   then
+     echo "software^^^$name^^^$version^^^^^^^^^^^^^^^^^^^^^^^^^^^" >> $ReportFile
+   fi
+ done
+fi
 
 # Auditied
 sys_uuid=`lshal --long --show /org/freedesktop/Hal/devices/computer | grep smbios.system.uuid | cut -d" " -f5 | cut -d"'" -f2`
@@ -211,79 +251,78 @@ audited_by=`whoami`
 echo "audit^^^$HOSTNAME^^^$audit_date^^^$sys_uuid^^^$audited_by^^^y^^^y^^^^^^" >> $ReportFile
 
 
-# Hard Disks
-devices=`lshal -s`
-for i in $devices
+#Hard Disks
+for i in `hal-find-by-property --key storage.drive_type --string disk`
 do
-  device=`echo $i | grep storage`
-  storage=`echo $device | cut -d"_" -f1`
-  if [ "$storage" = "storage" ]
+  DISK_VENDOR=`hal-get-property --udi $i --key storage.vendor`
+  DISK_PATH=`hal-get-property --udi $i --key block.device`
+  DISK_MODEL=`hal-get-property --udi $i --key storage.model`
+  DISK_SIZE=`hal-get-property --udi $i --key storage.size`
+  let "DISK_SIZE = $DISK_SIZE / 1024 / 1024 / 1024"
+  DISK_SERIAL=`hal-get-property --udi $i --key storage.serial`
+  DISK_BUS=`hal-get-property --udi $i --key storage.bus`
+  echo "harddrive^^^$DISK_PATH^^^ ^^^$DISK_BUS^^^$DISK_VENDOR^^^$DISK_MODEL^^^ ^^^ ^^^ ^^^ ^^^$DISK_SIZE^^^$DISK_PATH^^^" >> $ReportFile
+  # Missing - scsi bus
+  #         - scsi logical unit
+  #         - scsi port
+done
+
+
+# Optical Drives
+for i in `hal-find-by-property --key storage.drive_type --string cdrom`
+do
+# CD_VENDOR=`hal-get-property --udi $i --key storage.vendor`
+# CD_PATH=`hal-get-property --udi $i --key block.device`
+  CD_ID=`hal-get-property --udi $i --key block.storage_device`
+  CD_PRODUCT=`hal-get-property --udi $i --key storage.model`
+# CD_BUS=`hal-get-property --udi $i --key storage.bus`
+  CD_MOUNT=`hal-get-property --udi $i --key linux.fstab.mountpoint`
+  echo "optical^^^$CD_PRODUCT^^^$CD_MOUNT^^^$CD_ID^^^" >> $ReportFile
+done
+
+
+
+
+#Volumes
+for i in `hal-find-by-property --key info.category --string volume`
+do
+  VOLUME_TYPE=`hal-get-property --udi $i --key volume.fstype`
+  VOLUME_PARENT=`hal-get-property --udi $i --key info.parent`
+  VOLUME_UDI=`hal-get-property --udi $i --key info.udi`
+  VOLUME_SIZE=`hal-get-property --udi $i --key volume.size`
+  let "VOLUME_SIZE = $VOLUME_SIZE / 1024 / 1024"
+  VOLUME_MOUNTED=`hal-get-property --udi $i --key volume.is_mounted`
+  VOLUME_UUID=`hal-get-property --udi $i --key volume.uuid`
+  VOLUME_PATH=`hal-get-property --udi $i --key block.device`
+  VOLUME_FORMAT=`hal-get-property --udi $i --key volume.fstype`
+  if [ "$VOLUME_MOUNTED" = "true" ]
   then
-    udi="/org/freedesktop/Hal/devices/$device"
-    category=`hal-get-property --udi $udi --key info.category`
-    vendor=`hal-get-property --udi $udi --key info.vendor`
-    product=`hal-get-property --udi $udi --key info.product`
-    bus=`hal-get-property --udi $udi --key storage.bus`
-    mount=`hal-get-property --udi $udi --key block.device`
-    product_dvd=`echo $product | grep -i DVD`
-    if [ "$category" = "storage" ]
-    then
-      if [ "$product_dvd" = "$product" ]
-      then
-        # Item is a DVD or CD drive
-        echo "optical^^^$product^^^$mount^^^^^^" >> $ReportFile
-
-      else
-        # Item is a hard drive
-        mount_end=`echo $mount | cut -d"/" -f3`
-        # size=`dmesg | grep -w $mount_end: | grep MB | cut -d"(" -f2 | cut -d" " -f1 | uniq`
-        size=`fdisk -l $mount | grep Disk | cut -d" " -f3 | cut -d"." -f1`
-        size_type=`fdisk -l $mount | grep Disk | cut -d" " -f4`
-        if [ "$size_type" = "GB," ]
-        then
-          let "size = $size * 1024"
-        fi
-        echo "harddrive^^^$mount^^^ ^^^$bus^^^$vendor^^^$product^^^$count^^^^^^^^^^^^$size^^^^^^" >> $ReportFile
-        # Missing - scsi bus
-        #         - scsi logical unit
-        #         - scsi port
-        #         - pnp id
-        count=0
-      fi
-    else
-      if [ "$bus" = "usb" ]
-      then
-        echo "usb^^^$category^^^$product^^^$vendor^^^^^^" >> $ReportFile
-      fi
-    fi
-  fi
-done
-
-#Partitions
-for j in `df -l -T -x tmpfs |awk '{print $1}'`
-do
-  part_capt=`df -l -T -x tmpfs | grep $j | awk '{print $7}'`
-  if [ "$part_capt" = "/" ]; then
-    part_boot="True"
+    VOLUME_MOUNT_POINT=`hal-get-property --udi $i --key volume.mount_point`
   else
-    part_boot="False"
+    VOLUME_MOUNT_POINT=""
   fi
-  part_perc=`df -l -T -x tmpfs | grep $j |awk '{print $6}'`
-  part_name=`df -l -T -x tmpfs | grep $j |awk '{print $1}'`
-  part_form=`df -l -T -x tmpfs | grep $j |awk '{print $2}'`
-  part_size=`df -l -T -x tmpfs | grep $j |awk '{print $3}'`
-  part_size=`expr $part_size / 1`
-  part_size=`expr $part_size / 1024`
-  part_aval=`df -l -T -x tmpfs | grep $j |awk '{print $5}'`
-  part_aval=`expr $part_aval / 1`
-  part_aval=`expr $part_aval / 1024`
-  if [ "$part_form" != "Type" ]; then
-    echo "partition^^^$part_boot^^^$part_boot^^^ ^^^ ^^^$part_perc^^^$part_boot^^^$part_name^^^$part_form^^^$part_aval^^^$part_size^^^$part_name^^^" >> $ReportFile
+  if [ "$VOLUME_MOUNT_POINT" = "/" ]
+  then
+    VOLUME_BOOTABLE='Yes'
+  else
+    VOLUME_BOOTABLE='No'
   fi
-  # Missing - DeviceID
-  #         - Disk Index
-  #         - File System
+  VOLUME_LABEL=`hal-get-property --udi $i --key volume.label`
+  VOLUME_PERCENT_USED=`df -l -T -x tmpfs | grep '$VOLUME_PATH' |awk '{print $6}'`
+  VOLUME_FREE_SPACE=`df -l -T -x tmpfs | grep '$VOLUME_PATH' |awk '{print $5}'`
+#  if [ "$VOLUME_FREE_SPACE" = "" ]
+#  then
+#    VOLUME_FREE_SPACE='0'
+#  fi
+  #VOLUME_FREE_SPACE=`expr $VOLUME_FREE_SPACE / 1`
+  #VOLUME_FREE_SPACE=`expr $VOLUME_FREE_SPACE / 1024`
+  if [ "$VOLUME_TYPE" != "" ]
+  then
+    echo "partition^^^$VOLUME_BOOTABLE^^^$VOLUME_BOOTABLE^^^$VOLUME_UUID^^^$VOLUME_PARENT^^^$VOLUME_UDI^^^$VOLUME_PERCENT_USED^^^$VOLUME_BOOTABLE^^^$VOLUME_PATH^^^$VOLUME_FORMAT^^^$VOLUME_FREE_SPACE^^^$VOLUME_SIZE^^^$VOLUME_LABEL^^^" >> $ReportFile
+  fi
 done
+
+
 
 # Users
 users=`cat /etc/passwd | cut -d":" -f1`
@@ -296,8 +335,8 @@ do
 done
 
 # The end - submit to Open-AudIT
-audit_result=`cat $ReportFile`
-wget --post-data="submit=submit&add=$audit_result" http://192.168.10.28/oa/admin_pc_add_2.php
-rm "$ReportFile"
-rm "admin_pc_add_2.php"
+#audit_result=`cat $ReportFile`
+#wget --post-data="submit=submit&add=$audit_result" http://192.168.0.7/trunk/admin_pc_add_2.php
+#rm "$ReportFile"
+#rm "admin_pc_add_2.php"
 
