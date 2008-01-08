@@ -3561,7 +3561,6 @@ Err.Clear
 
 End Function
 
-
 Function IsConnectible(sHost,iPings,iTO)
  if sHost = "." then
    IsConnectible = True
@@ -3569,15 +3568,19 @@ Function IsConnectible(sHost,iPings,iTO)
    If iPings = "" Then iPings = 2
    If iTO = "" Then iTO = 750
     Set oShell = CreateObject("WScript.Shell")
-    Set oExCmd = oShell.Exec("ping -n " & iPings & " -w " & iTO & " " & sHost)
-    Select Case InStr(UCase(oExCmd.StdOut.Readall),"REPLY FROM")
-'    Select Case InStr(oExCmd.StdOut.Readall,"TTL=")
+   sProduct=UCase(oShell.RegRead("HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\ProductName"))
+   If instr(sProduct, "VISTA")>0 Then
+     Set oExCmd = oShell.Exec("ping -n " & iPings & " -w " & iTO & " " & sHost & " -4")
+   Else
+     Set oExCmd = oShell.Exec("ping -n " & iPings & " -w " & iTO & " " & sHost)
+   End if
+   Select Case InStr(UCase(oExCmd.StdOut.Readall),"TTL=")
+   '    Select Case InStr(oExCmd.StdOut.Readall,"TTL=")
       Case 0 IsConnectible = False
       Case Else IsConnectible = True
     End Select
   end if
 End Function
-
 
 
 function get_sku_2007(subkey)
