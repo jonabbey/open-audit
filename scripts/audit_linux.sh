@@ -1,13 +1,15 @@
 #!/bin/bash
 
 # TODO: Use args from audit.config!
-OA_SUBMIT_URL=http://192.168.0.7/trunk/admin_pc_add_2.php
-OA_SUBMIT=n
+OA_SUBMIT_URL=http://salma/openaudit/admin_pc_add_2.php
+OA_SUBMIT=y
 OA_VERBOSE=y
 OA_SAFEMODE=n
 
 # Change this to nothing if you want to track ALL installed packages on dpkg systems.
-OA_DPKG_TRACK="apt azureus bash build-essential cdparanoia cdrdao cdrecord cpp cron cupsys cvs dbus dhcp3-client diff dpkg epiphany-browser esound evolution firefox flashplugin-nonfree foomatic-db g++ gaim gcc gdm gedit gimp gnome-about gnucash gnumeric gtk+ httpd inkscape iptables k3b kdebase koffice libgnome2-0 linux-image-386 metacity mozilla-browser mysql-admin mysql-query-browser mysql-server-4.1 nautilus openoffice.org openssh-client openssh-server perl php4 php5 postfix postgresql python python2.4 rdesktop rhythmbox samba-common sendmail smbclient subversion sun-j2re1.5 swf-player synaptic thunderbird tsclient udev vim vlc vnc-common webmin xfce xmms xserver-xorg"
+OA_PACKAGES="apt azureus bash build-essential cdparanoia cdrdao cdrecord cpp cron cupsys cvs dbus dhcp3-client diff dpkg epiphany-browser esound evolution firefox flashplugin-nonfree foomatic-db g++ gaim gcc gdm gedit gimp gnome-about gnucash gnumeric gtk+ httpd inkscape iptables k3b kdebase koffice libgnome2-0 linux-image-386 metacity mozilla-browser mysql-admin mysql-query-browser mysql-server-4.1 nautilus openoffice.org openssh-client openssh-server perl php4 php5 postfix postgresql python python2.4 rdesktop rhythmbox samba-common sendmail smbclient subversion sun-j2re1.5 swf-player synaptic thunderbird tsclient udev vim vlc vnc-common webmin xfce xmms xserver-xorg"
+OA_DPKG_TRACK=$OA_PACKAGES
+OA_YUM_TRACK=$OA_PACKAGES
 
 # If you're not worried about attacks, you can just use the first one in the path.
 if [ $OA_SAFEMODE="n" ] || [ $OA_SAFEMODE="N" ]
@@ -17,7 +19,7 @@ then
     OA_CUT=`which cut`
     OA_DATE=`which date`
     OA_DF=`which df`
-    OA_DPKG=`which dpkg`
+    OA_DPKG=`which dpkg 2>/dev/null`
     OA_EXPR=`which expr`
     OA_FDISK=`which fdisk`
     OA_GREP=`which grep`
@@ -29,8 +31,10 @@ then
     OA_LSPCI=`which lspci`
     OA_RM=`which rm`
     OA_UNAME=`which uname`
+    OA_TAIL=`which tail`
     OA_WGET=`which wget`
     OA_WHOAMI=`which whoami`
+    OA_YUM=`which yum 2>/dev/null`
 else
     OA_AWK=/usr/bin/awk
     OA_CAT=/bin/cat
@@ -48,9 +52,11 @@ else
     OA_IFCONFIG=/sbin/ifconfig
     OA_LSPCI=/usr/bin/lspci
     OA_RM=/bin/rm
+    OA_TAIL=/usr/bin/tail
     OA_UNAME=/bin/uname
     OA_WGET=/usr/bin/wget
     OA_WHOAMI=/usr/bin/whoami
+    OA_YUM=/usr/bin/yum
 fi
 
 # TODO: Bail out if any of the above are missing (or handle some optional packages?)
@@ -95,19 +101,21 @@ OA_Trace "OS Information..."
 name=`$OA_UNAME -s`
 version=`$OA_UNAME -r`
 
+unset OS_PCK_MGR
+
 if [ "$name" = "Linux" ]
         then if test -f /etc/redhat-release; then
                 distribution="RedHat"
                 OS_RELEASE=`$OA_CAT /etc/redhat-release`
-                OS_PCK_MGR='yum'
+                OS_PCK_MGR=$OA_YUM
             elif test -f /etc/redhat-version; then
                 distribution="RedHat"
                 OS_RELEASE=`$OA_CAT /etc/redhat-version`
-                OS_PCK_MGR='yum'
+                OS_PCK_MGR=$OA_YUM
             elif test -f /etc/fedora-release; then
                 distribution="Fedora"
                 OS_RELEASE=`$OA_CAT /etc/fedora-release`
-                OS_PCK_MGR='yum'
+                OS_PCK_MGR=$OA_YUM
             elif test -f /etc/mandrake-release; then
                 distribution="Mandrake"
                 OS_RELEASE=`$OA_CAT /etc/mandrake-release`
@@ -115,7 +123,7 @@ if [ "$name" = "Linux" ]
             elif test -f /etc/SuSE-release; then
                 distribution="Novell SuSE"
                 OS_RELEASE=`$OA_CAT /etc/SuSE-release`
-                OS_PCK_MGR='yum'
+                OS_PCK_MGR=$OA_YUM
             elif test -f /etc/issue; then
                 distribution="Ubuntu"
                 OS_RELEASE=`$OA_CAT /etc/issue`
@@ -196,7 +204,7 @@ do
       NET_IPV6=`$OA_IFCONFIG $NET_NAME | $OA_GREP -w inet6 | $OA_CUT -d" " -f13`
       NET_SUBNET=`$OA_IFCONFIG $NET_NAME | $OA_GREP -w inet | $OA_CUT -d":" -f4 | $OA_CUT -d" " -f1`
   else
-      # Interface is not onlyline
+      # Interface is not online
       NET_IP="--.--.--.--"
       NET_IPV6=" "
       NET_SUBNET="--.--.--.--"
@@ -348,12 +356,12 @@ fi
 OA_Trace "Packages..."
 
 # Software
-if [ "$OS_PCK_MGR" = "$OA_DPKG" ]
-then
-    # Setup so dpkg doesn't truncate long package names
-    OA_OLDCOLUMNS=$COLUMNS
-    COLUMNS=160
+# Setup so dpkg doesn't truncate long package names
+OA_OLDCOLUMNS=$COLUMNS
+COLUMNS=160
 
+if [ "$OS_PCK_MGR" = "$OA_DPKG" ] && [ -x $OS_PCK_MGR ]
+then
     if [ "$OA_DPKG_TRACK" = "" ]
     then
         OA_ALL_PACKAGES=`$OA_DPKG --list 2> /dev/null | $OA_GREP "^[ich]"`
@@ -369,7 +377,7 @@ then
         done
     else
         for OA_PACKAGE_NAME in $OA_DPKG_TRACK; do
-            OA_PACKAGE_LINE=`$OA_DPKG --list "$OA_PACKAGE_NAME" 2>/dev/null | tail -n1 | $OA_GREP "^[ich]" 2>/dev/null`
+            OA_PACKAGE_LINE=`$OA_DPKG --list "$OA_PACKAGE_NAME" 2>/dev/null | $OA_TAIL -n1 | $OA_GREP "^[ich]" 2>/dev/null`
             OA_PACKAGE_VERSION=`echo $OA_PACKAGE_LINE | $OA_AWK '{print $3}' 2> /dev/null`
 
             if [ "$OA_PACKAGE_VERSION" ]
@@ -380,7 +388,39 @@ then
     fi
 
     COLUMNS=OA_OLDCOLUMNS
+elif [ "$OS_PCK_MGR" = "$OA_YUM" ] && [ -x $OA_YUM ]
+then
+    OA_OLDCOLUMNS=$COLUMNS
+    COLUMNS=160
+
+    OA_ALL_PACKAGES=`$OA_YUM list installed 2> /dev/null | $OA_GREP " installed *$"`
+
+    if [ "$OA_YUM_TRACK" = "" ]
+    then
+        for OA_PACKAGE_LINE in $OA_ALL_PACKAGES; do
+            OA_PACKAGE_NAME=`echo $OA_PACKAGE_LINE | $OA_AWK '{print $1}' 2> /dev/null`
+            OA_PACKAGE_VERSION=`echo $OA_PACKAGE_LINE | $OA_AWK '{print $2}' 2> /dev/null`
+   
+            if [ "$OA_PACKAGE_NAME" ] && [ "$OA_PACKAGE_VERSION" ]
+            then
+                echo "software^^^$OA_PACKAGE_NAME^^^$OA_PACKAGE_VERSION^^^^^^^^^^^^^^^^^^^^^^^^^^^" >> $ReportFile
+            fi
+        done
+    else
+        # calling "yum list installed blah" several times is rather slow; so we use the OA_ALL_PACKAGES instead.
+        # Note that this will do partial matches on package names; I prefer it that way, personally.
+        for OA_PACKAGE_NAME in $OA_YUM_TRACK; do
+            OA_PACKAGE_VERSION=`echo $OA_ALL_PACKAGES | $OA_GREP "$OA_PACKAGE_NAME" | $OA_TAIL -n1 | $OA_AWK '{print $2}' 2>/dev/null`
+
+            if [ "$OA_PACKAGE_VERSION" ]
+            then
+                echo "software^^^$OA_PACKAGE_NAME^^^$OA_PACKAGE_VERSION^^^^^^^^^^^^^^^^^^^^^^^^^^^" >> $ReportFile
+            fi
+        done
+    fi
 fi
+
+COLUMNS=OA_OLDCOLUMNS
 
 OA_Trace "Auditor Information..."
 
@@ -403,9 +443,11 @@ do
   DISK_MODEL=`$OA_HAL_GET --udi $i --key storage.model`
   DISK_SIZE=`$OA_HAL_GET --udi $i --key storage.size 2>/dev/null`
 
+  # Return disk size in megabytes (not GB for legacy drives, and VMs)
+
   if [ $DISK_SIZE ]
   then
-        let "DISK_SIZE = $DISK_SIZE / 1024 / 1024 / 1024"
+        let "DISK_SIZE = $DISK_SIZE / 1024 / 1024"
   else
         # Some devices, such as VMWare drives, don't have the storage.size key
         # Fallback to using fdisk to report the required value
@@ -413,7 +455,7 @@ do
         let "DISK_SIZE = $DISK_SIZE / 1024"  # Already returned in 1024-bytes blocks
   fi
 
-  DISK_SERIAL=`$OA_HAL_GET --udi $i --key storage.serial`
+  DISK_SERIAL=`OA_Hal_Get --udi $i --key storage.serial`
   DISK_BUS=`$OA_HAL_GET --udi $i --key storage.bus`
   echo "harddrive^^^$DISK_PATH^^^ ^^^$DISK_BUS^^^$DISK_VENDOR^^^$DISK_MODEL^^^ ^^^ ^^^ ^^^ ^^^$DISK_SIZE^^^$DISK_PATH^^^" >> $ReportFile
   # Missing - scsi bus
