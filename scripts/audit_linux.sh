@@ -457,6 +457,9 @@ do
 
   DISK_SERIAL=`OA_Hal_Get --udi $i --key storage.serial`
   DISK_BUS=`$OA_HAL_GET --udi $i --key storage.bus`
+
+  let "DISK_SIZE = $DISK_SIZE / 1024" # To make into GB size - needed by the application - Mark.
+
   echo "harddrive^^^$DISK_PATH^^^ ^^^$DISK_BUS^^^$DISK_VENDOR^^^$DISK_MODEL^^^ ^^^ ^^^ ^^^ ^^^$DISK_SIZE^^^$DISK_PATH^^^" >> $ReportFile
   # Missing - scsi bus
   #         - scsi logical unit
