@@ -3542,7 +3542,8 @@ Function IsWMIConnectible(strComputer, strUser, strPass)
 '
 'Set objWMIService = GetObject("winmgmts:\\" & strComputer &"\root\cimv2") '(*)
 Set objSWbemLocator = CreateObject("WbemScripting.SWbemLocator")
-Set objSWbemServices = objSWbemLocator.ConnectServer(strComputer, "root\cimv2", strUser, strPass, "", "", &h80)
+'Set objSWbemServices = objSWbemLocator.ConnectServer(strComputer, "root\cimv2", strUser, strPass, "", "", &h80)
+Set objSWbemServices = objSWbemLocator.ConnectServer(strComputer, "root\cimv2", strUser, strPass, "", "", wbemConnectFlagUseMaxWait)
 Set colSWbemObjectSet = objSWbemServices.InstancesOf("Win32_Service")
 '
 'For Each objSWbemObject In colSWbemObjectSet
