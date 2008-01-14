@@ -1,13 +1,13 @@
 <?php
 
-if (isset($_GET['id'])) {
+if (isset($_GET['id'])){
   $id = $_GET['id'];
 } else {
   header("Location: software_register.php?pc=");
 }
 
-if (isset($_GET['comments'])){
-  $comments = $_GET['comments'];
+if (isset($_POST['comments'])){
+  $comments = $_POST['comments'];
 } else {
   $comments = "";
 }
