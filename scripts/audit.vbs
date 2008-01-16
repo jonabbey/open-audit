@@ -3444,18 +3444,19 @@ end if ' End of IE
 
 if online = "yesxml" then
    url = non_ie_page
-   Set objHTTP = CreateObject("MSXML2.XMLHTTP")
-   Call objHTTP.Open("POST", url, FALSE)
+   Set objHTTP = WScript.CreateObject("MSXML2.ServerXMLHTTP.3.0")
+   objHTTP.SetOption 2, 13056  ' Ignore all SSL errors
+   objHTTP.Open "POST", url, False
    objHTTP.setRequestHeader "Content-Type","application/x-www-form-urlencoded"
    if utf8 = "y" then
      objHTTP.Send "add=" + urlEncode(form_total + vbcrlf)
-   else 
+   else
      objHTTP.Send "add=" + escape(Deconstruct(form_total + vbcrlf))
    end if
-   
-'   if verbose = "y" then
-'      WScript.Echo(objHTTP.ResponseText)
-'   end if
+
+   if verbose = "y" then
+      wscript.Echo "XML sent to server: " & objHTTP.status & " (" & objHTTP.statusText & ")"
+   end if
 end if
 
 if online = "p" then
