@@ -3444,7 +3444,10 @@ end if ' End of IE
 
 if online = "yesxml" then
    url = non_ie_page
-   Set objHTTP = WScript.CreateObject("MSXML2.ServerXMLHTTP.3.0")
+   ' Fixme.... 
+     Set objHTTP = WScript.CreateObject("MSXML2.XMLHTTP")
+    ' change to this for self signed https...
+   ' Set objHTTP = WScript.CreateObject("MSXML2.ServerXMLHTTP.3.0")
    objHTTP.SetOption 2, 13056  ' Ignore all SSL errors
    objHTTP.Open "POST", url, False
    objHTTP.setRequestHeader "Content-Type","application/x-www-form-urlencoded"
