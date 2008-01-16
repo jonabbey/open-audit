@@ -842,7 +842,7 @@ if isnull(net_domain_controller_address) then net_domain_controller_address = ""
 if isnull(net_domain_controller_name) then net_domain_controller_name = "" end if
 
 form_input = "system01^^^" & clean(net_ip_address) & "^^^" & clean(net_domain) _
-                       & "^^^" & clean(Replace(net_user_name,"\", "")) & "^^^" & clean(net_client_site_name) _
+                       & "^^^" & clean(Replace(net_user_name,"", "")) & "^^^" & clean(net_client_site_name) _
                        & "^^^" & clean(Replace(net_domain_controller_address, "\\", "")) & "^^^" & clean(Replace(net_domain_controller_name, "\\", "")) & "^^^"
 entry form_input,comment,objTextFile,oAdd,oComment
 form_input = ""
