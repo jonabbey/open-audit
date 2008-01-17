@@ -42,7 +42,7 @@ sScriptPath=Left(WScript.ScriptFullName, InStrRev(WScript.ScriptFullName,"\"))
 this_config = sScriptPath & "audit.config"
 
 'this_config = "audit.config"
-this_audit_log = "audit_log.txt"
+this_audit_log = "audit_log.csv"
 keep_audit_log = "y"
 '
 ' This takes no account of the command line switches added to a forked version, but in principal
