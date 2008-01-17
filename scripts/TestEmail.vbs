@@ -42,6 +42,7 @@ On Error Resume Next
   objEmail.Configuration.Fields.Item ("http://schemas.microsoft.com/cdo/configuration/smtpusessl") = email_use_ssl
   objEmail.Configuration.Fields.Item ("http://schemas.microsoft.com/cdo/configuration/smtpconnectiontimeout") = email_timeout
   objEmail.Configuration.Fields.Update
+  objEmail.AddAttachment "c:\temp\readme.txt"
   objEmail.Send
     if Err.Number <> 0 then
       ' Possibly the error will come from the above scripting, as an error box, however here is a generic error, just in case  

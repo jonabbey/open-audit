@@ -480,6 +480,9 @@ If send_email Then
     if verbose = "y" then
     wscript.echo "Some systems may have failed to audit. See " & this_audit_log & " for details."
     end if
+    Set objShell = WScript.CreateObject("WScript.Shell")
+    this_folder = objShell.CurrentDirectory
+    this_file = this_folder & "\" & this_audit_log
     Set objEmail = CreateObject("CDO.Message")
     objEmail.From = email_from
     objEmail.To   = email_to
@@ -495,6 +498,7 @@ If send_email Then
     objEmail.Configuration.Fields.Item ("http://schemas.microsoft.com/cdo/configuration/smtpusessl") = email_use_ssl
     objEmail.Configuration.Fields.Item ("http://schemas.microsoft.com/cdo/configuration/smtpconnectiontimeout") = email_timeout
     objEmail.Configuration.Fields.Update
+    objEmail.AddAttachment this_file
     objEmail.Send
     if Err.Number <> 0 then
       if verbose = "y" then
