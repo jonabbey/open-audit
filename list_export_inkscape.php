@@ -88,8 +88,7 @@ $inkscape=$inkscape.'  </defs>'.$inkscape_newline;
 // Add the first layer and Group Everything on this layer. 
 $inkscape= $inkscape.'  <g'.$inkscape_newline;
 $inkscape= $inkscape.'     id="layer1">'.$inkscape_newline;
-
-//Next we need to create the image objects
+ //Next we need to create the image objects
 
 
 //Table body. This section creates a list of network objects and distributes them across the page
@@ -242,14 +241,24 @@ if ($myrow = mysql_fetch_array($result)){
             $inkscape=$inkscape.'       id="g'.(($inkscape_current_image_object_id *20)+$inkscape_current_image_object_id_offset ).'">'.$inkscape_newline;
             // Next Item
              $inkscape_current_image_object_id_offset =  $inkscape_current_image_object_id_offset + 1; 
+            
+            // URL Link
+            $inkscape=$inkscape.'          <a xlink:href="http://www.w3.org">'.$inkscape_newline;
+            $inkscape=$inkscape.'    </a>'.$inkscape_newline;
+
             // Add the image
+
             $inkscape=$inkscape.'      <image'.$inkscape_newline;
+ 
+
             $inkscape=$inkscape.'         xlink:href="'.$inkscape_this_image .'"'.$inkscape_newline;
             $inkscape=$inkscape.'         x="'.$inkscape_current_object_x.'"'.$inkscape_newline;
             $inkscape=$inkscape.'         y="'.$inkscape_current_object_y.'"'.$inkscape_newline;
             $inkscape=$inkscape.'         width="'.$inkscape_obj_image_0_elem_width.'"'.$inkscape_newline;
             $inkscape=$inkscape.'         height="'.$inkscape_obj_image_0_elem_height.'"'.$inkscape_newline;
             $inkscape=$inkscape.'         id="'.(($inkscape_current_image_object_id *20)+$inkscape_current_image_object_id_offset).'" />'.$inkscape_newline;
+            
+            
             // Next Item
              $inkscape_current_image_object_id_offset =  $inkscape_current_image_object_id_offset + 1; 
             //
@@ -269,6 +278,7 @@ if ($myrow = mysql_fetch_array($result)){
             $inkscape=$inkscape.'         id="text'.(($inkscape_current_image_object_id *20)+$inkscape_current_image_object_id_offset).'"'.$inkscape_newline;
             // Next ID
              $inkscape_current_image_object_id_offset =  $inkscape_current_image_object_id_offset + 1; 
+
             // Position
             $inkscape=$inkscape.'         xml:space="preserve"><tspan'.$inkscape_newline;
             // add in the next text height offset
@@ -281,8 +291,7 @@ if ($myrow = mysql_fetch_array($result)){
             $inkscape_current_image_object_id_offset =  $inkscape_current_image_object_id_offset + 1; 
             // Next ID
             }
-                
-            
+
             // Close the grouping for this object
             $inkscape=$inkscape.'    </g>'.$inkscape_newline;
             $inkscape=$inkscape.'    <path'.$inkscape_newline;
@@ -335,6 +344,7 @@ if ($myrow = mysql_fetch_array($result)){
 }
 
 // Close Layer and Document
+
 $inkscape = $inkscape.'      </g>'.$inkscape_newline;
 $inkscape=$inkscape.'</svg>'.$inkscape_newline;
 // Thats all folks

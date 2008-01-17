@@ -14,6 +14,7 @@
 '* See www.open-audit.org for further copyright notices and details.
 '*
 ' 
+this_audit_log = "audit_log.txt" 
 this_config="audit.config"
 '
 dim filesys
@@ -26,6 +27,9 @@ ExecuteGlobal CreateObject("Scripting.FileSystemObject").OpenTextFile(sScriptPat
 '
 '
 On Error Resume Next
+  Set objShell = WScript.CreateObject("WScript.Shell")
+  this_folder = objShell.CurrentDirectory
+  this_file = this_folder & "\" & this_audit_log
   wscript.echo "Open-Audit testing email using  Mail Server: " & email_server
   Set objEmail = CreateObject("CDO.Message")
   objEmail.From = email_from
@@ -42,11 +46,12 @@ On Error Resume Next
   objEmail.Configuration.Fields.Item ("http://schemas.microsoft.com/cdo/configuration/smtpusessl") = email_use_ssl
   objEmail.Configuration.Fields.Item ("http://schemas.microsoft.com/cdo/configuration/smtpconnectiontimeout") = email_timeout
   objEmail.Configuration.Fields.Update
-  objEmail.AddAttachment "c:\temp\readme.txt"
+  objEmail.AddAttachment  this_file
   objEmail.Send
     if Err.Number <> 0 then
       ' Possibly the error will come from the above scripting, as an error box, however here is a generic error, just in case  
       wscript.echo "Error sending email: " & Err.Description
+      wscript.echo "Log file name: " & this_file
   else wscript.echo "Email sent sucessfully." end if
   Err.Clear
   else wscript.echo "Email not sent. Please check your settings." end if 
