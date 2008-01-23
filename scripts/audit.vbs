@@ -884,27 +884,27 @@ if verbose = "y" then
    wscript.echo comment
 end if
 On Error Resume Next
-
-' Added from a post by 'ef' - http://www.open-audit.org/phpBB3/viewtopic.php?f=8&t=2556
-Set colItems = objWMIService.ExecQuery("Select TotalVisibleMemorySize from Win32_OperatingSystem",,48)
+Set colItems = objWMIService.ExecQuery("Select * from Win32_LogicalMemoryConfiguration",,48)
+mem_count = 0
 For Each objItem in colItems
-   mem_size = int(objItem.TotalVisibleMemorySize /1024)
+   mem_count = mem_count + objItem.Capacity
 Next
-
-'Set colItems = objWMIService.ExecQuery("Select * from Win32_LogicalMemoryConfiguration",,48)
-'mem_count = 0
-'For Each objItem in colItems
-'   mem_count = mem_count + objItem.Capacity
-'Next
-'if mem_count > 0 then
-'   mem_size = int(mem_count /1024 /1024)
-'else
-'   Set colItems = objWMIService.ExecQuery("Select * from Win32_LogicalMemoryConfiguration",,48)
-'   For Each objItem in colItems
-'      mem_size = objItem.TotalPhysicalMemory
-'   Next
-'   mem_size = int(mem_size /1024)
-'end if
+if mem_count > 0 then
+   mem_size = int(mem_count /1024 /1024)
+else
+   Set colItems = objWMIService.ExecQuery("Select * from Win32_LogicalMemoryConfiguration",,48)
+   For Each objItem in colItems
+      mem_size = objItem.TotalPhysicalMemory
+   Next
+   If isempty(mem_size) Then
+       Set colItems = objWMIService.ExecQuery("Select * from Win32_OperatingSystem",,48)
+       For Each objItem in colItems
+         mem_size = objItem.TotalVisibleMemorySize
+       Next
+   End If
+   mem_size = int(mem_size /1024)
+end if
+'
 Set colItems = objWMIService.ExecQuery("Select * from Win32_ComputerSystem",,48)
 For Each objItem in colItems
    system_model = clean(objItem.Model)
