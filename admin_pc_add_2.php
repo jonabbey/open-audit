@@ -117,6 +117,13 @@ $ms_keys_timestamp = NULL;
 $iis_timestamp = NULL;
 $iis_vd_timestamp = NULL;
 $iis_ip_timestamp = NULL;
+$sched_task_timestamp = NULL;
+$env_var_timestamp = NULL;
+$evt_log_timestamp = NULL;
+$ip_route_timestamp = NULL;
+$pagefile_timestamp = NULL;
+$motherboard_timestamp = NULL;
+$onboard_timestamp = NULL;
 
 $count = 0;
 
@@ -258,6 +265,20 @@ foreach ($input as $split) {
   if (substr($split, 0, 5) == "iis_2"){ insert_iis_2($split); }
   // IIS - Site
   if (substr($split, 0, 5) == "iis_3"){ insert_iis_3($split); }
+  // Scheduled task
+  if (substr($split, 0, 10) == "sched_task"){ insert_sched_task($split); }
+  // Environment variable
+  if (substr($split, 0, 7) == "env_var"){ insert_env_var($split); }
+  // Event log settings
+  if (substr($split, 0, 7) == "evt_log"){ insert_evt_log($split); }
+  // IP route
+  if (substr($split, 0, 8) == "ip_route"){ insert_ip_route($split); }
+  // Pagefile
+  if (substr($split, 0, 8) == "pagefile"){ insert_pagefile($split); }
+  // Motherboard
+  if (substr($split, 0, 11) == "motherboard"){ insert_motherboard($split); }
+  // Onboard device
+  if (substr($split, 0, 7) == "onboard"){ insert_onboard($split); }
   //Elapsed Time
   //if (substr($split, 0, 12) == "elapsed_time"){ insert_elapsed_time($split); }
 
@@ -453,13 +474,15 @@ function insert_system03 ($split){
     $system_service_pack = trim($extended[12]);
     $system_version = trim($extended[13]);
     $system_windows_directory = trim($extended[14]);
+    $system_last_boot = trim($extended[15]);
     $sql  = "UPDATE system SET system_boot_device = '$system_boot_device', system_build_number = '$system_build_number', ";
     $sql .= "system_os_type = '$system_os_type', system_os_name = '$system_os_name', ";
     $sql .= "system_country_code = '$system_country_code', system_description = '$system_description', ";
     $sql .= "date_system_install = '$date_system_install', system_organisation = '$system_organisation', ";
     $sql .= "system_language = '$system_language', system_registered_user = '$system_registered_user', ";
     $sql .= "system_serial_number = '$system_serial_number', system_service_pack = '$system_service_pack', ";
-    $sql .= "system_version = '$system_version', system_windows_directory = '$system_windows_directory' ";
+    $sql .= "system_version = '$system_version', system_windows_directory = '$system_windows_directory', ";
+    $sql .= "system_last_boot = '$system_last_boot' ";
     $sql .= "WHERE system_uuid = '$uuid' AND system_timestamp = '$timestamp'";
     if ($verbose == "y"){echo $sql . "<br />\n\n";}
     $result = mysql_query($sql) or die ('Insert Failed: ' . mysql_error() . '<br />' . $sql);
@@ -756,6 +779,7 @@ function insert_harddrive ($split){
     $hard_drive_scsi_port = trim($extended[9]);
     $hard_drive_size = trim($extended[10]);
     $hard_drive_pnpid = trim($extended[11]);
+    $hard_drive_status = trim($extended[12]);
     if (is_null($hard_drive_timestamp)){
       $sql = "SELECT MAX(hard_drive_timestamp) FROM hard_drive WHERE hard_drive_uuid = '$uuid'";
       if ($verbose == "y"){echo $sql . "<br />\n\n";}
@@ -779,17 +803,18 @@ function insert_harddrive ($split){
       $sql .= "hard_drive_interface_type, hard_drive_manufacturer, hard_drive_model, ";
       $sql .= "hard_drive_partitions, hard_drive_scsi_bus, hard_drive_scsi_logical_unit, ";
       $sql .= "hard_drive_scsi_port, hard_drive_size, hard_drive_timestamp, ";
-      $sql .= "hard_drive_first_timestamp, hard_drive_pnpid) VALUES (";
+      $sql .= "hard_drive_first_timestamp, hard_drive_pnpid, hard_drive_status) VALUES (";
       $sql .= "'$uuid', '$hard_drive_caption', '$hard_drive_index', ";
       $sql .= "'$hard_drive_interface_type', '$hard_drive_manufacturer', '$hard_drive_model', ";
       $sql .= "'$hard_drive_partitions', '$hard_drive_scsi_bus', '$hard_drive_scsi_logical_unit', ";
-      $sql .= "'$hard_drive_scsi_port', '$hard_drive_size', '$timestamp', '$timestamp', '$hard_drive_pnpid')";
+      $sql .= "'$hard_drive_scsi_port', '$hard_drive_size', '$timestamp', ";
+      $sql .= "'$timestamp', '$hard_drive_pnpid', '$hard_drive_status')";
       if ($verbose == "y"){echo $sql . "<br />\n\n";}
       $result = mysql_query($sql) or die ('Insert Failed: ' . mysql_error() . '<br />' . $sql);
     } else {
-      // Already present in database - update timestamp
-      $sql  = "UPDATE hard_drive SET hard_drive_timestamp = '$timestamp', hard_drive_pnpid = '$hard_drive_pnpid' WHERE hard_drive_index = '$hard_drive_index' AND ";
-      $sql .= "hard_drive_uuid = '$uuid' AND hard_drive_timestamp = '$hard_drive_timestamp'";
+      // Already present in database - update timestamp and status
+      $sql  = "UPDATE hard_drive SET hard_drive_timestamp = '$timestamp', hard_drive_pnpid = '$hard_drive_pnpid', hard_drive_status = '$hard_drive_status' ";
+      $sql .= "WHERE hard_drive_index = '$hard_drive_index' AND hard_drive_uuid = '$uuid' AND hard_drive_timestamp = '$hard_drive_timestamp'";
       if ($verbose == "y"){echo $sql . "<br />\n\n";}
       $result = mysql_query($sql) or die ('Insert Failed: ' . mysql_error() . '<br />' . $sql);
     }
@@ -2101,6 +2126,328 @@ function insert_iis_3 ($split) {
     }
   }
 
+function insert_sched_task ($split) {
+    global $timestamp, $uuid, $verbose, $sched_task_timestamp;
+    $extended = explode('^^^',$split);
+    if ($verbose == "y"){echo "<h2>Scheduled task</h2><br />";}
+    $sched_task_name = trim($extended[1]);
+    $sched_task_next_run = trim($extended[2]);
+    $sched_task_status = trim($extended[3]);
+    $sched_task_last_run = trim($extended[4]);
+    $sched_task_last_result = trim($extended[5]);
+    $sched_task_creator = trim($extended[6]);
+    $sched_task_schedule = trim($extended[7]);
+    $sched_task_task = trim($extended[8]);
+    $sched_task_state = trim($extended[9]);
+    $sched_task_runas = trim($extended[10]);
+
+    if (is_null($sched_task_timestamp)) {
+      $sql  = "SELECT MAX(sched_task_timestamp) FROM scheduled_task WHERE sched_task_uuid = '$uuid'";
+      if ($verbose == "y"){echo $sql . "<br />\n\n";}
+      $result = mysql_query($sql) or die ('Insert Failed: ' . mysql_error() . '<br />' . $sql);
+      $myrow = mysql_fetch_array($result);
+      if ($myrow["MAX(sched_task_timestamp)"]) {$sched_task_timestamp = $myrow["MAX(sched_task_timestamp)"];} else {$sched_task_timestamp = "";}
+    } else {}
+    $sql  = "SELECT count(sched_task_uuid) as count from scheduled_task ";
+    $sql .= "WHERE sched_task_uuid = '$uuid' AND sched_task_name = '$sched_task_name' AND sched_task_creator = '$sched_task_creator' AND sched_task_schedule = '$sched_task_schedule'";
+    $sql .= "AND (sched_task_timestamp = '$sched_task_timestamp' OR sched_task_timestamp = '$timestamp')";
+    if ($verbose == "y"){echo $sql . "<br />\n\n";}
+    $result = mysql_query($sql) or die ('Insert Failed: ' . mysql_error() . '<br />' . $sql);
+    $myrow = mysql_fetch_array($result);
+    if ($verbose == "y"){echo "Count: " . $myrow['count'] . "<br />\n\n";}
+    if ($myrow['count'] == "0"){
+      // New task - Insert into database
+      $sql  = "INSERT INTO scheduled_task (";
+      $sql .= "sched_task_uuid, sched_task_name, sched_task_next_run, sched_task_status, sched_task_last_run, sched_task_last_result, ";
+      $sql .= "sched_task_creator, sched_task_schedule, sched_task_task, sched_task_state, sched_task_runas, ";
+      $sql .= "sched_task_timestamp, sched_task_first_timestamp) VALUES (";
+      $sql .= "'$uuid', '$sched_task_name', '$sched_task_next_run', '$sched_task_status', '$sched_task_last_run', '$sched_task_last_result', ";
+      $sql .= "'$sched_task_creator', '$sched_task_schedule', '$sched_task_task', '$sched_task_state', '$sched_task_runas', ";
+      $sql .= "'$timestamp', '$timestamp') ";
+
+      if ($verbose == "y"){echo $sql . "<br />\n\n";}
+      $result = mysql_query($sql) or die ('Insert Failed: ' . mysql_error() . '<br />' . $sql);
+    } else {
+      // Already present in database - Update timestamp and dynamic fields
+      $sql  = "UPDATE scheduled_task SET ";
+      $sql .= "sched_task_timestamp = '$timestamp', sched_task_next_run = '$sched_task_next_run', sched_task_status = '$sched_task_status', ";
+      $sql .= "sched_task_last_run = '$sched_task_last_run', sched_task_last_result = '$sched_task_last_result', ";
+      $sql .= "sched_task_task = '$sched_task_task', sched_task_state = '$sched_task_state', sched_task_runas = '$sched_task_runas' ";
+      $sql .= "WHERE sched_task_uuid = '$uuid' AND sched_task_name = '$sched_task_name' AND sched_task_creator = '$sched_task_creator' AND sched_task_schedule = '$sched_task_schedule' ";
+      $sql .= "AND sched_task_timestamp = '$sched_task_timestamp'";
+      if ($verbose == "y"){echo $sql . "<br />\n\n";}
+      $result = mysql_query($sql) or die ('Insert Failed: ' . mysql_error() . '<br />' . $sql);
+    }
+   
+}
+
+function insert_env_var ($split) {
+    global $timestamp, $uuid, $verbose, $env_var_timestamp;
+    $extended = explode('^^^',$split);
+    if ($verbose == "y"){echo "<h2>Environment variable</h2><br />";}
+    $env_var_name = trim($extended[1]);
+    $env_var_value = trim($extended[2]);
+
+    if (is_null($env_var_timestamp)) {
+      $sql  = "SELECT MAX(env_var_timestamp) FROM environment_variable WHERE env_var_uuid = '$uuid'";
+      if ($verbose == "y"){echo $sql . "<br />\n\n";}
+      $result = mysql_query($sql) or die ('Insert Failed: ' . mysql_error() . '<br />' . $sql);
+      $myrow = mysql_fetch_array($result);
+      if ($myrow["MAX(env_var_timestamp)"]) {$env_var_timestamp = $myrow["MAX(env_var_timestamp)"];} else {$env_var_timestamp = "";}
+    } else {}
+    $sql  = "SELECT count(env_var_uuid) as count from environment_variable ";
+    $sql .= "WHERE env_var_uuid = '$uuid' AND env_var_name = '$env_var_name' ";
+    $sql .= "AND (env_var_timestamp = '$env_var_timestamp' OR env_var_timestamp = '$timestamp')";
+    if ($verbose == "y"){echo $sql . "<br />\n\n";}
+    $result = mysql_query($sql) or die ('Insert Failed: ' . mysql_error() . '<br />' . $sql);
+    $myrow = mysql_fetch_array($result);
+    if ($verbose == "y"){echo "Count: " . $myrow['count'] . "<br />\n\n";}
+    if ($myrow['count'] == "0"){
+      // New environment variable - Insert into database
+      $sql  = "INSERT INTO environment_variable (";
+      $sql .= "env_var_uuid, env_var_name, env_var_value, ";
+      $sql .= "env_var_timestamp, env_var_first_timestamp) VALUES (";
+      $sql .= "'$uuid', '$env_var_name', '$env_var_value', ";
+      $sql .= "'$timestamp', '$timestamp') ";
+
+      if ($verbose == "y"){echo $sql . "<br />\n\n";}
+      $result = mysql_query($sql) or die ('Insert Failed: ' . mysql_error() . '<br />' . $sql);
+    } else {
+      // Already present in database - Update timestamp and value
+      $sql  = "UPDATE environment_variable SET ";
+      $sql .= "env_var_timestamp = '$timestamp', env_var_value = '$env_var_value' ";
+      $sql .= "WHERE env_var_uuid = '$uuid' AND env_var_name = '$env_var_name' ";
+      $sql .= "AND env_var_timestamp = '$env_var_timestamp'";
+      if ($verbose == "y"){echo $sql . "<br />\n\n";}
+      $result = mysql_query($sql) or die ('Insert Failed: ' . mysql_error() . '<br />' . $sql);
+    }
+   
+}
+
+function insert_evt_log ($split) {
+    global $timestamp, $uuid, $verbose, $evt_log_timestamp;
+    $extended = explode('^^^',$split);
+    if ($verbose == "y"){echo "<h2>Event log</h2><br />";}
+    $evt_log_name = trim($extended[1]);
+    $evt_log_file_name = trim($extended[2]);
+    $evt_log_file_size = trim($extended[3]);
+    $evt_log_max_file_size = trim($extended[4]);
+    $evt_log_overwrite = trim($extended[5]);
+
+    if (is_null($evt_log_timestamp)) {
+      $sql  = "SELECT MAX(evt_log_timestamp) FROM event_log WHERE evt_log_uuid = '$uuid'";
+      if ($verbose == "y"){echo $sql . "<br />\n\n";}
+      $result = mysql_query($sql) or die ('Insert Failed: ' . mysql_error() . '<br />' . $sql);
+      $myrow = mysql_fetch_array($result);
+      if ($myrow["MAX(evt_log_timestamp)"]) {$evt_log_timestamp = $myrow["MAX(evt_log_timestamp)"];} else {$evt_log_timestamp = "";}
+    } else {}
+    $sql  = "SELECT count(evt_log_uuid) as count from event_log ";
+    $sql .= "WHERE evt_log_uuid = '$uuid' AND evt_log_name = '$evt_log_name' AND evt_log_file_name = '$evt_log_file_name' ";
+    $sql .= "AND (evt_log_timestamp = '$evt_log_timestamp' OR evt_log_timestamp = '$timestamp')";
+    if ($verbose == "y"){echo $sql . "<br />\n\n";}
+    $result = mysql_query($sql) or die ('Insert Failed: ' . mysql_error() . '<br />' . $sql);
+    $myrow = mysql_fetch_array($result);
+    if ($verbose == "y"){echo "Count: " . $myrow['count'] . "<br />\n\n";}
+    if ($myrow['count'] == "0"){
+      // New event log - Insert into database
+      $sql  = "INSERT INTO event_log (";
+      $sql .= "evt_log_uuid, evt_log_name, evt_log_file_name, evt_log_file_size, evt_log_max_file_size, evt_log_overwrite, ";
+      $sql .= "evt_log_timestamp, evt_log_first_timestamp) VALUES (";
+      $sql .= "'$uuid', '$evt_log_name', '$evt_log_file_name', '$evt_log_file_size', '$evt_log_max_file_size', '$evt_log_overwrite', ";
+      $sql .= "'$timestamp', '$timestamp') ";
+
+      if ($verbose == "y"){echo $sql . "<br />\n\n";}
+      $result = mysql_query($sql) or die ('Insert Failed: ' . mysql_error() . '<br />' . $sql);
+    } else {
+      // Already present in database - Update timestamp and dynamic fields
+      $sql  = "UPDATE event_log SET ";
+      $sql .= "evt_log_timestamp = '$timestamp', evt_log_file_size = '$evt_log_file_size', ";
+      $sql .= "evt_log_max_file_size = '$evt_log_max_file_size', evt_log_overwrite = '$evt_log_overwrite' ";
+      $sql .= "WHERE evt_log_uuid = '$uuid' AND evt_log_name = '$evt_log_name' AND evt_log_file_name = '$evt_log_file_name' ";
+      $sql .= "AND evt_log_timestamp = '$evt_log_timestamp'";
+      if ($verbose == "y"){echo $sql . "<br />\n\n";}
+      $result = mysql_query($sql) or die ('Insert Failed: ' . mysql_error() . '<br />' . $sql);
+    }
+   
+}
+
+function insert_ip_route ($split) {
+    global $timestamp, $uuid, $verbose, $ip_route_timestamp;
+    $extended = explode('^^^',$split);
+    if ($verbose == "y"){echo "<h2>IP route</h2><br />";}
+    $ip_route_destination = trim($extended[1]);
+    $ip_route_mask = trim($extended[2]);
+    $ip_route_metric = trim($extended[3]);
+    $ip_route_next_hop = trim($extended[4]);
+    $ip_route_protocol = trim($extended[5]);
+    $ip_route_type = trim($extended[6]);
+
+    if (is_null($ip_route_timestamp)) {
+      $sql  = "SELECT MAX(ip_route_timestamp) FROM ip_route WHERE ip_route_uuid = '$uuid'";
+      if ($verbose == "y"){echo $sql . "<br />\n\n";}
+      $result = mysql_query($sql) or die ('Insert Failed: ' . mysql_error() . '<br />' . $sql);
+      $myrow = mysql_fetch_array($result);
+      if ($myrow["MAX(ip_route_timestamp)"]) {$ip_route_timestamp = $myrow["MAX(ip_route_timestamp)"];} else {$ip_route_timestamp = "";}
+    } else {}
+    $sql  = "SELECT count(ip_route_uuid) as count from ip_route ";
+    $sql .= "WHERE ip_route_uuid = '$uuid' AND ip_route_destination = '$ip_route_destination' AND ip_route_mask = '$ip_route_mask' ";
+    $sql .= "AND (ip_route_timestamp = '$ip_route_timestamp' OR ip_route_timestamp = '$timestamp')";
+    if ($verbose == "y"){echo $sql . "<br />\n\n";}
+    $result = mysql_query($sql) or die ('Insert Failed: ' . mysql_error() . '<br />' . $sql);
+    $myrow = mysql_fetch_array($result);
+    if ($verbose == "y"){echo "Count: " . $myrow['count'] . "<br />\n\n";}
+    if ($myrow['count'] == "0"){
+      // New route - Insert into database
+      $sql  = "INSERT INTO ip_route (";
+      $sql .= "ip_route_uuid, ip_route_destination, ip_route_mask, ip_route_metric, ip_route_next_hop, ip_route_protocol, ip_route_type, ";
+      $sql .= "ip_route_timestamp, ip_route_first_timestamp) VALUES (";
+      $sql .= "'$uuid', '$ip_route_destination', '$ip_route_mask', '$ip_route_metric', '$ip_route_next_hop', '$ip_route_protocol', '$ip_route_type', ";
+      $sql .= "'$timestamp', '$timestamp') ";
+
+      if ($verbose == "y"){echo $sql . "<br />\n\n";}
+      $result = mysql_query($sql) or die ('Insert Failed: ' . mysql_error() . '<br />' . $sql);
+    } else {
+      // Already present in database - Update timestamp and dynamic fields
+      $sql  = "UPDATE ip_route SET ";
+      $sql .= "ip_route_timestamp = '$timestamp', ip_route_metric = '$ip_route_metric', ip_route_next_hop = '$ip_route_next_hop', ";
+      $sql .= "ip_route_protocol = '$ip_route_protocol', ip_route_type = '$ip_route_type' ";
+      $sql .= "WHERE ip_route_uuid = '$uuid' AND ip_route_destination = '$ip_route_destination' AND ip_route_mask = '$ip_route_mask' ";
+      $sql .= "AND ip_route_timestamp = '$ip_route_timestamp'";
+      if ($verbose == "y"){echo $sql . "<br />\n\n";}
+      $result = mysql_query($sql) or die ('Insert Failed: ' . mysql_error() . '<br />' . $sql);
+    }
+   
+}
+
+function insert_pagefile ($split) {
+    global $timestamp, $uuid, $verbose, $pagefile_timestamp;
+    $extended = explode('^^^',$split);
+    if ($verbose == "y"){echo "<h2>Pagefile</h2><br />";}
+    $pagefile_name = trim($extended[1]);
+    $pagefile_initial_size = trim($extended[2]);
+    $pagefile_max_size = trim($extended[3]);
+
+    if (is_null($pagefile_timestamp)) {
+      $sql  = "SELECT MAX(pagefile_timestamp) FROM pagefile WHERE pagefile_uuid = '$uuid'";
+      if ($verbose == "y"){echo $sql . "<br />\n\n";}
+      $result = mysql_query($sql) or die ('Insert Failed: ' . mysql_error() . '<br />' . $sql);
+      $myrow = mysql_fetch_array($result);
+      if ($myrow["MAX(pagefile_timestamp)"]) {$pagefile_timestamp = $myrow["MAX(pagefile_timestamp)"];} else {$pagefile_timestamp = "";}
+    } else {}
+    $sql  = "SELECT count(pagefile_uuid) as count from pagefile ";
+    $sql .= "WHERE pagefile_uuid = '$uuid' AND pagefile_name = '$pagefile_name' ";
+    $sql .= "AND (pagefile_timestamp = '$pagefile_timestamp' OR pagefile_timestamp = '$timestamp')";
+    if ($verbose == "y"){echo $sql . "<br />\n\n";}
+    $result = mysql_query($sql) or die ('Insert Failed: ' . mysql_error() . '<br />' . $sql);
+    $myrow = mysql_fetch_array($result);
+    if ($verbose == "y"){echo "Count: " . $myrow['count'] . "<br />\n\n";}
+    if ($myrow['count'] == "0"){
+      // New pagefile - Insert into database
+      $sql  = "INSERT INTO pagefile (";
+      $sql .= "pagefile_uuid, pagefile_name, pagefile_initial_size, pagefile_max_size, ";
+      $sql .= "pagefile_timestamp, pagefile_first_timestamp) VALUES (";
+      $sql .= "'$uuid', '$pagefile_name', '$pagefile_initial_size', '$pagefile_max_size', ";
+      $sql .= "'$timestamp', '$timestamp') ";
+
+      if ($verbose == "y"){echo $sql . "<br />\n\n";}
+      $result = mysql_query($sql) or die ('Insert Failed: ' . mysql_error() . '<br />' . $sql);
+    } else {
+      // Already present in database - Update timestamp and dynamic fields
+      $sql  = "UPDATE pagefile SET ";
+      $sql .= "pagefile_timestamp = '$timestamp', pagefile_initial_size = '$pagefile_initial_size', pagefile_max_size = '$pagefile_max_size'  ";
+      $sql .= "WHERE pagefile_uuid = '$uuid' AND pagefile_name = '$pagefile_name' ";
+      $sql .= "AND pagefile_timestamp = '$pagefile_timestamp'";
+      if ($verbose == "y"){echo $sql . "<br />\n\n";}
+      $result = mysql_query($sql) or die ('Insert Failed: ' . mysql_error() . '<br />' . $sql);
+    }
+   
+}
+
+function insert_motherboard ($split) {
+    global $timestamp, $uuid, $verbose, $motherboard_timestamp;
+    $extended = explode('^^^',$split);
+    if ($verbose == "y"){echo "<h2>Motherboard</h2><br />";}
+    $motherboard_manufacturer = trim($extended[1]);
+    $motherboard_product = trim($extended[2]);
+
+    if (is_null($motherboard_timestamp)) {
+      $sql  = "SELECT MAX(motherboard_timestamp) FROM motherboard WHERE motherboard_uuid = '$uuid'";
+      if ($verbose == "y"){echo $sql . "<br />\n\n";}
+      $result = mysql_query($sql) or die ('Insert Failed: ' . mysql_error() . '<br />' . $sql);
+      $myrow = mysql_fetch_array($result);
+      if ($myrow["MAX(motherboard_timestamp)"]) {$motherboard_timestamp = $myrow["MAX(motherboard_timestamp)"];} else {$motherboard_timestamp = "";}
+    } else {}
+    $sql  = "SELECT count(motherboard_uuid) as count from motherboard ";
+    $sql .= "WHERE motherboard_uuid = '$uuid' AND motherboard_manufacturer = '$motherboard_manufacturer' AND motherboard_product = '$motherboard_product' ";
+    $sql .= "AND (motherboard_timestamp = '$motherboard_timestamp' OR motherboard_timestamp = '$timestamp')";
+    if ($verbose == "y"){echo $sql . "<br />\n\n";}
+    $result = mysql_query($sql) or die ('Insert Failed: ' . mysql_error() . '<br />' . $sql);
+    $myrow = mysql_fetch_array($result);
+    if ($verbose == "y"){echo "Count: " . $myrow['count'] . "<br />\n\n";}
+    if ($myrow['count'] == "0"){
+      // New motherboard - Insert into database
+      $sql  = "INSERT INTO motherboard (";
+      $sql .= "motherboard_uuid, motherboard_manufacturer, motherboard_product, ";
+      $sql .= "motherboard_timestamp, motherboard_first_timestamp) VALUES (";
+      $sql .= "'$uuid', '$motherboard_manufacturer', '$motherboard_product', ";
+      $sql .= "'$timestamp', '$timestamp') ";
+
+      if ($verbose == "y"){echo $sql . "<br />\n\n";}
+      $result = mysql_query($sql) or die ('Insert Failed: ' . mysql_error() . '<br />' . $sql);
+    } else {
+      // Already present in database - Update timestamp 
+      $sql  = "UPDATE motherboard SET ";
+      $sql .= "motherboard_timestamp = '$timestamp' ";
+      $sql .= "WHERE motherboard_uuid = '$uuid' AND motherboard_manufacturer = '$motherboard_manufacturer' AND motherboard_product = '$motherboard_product' ";
+      $sql .= "AND motherboard_timestamp = '$motherboard_timestamp'";
+      if ($verbose == "y"){echo $sql . "<br />\n\n";}
+      $result = mysql_query($sql) or die ('Insert Failed: ' . mysql_error() . '<br />' . $sql);
+    }
+   
+}
+
+function insert_onboard ($split) {
+    global $timestamp, $uuid, $verbose, $onboard_timestamp;
+    $extended = explode('^^^',$split);
+    if ($verbose == "y"){echo "<h2>Onboard device</h2><br />";}
+    $onboard_description = trim($extended[1]);
+    $onboard_type = trim($extended[2]);
+
+    if (is_null($onboard_timestamp)) {
+      $sql  = "SELECT MAX(onboard_timestamp) FROM onboard_device WHERE onboard_uuid = '$uuid'";
+      if ($verbose == "y"){echo $sql . "<br />\n\n";}
+      $result = mysql_query($sql) or die ('Insert Failed: ' . mysql_error() . '<br />' . $sql);
+      $myrow = mysql_fetch_array($result);
+      if ($myrow["MAX(onboard_timestamp)"]) {$onboard_timestamp = $myrow["MAX(onboard_timestamp)"];} else {$onboard_timestamp = "";}
+    } else {}
+    $sql  = "SELECT count(onboard_uuid) as count from onboard_device ";
+    $sql .= "WHERE onboard_uuid = '$uuid' AND onboard_description = '$onboard_description' AND onboard_type = '$onboard_type' ";
+    $sql .= "AND (onboard_timestamp = '$onboard_timestamp' OR onboard_timestamp = '$timestamp')";
+    if ($verbose == "y"){echo $sql . "<br />\n\n";}
+    $result = mysql_query($sql) or die ('Insert Failed: ' . mysql_error() . '<br />' . $sql);
+    $myrow = mysql_fetch_array($result);
+    if ($verbose == "y"){echo "Count: " . $myrow['count'] . "<br />\n\n";}
+    if ($myrow['count'] == "0"){
+      // New onboard device - Insert into database
+      $sql  = "INSERT INTO onboard_device (";
+      $sql .= "onboard_uuid, onboard_description, onboard_type, ";
+      $sql .= "onboard_timestamp, onboard_first_timestamp) VALUES (";
+      $sql .= "'$uuid', '$onboard_description', '$onboard_type', ";
+      $sql .= "'$timestamp', '$timestamp') ";
+
+      if ($verbose == "y"){echo $sql . "<br />\n\n";}
+      $result = mysql_query($sql) or die ('Insert Failed: ' . mysql_error() . '<br />' . $sql);
+    } else {
+      // Already present in database - Update timestamp 
+      $sql  = "UPDATE onboard_device SET ";
+      $sql .= "onboard_timestamp = '$timestamp' ";
+      $sql .= "WHERE onboard_uuid = '$uuid' AND onboard_description = '$onboard_description' AND onboard_type = '$onboard_type' ";
+      $sql .= "AND onboard_timestamp = '$onboard_timestamp'";
+      if ($verbose == "y"){echo $sql . "<br />\n\n";}
+      $result = mysql_query($sql) or die ('Insert Failed: ' . mysql_error() . '<br />' . $sql);
+    }
+   
+}
 
 
 echo "<a href=\"javascript:window.close()\" name=\"clicktoclose\">Close</a>";

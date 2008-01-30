@@ -150,6 +150,111 @@ $sql = "ALTER TABLE `network_card` ADD COLUMN `net_ip_enabled` varchar(10) NOT N
 
 upgrade ($version,"07.12.09", $sql);
 
+$sql = "ALTER TABLE `system` ADD COLUMN `system_last_boot` BIGINT( 20 ) UNSIGNED NOT NULL DEFAULT '0' AFTER `date_virus_def` ;
+
+ALTER TABLE `hard_drive` ADD COLUMN `hard_drive_status` VARCHAR( 10 ) NOT NULL DEFAULT '' AFTER `hard_drive_pnpid` ;
+
+CREATE TABLE `scheduled_task` (
+  `sched_task_id` INT( 10 ) UNSIGNED NOT NULL AUTO_INCREMENT ,
+  `sched_task_uuid` VARCHAR( 100 ) NOT NULL DEFAULT '',
+  `sched_task_name` VARCHAR( 100 ) NOT NULL DEFAULT '',
+  `sched_task_next_run` VARCHAR( 50 ) NOT NULL DEFAULT '',
+  `sched_task_status` VARCHAR( 50 ) NOT NULL DEFAULT '',
+  `sched_task_last_run` VARCHAR( 50 ) NOT NULL DEFAULT '',
+  `sched_task_last_result` VARCHAR( 50 ) NOT NULL DEFAULT '',
+  `sched_task_creator` VARCHAR( 50 ) NOT NULL DEFAULT '',
+  `sched_task_schedule` VARCHAR( 100 ) NOT NULL DEFAULT '',
+  `sched_task_task` VARCHAR( 100 ) NOT NULL DEFAULT '',
+  `sched_task_state` VARCHAR( 10 ) NOT NULL DEFAULT '',
+  `sched_task_runas` VARCHAR( 50 ) NOT NULL DEFAULT '',
+  `sched_task_timestamp` BIGINT( 20 ) UNSIGNED NOT NULL DEFAULT '0',
+  `sched_task_first_timestamp` BIGINT( 20 ) UNSIGNED NOT NULL DEFAULT '0',
+  PRIMARY KEY  (`sched_task_id`),
+  KEY `id` (`sched_task_uuid`),
+  KEY `id2` (`sched_task_timestamp`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+CREATE TABLE `environment_variable` (
+  `env_var_id` INT( 10 ) UNSIGNED NOT NULL AUTO_INCREMENT ,
+  `env_var_uuid` VARCHAR( 100 ) NOT NULL DEFAULT '',
+  `env_var_name` VARCHAR( 50 ) NOT NULL DEFAULT '',
+  `env_var_value` VARCHAR( 250 ) NOT NULL DEFAULT '',
+  `env_var_timestamp` BIGINT( 20 ) UNSIGNED NOT NULL DEFAULT '0',
+  `env_var_first_timestamp` BIGINT( 20 ) UNSIGNED NOT NULL DEFAULT '0',
+  PRIMARY KEY  (`env_var_id`),
+  KEY `id` (`env_var_uuid`),
+  KEY `id2` (`env_var_timestamp`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+CREATE TABLE `event_log` (
+  `evt_log_id` INT( 10 ) UNSIGNED NOT NULL AUTO_INCREMENT ,
+  `evt_log_uuid` VARCHAR( 100 ) NOT NULL DEFAULT '',
+  `evt_log_name` VARCHAR( 50 ) NOT NULL DEFAULT '',
+  `evt_log_file_name` VARCHAR( 100 ) NOT NULL DEFAULT '',
+  `evt_log_file_size` INT( 11 ) NOT NULL DEFAULT '0',
+  `evt_log_max_file_size` INT( 11 ) NOT NULL DEFAULT '0',
+  `evt_log_overwrite` VARCHAR( 30 ) NOT NULL DEFAULT '',
+  `evt_log_timestamp` BIGINT( 20 ) UNSIGNED NOT NULL DEFAULT '0',
+  `evt_log_first_timestamp` BIGINT( 20 ) UNSIGNED NOT NULL DEFAULT '0',
+  PRIMARY KEY  (`evt_log_id`),
+  KEY `id` (`evt_log_uuid`),
+  KEY `id2` (`evt_log_timestamp`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+CREATE TABLE `ip_route` (
+  `ip_route_id` INT( 10 ) UNSIGNED NOT NULL AUTO_INCREMENT ,
+  `ip_route_uuid` VARCHAR( 100 ) NOT NULL DEFAULT '',
+  `ip_route_destination` VARCHAR( 20 ) NOT NULL DEFAULT '',
+  `ip_route_mask` VARCHAR( 20 ) NOT NULL DEFAULT '',
+  `ip_route_metric` VARCHAR( 10 ) NOT NULL DEFAULT '',
+  `ip_route_next_hop` VARCHAR( 20 ) NOT NULL DEFAULT '',
+  `ip_route_protocol` VARCHAR( 10 ) NOT NULL DEFAULT '',
+  `ip_route_type` VARCHAR( 10 ) NOT NULL DEFAULT '',
+  `ip_route_timestamp` BIGINT( 20 ) UNSIGNED NOT NULL DEFAULT '0',
+  `ip_route_first_timestamp` BIGINT( 20 ) UNSIGNED NOT NULL DEFAULT '0',
+  PRIMARY KEY  (`ip_route_id`),
+  KEY `id` (`ip_route_uuid`),
+  KEY `id2` (`ip_route_timestamp`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+CREATE TABLE `pagefile` (
+  `pagefile_id` INT( 10 ) UNSIGNED NOT NULL AUTO_INCREMENT ,
+  `pagefile_uuid` VARCHAR( 100 ) NOT NULL DEFAULT '',
+  `pagefile_name` VARCHAR( 100 ) NOT NULL DEFAULT '',
+  `pagefile_initial_size` INT( 11 ) NOT NULL DEFAULT '0',
+  `pagefile_max_size` INT( 11 ) NOT NULL DEFAULT '0',
+  `pagefile_timestamp` BIGINT( 20 ) UNSIGNED NOT NULL DEFAULT '0',
+  `pagefile_first_timestamp` BIGINT( 20 ) UNSIGNED NOT NULL DEFAULT '0',
+  PRIMARY KEY  (`pagefile_id`),
+  KEY `id` (`pagefile_uuid`),
+  KEY `id2` (`pagefile_timestamp`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+CREATE TABLE `motherboard` (
+  `motherboard_id` INT( 10 ) UNSIGNED NOT NULL AUTO_INCREMENT ,
+  `motherboard_uuid` VARCHAR( 100 ) NOT NULL DEFAULT '',
+  `motherboard_manufacturer` VARCHAR( 50 ) NOT NULL DEFAULT '',
+  `motherboard_product` VARCHAR( 50 ) NOT NULL DEFAULT '',
+  `motherboard_timestamp` BIGINT( 20 ) UNSIGNED NOT NULL DEFAULT '0',
+  `motherboard_first_timestamp` BIGINT( 20 ) UNSIGNED NOT NULL DEFAULT '0',
+  PRIMARY KEY  (`motherboard_id`),
+  KEY `id` (`motherboard_uuid`),
+  KEY `id2` (`motherboard_timestamp`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+CREATE TABLE `onboard_device` (
+  `onboard_id` INT( 10 ) UNSIGNED NOT NULL AUTO_INCREMENT ,
+  `onboard_uuid` VARCHAR( 100 ) NOT NULL DEFAULT '',
+  `onboard_description` VARCHAR( 50 ) NOT NULL DEFAULT '',
+  `onboard_type` VARCHAR( 20 ) NOT NULL DEFAULT '',
+  `onboard_timestamp` BIGINT( 20 ) UNSIGNED NOT NULL DEFAULT '0',
+  `onboard_first_timestamp` BIGINT( 20 ) UNSIGNED NOT NULL DEFAULT '0',
+  PRIMARY KEY  (`onboard_id`),
+  KEY `id` (`onboard_uuid`),
+  KEY `id2` (`onboard_timestamp`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;";
+
+upgrade ($version,"08.02.01", $sql);
 
 
 ?>

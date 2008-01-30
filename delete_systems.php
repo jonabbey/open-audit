@@ -6,143 +6,164 @@
     if (!empty($_POST['Perform'])) {
       foreach($_POST as $id) {
 
-           $query = "DELETE FROM battery WHERE battery_uuid = '" . $id . "'";
-           $result = mysql_query($query)  or die("Query failed at delete stage. battery");
+       $query = "DELETE FROM battery WHERE battery_uuid = '" . $id . "'";
+       $result = mysql_query($query)  or die("Query failed at delete stage. battery");
 
-           $query = "DELETE FROM bios WHERE bios_uuid = '" . $id . "'";
-           $result = mysql_query($query)  or die("Query failed at delete stage. browser_helper_objects");
+       $query = "DELETE FROM bios WHERE bios_uuid = '" . $id . "'";
+       $result = mysql_query($query)  or die("Query failed at delete stage. bios");
 
-           $query = "DELETE FROM browser_helper_objects WHERE bho_uuid = '" . $id . "'";
-           $result = mysql_query($query)  or die("Query failed at delete stage. browser_helper_objects");
+       $query = "DELETE FROM browser_helper_objects WHERE bho_uuid = '" . $id . "'";
+       $result = mysql_query($query)  or die("Query failed at delete stage. browser_helper_objects");
 
-           $query = "DELETE FROM firewall_auth_app WHERE firewall_app_uuid = '" . $id . "'";
-           $result = mysql_query($query)  or die("Query failed at delete stage. firewall_auth_app");
+       $query = "DELETE FROM environment_variable WHERE env_var_uuid = '" . $id . "'";
+       $result = mysql_query($query)  or die("Query failed at delete stage. environment_variable");
 
-           $query = "DELETE FROM firewall_ports WHERE port_uuid = '" . $id . "'";
-           $result = mysql_query($query)  or die("Query failed at delete stage. firewall_ports");
+       $query = "DELETE FROM event_log WHERE evt_log_uuid = '" . $id . "'";
+       $result = mysql_query($query)  or die("Query failed at delete stage. event_log");
 
-           $query = "DELETE FROM firewire WHERE fw_uuid = '" . $id . "'";
-           $result = mysql_query($query)  or die("Query failed at delete stage. firewire");
+       $query = "DELETE FROM firewall_auth_app WHERE firewall_app_uuid = '" . $id . "'";
+       $result = mysql_query($query)  or die("Query failed at delete stage. firewall_auth_app");
 
-           $query = "DELETE FROM floppy WHERE floppy_uuid = '" . $id . "'";
-           $result = mysql_query($query)  or die("Query failed at delete stage. floppy");
+       $query = "DELETE FROM firewall_ports WHERE port_uuid = '" . $id . "'";
+       $result = mysql_query($query)  or die("Query failed at delete stage. firewall_ports");
 
-           $query = "DELETE FROM graphs_disk WHERE disk_uuid = '" . $id . "'";
-           $result = mysql_query($query)  or die("Query failed at delete stage. graphs_disk");
+       $query = "DELETE FROM firewire WHERE fw_uuid = '" . $id . "'";
+       $result = mysql_query($query)  or die("Query failed at delete stage. firewire");
 
-           $query = "DELETE FROM groups WHERE groups_uuid = '" . $id . "'";
-           $result = mysql_query($query)  or die("Query failed at delete stage. groups");
+       $query = "DELETE FROM floppy WHERE floppy_uuid = '" . $id . "'";
+       $result = mysql_query($query)  or die("Query failed at delete stage. floppy");
 
-           $query = "DELETE FROM hard_drive WHERE hard_drive_uuid = '" . $id . "'";
-           $result = mysql_query($query)  or die("Query failed at delete stage. hard_drive");
+       $query = "DELETE FROM graphs_disk WHERE disk_uuid = '" . $id . "'";
+       $result = mysql_query($query)  or die("Query failed at delete stage. graphs_disk");
 
-           $query = "DELETE FROM iis WHERE iis_uuid = '" . $id . "'";
-           $result = mysql_query($query)  or die("Query failed at delete stage. iis");
+       $query = "DELETE FROM groups WHERE groups_uuid = '" . $id . "'";
+       $result = mysql_query($query)  or die("Query failed at delete stage. groups");
 
-           $query = "DELETE FROM iis_ip WHERE iis_ip_uuid = '" . $id . "'";
-           $result = mysql_query($query)  or die("Query failed at delete stage. iis_ip");
+       $query = "DELETE FROM hard_drive WHERE hard_drive_uuid = '" . $id . "'";
+       $result = mysql_query($query)  or die("Query failed at delete stage. hard_drive");
 
-           $query = "DELETE FROM iis_vd WHERE iis_vd_uuid = '" . $id . "'";
-           $result = mysql_query($query)  or die("Query failed at delete stage. iis_vd");
+       $query = "DELETE FROM iis WHERE iis_uuid = '" . $id . "'";
+       $result = mysql_query($query)  or die("Query failed at delete stage. iis");
 
-           $query = "DELETE FROM invoice WHERE invoice_uuid = '" . $id . "'";
-           $result = mysql_query($query)  or die("Query failed at delete stage. invoice");
+       $query = "DELETE FROM iis_ip WHERE iis_ip_uuid = '" . $id . "'";
+       $result = mysql_query($query)  or die("Query failed at delete stage. iis_ip");
 
-           $query = "DELETE FROM keyboard WHERE keyboard_uuid = '" . $id . "'";
-           $result = mysql_query($query)  or die("Query failed at delete stage. keyboard");
+       $query = "DELETE FROM iis_vd WHERE iis_vd_uuid = '" . $id . "'";
+       $result = mysql_query($query)  or die("Query failed at delete stage. iis_vd");
 
-           $query = "DELETE FROM manual_software WHERE man_soft_uuid = '" . $id . "'";
-           $result = mysql_query($query)  or die("Query failed at delete stage. manual_software");
+       $query = "DELETE FROM invoice WHERE invoice_uuid = '" . $id . "'";
+       $result = mysql_query($query)  or die("Query failed at delete stage. invoice");
+   
+       $query = "DELETE FROM ip_route WHERE ip_route_uuid = '" . $id . "'";
+       $result = mysql_query($query)  or die("Query failed at delete stage. ip_route");
 
-           $query = "DELETE FROM mapped WHERE mapped_uuid = '" . $id . "'";
-           $result = mysql_query($query)  or die("Query failed at delete stage. mapped");
+       $query = "DELETE FROM keyboard WHERE keyboard_uuid = '" . $id . "'";
+       $result = mysql_query($query)  or die("Query failed at delete stage. keyboard");
 
-           $query = "DELETE FROM media WHERE media_uuid = '" . $id . "'";
-           $result = mysql_query($query)  or die("Query failed at delete stage. media");
+       $query = "DELETE FROM manual_software WHERE man_soft_uuid = '" . $id . "'";
+       $result = mysql_query($query)  or die("Query failed at delete stage. manual_software");
 
-           $query = "DELETE FROM memory WHERE memory_uuid = '" . $id . "'";
-           $result = mysql_query($query)  or die("Query failed at delete stage. memory");
+       $query = "DELETE FROM mapped WHERE mapped_uuid = '" . $id . "'";
+       $result = mysql_query($query)  or die("Query failed at delete stage. mapped");
 
-           $query = "DELETE FROM modem WHERE modem_uuid = '" . $id . "'";
-           $result = mysql_query($query)  or die("Query failed at delete stage. modem");
+       $query = "DELETE FROM media WHERE media_uuid = '" . $id . "'";
+       $result = mysql_query($query)  or die("Query failed at delete stage. media");
 
-           $query = "DELETE FROM monitor WHERE monitor_uuid = '" . $id . "'";
-           $result = mysql_query($query)  or die("Query failed at delete stage. modem");
+       $query = "DELETE FROM memory WHERE memory_uuid = '" . $id . "'";
+       $result = mysql_query($query)  or die("Query failed at delete stage. memory");
 
-           $query = "DELETE FROM mouse WHERE mouse_uuid = '" . $id . "'";
-           $result = mysql_query($query)  or die("Query failed at delete stage. modem");
+       $query = "DELETE FROM modem WHERE modem_uuid = '" . $id . "'";
+       $result = mysql_query($query)  or die("Query failed at delete stage. modem");
 
-           $query = "DELETE FROM ms_keys WHERE ms_keys_uuid = '" . $id . "'";
-           $result = mysql_query($query)  or die("Query failed at delete stage. ms_keys");
+       $query = "DELETE FROM monitor WHERE monitor_uuid = '" . $id . "'";
+       $result = mysql_query($query)  or die("Query failed at delete stage. monitor");
+   
+       $query = "DELETE FROM motherboard WHERE motherboard_uuid = '" . $id . "'";
+       $result = mysql_query($query)  or die("Query failed at delete stage. motherboard");
 
-           $query = "DELETE FROM network_card WHERE net_uuid = '" . $id . "'";
-           $result = mysql_query($query)  or die("Query failed at delete stage. network_card");
+       $query = "DELETE FROM mouse WHERE mouse_uuid = '" . $id . "'";
+       $result = mysql_query($query)  or die("Query failed at delete stage. mouse");
 
-           $query = "DELETE FROM nmap_ports WHERE nmap_other_id = '" . $id . "'";
-           $result = mysql_query($query)  or die("Query failed at delete stage. nmap_ports");
+       $query = "DELETE FROM ms_keys WHERE ms_keys_uuid = '" . $id . "'";
+       $result = mysql_query($query)  or die("Query failed at delete stage. ms_keys");
 
-           $query = "DELETE FROM notes WHERE notes_uuid = '" . $id . "'";
-           $result = mysql_query($query)  or die("Query failed at delete stage. notes");
+       $query = "DELETE FROM network_card WHERE net_uuid = '" . $id . "'";
+       $result = mysql_query($query)  or die("Query failed at delete stage. network_card");
 
-           $query = "DELETE FROM optical_drive WHERE optical_drive_uuid = '" . $id . "'";
-           $result = mysql_query($query)  or die("Query failed at delete stage. optical_drive");
+       $query = "DELETE FROM nmap_ports WHERE nmap_other_id = '" . $id . "'";
+       $result = mysql_query($query)  or die("Query failed at delete stage. nmap_ports");
 
-           $query = "DELETE FROM partition WHERE partition_uuid = '" . $id . "'";
-           $result = mysql_query($query)  or die("Query failed at delete stage. partition");
+       $query = "DELETE FROM notes WHERE notes_uuid = '" . $id . "'";
+       $result = mysql_query($query)  or die("Query failed at delete stage. notes");
+   
+       $query = "DELETE FROM onboard_device WHERE onboard_uuid = '" . $id . "'";
+       $result = mysql_query($query)  or die("Query failed at delete stage. onboard_device");
 
-           $query = "DELETE FROM passwords WHERE passwords_uuid = '" . $id . "'";
-           $result = mysql_query($query)  or die("Query failed at delete stage. passwords");
+       $query = "DELETE FROM optical_drive WHERE optical_drive_uuid = '" . $id . "'";
+       $result = mysql_query($query)  or die("Query failed at delete stage. optical_drive");
+   
+       $query = "DELETE FROM pagefile WHERE pagefile_uuid = '" . $id . "'";
+       $result = mysql_query($query)  or die("Query failed at delete stage. pagefile");
 
-           $query = "DELETE FROM processor WHERE processor_uuid = '" . $id . "'";
-           $result = mysql_query($query)  or die("Query failed at delete stage. processor");
+       $query = "DELETE FROM partition WHERE partition_uuid = '" . $id . "'";
+       $result = mysql_query($query)  or die("Query failed at delete stage. partition");
 
-           $query = "DELETE FROM scsi_controller WHERE scsi_controller_uuid = '" . $id . "'";
-           $result = mysql_query($query)  or die("Query failed at delete stage. scsi_controller");
+       $query = "DELETE FROM passwords WHERE passwords_uuid = '" . $id . "'";
+       $result = mysql_query($query)  or die("Query failed at delete stage. passwords");
 
-           $query = "DELETE FROM scsi_device WHERE scsi_device_uuid = '" . $id . "'";
-           $result = mysql_query($query)  or die("Query failed at delete stage. scsi_device");
+       $query = "DELETE FROM processor WHERE processor_uuid = '" . $id . "'";
+       $result = mysql_query($query)  or die("Query failed at delete stage. processor");
 
-           $query = "DELETE FROM service WHERE service_uuid = '" . $id . "'";
-           $result = mysql_query($query)  or die("Query failed at delete stage. services");
+       $query = "DELETE FROM scheduled_task WHERE sched_task_uuid = '" . $id . "'";
+       $result = mysql_query($query)  or die("Query failed at delete stage. scheduled_task");
 
-           $query = "DELETE FROM shares WHERE shares_uuid = '" . $id . "'";
-           $result = mysql_query($query)  or die("Query failed at delete stage. shares");
+       $query = "DELETE FROM scsi_controller WHERE scsi_controller_uuid = '" . $id . "'";
+       $result = mysql_query($query)  or die("Query failed at delete stage. scsi_controller");
 
-           $query = "DELETE FROM software WHERE software_uuid = '" . $id . "'";
-           $result = mysql_query($query)  or die("Query failed at delete stage. software");
+       $query = "DELETE FROM scsi_device WHERE scsi_device_uuid = '" . $id . "'";
+       $result = mysql_query($query)  or die("Query failed at delete stage. scsi_device");
 
-           $query = "DELETE FROM sound WHERE sound_uuid = '" . $id . "'";
-           $result = mysql_query($query)  or die("Query failed at delete stage. sound");
+       $query = "DELETE FROM service WHERE service_uuid = '" . $id . "'";
+       $result = mysql_query($query)  or die("Query failed at delete stage. service");
 
-           $query = "DELETE FROM startup WHERE startup_uuid = '" . $id . "'";
-           $result = mysql_query($query)  or die("Query failed at delete stage. startup");
+       $query = "DELETE FROM shares WHERE shares_uuid = '" . $id . "'";
+       $result = mysql_query($query)  or die("Query failed at delete stage. shares");
 
-           $query = "DELETE FROM system WHERE system_uuid = '" . $id . "'";
-           $result = mysql_query($query)  or die("Query failed at delete stage. system");
+       $query = "DELETE FROM software WHERE software_uuid = '" . $id . "'";
+       $result = mysql_query($query)  or die("Query failed at delete stage. software");
 
-           $query = "DELETE FROM system_audits WHERE system_audits_uuid = '" . $id . "'";
-           $result = mysql_query($query)  or die("Query failed at delete stage. system_audits");
+       $query = "DELETE FROM sound WHERE sound_uuid = '" . $id . "'";
+       $result = mysql_query($query)  or die("Query failed at delete stage. sound");
 
-           $query = "DELETE FROM system_man WHERE system_man_uuid = '" . $id . "'";
-           $result = mysql_query($query)  or die("Query failed at delete stage. system_man");
+       $query = "DELETE FROM startup WHERE startup_uuid = '" . $id . "'";
+       $result = mysql_query($query)  or die("Query failed at delete stage. startup");
 
-           $query = "DELETE FROM system_security WHERE ss_uuid = '" . $id . "'";
-           $result = mysql_query($query)  or die("Query failed at delete stage. system_security");
+       $query = "DELETE FROM system WHERE system_uuid = '" . $id . "'";
+       $result = mysql_query($query)  or die("Query failed at delete stage. system");
 
-           $query = "DELETE FROM tape_drive WHERE tape_drive_uuid = '" . $id . "'";
-           $result = mysql_query($query)  or die("Query failed at delete stage. tape_drive");
+       $query = "DELETE FROM system_audits WHERE system_audits_uuid = '" . $id . "'";
+       $result = mysql_query($query)  or die("Query failed at delete stage. system_audits");
 
-           $query = "DELETE FROM usb WHERE usb_uuid = '" . $id . "'";
-           $result = mysql_query($query)  or die("Query failed at delete stage. usb");
+       $query = "DELETE FROM system_man WHERE system_man_uuid = '" . $id . "'";
+       $result = mysql_query($query)  or die("Query failed at delete stage. system_man");
 
-           $query = "DELETE FROM users WHERE users_uuid = '" . $id . "'";
-           $result = mysql_query($query)  or die("Query failed at delete stage. users");
+       $query = "DELETE FROM system_security WHERE ss_uuid = '" . $id . "'";
+       $result = mysql_query($query)  or die("Query failed at delete stage. system_security");
 
-           $query = "DELETE FROM video WHERE video_uuid = '" . $id . "'";
-           $result = mysql_query($query)  or die("Query failed at delete stage. video");
+       $query = "DELETE FROM tape_drive WHERE tape_drive_uuid = '" . $id . "'";
+       $result = mysql_query($query)  or die("Query failed at delete stage. tape_drive");
 
-           $query = "DELETE FROM other WHERE other_linked_pc = '" . $id . "'";
-           $result = mysql_query($query)  or die("Query failed at delete stage. other");
+       $query = "DELETE FROM usb WHERE usb_uuid = '" . $id . "'";
+       $result = mysql_query($query)  or die("Query failed at delete stage. usb");
+
+       $query = "DELETE FROM users WHERE users_uuid = '" . $id . "'";
+       $result = mysql_query($query)  or die("Query failed at delete stage. users");
+
+       $query = "DELETE FROM video WHERE video_uuid = '" . $id . "'";
+       $result = mysql_query($query)  or die("Query failed at delete stage. video");
+
+       $query = "DELETE FROM other WHERE other_linked_pc = '" . $id . "'";
+       $result = mysql_query($query)  or die("Query failed at delete stage. other");
 
        }
     }

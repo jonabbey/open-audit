@@ -904,7 +904,7 @@ else
    End If
    mem_size = int(mem_size /1024)
 end if
-'
+
 Set colItems = objWMIService.ExecQuery("Select * from Win32_ComputerSystem",,48)
 For Each objItem in colItems
    system_model = clean(objItem.Model)
@@ -1011,14 +1011,11 @@ For Each objItem in colItems
    boot_device = clean(objItem.BootDevice)
    build_number = clean(objItem.BuildNumber)
    Version = objItem.Version
+   LastBoot = Left(objItem.LastBootUpTime,InStr(objItem.LastBootUpTime,".") - 1)
 Next
-form_input = "system03^^^" & boot_device & "^^^" & build_number _
-                  & "^^^" & OSType _
-                  & "^^^" & OSName & "^^^" & Country _
-                  & "^^^" & system_description & "^^^" & OSInstall _
-                  & "^^^" & RegOrg & "^^^" & OSLang _
-                  & "^^^" & RegUser & "^^^" & SerNum _
-                  & "^^^" & OSSerPack & "^^^" & Version & "^^^" & WinDir & "^^^"
+form_input = "system03^^^" & boot_device        & "^^^" & build_number & "^^^" & OSType  & "^^^" & OSName & "^^^" & Country _
+                   & "^^^" & system_description & "^^^" & OSInstall    & "^^^" & RegOrg  & "^^^" & OSLang & "^^^" & RegUser _
+                   & "^^^" & SerNum             & "^^^" & OSSerPack    & "^^^" & Version & "^^^" & WinDir & "^^^" & LastBoot & "^^^"
 entry form_input,comment,objTextFile,oAdd,oComment
 form_input = ""
 
@@ -1507,10 +1504,10 @@ On Error Resume Next
 Set colItems = objWMIService.ExecQuery("Select * from Win32_DiskDrive",,48)
 For Each objItem in colItems
    form_input = "harddrive^^^" _
-     & clean(objItem.Caption)      & "^^^" & clean(objItem.Index)           & "^^^" & clean(objItem.InterfaceType) & "^^^" _
-     & clean(objItem.Manufacturer) & "^^^" & clean(objItem.Model)           & "^^^" & clean(objItem.Partitions)    & "^^^" _
-     & clean(objItem.SCSIBus)      & "^^^" & clean(objItem.SCSILogicalUnit) & "^^^" & clean(objItem.SCSIPort)      & "^^^" _
-     & clean(int(objItem.Size /1024 /1024)) & "^^^" & clean(objItem.PNPDeviceID) & "^^^"
+     & clean(objItem.Caption)               & "^^^" & clean(objItem.Index)           & "^^^" & clean(objItem.InterfaceType) & "^^^" _
+     & clean(objItem.Manufacturer)          & "^^^" & clean(objItem.Model)           & "^^^" & clean(objItem.Partitions)    & "^^^" _
+     & clean(objItem.SCSIBus)               & "^^^" & clean(objItem.SCSILogicalUnit) & "^^^" & clean(objItem.SCSIPort)      & "^^^" _
+     & clean(int(objItem.Size /1024 /1024)) & "^^^" & clean(objItem.PNPDeviceID)     & "^^^" & clean(objItem.Status)        & "^^^"
    entry form_input,comment,objTextFile,oAdd,oComment
    form_input = ""
    if online = "p" then
@@ -2018,12 +2015,218 @@ if hfnet = "y" then
 end if
 end if 'QPCU
 
+''''''''''''''''''''''''''''''''''''''''''''''
+'   Scheduled Tasks information      '
+''''''''''''''''''''''''''''''''''''''''''''''
+comment = "Scheduled Tasks Info"
+if verbose = "y" then
+  wscript.echo comment
+end if
+On Error Resume Next   
+
+Set oShell = CreateObject("Wscript.Shell")
+Set oFS = CreateObject("Scripting.FileSystemObject")
+sTemp = oShell.ExpandEnvironmentStrings("%TEMP%")
+sTempFile = sTemp & "\" & oFS.GetTempName & ".csv"
+sCmd = "%ComSpec% /c schtasks.exe /query /v /nh /fo csv /s " & strComputer 
+if strUser <> "" and strPass <> "" then
+  sCmd = sCmd & " /u " & strUser & " /p " & strPass
+end if
+sCmd = sCmd & " > " & sTempFile
+'Run SchTasks via Command Prompt and dump results into a temp CSV file
+oShell.Run sCmd, 0, True
+'Open the CSV File and Read out the Data
+Set oTF = oFS.OpenTextFile(sTempFile)
+'Parse the CSV file
+'When auditing from WinXp one field is missing
+Set objLocalWMIService = GetObject("winmgmts:root\cimv2")
+Set colItems = objLocalWMIService.ExecQuery("Select * From Win32_OperatingSystem",,48)
+For Each objItem in colItems
+   LocalSystemBuildNumber = objItem.BuildNumber
+Next
+if LocalSystemBuildNumber = "2600" then
+  intOffset = 0
+else 
+  intOffset = 1
+End if
+
+Do While Not oTF.AtEndOfStream
+  sLine = oTF.Readline
+  if sLine <> "" then
+    ' Parse the line
+    sTask = CSVParser(sLine)
+    'Check if scheduled tasks are set
+    if UCase(sTask(0)) = UCase(strComputer) then
+      sTaskName = clean(sTask(1))
+      sNextRunTime = clean(sTask(2))
+      sStatus = clean(sTask(3))
+      sLastRunTime = clean(sTask(4+intOffset))
+      sLastResult = clean(sTask(5+intOffset))
+      sCreator = clean(sTask(6+intOffset))
+      sSchedule = clean(sTask(7+intOffset))
+      sTaskToRun = clean(sTask(8+intOffset))
+      sTaskState = clean(sTask(11+intOffset))
+      sRunAsUser = clean(sTask(18+intOffset))
+      form_input = "sched_task^^^" & sTaskName & "^^^" & sNextRunTime & "^^^" & sStatus    & "^^^" & sLastRunTime & "^^^" & sLastResult _
+                           & "^^^" & sCreator  & "^^^" & sSchedule    & "^^^" & sTaskToRun & "^^^" & sTaskState   & "^^^" & sRunAsUser  & "^^^"
+      entry form_input,comment,objTextFile,oAdd,oComment
+      form_input = ""
+    end if
+  end if 
+Loop
+'Delete the CSV file
+oTF.Close
+oFS.DeleteFile sTempFile
+
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'   System Environment Variables information      '
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+comment = "System Environment Variables Info"
+if verbose = "y" then
+  wscript.echo comment
+end if
+On Error Resume Next   
+
+Set colItems = objWMIService.ExecQuery("Select * from Win32_Environment where username = '<SYSTEM>'",,48)
+For Each objItem in colItems
+   form_input = "env_var^^^" & clean(objItem.Name) & "^^^" & clean(objItem.VariableValue) & "^^^" 
+   entry form_input,comment,objTextFile,oAdd,oComment
+   form_input = ""
+Next
+
+'''''''''''''''''''''''''''''''''''''''
+'   Event Logs information      '
+'''''''''''''''''''''''''''''''''''''''
+comment = "Event Logs Info"
+if verbose = "y" then
+  wscript.echo comment
+end if
+On Error Resume Next   
+
+Set colItems = objWMIService.ExecQuery("Select * from Win32_NTEventLogFile",,48)
+For Each objItem in colItems
+   LogName = clean(objItem.LogFileName)
+   FileName = clean(objItem.Name)
+   FileSize = clean(objItem.FileSize)/1024
+   MaxFileSize = clean(objItem.MaxFileSize)/1024
+   OverWritePolicy = clean(objItem.OverWritePolicy)
+   Select Case OverWritePolicy
+     Case "OutDated"    OverWritePolicy = "OutDated (after " & clean(objItem.OverwriteOutDated) & " days)"
+     Case "WhenNeeded"  OverWritePolicy = "As Needed"
+   End Select
+   form_input = "evt_log^^^" & LogName & "^^^" & FileName & "^^^" & FileSize & "^^^" & MaxFileSize & "^^^" & OverWritePolicy & "^^^"
+   entry form_input,comment,objTextFile,oAdd,oComment
+   form_input = ""
+Next
+
+'''''''''''''''''''''''''''''''''''''
+'   Ip Routes information      '
+'''''''''''''''''''''''''''''''''''''
+comment = "Ip Routes Info"
+if verbose = "y" then
+  wscript.echo comment
+end if
+On Error Resume Next   
+
+Set colItems = objWMIService.ExecQuery("Select * from Win32_IP4RouteTable",,48)
+For Each objItem in colItems
+   Protocol = clean(objItem.Protocol)
+   Select Case Protocol
+        Case "1"  Protocol = "Other"
+        Case "2"  Protocol = "Local"
+        Case "3"  Protocol = "Netmgmt"
+        Case "4"  Protocol = "icmp"
+        Case "5"  Protocol = "egp"
+        Case "6"  Protocol = "ggp"
+        Case "7"  Protocol = "hello"
+        Case "8"  Protocol = "rip"
+        Case "9"  Protocol = "is-is"
+        Case "10" Protocol = "es-is"
+        Case "11" Protocol = "CiscoIgrp"
+        Case "12" Protocol = "bbnSpfIgp"
+        Case "13" Protocol = "ospf"
+        Case "14" Protocol = "bgp"
+        Case Else Protocol = "unknown"
+   End Select
+   RouteType = clean(objItem.Type)
+   Select Case RouteType
+        Case "1"  RouteType = "Other"
+        Case "2"  RouteType = "Invalid"
+        Case "3"  RouteType = "Direct"
+        Case "4"  RouteType = "Indirect"
+        Case Else RouteType = "unknown"
+   End Select
+   form_input = "ip_route^^^" & clean(objItem.Destination) & "^^^" & clean(objItem.Mask) & "^^^" & clean(objItem.Metric1) _
+                      & "^^^" & clean(objItem.NextHop)     & "^^^" & Protocol            & "^^^" & RouteType & "^^^"
+   entry form_input,comment,objTextFile,oAdd,oComment
+   form_input = ""
+Next
+
+''''''''''''''''''''''''''''''''''''
+'   Pagefile information      '
+''''''''''''''''''''''''''''''''''''
+comment = "Pagefile Info"
+if verbose = "y" then
+  wscript.echo comment
+end if
+On Error Resume Next   
+
+Set colItems = objWMIService.ExecQuery("Select * from Win32_PageFile",,48)
+For Each objItem in colItems
+   form_input = "pagefile^^^" & clean(objItem.Name) & "^^^" & clean(objItem.InitialSize) & "^^^" & clean(objItem.MaximumSize) & "^^^" 
+   entry form_input,comment,objTextFile,oAdd,oComment
+   form_input = ""
+Next
+
+'''''''''''''''''''''''''''''''''''''''''
+'   Motherboard information      '
+'''''''''''''''''''''''''''''''''''''''''
+comment = "Motherboard Info"
+if verbose = "y" then
+  wscript.echo comment
+end if
+On Error Resume Next   
+
+Set colItems = objWMIService.ExecQuery("Select * from Win32_BaseBoard",,48)
+For Each objItem in colItems
+   form_input = "motherboard^^^" & clean(objItem.Manufacturer) & "^^^" & clean(objItem.Product) & "^^^" 
+   entry form_input,comment,objTextFile,oAdd,oComment
+   form_input = ""
+Next
+
+''''''''''''''''''''''''''''''''''''''''''''''
+'   Onboard devices information      '
+''''''''''''''''''''''''''''''''''''''''''''''
+comment = "Onboard devices Info"
+if verbose = "y" then
+  wscript.echo comment
+end if
+On Error Resume Next   
+
+Set colItems = objWMIService.ExecQuery("Select * from Win32_OnBoardDevice",,48)
+For Each objItem in colItems
+   DeviceType = clean(objItem.DeviceType)
+   Select Case DeviceType
+        Case "1"  DeviceType = "Other"
+        Case "2"  DeviceType = "Unknown"
+        Case "3"  DeviceType = "Video"
+        Case "4"  DeviceType = "SCSI Controller"
+        Case "5"  DeviceType = "Ethernet"
+        Case "6"  DeviceType = "Token Ring"
+        Case "7"  DeviceType = "Sound"
+        Case Else DeviceType = "Unknown"
+   End Select 
+   form_input = "onboard^^^" & clean(objItem.Description) & "^^^" & DeviceType & "^^^" 
+   entry form_input,comment,objTextFile,oAdd,oComment
+   form_input = ""
+Next
+
 '''''''''''''''''
 '  AV Settings  '
 '''''''''''''''''
 if ((ServicePack = "2" AND SystemBuildNumber = "2600") OR (SystemBuildNumber = "6000")) then
   Set objWMIService_AV = GetObject("winmgmts:\\" & strComputer & "\root\SecurityCenter")
-  comment = "AV - XP sp2 Settings"
+  comment = "AV - Security Center Settings"
   if verbose = "y" then
     wscript.echo comment
   end if
@@ -2293,10 +2496,32 @@ For Each objItem In colItems
   end if
 Next
 
-comment = "DirectX & Media Player & IE Versions"
+comment = "MDAC/WDAC, DirectX, Media Player, IE and OE Versions"
 if verbose = "y" then
    wscript.echo comment
 end if
+
+' Add MDAC/WDAC to the Software Register
+strKeyPath = "SOFTWARE\Microsoft\DataAccess"
+strValueName = "Version"
+oReg.GetStringValue HKEY_LOCAL_MACHINE,strKeyPath,strValueName,dac_version
+if SystemBuildNumber <> "6000" then
+  display_name = "MDAC"
+else
+  display_name = "Windows DAC"
+end if
+form_input = "software^^^" & display_name       & "^^^" _
+                           & dac_version         & "^^^" _
+                           & ""                 & "^^^" _
+                           & ""                 & "^^^" _
+                           & OSInstall          & "^^^" _
+                           & "Microsoft Corporation^^^" _
+                           & ""                 & "^^^" _
+                           & ""                 & "^^^" _
+                           & "http://msdn2.microsoft.com/en-us/data/default.aspx" & "^^^ "
+entry form_input,comment,objTextFile,oAdd,oComment
+form_input = ""
+
 
 ' Add DirectX to the Software Register
 strKeyPath = "SOFTWARE\Microsoft\DirectX"
@@ -3445,24 +3670,30 @@ if online = "ie" then
 
 end if ' End of IE
 
-
 if online = "yesxml" then
    url = non_ie_page
-   ' Fixme.... 
-     Set objHTTP = WScript.CreateObject("MSXML2.XMLHTTP")
-    ' change to this for self signed https...
-   ' Set objHTTP = WScript.CreateObject("MSXML2.ServerXMLHTTP.3.0")
+   Err.clear
+   Set objHTTP = WScript.CreateObject("MSXML2.ServerXMLHTTP.3.0")
    objHTTP.SetOption 2, 13056  ' Ignore all SSL errors
    objHTTP.Open "POST", url, False
+   if Err.Number <> 0 then
+     Set objHTTP = WScript.CreateObject("MSXML2.XMLHTTP")
+     objHTTP.Open "POST", url, False
+   end if
+   Err.Clear
    objHTTP.setRequestHeader "Content-Type","application/x-www-form-urlencoded"
    if utf8 = "y" then
      objHTTP.Send "add=" + urlEncode(form_total + vbcrlf)
    else
      objHTTP.Send "add=" + escape(Deconstruct(form_total + vbcrlf))
    end if
-
-   if verbose = "y" then
-      wscript.Echo "XML sent to server: " & objHTTP.status & " (" & objHTTP.statusText & ")"
+   if verbose = "y" then 
+     if Err.Number <> 0 then
+       wscript.Echo "Unable to send XML to server: error " & Err.Number & " " & Err.Description
+     else
+       wscript.Echo "XML sent to server: " & objHTTP.status & " (" & objHTTP.statusText & ")"
+     end if
+     Err.clear
    end if
 end if
 
@@ -4046,4 +4277,95 @@ Function GetDomainComputers(ByVal local_domain)
    Set objIADsComputer = Nothing
    Set objIADsContainer = Nothing
 End Function
+
+ Function CSVParser(CSVDataToProcess)
+
+   'Declaring variables for text delimiter and text qualifyer
+    Dim TextDelimiter, TextQualifyer
+   'Declaring the variables used in determining action to be taken
+    Dim ProcessQualifyer, NewRecordCreate
+   'Declaring variables dealing with input string
+    Dim CharMaxNumber, CharLocation, CharCurrentVal, CharCounter, CharStorage
+   'Declaring variables that handle array duties
+    Dim CSVArray(), CSVArrayCount
+   'Setting default values for various variables
+   '<- Text delimiter is a comma
+    TextDelimiter = ","
+   '<- Chr(34) is the ascii code for "
+    TextQualifyer = Chr(34)
+   '<- Determining how record should be processed
+    ProcessQualifyer = False
+   '<- Calculating no. of characters in variable
+    CharMaxNumber = Len(CSVDataToProcess)
+   '<- Determining how to handle record at different
+   '   stages of operation
+   '   0 = Don't create new record
+   '   1 = Write data to existing record
+   '   2 = Close record and open new one
+    NewRecordCreate = 0
+   '<- Priming the array counter
+    CSVArrayCount = 0
+   '<- Initializing the array
+    Redim Preserve CSVArray(CSVArrayCount)
+   '<- Record character counter
+    CharCounter = 0
+
+   'Starting the main loop
+    For CharLocation = 1 to CharMaxNumber
+      'Retrieving the next character in sequence from CSVDataToProcess
+       CharCurrentVal = Mid(CSVDataToProcess, CharLocation, 1)
+      'This will figure out if the record uses a text qualifyer or not
+       If CharCurrentVal = TextQualifyer And CharCounter = 0 Then
+         ProcessQualifyer = True
+         CharCurrentVal = ""
+       End If
+      'Advancing the record 'letter count' counter
+       CharCounter = CharCounter + 1
+      'Choosing data extraction method (text qualifyer or no text qualifyer)
+       If ProcessQualifyer = True Then
+          'This section handles records with a text qualifyer and text delimiter
+          'It is also handles the special case scenario, where the qualifyer is
+          'part of the data.  In the CSV file, a double quote represents a single
+          'one  ie.  "" = "
+           If Len(CharStorage) <> 0 Then
+              If CharCurrentVal = TextDelimiter Then
+                 CharStorage = ""
+                 ProcessQualifyer = False
+                 NewRecordCreate = 2
+              Else
+                 CharStorage = ""
+                 NewRecordCreate = 1
+              End If
+           Else
+              If CharCurrentVal = TextQualifyer Then
+                 CharStorage = CharStorage & CharCurrentVal
+                 NewRecordCreate = 0
+              Else
+                 NewRecordCreate = 1
+              End If
+           End If
+      'This section handles a regular CSV record.. without the text qualifyer
+       Else
+           If CharCurrentVal = TextDelimiter Then
+              NewRecordCreate = 2
+           Else
+              NewRecordCreate = 1
+           End If
+       End If
+      'Writing the data to the array
+       Select Case NewRecordCreate
+        'This section just writes the info to the array
+         Case 1
+           CSVArray(CSVArrayCount) = CSVArray(CSVArrayCount) & CharCurrentVal
+        'This section closes the current record and creates a new one
+         Case 2
+           CharCounter = 0
+           CSVArrayCount = CSVArrayCount + 1
+           Redim Preserve CSVArray(CSVArrayCount)
+       End Select
+    Next
+   'Finishing Up
+    CSVParser = CSVArray
+
+ End Function
 

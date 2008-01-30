@@ -167,7 +167,8 @@ function special_field_converting($myrow, $field, $db, $page){
             $field["name"]=="other_timestamp" OR
             $field["name"]=="monitor_first_timestamp" OR
             $field["name"]=="monitor_timestamp" OR
-            $field["name"]=="system_audits_timestamp")
+            $field["name"]=="system_audits_timestamp" OR
+            $field["name"]=="system_last_boot") 
     {
         $show_value=return_date_time($myrow[$field["name"]]);
     }elseif($field["name"]=="system_system_type" AND $page=="list"){
@@ -196,7 +197,11 @@ function special_field_converting($myrow, $field, $db, $page){
             $field["name"]=="hard_drive_size" OR
             $field["name"]=="partition_size" OR
             $field["name"]=="partition_free_space" OR
-            $field["name"]=="total_memory")
+            $field["name"]=="total_memory" OR
+            $field["name"]=="evt_log_file_size" OR
+            $field["name"]=="evt_log_max_file_size" OR
+            $field["name"]=="pagefile_initial_size" OR
+            $field["name"]=="pagefile_max_size")
     {
         $show_value=number_format($myrow[$field["name"]])." MB";
     }elseif($field["name"]=="video_current_number_colours"){

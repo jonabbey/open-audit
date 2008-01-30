@@ -7,16 +7,36 @@ $query_array=array("name"=>array("name"=>__("Hardware"),
                    "views"=>array(
                                    "chassis"=>array(
                                                     "headline"=>__("Chassis"),
-                                                    "sql"=>"SELECT system_vendor, system_model, system_id_number FROM system WHERE system_uuid = '" . $_GET["pc"] . "' AND  system_timestamp = '".$GLOBAL["system_timestamp"]."' ",
+                                                    "sql"=>"SELECT system_vendor, system_model, system_id_number, system_system_type FROM system WHERE system_uuid = '" . $_GET["pc"] . "' AND  system_timestamp = '".$GLOBAL["system_timestamp"]."' ",
                                                     "image"=>"images/o_storage-misc.png",
                                                     "fields"=>array("10"=>array("name"=>"system_vendor", "head"=>__("Manufacturer"),),
                                                                     "20"=>array("name"=>"system_model", "head"=>__("Model #"),),
                                                                     "30"=>array("name"=>"system_id_number", "head"=>__("Serial #"),),
+                                                                    "40"=>array("name"=>"system_system_type", "head"=>__("Chassis Type"),),
+                                                                   ),
+                                                    ),
+                                   "motherboard"=>array(
+                                                    "headline"=>__("Motherboard"),
+                                                    "sql"=>"SELECT * FROM motherboard WHERE motherboard_uuid = '" . $_GET["pc"] . "' AND motherboard_timestamp = '".$GLOBAL["system_timestamp"]."' ",
+                                                    "image"=>"images/memory_l.png",
+                                                    "fields"=>array("10"=>array("name"=>"motherboard_manufacturer", "head"=>__("Manufacturer"),),
+                                                                    "20"=>array("name"=>"motherboard_product", "head"=>__("Product"),),
+                                                                   ),
+                                                    ),
+                                   "onboard_device"=>array(
+                                                    "headline"=>__("Onboard Devices"),
+                                                    "sql"=>"SELECT * FROM onboard_device WHERE onboard_uuid = '" . $_GET["pc"] . "' AND onboard_timestamp = '".$GLOBAL["system_timestamp"]."' ",
+                                                    "image"=>"images/memory_l.png",
+                                                    "table_layout"=>"horizontal",
+                                                    "fields"=>array("10"=>array("name"=>"onboard_description", "head"=>__("Description"),),
+                                                                    "20"=>array("name"=>"onboard_type", "head"=>__("Type"),),
                                                                    ),
                                                     ),
                                   "hard_drive"=>array(
                                                     "headline"=>__("Fixed Disks"),
-                                                    "sql"=>"SELECT hard_drive_index, hard_drive_manufacturer, hard_drive_interface_type, hard_drive_model, hard_drive_partitions, hard_drive_size, hard_drive_scsi_bus, hard_drive_scsi_logical_unit, hard_drive_scsi_port
+                                                    "sql"=>"SELECT hard_drive_index, hard_drive_manufacturer, hard_drive_interface_type, hard_drive_model, 
+                                                                   hard_drive_partitions, hard_drive_size, hard_drive_scsi_bus, hard_drive_scsi_logical_unit, 
+                                                                   hard_drive_scsi_port, hard_drive_status
                                                             FROM hard_drive, system
                                                             WHERE hard_drive_uuid=system_uuid AND hard_drive_uuid = '" . $_GET["pc"] . "' AND hard_drive_timestamp = '".$GLOBAL["system_timestamp"]."' ORDER BY hard_drive_index",
                                                     "image"=>"images/harddisk_l.png",
@@ -29,6 +49,7 @@ $query_array=array("name"=>array("name"=>__("Hardware"),
                                                                     "70"=>array("name"=>"hard_drive_scsi_bus", "head"=>__("SCSI Bus"),),
                                                                     "80"=>array("name"=>"hard_drive_scsi_logical_unit", "head"=>__("SCSI Logical Unit"),),
                                                                     "90"=>array("name"=>"hard_drive_scsi_port", "head"=>__("SCSI Port"),),
+                                                                    "100"=>array("name"=>"hard_drive_status", "head"=>__("Status"),),
                                                                    ),
                                                     ),
                                    "partition"=>array(
