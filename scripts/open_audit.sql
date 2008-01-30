@@ -73,6 +73,35 @@ CREATE TABLE `config` (
   PRIMARY KEY  (`config_name`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
+DROP TABLE IF EXISTS `environment_variable`;
+CREATE TABLE `environment_variable` (
+  `env_var_id` INT( 10 ) UNSIGNED NOT NULL AUTO_INCREMENT ,
+  `env_var_uuid` VARCHAR( 100 ) NOT NULL DEFAULT '',
+  `env_var_name` VARCHAR( 50 ) NOT NULL DEFAULT '',
+  `env_var_value` VARCHAR( 250 ) NOT NULL DEFAULT '',
+  `env_var_timestamp` BIGINT( 20 ) UNSIGNED NOT NULL DEFAULT '0',
+  `env_var_first_timestamp` BIGINT( 20 ) UNSIGNED NOT NULL DEFAULT '0',
+  PRIMARY KEY  (`env_var_id`),
+  KEY `id` (`env_var_uuid`),
+  KEY `id2` (`env_var_timestamp`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+DROP TABLE IF EXISTS `event_log`;
+CREATE TABLE `event_log` (
+  `evt_log_id` INT( 10 ) UNSIGNED NOT NULL AUTO_INCREMENT ,
+  `evt_log_uuid` VARCHAR( 100 ) NOT NULL DEFAULT '',
+  `evt_log_name` VARCHAR( 50 ) NOT NULL DEFAULT '',
+  `evt_log_file_name` VARCHAR( 100 ) NOT NULL DEFAULT '',
+  `evt_log_file_size` INT( 11 ) NOT NULL DEFAULT '0',
+  `evt_log_max_file_size` INT( 11 ) NOT NULL DEFAULT '0',
+  `evt_log_overwrite` VARCHAR( 30 ) NOT NULL DEFAULT '',
+  `evt_log_timestamp` BIGINT( 20 ) UNSIGNED NOT NULL DEFAULT '0',
+  `evt_log_first_timestamp` BIGINT( 20 ) UNSIGNED NOT NULL DEFAULT '0',
+  PRIMARY KEY  (`evt_log_id`),
+  KEY `id` (`evt_log_uuid`),
+  KEY `id2` (`evt_log_timestamp`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
 DROP TABLE IF EXISTS `firewall_auth_app`;
 CREATE TABLE `firewall_auth_app` (
   `firewall_app_id` int(10) unsigned NOT NULL auto_increment,
@@ -201,6 +230,7 @@ CREATE TABLE `hard_drive` (
   `hard_drive_scsi_port` varchar(10) NOT NULL default '',
   `hard_drive_size` int(11) unsigned NOT NULL default '0',
   `hard_drive_pnpid` varchar(200) NOT NULL default '',
+  `hard_drive_status` VARCHAR( 10 ) NOT NULL DEFAULT '',
   `hard_drive_timestamp` bigint(20) unsigned NOT NULL default '0',
   `hard_drive_first_timestamp` bigint(20) unsigned NOT NULL default '0',
   PRIMARY KEY  (`hard_drive_id`),
@@ -267,6 +297,23 @@ CREATE TABLE `invoice` (
   `invoice_image` blob,
   PRIMARY KEY  (`invoice_id`),
   KEY `id` (`invoice_uuid`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+DROP TABLE IF EXISTS `ip_route`;
+CREATE TABLE `ip_route` (
+  `ip_route_id` INT( 10 ) UNSIGNED NOT NULL AUTO_INCREMENT ,
+  `ip_route_uuid` VARCHAR( 100 ) NOT NULL DEFAULT '',
+  `ip_route_destination` VARCHAR( 20 ) NOT NULL DEFAULT '',
+  `ip_route_mask` VARCHAR( 20 ) NOT NULL DEFAULT '',
+  `ip_route_metric` VARCHAR( 10 ) NOT NULL DEFAULT '',
+  `ip_route_next_hop` VARCHAR( 20 ) NOT NULL DEFAULT '',
+  `ip_route_protocol` VARCHAR( 10 ) NOT NULL DEFAULT '',
+  `ip_route_type` VARCHAR( 10 ) NOT NULL DEFAULT '',
+  `ip_route_timestamp` BIGINT( 20 ) UNSIGNED NOT NULL DEFAULT '0',
+  `ip_route_first_timestamp` BIGINT( 20 ) UNSIGNED NOT NULL DEFAULT '0',
+  PRIMARY KEY  (`ip_route_id`),
+  KEY `id` (`ip_route_uuid`),
+  KEY `id2` (`ip_route_timestamp`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 DROP TABLE IF EXISTS `keyboard`;
@@ -389,6 +436,19 @@ CREATE TABLE `monitor` (
   KEY `id2` (`monitor_timestamp`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
+DROP TABLE IF EXISTS `motherboard`;
+CREATE TABLE `motherboard` (
+  `motherboard_id` INT( 10 ) UNSIGNED NOT NULL AUTO_INCREMENT ,
+  `motherboard_uuid` VARCHAR( 100 ) NOT NULL DEFAULT '',
+  `motherboard_manufacturer` VARCHAR( 50 ) NOT NULL DEFAULT '',
+  `motherboard_product` VARCHAR( 50 ) NOT NULL DEFAULT '',
+  `motherboard_timestamp` BIGINT( 20 ) UNSIGNED NOT NULL DEFAULT '0',
+  `motherboard_first_timestamp` BIGINT( 20 ) UNSIGNED NOT NULL DEFAULT '0',
+  PRIMARY KEY  (`motherboard_id`),
+  KEY `id` (`motherboard_uuid`),
+  KEY `id2` (`motherboard_timestamp`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
 DROP TABLE IF EXISTS `mouse`;
 CREATE TABLE `mouse` (
   `mouse_id` int(10) unsigned NOT NULL auto_increment,
@@ -497,6 +557,19 @@ CREATE TABLE `notes` (
   KEY `id` (`notes_uuid`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
+DROP TABLE IF EXISTS `onboard_device`;
+CREATE TABLE `onboard_device` (
+  `onboard_id` INT( 10 ) UNSIGNED NOT NULL AUTO_INCREMENT ,
+  `onboard_uuid` VARCHAR( 100 ) NOT NULL DEFAULT '',
+  `onboard_description` VARCHAR( 50 ) NOT NULL DEFAULT '',
+  `onboard_type` VARCHAR( 20 ) NOT NULL DEFAULT '',
+  `onboard_timestamp` BIGINT( 20 ) UNSIGNED NOT NULL DEFAULT '0',
+  `onboard_first_timestamp` BIGINT( 20 ) UNSIGNED NOT NULL DEFAULT '0',
+  PRIMARY KEY  (`onboard_id`),
+  KEY `id` (`onboard_uuid`),
+  KEY `id2` (`onboard_timestamp`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
 DROP TABLE IF EXISTS `optical_drive`;
 CREATE TABLE `optical_drive` (
   `optical_drive_id` int(10) unsigned NOT NULL auto_increment,
@@ -537,6 +610,20 @@ CREATE TABLE `other` (
   PRIMARY KEY  (`other_id`),
   KEY `id` (`other_network_name`),
   KEY `id2` (`other_type`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+DROP TABLE IF EXISTS `pagefile`;
+CREATE TABLE `pagefile` (
+  `pagefile_id` INT( 10 ) UNSIGNED NOT NULL AUTO_INCREMENT ,
+  `pagefile_uuid` VARCHAR( 100 ) NOT NULL DEFAULT '',
+  `pagefile_name` VARCHAR( 100 ) NOT NULL DEFAULT '',
+  `pagefile_initial_size` INT( 11 ) NOT NULL DEFAULT '0',
+  `pagefile_max_size` INT( 11 ) NOT NULL DEFAULT '0',
+  `pagefile_timestamp` BIGINT( 20 ) UNSIGNED NOT NULL DEFAULT '0',
+  `pagefile_first_timestamp` BIGINT( 20 ) UNSIGNED NOT NULL DEFAULT '0',
+  PRIMARY KEY  (`pagefile_id`),
+  KEY `id` (`pagefile_uuid`),
+  KEY `id2` (`pagefile_timestamp`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 DROP TABLE IF EXISTS `partition`;
@@ -630,6 +717,27 @@ CREATE TABLE `scan_latest` (
       `scan_latest_result` varchar(20)  NOT NULL,
       `scan_latest_success` varchar(2)  NOT NULL,
       PRIMARY KEY(`scan_latest_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+DROP TABLE IF EXISTS `scheduled_task`;
+CREATE TABLE `scheduled_task` (
+  `sched_task_id` INT( 10 ) UNSIGNED NOT NULL AUTO_INCREMENT ,
+  `sched_task_uuid` VARCHAR( 100 ) NOT NULL DEFAULT '',
+  `sched_task_name` VARCHAR( 100 ) NOT NULL DEFAULT '',
+  `sched_task_next_run` VARCHAR( 50 ) NOT NULL DEFAULT '',
+  `sched_task_status` VARCHAR( 50 ) NOT NULL DEFAULT '',
+  `sched_task_last_run` VARCHAR( 50 ) NOT NULL DEFAULT '',
+  `sched_task_last_result` VARCHAR( 50 ) NOT NULL DEFAULT '',
+  `sched_task_creator` VARCHAR( 50 ) NOT NULL DEFAULT '',
+  `sched_task_schedule` VARCHAR( 100 ) NOT NULL DEFAULT '',
+  `sched_task_task` VARCHAR( 100 ) NOT NULL DEFAULT '',
+  `sched_task_state` VARCHAR( 10 ) NOT NULL DEFAULT '',
+  `sched_task_runas` VARCHAR( 50 ) NOT NULL DEFAULT '',
+  `sched_task_timestamp` BIGINT( 20 ) UNSIGNED NOT NULL DEFAULT '0',
+  `sched_task_first_timestamp` BIGINT( 20 ) UNSIGNED NOT NULL DEFAULT '0',
+  PRIMARY KEY  (`sched_task_id`),
+  KEY `id` (`sched_task_uuid`),
+  KEY `id2` (`sched_task_timestamp`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 DROP TABLE IF EXISTS `scsi_controller`;
@@ -861,6 +969,7 @@ CREATE TABLE `system` (
   `virus_name` varchar(100) NOT NULL default '',
   `virus_uptodate` varchar(45) NOT NULL default '',
   `date_virus_def` date NOT NULL default '0000-00-00',
+  `system_last_boot` BIGINT( 20 ) UNSIGNED NOT NULL DEFAULT '0',
   `date_system_install` date NOT NULL default '0000-00-00',
   `system_timestamp` bigint(20) unsigned NOT NULL default '0',
   `system_first_timestamp` bigint(20) unsigned NOT NULL default '0',
@@ -1030,7 +1139,7 @@ CREATE TABLE `video` (
   KEY `id2` (`video_timestamp`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
-INSERT INTO config (config_name, config_value) VALUES ('version','07.11.15');
+INSERT INTO config (config_name, config_value) VALUES ('version','08.02.01');
 
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
