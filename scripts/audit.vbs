@@ -306,13 +306,20 @@ end if
 ''''''''''''''''''''''''''''''''''''''''
 
 ' Read current script PID
+' Skipping if auditing machine's OS is Win 2K or older
 Set objLocalWMIService = GetObject("winmgmts:root\cimv2")
-Set colItems = objLocalWMIService.ExecQuery("Select * From Win32_Process",,48)
+Set colItems = objLocalWMIService.ExecQuery("Select * From Win32_OperatingSystem",,48)
 For Each objItem in colItems
-   If InStr (objItem.CommandLine, WScript.ScriptName) <> 0 Then
-     current_PID = objItem.ProcessId
-   End If
+   LocalSystemBuildNumber = objItem.BuildNumber
 Next
+if CInt(LocalSystemBuildNumber) > 2195 then
+  Set colItems = objLocalWMIService.ExecQuery("Select * From Win32_Process",,48)
+  For Each objItem in colItems
+    If InStr (objItem.CommandLine, WScript.ScriptName) <> 0 Then
+      current_PID = objItem.ProcessId
+    End If
+  Next
+End If
 
 if audit_local_domain = "y" then
   domain_type = LCase(domain_type)
