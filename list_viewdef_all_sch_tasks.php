@@ -1,8 +1,8 @@
 <?php
 
 $query_array=array("headline"=>__("List all Scheduled Tasks with Hosts"),
-                   "sql"=>"SELECT * FROM scheduled_task, system WHERE sched_task_uuid = system_uuid",
-                   "sort"=>"sched_task_name",
+                   "sql"=>"SELECT * FROM scheduled_task, system WHERE sched_task_uuid = system_uuid  AND sched_task_timestamp = system_timestamp ",
+                   "sort"=>"sched_task_name, system_name",
                    "dir"=>"ASC",
                    "get"=>array("file"=>"system.php",
                                 "title"=>__("Go to System"),
@@ -35,12 +35,12 @@ $query_array=array("headline"=>__("List all Scheduled Tasks with Hosts"),
                                                "show"=>"y",
                                                "link"=>"n",
                                               ),
-                                    /* "50"=>array("name"=>"sched_task_last_result",
+                                   "50"=>array("name"=>"sched_task_last_result",
                                                "head"=>__("Last Run Status"),
-                                               "show"=>"y",
+                                               "show"=>"n",
                                                "link"=>"n",
-                                              ), */
-                                    "60"=>array("name"=>"sched_task_last_run",
+                                              ), 
+                                   "60"=>array("name"=>"sched_task_last_run",
                                                "head"=>__("Last Run"),
                                                "show"=>"y",
                                                "link"=>"n",
@@ -64,15 +64,12 @@ $query_array=array("headline"=>__("List all Scheduled Tasks with Hosts"),
                                                "head"=>__("Run As"),
                                                "show"=>"y",
                                                "link"=>"n",
-                                               "align"=>"center",
                                               ),
-                                   /* "110"=>array("name"=>"sched_task_creator",
+                                   "110"=>array("name"=>"sched_task_creator",
                                                "head"=>__("Creator"),
-                                               "show"=>"y",
+                                               "show"=>"n",
                                                "link"=>"n",
-                                              ), */
-
-
+                                              ), 
                                   ),
                   );
 ?>
