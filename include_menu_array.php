@@ -46,7 +46,7 @@ $menue_array = array(
                                     "80"=>array("name"=>"IE BHO's", "link"=>"list.php?pc=$pc&amp;view=ie_bho_for_system", "image"=>"images/browser_bho.png", "title"=>"",),
                                     "90"=>array("name"=>"Codecs", "link"=>"list.php?pc=$pc&amp;view=codecs_for_system", "image"=>"images/audio.png", "title"=>"",),
                                     "100"=>array("name"=>"Services", "link"=>"list.php?pc=$pc&amp;view=services_for_system", "image"=>"images/services.png", "title"=>"",),
-                              ),
+                           ),
               ),
       "30" => array("name"=>"OS Settings",
                     "link"=>"system.php?pc=$pc&amp;view=os",
@@ -61,7 +61,7 @@ $menue_array = array(
                                     "70"=>array("name"=>"Event Logs", "link"=>"system.php?pc=$pc&amp;view=os&amp;category=event_logs", "image"=>"images/shared_drive.png", "title"=>"",),
                                     "80"=>array("name"=>"IP Routes", "link"=>"system.php?pc=$pc&amp;view=os&amp;category=ip_routes", "image"=>"images/shared_drive.png", "title"=>"",),
                                     "90"=>array("name"=>"Pagefile", "link"=>"system.php?pc=$pc&amp;view=os&amp;category=pagefile", "image"=>"images/shared_drive.png", "title"=>"",),
-                              ),
+                             ),
               ),
       "50" => array("name"=>"Security",
                     "link"=>"system.php?pc=$pc&amp;view=security",
@@ -128,8 +128,7 @@ $menue_array = array(
                                     "90"=>array("name"=>"All Keys", "link"=>"./list.php?view=all_keys", "image"=>"images/key_2.png", "title"=>"All Keys",),
                                     "100"=>array("name"=>"All Office-Keys", "link"=>"./list.php?view=keys_for_software&amp;type=office%&amp;headline_addition=Office", "image"=>"images/key_1.png", "title"=>"All Office Keys",),
                                     "110"=>array("name"=>"All Windows-Keys", "link"=>"./list.php?view=keys_for_software&amp;type=windows%&amp;headline_addition=Windows", "image"=>"images/key_3.png", "title"=>"All Widnows Keys",),
-                                    
-
+                                    "120"=>array("name"=>"Scheduled Tasks", "link"=>"list.php?pc=$pc&amp;view=all_sch_tasks", "image"=>"images/sched_task_l.png", "title"=>"",),
                               ),
               ),
       "20" => array("name"=>"Other Items",
