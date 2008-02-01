@@ -128,7 +128,7 @@ $menue_array = array(
                                     "90"=>array("name"=>"All Keys", "link"=>"./list.php?view=all_keys", "image"=>"images/key_2.png", "title"=>"All Keys",),
                                     "100"=>array("name"=>"All Office-Keys", "link"=>"./list.php?view=keys_for_software&amp;type=office%&amp;headline_addition=Office", "image"=>"images/key_1.png", "title"=>"All Office Keys",),
                                     "110"=>array("name"=>"All Windows-Keys", "link"=>"./list.php?view=keys_for_software&amp;type=windows%&amp;headline_addition=Windows", "image"=>"images/key_3.png", "title"=>"All Widnows Keys",),
-                                    "120"=>array("name"=>"Scheduled Tasks", "link"=>"list.php?pc=$pc&amp;view=all_sch_tasks", "image"=>"images/sched_task_l.png", "title"=>"",),
+                                    "120"=>array("name"=>"All Scheduled Tasks", "link"=>"list.php?pc=$pc&amp;view=all_sch_tasks", "image"=>"images/sched_task_l.png", "title"=>"",),
                               ),
               ),
       "20" => array("name"=>"Other Items",
