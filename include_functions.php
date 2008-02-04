@@ -198,12 +198,13 @@ function special_field_converting($myrow, $field, $db, $page){
             $field["name"]=="partition_size" OR
             $field["name"]=="partition_free_space" OR
             $field["name"]=="total_memory" OR
-            $field["name"]=="evt_log_file_size" OR
-            $field["name"]=="evt_log_max_file_size" OR
             $field["name"]=="pagefile_initial_size" OR
             $field["name"]=="pagefile_max_size")
     {
         $show_value=number_format($myrow[$field["name"]])." MB";
+    }elseif($field["name"]=="evt_log_file_size" OR
+            $field["name"]=="evt_log_max_file_size"){
+        $show_value=number_format($myrow[$field["name"]])." KB";
     }elseif($field["name"]=="video_current_number_colours"){
         $show_value=(strlen(decbin($myrow[$field["name"]]))+1)." Bit";
     }elseif($field["name"]=="video_current_refresh_rate"){
