@@ -29,7 +29,7 @@ $config_newline="\r\n";
 //
 //
 $this_config='audit_location = "r"'.$config_newline;
-$this_config=$this_config.'verbose = "y"'.$config_newline; 
+$this_config=$this_config.'verbose = "n"'.$config_newline; 
 $this_config=$this_config.'audit_host="'.$our_host.'"'.$config_newline;
 $this_config=$this_config.'online = "yesxml"'.$config_newline; 
 $this_config=$this_config.'strComputer = "."'.$config_newline; 
