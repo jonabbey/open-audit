@@ -233,6 +233,14 @@ Else
   objFile.Close
 End If
 
+''''''''''''''''''''''''''''''''''''''''''''
+' Check Local system build number
+''''''''''''''''''''''''''''''''''''''''''''
+Set objLocalWMIService = GetObject("winmgmts:root\cimv2")
+Set colItems = objLocalWMIService.ExecQuery("Select * From Win32_OperatingSystem",,48)
+For Each objItem in colItems
+   LocalSystemBuildNumber = objItem.BuildNumber
+Next
 
 '''''''''''''''''''''''''''''
 ' Process the manual input  '
@@ -306,12 +314,7 @@ end if
 ''''''''''''''''''''''''''''''''''''''''
 
 ' Read current script PID
-' Skipping if auditing machine's OS is Win 2K or older
-Set objLocalWMIService = GetObject("winmgmts:root\cimv2")
-Set colItems = objLocalWMIService.ExecQuery("Select * From Win32_OperatingSystem",,48)
-For Each objItem in colItems
-   LocalSystemBuildNumber = objItem.BuildNumber
-Next
+' Skipping if local system is Win 2K or older
 if CInt(LocalSystemBuildNumber) > 2195 then
   Set colItems = objLocalWMIService.ExecQuery("Select * From Win32_Process",,48)
   For Each objItem in colItems
@@ -2029,61 +2032,59 @@ comment = "Scheduled Tasks Info"
 if verbose = "y" then
   wscript.echo comment
 end if
-On Error Resume Next   
+On Error Resume Next
 
-Set oShell = CreateObject("Wscript.Shell")
-Set oFS = CreateObject("Scripting.FileSystemObject")
-sTemp = oShell.ExpandEnvironmentStrings("%TEMP%")
-sTempFile = sTemp & "\" & oFS.GetTempName & ".csv"
-sCmd = "%ComSpec% /c schtasks.exe /query /v /nh /fo csv /s " & strComputer 
-if strUser <> "" and strPass <> "" then
-  sCmd = sCmd & " /u " & strUser & " /p " & strPass
+' We rely on schtasks.exe so skipping if local system is Win2k or older
+if CInt(LocalSystemBuildNumber) > 2195 then
+  Set oShell = CreateObject("Wscript.Shell")
+  Set oFS = CreateObject("Scripting.FileSystemObject")
+  sTemp = oShell.ExpandEnvironmentStrings("%TEMP%")
+  sTempFile = sTemp & "\" & oFS.GetTempName & ".csv"
+  sCmd = "%ComSpec% /c schtasks.exe /query /v /nh /fo csv /s " & strComputer 
+  if strUser <> "" and strPass <> "" then
+    sCmd = sCmd & " /u " & strUser & " /p " & strPass
+  end if
+  sCmd = sCmd & " > " & sTempFile
+  'Run SchTasks via Command Prompt and dump results into a temp CSV file
+  oShell.Run sCmd, 0, True
+  ' Open the CSV File and Read out the Data
+  Set oTF = oFS.OpenTextFile(sTempFile)
+  'Parse the CSV file
+  'When auditing from WinXp one field is missing
+  if LocalSystemBuildNumber = "2600" then
+    intOffset = 0
+  else 
+    intOffset = 1
+  End if
+
+  Do While Not oTF.AtEndOfStream
+    sLine = oTF.Readline
+    if sLine <> "" then
+      ' Parse the line
+      sTask = CSVParser(sLine)
+      'Check if scheduled tasks are set
+      if UCase(sTask(0)) = UCase(strComputer) then
+        sTaskName = clean(sTask(1))
+        sNextRunTime = clean(sTask(2))
+        sStatus = clean(sTask(3))
+        sLastRunTime = clean(sTask(4+intOffset))
+        sLastResult = clean(sTask(5+intOffset))
+        sCreator = clean(sTask(6+intOffset))
+        sSchedule = clean(sTask(7+intOffset))
+        sTaskToRun = clean(sTask(8+intOffset))
+        sTaskState = clean(sTask(11+intOffset))
+        sRunAsUser = clean(sTask(18+intOffset))
+        form_input = "sched_task^^^" & sTaskName & "^^^" & sNextRunTime & "^^^" & sStatus    & "^^^" & sLastRunTime & "^^^" & sLastResult _
+                             & "^^^" & sCreator  & "^^^" & sSchedule    & "^^^" & sTaskToRun & "^^^" & sTaskState   & "^^^" & sRunAsUser  & "^^^"
+        entry form_input,comment,objTextFile,oAdd,oComment
+        form_input = ""
+      end if
+    end if 
+  Loop
+  'Delete the CSV file
+  oTF.Close
+  oFS.DeleteFile sTempFile
 end if
-sCmd = sCmd & " > " & sTempFile
-'Run SchTasks via Command Prompt and dump results into a temp CSV file
-oShell.Run sCmd, 0, True
-'Open the CSV File and Read out the Data
-Set oTF = oFS.OpenTextFile(sTempFile)
-'Parse the CSV file
-'When auditing from WinXp one field is missing
-Set objLocalWMIService = GetObject("winmgmts:root\cimv2")
-Set colItems = objLocalWMIService.ExecQuery("Select * From Win32_OperatingSystem",,48)
-For Each objItem in colItems
-   LocalSystemBuildNumber = objItem.BuildNumber
-Next
-if LocalSystemBuildNumber = "2600" then
-  intOffset = 0
-else 
-  intOffset = 1
-End if
-
-Do While Not oTF.AtEndOfStream
-  sLine = oTF.Readline
-  if sLine <> "" then
-    ' Parse the line
-    sTask = CSVParser(sLine)
-    'Check if scheduled tasks are set
-    if UCase(sTask(0)) = UCase(strComputer) then
-      sTaskName = clean(sTask(1))
-      sNextRunTime = clean(sTask(2))
-      sStatus = clean(sTask(3))
-      sLastRunTime = clean(sTask(4+intOffset))
-      sLastResult = clean(sTask(5+intOffset))
-      sCreator = clean(sTask(6+intOffset))
-      sSchedule = clean(sTask(7+intOffset))
-      sTaskToRun = clean(sTask(8+intOffset))
-      sTaskState = clean(sTask(11+intOffset))
-      sRunAsUser = clean(sTask(18+intOffset))
-      form_input = "sched_task^^^" & sTaskName & "^^^" & sNextRunTime & "^^^" & sStatus    & "^^^" & sLastRunTime & "^^^" & sLastResult _
-                           & "^^^" & sCreator  & "^^^" & sSchedule    & "^^^" & sTaskToRun & "^^^" & sTaskState   & "^^^" & sRunAsUser  & "^^^"
-      entry form_input,comment,objTextFile,oAdd,oComment
-      form_input = ""
-    end if
-  end if 
-Loop
-'Delete the CSV file
-oTF.Close
-oFS.DeleteFile sTempFile
 
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 '   System Environment Variables information      '
