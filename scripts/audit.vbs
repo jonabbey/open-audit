@@ -618,7 +618,13 @@ if verbose = "y" then
 end if
 On Error Resume Next
 
-Set objWMIService_WMI = GetObject("winmgmts:\\" & strComputer & "\root\WMI")
+if strUser <> "" and strPass <> "" then
+  Set objWMIService_WMI = wmiLocator.ConnectServer(strComputer, "\root\WMI",strUser,strPass)
+  objWMIService_WMI.Security_.ImpersonationLevel = 3
+else
+  Set objWMIService_WMI = GetObject("winmgmts:\\" & strComputer & "\root\WMI")
+end if
+
 Set colItems = objWMIService.ExecQuery("Select * from Win32_NetworkAdapterConfiguration " _
    & "WHERE ServiceName<>'' AND ServiceName<>'AsyncMac' " _
    & "AND ServiceName<>'VMnetx' AND ServiceName<>'VMnetadapter' " _
