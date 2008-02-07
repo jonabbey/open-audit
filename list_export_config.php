@@ -1,9 +1,4 @@
 <?php
-include_once("include_config.php");
-include_once("include_functions.php");
-include_once("include_lang.php");
-//
-//
 /*
 *
 * @version $Id: index.php  24th May 2007
@@ -20,6 +15,17 @@ include_once("include_lang.php");
 * See www.open-audit.org for further copyright notices and details.
 *
 */ 
+//
+// Warning, dont include include.php
+// 'cos this would set our http header, and we dont want one.
+include_once("include_config.php");
+include_once("include_functions.php");
+include_once("include_lang.php");
+//
+//
+
+
+// Currently we can only do a "this machine" audit.
 // Firs we need to figure out our server installation path etc so we can generate a suitable config
 
 $_REAL_SCRIPT_DIR = realpath(dirname($_SERVER['SCRIPT_FILENAME'])); // filesystem path of this page's directory 
@@ -32,25 +38,58 @@ $INSTALLATION_PATH = $_MY_PATH_PART ? substr( dirname($_SERVER['SCRIPT_NAME']), 
 //
 $our_host= "http://".$_SERVER['HTTP_HOST'];
 
+//Note:  Your web server must be configured to create this variable.
+//For example in Apache you'll need HostnameLookups On  inside httpd.conf for it to exist. See also gethostbyaddr().
+$remote_host= $_SERVER['REMOTE_HOST']; 
+//
+// Therefore we are better with .... 
+//
+$remote_addr= $_SERVER['REMOTE_ADDR'];
+
+
 // Now we can set our instance to the correct location
 $our_instance = $INSTALLATION_PATH;
 
+// Set up usable <CR><LF> line ends for vbscript, otherwise the cript wont parse correctly
 $config_newline="\r\n";
 // 
 
-$this_config='audit_location = "r"'.$config_newline;
-$this_config=$this_config.'server_install_path = "'.$INSTALLATION_PATH.'"'.$config_newline; 
 
-$this_config=$this_config.'verbose = "n"'.$config_newline; 
+// We will put everything in the $this_config variable
+
+// Now we set up the rest of the config variables which will mostly be standard stuff
+$this_config='audit_location = "r"'.$config_newline;
+
+
+// Not used, but worth including
+$this_config=$this_config.'server_install_path = "'.$INSTALLATION_PATH.'"'.$config_newline;
+
+
+// A lot of this would be best coming from a set up page or from records from the database
+$this_config=$this_config.'verbose = "y"'.$config_newline; 
+
+// 
 $this_config=$this_config.'audit_host="'.$our_host.'"'.$config_newline;
+
+
 $this_config=$this_config.'online = "yesxml"'.$config_newline; 
+
+// Force just the local PC to be audited.
 $this_config=$this_config.'strComputer = "."'.$config_newline; 
 $this_config=$this_config.'ie_visible = "n" '.$config_newline;
 $this_config=$this_config.'ie_auto_submit = "y" '.$config_newline;
+
+//  Switch this on to debug
 $this_config=$this_config.'ie_submit_verbose = "n"'.$config_newline;
-$this_config=$this_config.'ie_form_page = '.$our_host.$our_instance.'/admin_pc_add_1.php"'.$config_newline; 
-$this_config=$this_config.'non_ie_page = '.$our_host.$our_instance.'/admin_pc_add_2.php"'.$config_newline; 
+
+// Set to the OA host and instance of OA
+$this_config=$this_config.'ie_form_page = "'.$our_host.$our_instance.'/admin_pc_add_1.php"'.$config_newline; 
+$this_config=$this_config.'non_ie_page = "'.$our_host.$our_instance.'/admin_pc_add_2.php"'.$config_newline; 
+
+// Not used for a local audit.
 $this_config=$this_config.'input_file = ""'.$config_newline; 
+
+// Doesn't make sense to set the email stuff, it will fail gracefully
 $this_config=$this_config.'email_to = "openaudit@mydonain.com"'.$config_newline;    
 $this_config=$this_config.'email_from = "openaudit@mydonain.com"'.$config_newline;
 $this_config=$this_config.'email_sender = "Open Audit"'.$config_newline;
@@ -61,7 +100,9 @@ $this_config=$this_config.'email_user_id = "openaudit@mydonain.com"'.$config_new
 $this_config=$this_config.'email_user_pwd = "MailPassword"'.$config_newline;
 $this_config=$this_config.'email_use_ssl = "false"'.$config_newline;
 $this_config=$this_config.'email_timeout = "60"'.$config_newline;
-$this_config=$this_config.'audit_local_domain = "y"'.$config_newline;
+
+// Ignore the rest too since 
+$this_config=$this_config.'audit_local_domain = "n"'.$config_newline;
 $this_config=$this_config.'domain_type = "ldap"'.$config_newline;
 $this_config=$this_config.'local_domain = "LDAP://mydomain.local"'.$config_newline; 
 $this_config=$this_config.'hfnet = "n"'.$config_newline; 
@@ -72,14 +113,33 @@ $this_config=$this_config.'monitor_detect = "y"'.$config_newline;
 $this_config=$this_config.'printer_detect = "y"'.$config_newline; 
 $this_config=$this_config.'software_audit = "y"'.$config_newline; 
 $this_config=$this_config.'uuid_type = "uuid"'.$config_newline;
+
+// We could figure out suitable defaults for this though 
 $this_config=$this_config.'nmap_subnet = "192.168.0."'.$config_newline;            
 $this_config=$this_config.'nmap_subnet_formatted = "192.168.000."'.$config_newline; 
-$this_config=$this_config.'nmap_ie_form_page = audit_host + "/openaudit/admin_nmap_input.php"'.$config_newline;
+
+// Set to the OA host and instance of OA
+$this_config=$this_config.'nmap_ie_form_page = "'.$our_host.$our_instance.'/admin_nmap_input.php"'.$config_newline;
 $this_config=$this_config.'nmap_ie_visible = "n"'.$config_newline;
 $this_config=$this_config.'nmap_ie_auto_close = "y"'.$config_newline;
 $this_config=$this_config.'nmap_ip_start = 1'.$config_newline;
 $this_config=$this_config.'nmap_ip_end = 254'.$config_newline;
 
+// Use this option to always destroy the audit.config and thus force a request for a fresh one at each run.  
+$this_config=$this_config.'keep_this_config = "n"'.$config_newline;
+
+// We can use this info to modify script behaviour.
+// Note: The requesting host will be blank if Apache or IIS is not confiured to do hostname lookups.
+// in other words your web server must be configured to create this variable.
+//For example in Apache you'll need HostnameLookups On  inside httpd.conf for it to exist. See also gethostbyaddr().
+//
+$this_config=$this_config.'requesting_host = "'.$remote_host.'"'.$config_newline;
+
+// Therefore this is more likley to be used, unless you use dynamic addressing, in which case you will have to use requesting_host
+$this_config=$this_config.'requesting_addr = "'.$remote_addr.'"'.$config_newline;
+
+
+// We have everything we need, so now we throw back a the page by echoing out $this_config
 echo $this_config;
 
 ?>
