@@ -20,15 +20,27 @@ include_once("include_lang.php");
 * See www.open-audit.org for further copyright notices and details.
 *
 */ 
+// Firs we need to figure out our server installation path etc so we can generate a suitable config
+
+$_REAL_SCRIPT_DIR = realpath(dirname($_SERVER['SCRIPT_FILENAME'])); // filesystem path of this page's directory 
+$_REAL_BASE_DIR = realpath(dirname(__FILE__)); // filesystem path of this file's directory 
+$_MY_PATH_PART = substr( $_REAL_SCRIPT_DIR, strlen($_REAL_BASE_DIR)); // just the subfolder part between <installation_path> and the page
+
+$INSTALLATION_PATH = $_MY_PATH_PART ? substr( dirname($_SERVER['SCRIPT_NAME']), 0, -strlen($_MY_PATH_PART) ) : dirname($_SERVER['SCRIPT_NAME']);
+//
+// We subtract the subfolder part from the end of <installation_path>, leaving us with just <installation_path> :)
+//
 $our_host= "http://".$_SERVER['HTTP_HOST'];
-// Change this if openaudit is not in the openaudit folder, [FIXME] should be able to work this out from $_SERVER['PHP_SELF']
-$our_instance = "openaudit";
+
+// Now we can set our instance to the correct location
+$our_instance = $INSTALLATION_PATH;
 
 $config_newline="\r\n";
-//
-//
-//
+// 
+
 $this_config='audit_location = "r"'.$config_newline;
+$this_config=$this_config.'server_install_path = "'.$INSTALLATION_PATH.'"'.$config_newline; 
+
 $this_config=$this_config.'verbose = "n"'.$config_newline; 
 $this_config=$this_config.'audit_host="'.$our_host.'"'.$config_newline;
 $this_config=$this_config.'online = "yesxml"'.$config_newline; 
@@ -36,8 +48,8 @@ $this_config=$this_config.'strComputer = "."'.$config_newline;
 $this_config=$this_config.'ie_visible = "n" '.$config_newline;
 $this_config=$this_config.'ie_auto_submit = "y" '.$config_newline;
 $this_config=$this_config.'ie_submit_verbose = "n"'.$config_newline;
-$this_config=$this_config.'ie_form_page = audit_host & "/'.$our_instance.'/admin_pc_add_1.php"'.$config_newline; 
-$this_config=$this_config.'non_ie_page = audit_host & "/'.$our_instance.'/admin_pc_add_2.php"'.$config_newline; 
+$this_config=$this_config.'ie_form_page = '.$our_host.$our_instance.'/admin_pc_add_1.php"'.$config_newline; 
+$this_config=$this_config.'non_ie_page = '.$our_host.$our_instance.'/admin_pc_add_2.php"'.$config_newline; 
 $this_config=$this_config.'input_file = ""'.$config_newline; 
 $this_config=$this_config.'email_to = "openaudit@mydonain.com"'.$config_newline;    
 $this_config=$this_config.'email_from = "openaudit@mydonain.com"'.$config_newline;
