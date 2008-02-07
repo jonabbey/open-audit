@@ -66,7 +66,9 @@ $this_config=$this_config.'server_install_path = "'.$INSTALLATION_PATH.'"'.$conf
 
 
 // A lot of this would be best coming from a set up page or from records from the database
-$this_config=$this_config.'verbose = "y"'.$config_newline; 
+
+//Set this to "y" for debugging and "n" for silent mode 
+$this_config=$this_config.'verbose = "n"'.$config_newline; 
 
 // 
 $this_config=$this_config.'audit_host="'.$our_host.'"'.$config_newline;
@@ -90,6 +92,10 @@ $this_config=$this_config.'non_ie_page = "'.$our_host.$our_instance.'/admin_pc_a
 $this_config=$this_config.'input_file = ""'.$config_newline; 
 
 // Doesn't make sense to set the email stuff, it will fail gracefully
+// send_email
+$this_config=$this_config.'send_email = FALSE'.$config_newline;    
+
+
 $this_config=$this_config.'email_to = "openaudit@mydonain.com"'.$config_newline;    
 $this_config=$this_config.'email_from = "openaudit@mydonain.com"'.$config_newline;
 $this_config=$this_config.'email_sender = "Open Audit"'.$config_newline;
