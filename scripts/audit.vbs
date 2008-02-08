@@ -314,8 +314,9 @@ end if
 ''''''''''''''''''''''''''''''''''''''''
 
 ' Read current script PID
-' Skipping if local system is Win 2K or older
-if CInt(LocalSystemBuildNumber) > 2195 then
+' Skipping if local system is older than WinXp
+' Check Build Number: Win2k-->2195, Win98-->2222, WinME-->3000, 
+if (CInt(LocalSystemBuildNumber) > 2222 and not LocalSystemBuildNumber = "3000") then
   Set colItems = objLocalWMIService.ExecQuery("Select * From Win32_Process",,48)
   For Each objItem in colItems
     If InStr (objItem.CommandLine, WScript.ScriptName) <> 0 Then
@@ -2040,8 +2041,9 @@ if verbose = "y" then
 end if
 On Error Resume Next
 
-' We rely on schtasks.exe so skipping if local system is Win2k or older
-if CInt(LocalSystemBuildNumber) > 2195 then
+' We rely on schtasks.exe so skipping if local system is older than WinXP
+' Check Build Number: Win2k-->2195, Win98-->2222, WinME-->3000, 
+if (CInt(LocalSystemBuildNumber) > 2222 and not LocalSystemBuildNumber = "3000") then
   Set oShell = CreateObject("Wscript.Shell")
   Set oFS = CreateObject("Scripting.FileSystemObject")
   sTemp = oShell.ExpandEnvironmentStrings("%TEMP%")
@@ -3687,25 +3689,33 @@ end if ' End of IE
 if online = "yesxml" then
    url = non_ie_page
    Err.clear
+   XmlObj = "ServerXMLHTTP"
    Set objHTTP = WScript.CreateObject("MSXML2.ServerXMLHTTP.3.0")
    objHTTP.SetOption 2, 13056  ' Ignore all SSL errors
    objHTTP.Open "POST", url, False
-   if Err.Number <> 0 then
-     Set objHTTP = WScript.CreateObject("MSXML2.XMLHTTP")
-     objHTTP.Open "POST", url, False
-   end if
-   Err.Clear
    objHTTP.setRequestHeader "Content-Type","application/x-www-form-urlencoded"
    if utf8 = "y" then
      objHTTP.Send "add=" + urlEncode(form_total + vbcrlf)
    else
      objHTTP.Send "add=" + escape(Deconstruct(form_total + vbcrlf))
    end if
+   if Err.Number <> 0 then
+     Err.clear
+     XmlObj = "XMLHTTP"
+     Set objHTTP = WScript.CreateObject("MSXML2.XMLHTTP")
+     objHTTP.Open "POST", url, False
+     objHTTP.setRequestHeader "Content-Type","application/x-www-form-urlencoded"
+     if utf8 = "y" then
+       objHTTP.Send "add=" + urlEncode(form_total + vbcrlf)
+     else
+       objHTTP.Send "add=" + escape(Deconstruct(form_total + vbcrlf))
+     end if
+   end if
    if verbose = "y" then 
      if Err.Number <> 0 then
-       wscript.Echo "Unable to send XML to server: error " & Err.Number & " " & Err.Description
+       wscript.Echo "Unable to send XML to server using " & XmlObj & ": error " & Err.Number & " " & Err.Description
      else
-       wscript.Echo "XML sent to server: " & objHTTP.status & " (" & objHTTP.statusText & ")"
+       wscript.Echo "XML sent to server using " & XmlObj & ": " & objHTTP.status & " (" & objHTTP.statusText & ")"
      end if
      Err.clear
    end if
