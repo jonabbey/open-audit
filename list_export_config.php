@@ -140,7 +140,7 @@ $this_config=$this_config.'nmap_ip_end = 254'.$config_newline;
 $this_config=$this_config.'keep_this_config = "n"'.$config_newline;
 
 //Use this option to always keep the log of what was audited.
-$this_config=$this_config.'keep_audit_log = "y"'.$config_newline;
+$this_config=$this_config.'keep_audit_log = "n"'.$config_newline;
 
 // We can use this info to modify script behaviour.
 // Note: The requesting host will be blank if Apache or IIS is not confiured to do hostname lookups.
