@@ -192,7 +192,7 @@ $menue_array = array(
                                     "45"=>array("name"=>"Delete Systems Not Audited in the last " . $days_systems_not_audited ." days", "link"=>"./delete_missed_audits.php", "image"=>"images/delete.png", "title"=>"",),
 //                                    "45"=>array("name"=>"Delete Systems Not Audited in the last " . $days_systems_not_audited ." days", "link"=>"./list.php?view=delete_missed_audit", "image"=>"images/delete.png", "title"=>"",),
                                     "50"=>array("name"=>"Delete Other Items", "link"=>"./delete_other_systems.php", "image"=>"images/delete.png", "title"=>"",),
-//                                    "60"=>array("name"=>"Audit My Machine", "link"=>"scripts/audit.vbs", "image"=>"images/audit.png", "title"=>"",),
+                                    "60"=>array("name"=>"Audit My Machine", "link"=>"launch_local_audit.php", "image"=>"images/audit.png", "title"=>"Download and Run the Audit Script from your machine.",),
                                     "70"=>array("name"=>"Backup Database", "link"=>"database_backup_form.php", "image"=>"images/tape.png", "title"=>"",),
                                     "80"=>array("name"=>"Restore Database", "link"=>"database_restore_form.php", "image"=>"images/tape.png", "title"=>"",),
                               ),

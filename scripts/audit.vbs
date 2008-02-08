@@ -1,11 +1,19 @@
-this_config_url = "http://localhost/openaudit/list_export_config.php"
 '''''''''''''''''''''''''''''''''''
 ' Open Audit                      '
 ' Software and Hardware Inventory '
 ' Outputs into MySQL              '
-' (c) Mark Unwin 2003             '
+' (c) Open-Audit.org 2003-2007    '
+' Licensed under the GPL          '
 '''''''''''''''''''''''''''''''''''
 '
+this_config_url = "%host_url%"
+'
+'
+' The above line will magically change from %host_url% to the correct server URL
+' when the audit is launched or downloaded from the OA web interface (without a pre-existing local config file),
+' thus causing the script to download its config from the correct place. 
+'
+
 Dim verbose
 Public online
 Dim strComputer
@@ -22,9 +30,6 @@ Dim email_user_id
 Dim email_user_pwd 
 Dim email_use_ssl 
 Dim email_timeout 
-
-
-
 
 Dim audit_local_domain
 Dim local_domain
@@ -537,6 +542,17 @@ if keep_audit_log <> "y" then
   objFile.Close
 
 end if
+'
+'
+'
+' Delete our config if requested. 
+'
+if keep_this_config = "n" then 
+    Set fso = CreateObject("Scripting.FileSystemObject")
+    Set aFile = fso.GetFile(this_config)
+    aFile.Delete
+end if
+
 '
 ' Nothing more to do so we quit
 ' Exit the script

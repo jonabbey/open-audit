@@ -38,13 +38,18 @@ $INSTALLATION_PATH = $_MY_PATH_PART ? substr( dirname($_SERVER['SCRIPT_NAME']), 
 //
 $our_host= "http://".$_SERVER['HTTP_HOST'];
 
+
+// Find requesting host IP
+$remote_addr= $_SERVER['REMOTE_ADDR'];
+
 //Note:  Your web server must be configured to create this variable.
 //For example in Apache you'll need HostnameLookups On  inside httpd.conf for it to exist. See also gethostbyaddr().
 $remote_host= $_SERVER['REMOTE_HOST']; 
 //
 // Therefore we are better with .... 
-//
-$remote_addr= $_SERVER['REMOTE_ADDR'];
+if ( $remote_host == "") {
+$remote_host = gethostbyaddr($_SERVER['REMOTE_ADDR']);
+} else {}
 
 
 // Now we can set our instance to the correct location
@@ -133,6 +138,9 @@ $this_config=$this_config.'nmap_ip_end = 254'.$config_newline;
 
 // Use this option to always destroy the audit.config and thus force a request for a fresh one at each run.  
 $this_config=$this_config.'keep_this_config = "n"'.$config_newline;
+
+//Use this option to always keep the log of what was audited.
+$this_config=$this_config.'keep_audit_log = "y"'.$config_newline;
 
 // We can use this info to modify script behaviour.
 // Note: The requesting host will be blank if Apache or IIS is not confiured to do hostname lookups.
