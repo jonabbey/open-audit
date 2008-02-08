@@ -9,7 +9,7 @@
 this_config_url = "%host_url%"
 if (left(this_config_url,1) = "%") then
 this_config_url = "http://openaudit/openaudit/list_export_config.php"
-endif
+end if
 '
 '
 ' The above line will magically change from %host_url% to the correct server URL
