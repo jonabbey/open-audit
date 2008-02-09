@@ -51,7 +51,7 @@ this_config = sScriptPath & "audit.config"
 
 'this_config = "audit.config"
 this_audit_log = "audit_log.csv"
-keep_audit_log = "y"
+' keep_audit_log = "y"
 '
 ' This takes no account of the command line switches added to a forked version, but in principal
 ' The logic should be...
@@ -1571,14 +1571,17 @@ Next
       ("Select " & strQueryFields & " from Win32_DiskPartition", "WQL", 0)
 
     For Each objItem in objEnumLogicalDisk
+      on error resume next
       partition_caption = objItem.Caption
       partition_file_system = objItem.FileSystem
       partition_free_space = 0
       partition_free_space = int(objItem.FreeSpace /1024 /1024)
       partition_size = 0
       partition_size = int(objItem.Size /1024 /1024)
+   
       partition_volume_name = objItem.VolumeName
       partition_percent = 0
+      
       partition_percent = round(((partition_size - partition_free_space) / partition_size) * 100 ,0)
      
     ' Associate with Device_ID in Win32_DiskPartition using objLogicalDiskToPartition
