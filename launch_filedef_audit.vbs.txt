@@ -7,6 +7,9 @@
 '''''''''''''''''''''''''''''''''''
 '
 this_config_url = "%host_url%"
+if (left(this_config_url,1) = "%") then
+this_config_url = "http://openaudit/openaudit/list_export_config.php"
+end if
 '
 '
 ' The above line will magically change from %host_url% to the correct server URL
@@ -1568,14 +1571,17 @@ Next
       ("Select " & strQueryFields & " from Win32_DiskPartition", "WQL", 0)
 
     For Each objItem in objEnumLogicalDisk
+      on error resume next
       partition_caption = objItem.Caption
       partition_file_system = objItem.FileSystem
       partition_free_space = 0
       partition_free_space = int(objItem.FreeSpace /1024 /1024)
       partition_size = 0
       partition_size = int(objItem.Size /1024 /1024)
+   
       partition_volume_name = objItem.VolumeName
       partition_percent = 0
+      
       partition_percent = round(((partition_size - partition_free_space) / partition_size) * 100 ,0)
      
     ' Associate with Device_ID in Win32_DiskPartition using objLogicalDiskToPartition

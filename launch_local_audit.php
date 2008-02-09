@@ -14,10 +14,12 @@ $host_url = $our_host.$our_instance."/list_export_config.php";
 
 $application = "audit.vbs";
 
+$this_file = "launch_filedef_".$application.".txt";
+
 //$hostname=$_GET["hostname"];
 $mac=$_GET["mac"];
 $ext=$_GET["ext"];
-copy ("scripts/audit.vbs", "launch_filedef_audit.vbs.txt");
+copy ("scripts/audit.vbs", $this_file);
 
 
 SWITCH($application){
@@ -28,7 +30,7 @@ SWITCH($application){
     break;
     default:
         //Reading the template
-        $buffer=file("launch_filedef_".$application.".txt");
+        $buffer=file($this_file);
         $buffer=implode("",$buffer);
         
         //Replacing Hostname
@@ -37,11 +39,12 @@ SWITCH($application){
 //        $buffer=str_replace ( "\n", "\r\n", $buffer );
                                     
 
+        $file_size = strlen($buffer);
         //Send to Browser
         
         header("Content-type: application/force-download");
         header("Content-Transfer-Encoding: Binary");
-        header("Content-length: ".filesize($file));
+        header("Content-length: ".$file_size);
         header("Content-disposition: attachment; filename=\"".$application."\"");
         echo trim($buffer);
     break;
