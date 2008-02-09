@@ -550,7 +550,7 @@ end if
 '
 ' Delete our config if requested. 
 '
-if keep_this_config = "n" then 
+if keep_this_config <> "y" then 
     Set fso = CreateObject("Scripting.FileSystemObject")
     Set aFile = fso.GetFile(this_config)
     aFile.Delete
