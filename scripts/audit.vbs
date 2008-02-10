@@ -106,18 +106,6 @@ End If
 
 ExecuteGlobal CreateObject("Scripting.FileSystemObject").OpenTextFile(this_config).ReadAll
 
-'
-' Once run, we can delete the config, since it is no longer required, this may be an issue with domain audits however, so I may put this back at the end of
-' the script. 
-'
-' Delete our config if requested. 
-'
-if keep_this_config <> "y" then 
-    Set fso = CreateObject("Scripting.FileSystemObject")
-    Set aFile = fso.GetFile(this_config)
-    aFile.Delete
-end if
-
 
 
 ' If any command line args given - use the first one as strComputer
