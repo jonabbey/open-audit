@@ -108,6 +108,19 @@ End If
 ExecuteGlobal CreateObject("Scripting.FileSystemObject").OpenTextFile(this_config).ReadAll
 
 
+'
+' Once run, we can delete the config. Can any calling scripts can use the config up until we exit the toplevel script. Not sure???
+'
+' Delete our config if requested. 
+'
+if keep_this_config <> "y" then 
+Set config_file = CreateObject("Scripting.FileSystemObject")
+Set our_config = config_file.OpenTextFile( this_config, ForWriting, True)
+    our_config.close
+    config_file.DeleteFile this_config
+    end if
+
+
 
 ' If any command line args given - use the first one as strComputer
 If Wscript.Arguments.Count > 0 Then
@@ -548,17 +561,7 @@ if keep_audit_log <> "y" then
 
 end if
 
-'
-' Once run, we can delete the config. We do this here so any calling scripts can use the config up until we exit the toplevel script. 
-'
-' Delete our config if requested. 
-'
-if keep_this_config <> "y" then 
-Set config_file = CreateObject("Scripting.FileSystemObject")
-Set our_config = config_file.OpenTextFile( this_config, ForWriting, True)
-    our_config.close
-    config_file.DeleteFile this_config
-    end if
+
 '
 ' Nothing more to do so we quit
 ' Exit the script
