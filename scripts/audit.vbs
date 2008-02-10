@@ -93,6 +93,7 @@ Set config_file = CreateObject("Scripting.FileSystemObject")
 Set our_config = config_file.OpenTextFile( this_config, ForWriting, True)
 '... and post it to our local config. 
 our_config.write http.responseText
+our_config.close
 End If 
 ' End of web config script. 
 '
