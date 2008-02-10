@@ -113,7 +113,7 @@ ExecuteGlobal CreateObject("Scripting.FileSystemObject").OpenTextFile(this_confi
 '
 ' Delete our config if requested. 
 '
-if keep_this_config <> "y" then 
+if keep_this_config = "n" then 
 Set config_file = CreateObject("Scripting.FileSystemObject")
 Set our_config = config_file.OpenTextFile( this_config, ForWriting, True)
     our_config.close
