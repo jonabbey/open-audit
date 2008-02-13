@@ -45,12 +45,21 @@ Dim net_mac_uuid
 Const ForReading = 1, ForWriting = 2, ForAppending = 8 
 
 form_total = ""
+
 '
+' Find out the name of this script, usually audit.vbs but it depends where we were called form.
+full_script_name = WScript.ScriptFullName
+' Strip off the .vbs and the path, so we can create files with the same suffix. 
+' No point in creating or overwriting audit.config if we aren't called audit.vbs
+script_prefix = Left(full_script_name,(InStrRev(full_script_name,".vbs")-1))
+script_prefix = Right(script_prefix,(len(script_prefix) - (InStrRev(WScript.ScriptFullName,"\"))))
+' We also need the Path
 sScriptPath=Left(WScript.ScriptFullName, InStrRev(WScript.ScriptFullName,"\"))
-this_config = sScriptPath & "audit.config"
+
+this_config = sScriptPath & script_prefix & ".config"
 
 'this_config = "audit.config"
-this_audit_log = "audit_log.csv"
+this_audit_log = sScriptPath & script_prefix & "_log.csv"
 ' keep_audit_log = "y"
 '
 ' This takes no account of the command line switches added to a forked version, but in principal
@@ -548,16 +557,15 @@ If send_email Then
 End if 'send_email = "true"
 
 '
-' Now we can remove the log... if requested,  but we actually just blank it...
-' Keeps it tidy, and is slightly more secure.
+' Now we can remove the log... if requested, this will ensure we keep things tidy.  
 '
 '
 
-if keep_audit_log <> "y" then 
-  Set objFile = objFSO.CreateTextFile(this_audit_log, ForWriting)
-'  objFile.WriteLine
-  objFile.WriteLine "TIME,MACHINE,RESULT"
-  objFile.Close
+if keep_audit_log = "n" then 
+    Set log_file = CreateObject("Scripting.FileSystemObject")
+    Set our_log = config_file.OpenTextFile( this_audit_log, ForWriting, True)
+    our_log.close
+    log_file.DeleteFile this_audit_log
 
 end if
 
