@@ -252,19 +252,19 @@ Const HKEY_USERS         = &H80000003
 ' A start but no finish is also a failure, just sort the file by field 2 first, 1 second and it should show every 
 ' start and finish, any missing finishes mean disaster. 
 '''''''''''''''''''''''''''''
-
-Set objFSO = CreateObject("Scripting.FileSystemObject")
-If objFSO.FileExists(this_audit_log) Then
-  Set objFile = objFSO.OpenTextFile(this_audit_log, ForAppending)
+if use_audit_log = "y" then 
+    Set objFSO = CreateObject("Scripting.FileSystemObject")
+    If objFSO.FileExists(this_audit_log) Then
+    Set objFile = objFSO.OpenTextFile(this_audit_log, ForAppending)
 '  objFile.WriteLine
-  objFile.Close
-Else
-  Set objFile = objFSO.CreateTextFile(this_audit_log, ForAppending)
+      objFile.Close
+    Else
+    Set objFile = objFSO.CreateTextFile(this_audit_log, ForAppending)
 '  objFile.WriteLine
-  objFile.WriteLine "TIME,MACHINE,RESULT"
-  objFile.Close
+    objFile.WriteLine "TIME,MACHINE,RESULT"
+    objFile.Close
+    End If
 End If
-
 ''''''''''''''''''''''''''''''''''''''''''''
 ' Check Local system build number
 ''''''''''''''''''''''''''''''''''''''''''''
@@ -281,16 +281,20 @@ if strComputer <> "" then
   if (IsConnectible(strComputer, "", "")  OR (strComputer = ".")) then
     thisresult = IsWMIConnectible(strComputer,strUser,strPass)
     if thisresult = False then
+      if use_adit_log = "y" then 
         Set objFSO = CreateObject("Scripting.FileSystemObject")
-    Set objFile = objFSO.OpenTextFile(this_audit_log, 8)
-    objFile.WriteLine "" & Now & "," & strComputer & ",Unable to connect to WMI. Error ="  & Err.Number & "-" & Err.Description
-    objFile.Close
+        Set objFile = objFSO.OpenTextFile(this_audit_log, 8)
+        objFile.WriteLine "" & Now & "," & strComputer & ",Unable to connect to WMI. Error ="  & Err.Number & "-" & Err.Description
+        objFile.Close
+      end if
     end if
     if thisresult = True then
-        Set objFSO = CreateObject("Scripting.FileSystemObject")
-    Set objFile = objFSO.OpenTextFile(this_audit_log, 8)
-    objFile.WriteLine "" & Now & "," & strComputer & ",Able to connect to WMI. "
-    objFile.Close
+      if use_adit_log = "y" then 
+         Set objFSO = CreateObject("Scripting.FileSystemObject")
+      Set objFile = objFSO.OpenTextFile(this_audit_log, 8)
+      objFile.WriteLine "" & Now & "," & strComputer & ",Able to connect to WMI. "
+      objFile.Close
+    End If
     
     if verbose = "y" then 
     wscript.echo "" & Now & "," & strComputer & " - Able to connect to WMI. "
@@ -316,26 +320,31 @@ if strComputer <> "" then
       Set oReg=GetObject("winmgmts:{impersonationLevel=impersonate}!\\" & strComputer & "\root\default:StdRegProv")
       Set objWMIService = GetObject("winmgmts:\\" & strComputer & "\root\cimv2")
     end if
-    Set objFSO = CreateObject("Scripting.FileSystemObject")
-    Set objFile = objFSO.OpenTextFile(this_audit_log, 8)
-    objFile.WriteLine "" & Now & "," & strComputer  & ",Started"
-    objFile.Close
-    Audit (strComputer)
+    if use_audit_log = "y" then 
         Set objFSO = CreateObject("Scripting.FileSystemObject")
-    Set objFile = objFSO.OpenTextFile(this_audit_log, 8)
-    objFile.WriteLine "" & Now & "," & strComputer  & ",Completed"
-    objFile.Close
-    
+        Set objFile = objFSO.OpenTextFile(this_audit_log, 8)
+        objFile.WriteLine "" & Now & "," & strComputer  & ",Started"
+        objFile.Close
+    end if
+    Audit (strComputer)
+        if use_audit_log = "y" then 
+            Set objFSO = CreateObject("Scripting.FileSystemObject")
+            Set objFile = objFSO.OpenTextFile(this_audit_log, 8)
+            objFile.WriteLine "" & Now & "," & strComputer  & ",Completed"
+            objFile.Close
+        end if
     end if
     
   else
     if verbose = "y" then
       wscript.echo strComputer & " not available."
     end if
-    Set objFSO = CreateObject("Scripting.FileSystemObject")
-    Set objFile = objFSO.OpenTextFile(this_audit_log, 8)
-    objFile.WriteLine "" & Now & "," & strComputer  & ",Failed not available" 
-    objFile.Close
+    if use_audit_log = "y" then 
+        Set objFSO = CreateObject("Scripting.FileSystemObject")
+        Set objFile = objFSO.OpenTextFile(this_audit_log, 8)
+        objFile.WriteLine "" & Now & "," & strComputer  & ",Failed not available" 
+        objFile.Close
+    end if
   end if
   wscript.quit
 end if
@@ -512,20 +521,22 @@ Loop
 ' if requested               '
 ''''''''''''''''''''''''''''''''''
 If send_email Then
-
-  ' Open the file this_audit_log, read the contents and store in this_audit_log variable
-  Set objFile = objFSO.OpenTextFile(this_audit_log, 1)
-  email_failed = objFile.ReadAll
-  objFile.Close
-
+  if use_audit_log = "y" then 
+    ' Open the file this_audit_log, read the contents and store in this_audit_log variable
+    Set objFile = objFSO.OpenTextFile(this_audit_log, 1)
+    email_failed = objFile.ReadAll
+    objFile.Close
+    end if
   if email_failed <> "" then
     On Error Resume Next
     if verbose = "y" then
     wscript.echo "Some systems may have failed to audit. See " & this_audit_log & " for details."
     end if
-    Set objShell = WScript.CreateObject("WScript.Shell")
-    this_folder = objShell.CurrentDirectory
-    this_file = this_folder & "\" & this_audit_log
+    if use_audit_log = "y" then 
+        Set objShell = WScript.CreateObject("WScript.Shell")
+        this_folder = objShell.CurrentDirectory
+        this_file = this_folder & "\" & this_audit_log
+    end if
     Set objEmail = CreateObject("CDO.Message")
     objEmail.From = email_from
     objEmail.To   = email_to
@@ -541,7 +552,9 @@ If send_email Then
     objEmail.Configuration.Fields.Item ("http://schemas.microsoft.com/cdo/configuration/smtpusessl") = email_use_ssl
     objEmail.Configuration.Fields.Item ("http://schemas.microsoft.com/cdo/configuration/smtpconnectiontimeout") = email_timeout
     objEmail.Configuration.Fields.Update
-    objEmail.AddAttachment this_file
+    if use_audit_log = "y" then 
+        objEmail.AddAttachment this_file
+    end if
     objEmail.Send
     if Err.Number <> 0 then
       if verbose = "y" then
@@ -562,11 +575,12 @@ End if 'send_email = "true"
 '
 
 if keep_audit_log = "n" then 
-    Set log_file = CreateObject("Scripting.FileSystemObject")
-    Set our_log = config_file.OpenTextFile( this_audit_log, ForWriting, True)
-    our_log.close
-    log_file.DeleteFile this_audit_log
-
+    if use_audit_log = "y" then
+        Set log_file = CreateObject("Scripting.FileSystemObject")
+        Set our_log = config_file.OpenTextFile( this_audit_log, ForWriting, True)
+        our_log.close
+        log_file.DeleteFile this_audit_log
+    end if
 end if
 
 
