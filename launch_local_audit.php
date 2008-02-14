@@ -34,16 +34,8 @@ $host_url = $our_host.$our_instance."/list_export_config.php";
 $application = "open-audit-to-".$_SERVER['HTTP_HOST']."-from-".$requesting_host.".vbs";
 
 
-// Define the script name.
-$this_file = "launch_filedef_".$application.".txt";
-
-//$hostname=$_GET["hostname"];
-$mac=$_GET["mac"];
-$ext=$_GET["ext"];
-
-// Copy the current script to a template (just in case we break it). 
-copy ("scripts/audit.vbs", $this_file);
-
+// Define the donor script name.
+$this_file = "scripts/audit.vbs";
 
 SWITCH($application){
     case "http":
@@ -74,10 +66,7 @@ SWITCH($application){
         header("Content-disposition: attachment; filename=\"".$application."\"");
         // Throw the $buffer as the page, as it now contains the script.
         echo $buffer;
-        
-        // We dont need the file we used as the template, so delete it..
-        
-        @unlink($this_file);
+
     break;
 
 }

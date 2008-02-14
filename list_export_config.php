@@ -44,13 +44,10 @@ $remote_addr= $_SERVER['REMOTE_ADDR'];
 
 //Note:  Your web server must be configured to create this variable.
 //For example in Apache you'll need HostnameLookups On  inside httpd.conf for it to exist. See also gethostbyaddr().
-$remote_host= $_SERVER['REMOTE_HOST']; 
-//
-// Therefore we are better with .... 
+$$remote_host = gethostbyaddr($_SERVER['REMOTE_ADDR']);
 if ( $remote_host == "") {
-$remote_host = gethostbyaddr($_SERVER['REMOTE_ADDR']);
+$remote_host= $_SERVER['REMOTE_HOST'];
 } else {}
-
 
 // Now we can set our instance to the correct location
 $our_instance = $INSTALLATION_PATH;
