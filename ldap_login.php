@@ -214,7 +214,7 @@ if (isset($_POST['username'])) {
 // Look for Result=false in the calling URI (actually just look for 'sult' cos we aren't that bothered ;} )
 // This method seems to work regardless of register_globals, see http://uk2.php.net/manual/en/reserved.variables.php
 //
-if (preg_match("/sult/i",$_SERVER['REQUEST_URI'])) {
+if (@preg_match("/sult/i",$_SERVER['REQUEST_URI'])) {
 // Warn them off if they screwed up the login.
 echo '<br><font face="Verdana,Tahoma,Arial,sans-serif" size="1" color="gray">'. __("Unauthorised use of this site may be a criminal offence.").'</font>';
 echo '<br><font face="Verdana,Tahoma,Arial,sans-serif" size="1" color="gray">'.__(" Access attempt from ").' '.$_SERVER['REMOTE_ADDR']."<br>".__("Your IP address and browser details will be logged.").'</font>';
