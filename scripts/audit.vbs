@@ -281,7 +281,7 @@ if strComputer <> "" then
   if (IsConnectible(strComputer, "", "")  OR (strComputer = ".")) then
     thisresult = IsWMIConnectible(strComputer,strUser,strPass)
     if thisresult = False then
-      if use_adit_log = "y" then 
+      if use_audit_log = "y" then 
         Set objFSO = CreateObject("Scripting.FileSystemObject")
         Set objFile = objFSO.OpenTextFile(this_audit_log, 8)
         objFile.WriteLine "" & Now & "," & strComputer & ",Unable to connect to WMI. Error ="  & Err.Number & "-" & Err.Description
@@ -289,7 +289,7 @@ if strComputer <> "" then
       end if
     end if
     if thisresult = True then
-      if use_adit_log = "y" then 
+      if use_audit_log = "y" then 
          Set objFSO = CreateObject("Scripting.FileSystemObject")
       Set objFile = objFSO.OpenTextFile(this_audit_log, 8)
       objFile.WriteLine "" & Now & "," & strComputer & ",Able to connect to WMI. "
