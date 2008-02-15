@@ -49,7 +49,7 @@ $remote_addr= $_SERVER['REMOTE_ADDR'];
 
 //Note:  Your web server must be configured to create this variable.
 //For example in Apache you'll need HostnameLookups On  inside httpd.conf for it to exist. See also gethostbyaddr().
-$$remote_host = gethostbyaddr($_SERVER['REMOTE_ADDR']);
+$remote_host = gethostbyaddr($_SERVER['REMOTE_ADDR']);
 if ( $remote_host == "") {
 $remote_host= $_SERVER['REMOTE_HOST'];
 } else {}
@@ -78,13 +78,13 @@ $this_config=$this_config.'server_install_path = "'.$INSTALLATION_PATH.'"'.$conf
 $this_config=$this_config.'verbose = "n"'.$config_newline; 
 
 // 
-$this_config=$this_config.'audit_host="'.$host_name.'"'.$config_newline;
+$this_config=$this_config.'audit_host="'.$our_host.'"'.$config_newline;
 
 
 $this_config=$this_config.'online = "yesxml"'.$config_newline; 
 
 // Force just the local PC to be audited.
-$this_config=$this_config.'strComputer = "."'.$config_newline; 
+$this_config=$this_config.'strComputer = "'.$remote_host.'"'.$config_newline; 
 $this_config=$this_config.'ie_visible = "n" '.$config_newline;
 $this_config=$this_config.'ie_auto_submit = "y" '.$config_newline;
 
