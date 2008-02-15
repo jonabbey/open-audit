@@ -23,9 +23,14 @@ include_once("include_functions.php");
 include_once("include_lang.php");
 //
 //
+$host_name = "";
+if (isset($_GET['hostname'])and ($_GET['hostname'] <>"")) {
+    $host_name=$_GET['hostname'];
+} else {
+    $host_name=".";
+}
 
-
-// Currently we can only do a "this machine" audit.
+// Currently we can only do a "this machine" audit, not a domain audit.
 // Firs we need to figure out our server installation path etc so we can generate a suitable config
 
 $_REAL_SCRIPT_DIR = realpath(dirname($_SERVER['SCRIPT_FILENAME'])); // filesystem path of this page's directory 
@@ -73,7 +78,7 @@ $this_config=$this_config.'server_install_path = "'.$INSTALLATION_PATH.'"'.$conf
 $this_config=$this_config.'verbose = "n"'.$config_newline; 
 
 // 
-$this_config=$this_config.'audit_host="'.$our_host.'"'.$config_newline;
+$this_config=$this_config.'audit_host="'.$host_name.'"'.$config_newline;
 
 
 $this_config=$this_config.'online = "yesxml"'.$config_newline; 

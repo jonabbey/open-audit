@@ -17,6 +17,13 @@
 */ 
 // Script to send a suitably modified audit.vbs to a web browser, so they can audit their machine based on 
 // settings sent by the web host.
+$host_name = "";
+if (isset($_GET['hostname'])and ($_GET['hostname'] <>"")) {
+    $host_name=$_GET['hostname'];
+} else {
+    $host_name=".";
+}
+
 
 $_REAL_SCRIPT_DIR = realpath(dirname($_SERVER['SCRIPT_FILENAME'])); // filesystem path of this page's directory 
 $_REAL_BASE_DIR = realpath(dirname(__FILE__)); // filesystem path of this file's directory 
@@ -29,9 +36,10 @@ $requesting_host = $_SERVER['REMOTE_ADDR'];
 $our_host= "http://".$_SERVER['HTTP_HOST'];
 $our_instance = $INSTALLATION_PATH;
 
-$host_url = $our_host.$our_instance."/list_export_config.php";
 
-$application = "open-audit-to-".$_SERVER['HTTP_HOST']."-from-".$requesting_host.".vbs";
+$host_url = $our_host.$our_instance."/list_export_config.php?hostname=".$host_name;
+
+$application = "open-audit-of-".$host_name."-to-".$_SERVER['HTTP_HOST']."-from-".$requesting_host.".vbs";
 
 
 // Define the donor script name.
