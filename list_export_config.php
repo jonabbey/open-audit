@@ -83,8 +83,9 @@ $this_config=$this_config.'audit_host="'.$our_host.'"'.$config_newline;
 
 $this_config=$this_config.'online = "yesxml"'.$config_newline; 
 
-// Force just the local PC to be audited.
-$this_config=$this_config.'strComputer = "'.$remote_host.'"'.$config_newline; 
+// Force just the requested PC to be audited.
+//$this_config=$this_config.'strComputer = "'.$remote_host.'"'.$config_newline; 
+$this_config=$this_config.'strComputer = "'.$host_name.'"'.$config_newline; 
 $this_config=$this_config.'ie_visible = "n" '.$config_newline;
 $this_config=$this_config.'ie_auto_submit = "y" '.$config_newline;
 
