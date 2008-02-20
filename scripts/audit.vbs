@@ -3750,7 +3750,7 @@ if online = "yesxml" then
    else
      objHTTP.Send "add=" + escape(Deconstruct(form_total + vbcrlf))
    end if
-   if Err.Number <> 0 then
+   if (Err.Number <> 0 or objHTTP.status <> 200) then
      Err.clear
      XmlObj = "XMLHTTP"
      Set objHTTP = WScript.CreateObject("MSXML2.XMLHTTP")
@@ -3763,8 +3763,8 @@ if online = "yesxml" then
      end if
    end if
    if verbose = "y" then 
-     if Err.Number <> 0 then
-       wscript.Echo "Unable to send XML to server using " & XmlObj & ": error " & Err.Number & " " & Err.Description
+     if (Err.Number <> 0 or objHTTP.status <> 200) then
+       wscript.Echo "Unable to send XML to server using " & XmlObj & " - HTTP Response: " & objHTTP.status & " (" & objHTTP.statusText & ") - Error " & Err.Number & " " & Err.Description 
      else
        wscript.Echo "XML sent to server using " & XmlObj & ": " & objHTTP.status & " (" & objHTTP.statusText & ")"
      end if
