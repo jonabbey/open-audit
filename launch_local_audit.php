@@ -36,8 +36,9 @@ $requesting_host = $_SERVER['REMOTE_ADDR'];
 $our_host= "http://".$_SERVER['HTTP_HOST'];
 $our_instance = $INSTALLATION_PATH;
 
+$application = "open-audit-of-".$host_name."-to-".$_SERVER['HTTP_HOST']."-from-".$requesting_host.".vbs";
 
-$host_url = $our_host.$our_instance."/list_export_config.php?hostname=".$host_name;
+$host_url = $our_host.$our_instance."/list_export_config.php?hostname=".$host_name."&application=".$application;
 
 $application = "open-audit-of-".$host_name."-to-".$_SERVER['HTTP_HOST']."-from-".$requesting_host.".vbs";
 

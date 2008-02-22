@@ -30,6 +30,13 @@ if (isset($_GET['hostname'])and ($_GET['hostname'] <>"")) {
     $host_name=".";
 }
 
+$application = "";
+if (isset($_GET['application'])and ($_GET['application'] <>"")) {
+    $application=$_GET['application'];
+} else {
+    $application="auidit.vbs";
+}
+
 // Currently we can only do a "this machine" audit, not a domain audit.
 // Firs we need to figure out our server installation path etc so we can generate a suitable config
 
@@ -86,6 +93,9 @@ $this_config=$this_config.'online = "yesxml"'.$config_newline;
 // Force just the requested PC to be audited.
 //$this_config=$this_config.'strComputer = "'.$remote_host.'"'.$config_newline; 
 $this_config=$this_config.'strComputer = "'.$host_name.'"'.$config_newline; 
+$this_config=$this_config.'strUser = ""'.$config_newline; 
+$this_config=$this_config.'strPass = ""'.$config_newline; 
+
 $this_config=$this_config.'ie_visible = "n" '.$config_newline;
 $this_config=$this_config.'ie_auto_submit = "y" '.$config_newline;
 
@@ -115,14 +125,15 @@ $this_config=$this_config.'email_user_pwd = "MailPassword"'.$config_newline;
 $this_config=$this_config.'email_use_ssl = "false"'.$config_newline;
 $this_config=$this_config.'email_timeout = "60"'.$config_newline;
 
-// Ignore the rest too since 
+//FIXME We should parse the audit.config in scripts for some of this, particularly uuid_type
+// Ignore the rest too since currently this is for single machines
 $this_config=$this_config.'audit_local_domain = "n"'.$config_newline;
 $this_config=$this_config.'domain_type = "ldap"'.$config_newline;
 $this_config=$this_config.'local_domain = "LDAP://mydomain.local"'.$config_newline; 
 $this_config=$this_config.'hfnet = "n"'.$config_newline; 
 $this_config=$this_config.'Count = 0'.$config_newline; 
 $this_config=$this_config.'number_of_audits = 10'.$config_newline; 
-$this_config=$this_config.'script_name = "audit.vbs"'.$config_newline; 
+$this_config=$this_config.'script_name = "'.$application.'"'.$config_newline; 
 $this_config=$this_config.'monitor_detect = "y"'.$config_newline; 
 $this_config=$this_config.'printer_detect = "y"'.$config_newline; 
 $this_config=$this_config.'software_audit = "y"'.$config_newline; 
@@ -140,12 +151,12 @@ $this_config=$this_config.'nmap_ip_start = 1'.$config_newline;
 $this_config=$this_config.'nmap_ip_end = 254'.$config_newline;
 
 // Use this option to always destroy the audit.config and thus force a request for a fresh one at each run.  
-$this_config=$this_config.'keep_this_config = "n"'.$config_newline;
+$this_config=$this_config.'keep_this_config = "y"'.$config_newline;
 
 //Use this option to always keep the log of what was audited.
-$this_config=$this_config.'keep_audit_log = "n"'.$config_newline;
+$this_config=$this_config.'keep_audit_log = "y"'.$config_newline;
 
-// We can use this info to modify script behaviour.
+// We can use this info to modify script actions.
 // Note: The requesting host will be blank if Apache or IIS is not confiured to do hostname lookups.
 // in other words your web server must be configured to create this variable.
 //For example in Apache you'll need HostnameLookups On  inside httpd.conf for it to exist. See also gethostbyaddr().
