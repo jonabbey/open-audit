@@ -44,26 +44,29 @@ $slice_thickness = $height/10;
 $wedge_offset = $width/50;
 
 // Make the 3D pie effect
-// Larger slice at the rear of the image, otherwise it looks odd.
+// Larger slice at the left of the image, otherwise it looks odd.
 
 if ($percent_free <= 50) {
 
-
-
-
 // Thin wedge is percent free
 
-
 for ($i = $height/2; $i > $height/2-$slice_thickness; $i--)  {
-  imagefilledarc($image, $width/2, $i+$wedge_offset, $width-($width*$width_distortion/100),$height-($height*$height_distortion/100), 0, $angle, $empty_dark, IMG_ARC_PIE);
-  imagefilledarc($image, $width/2-$wedge_offset, $i, $width-($width*$width_distortion/100), $height-($height*$height_distortion/100), $angle, 360 , $full_dark, IMG_ARC_PIE);
+     if ($percent_free !=0){ 
+       imagefilledarc($image, $width/2, $i+$wedge_offset, $width-($width*$width_distortion/100),$height-($height*$height_distortion/100), 0, $angle, $empty_dark, IMG_ARC_PIE);
+       } else {} 
+       imagefilledarc($image, $width/2-$wedge_offset, $i, $width-($width*$width_distortion/100), $height-($height*$height_distortion/100), $angle, 360 , $full_dark, IMG_ARC_PIE);
+
 }
 
-imagefilledarc($image, $width/2, $i+$wedge_offset, $width-($width*$width_distortion/100), $height-($height*$height_distortion/100), 0, $angle, $empty_light, IMG_ARC_PIE);
-imagefilledarc($image, $width/2-$wedge_offset, $i, $width-($width*$width_distortion/100), $height-($height*$height_distortion/100), $angle, 360 , $full_light, IMG_ARC_PIE);
+  if ($percent_free !=0){
+    imagefilledarc($image, $width/2, $i+$wedge_offset, $width-($width*$width_distortion/100), $height-($height*$height_distortion/100), 0, $angle, $empty_light, IMG_ARC_PIE);
+    } else {}
+    imagefilledarc($image, $width/2-$wedge_offset, $i, $width-($width*$width_distortion/100), $height-($height*$height_distortion/100), $angle, 360 , $full_light, IMG_ARC_PIE);
+
 }
 else 
 {
+
 // Thin wedge is percent used... well actually, we just fake it, reverse angle and colours. 
 
 $angle = 360- $angle ;

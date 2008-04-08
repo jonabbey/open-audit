@@ -26,15 +26,17 @@ if ($myrow = mysql_fetch_array($result)){
       $used = number_format($myrow2['partition_size'] - $myrow2['partition_free_space']);
       echo __("Current Disk Used") . ": " . $used . " MB</td></tr>";
      if (isset($myrow2['partition_size']) and  (($myrow2['partition_size']) >0.001)){ 
-    
-      $percent_free = round(( number_format($myrow2['partition_free_space'])/(($myrow2['partition_size'] ))*100),$round_to_decimal_places);
+//        if (isset($myrow2['partition_size']) ){ 
+   
+//      $percent_free = round(( number_format($myrow2['partition_free_space'])/(($myrow2['partition_size'] ))*100),$round_to_decimal_places);
+     $percent_free = round((($myrow2['partition_free_space'])/(($myrow2['partition_size'] ))*100),$round_to_decimal_places);
         } else {
         $percent_free  = 0;
         }
       echo "<tr><td>";
       echo "<img src=\"system_graphs_pie.php?disk_percent=".$percent_free."&width=140&height=140\" alt\"\"/>";
- 
       echo "<img src=\"images/graph_side.gif\" alt=\"\" />";
+
     }
     $disk_percent = $myrow['disk_percent'];
     //$disk_time = return_date_time($myrow['disk_timestamp']);
@@ -45,16 +47,16 @@ if ($myrow = mysql_fetch_array($result)){
     $disk_free_warn = (($myrow2['partition_size'] -$partition_free_space)/($myrow2['partition_size']))*100;
 //    $disk_free_warn = ($myrow2['partition_size'] );
     } else {
-    $disk_free_warn = '0';
+    $disk_free_warn = 0;
     }
     
 
 
-    if ($disk_free_warn > '100'){
-        $disk_free_warn = '100';
+    if ($disk_free_warn > 100){
+        $disk_free_warn = 100;
     } else {
-          if ($disk_free_warn < '0'){
-        $disk_free_warn = '0';
+          if ($disk_free_warn < 0){
+        $disk_free_warn = 0;
         }
     }
             
