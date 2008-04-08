@@ -320,17 +320,16 @@ while (list ($viewname, $viewdef_array) = @each ($query_array["views"])) {
                            echo " <a href='http://h20180.www2.hp.com/apps/Lookup?h_lang=en&amp;h_cc=uk&amp;cc=uk&amp;h_page=hpcom&amp;lang=en&amp;h_client=S-A-R135-1&amp;h_pagetype=s-002&amp;h_query=" . $myrow["system_model"] . "' onclick=\"this.target='_blank';\">".__("Drivers &amp; Software")."</a>";
                            $links_to_manu=1;
                        }
-                     } elseif ($myrow["system_vendor"] == "IBM") {
+                      } elseif ($myrow["system_vendor"] == "IBM" || $myrow["system_vendor"] == "LENOVO") {
                        if(isset($myrow["system_id_number"]) AND $myrow["system_id_number"]!=""){
                            echo " <a href='http://www-307.ibm.com/pc/support/site.wss/quickPath.do?quickPathEntry=" . $myrow["system_model"] . "' onclick=\"this.target='_blank';\">".__("Product Page")."</a>";
                            echo " / ";
                            $links_to_manu=1;
                        }
                        if(isset($myrow["system_model"]) AND $myrow["system_model"]!= "" AND isset($myrow["system_id_number"]) AND $myrow["system_id_number"]!=""){
-                           echo " <a href='http://www-307.ibm.com/pc/support/site.wss/warrantyLookup.do?type=".substr($myrow["system_model"],0,4)."&amp;serial=".$myrow["system_id_number"]."&amp;country=897&amp;iws=off' onclick=\"this.target='_blank';\">".__("Warranty Information")."</a>";
+                           echo " <a href='http://www-307.ibm.com/pc/support/site.wss/warrantyLookup.do?type=".substr($myrow["system_model"],0,4)."&amp;serial=".$myrow["system_id_number"]."&amp;country=897&amp;iws=off&amp;sitestyle=lenovo' onclick=\"this.target='_blank';\">".__("Warranty Information")."</a>";
                            $links_to_manu=1;
-                       }
-                     } elseif ($myrow["system_vendor"] == "Gateway") {
+                       }                  } elseif ($myrow["system_vendor"] == "Gateway") {
                        if(isset($myrow["system_id_number"]) AND $myrow["system_id_number"]!=""){
                            echo " <a href='http://support.gateway.com/support/allsysteminfo.asp?sn=" . $myrow["system_id_number"] . "' onclick=\"this.target='_blank';\">".__("Support Page")."</a>";
                            $links_to_manu=1;
