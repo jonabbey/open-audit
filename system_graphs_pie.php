@@ -85,6 +85,11 @@ $this_text = $percent_free;
 // Replace path by your own font path
 $font = 4;
 //imagestring($image,$font,1,1,"Free:".$percent_free."%",$empty_dark);
+
+
+imagestring($image,$font,17,109,"Current Usage:%",$black);
+imagestring($image,$font,16,108,"Current Usage:%",$full_dark);
+
 imagestring($image,$font,16,0,"Free:".$percent_free."%",$black);
 imagefilledrectangle($image,4,2,14,12,$empty_dark);
 //imagestring($image,$font,1,1,"Free:".$percent_free."%",$gray);
