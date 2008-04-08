@@ -47,7 +47,8 @@ if ($myrow = mysql_fetch_array($result)){
     $disk_free_warn = (($myrow2['partition_size'] -$partition_free_space)/($myrow2['partition_size']))*100;
 //    $disk_free_warn = ($myrow2['partition_size'] );
     } else {
-    $disk_free_warn = 0;
+    $disk_percent = 100;
+    $disk_free_warn = 100;
     }
     
 
