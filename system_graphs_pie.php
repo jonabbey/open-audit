@@ -1,6 +1,7 @@
 <?php
 // Open Audit percentage pie chart image, used for disk usage graphs.
 // 
+include("include_lang.php");
 function disk_percent_pie( $image,$percent_free, $width, $height  ) {
 // create image
 $image = imagecreatetruecolor($width, $height);
@@ -83,19 +84,19 @@ imagefilledarc($image, $width/2-$wedge_offset, $i, $width-($width*$width_distort
 // The text to draw
 $this_text = $percent_free;
 // Replace path by your own font path
-$font = 4;
+$font = 5;
 //imagestring($image,$font,1,1,"Free:".$percent_free."%",$empty_dark);
 
 
-imagestring($image,$font,17,109,"Current Usage:%",$black);
-imagestring($image,$font,16,108,"Current Usage:%",$full_dark);
+imagestring($image,$font,17,109,"".__("Current Usage").":%",$black);
+//imagestring($image,$font,16,108,"".__("Current Usage").":%",$empty_dark);
 
-imagestring($image,$font,16,0,"Free:".$percent_free."%",$black);
+imagestring($image,$font,16,0,"".__("Free").":".$percent_free."%",$black);
 imagefilledrectangle($image,4,2,14,12,$empty_dark);
 //imagestring($image,$font,1,1,"Free:".$percent_free."%",$gray);
 
 //imagestring($image,$font,1,15,"Used:".(100-$percent_free)."%",$full_dark);
-imagestring($image,$font,16,16,"Used:".(100-$percent_free)."%",$black);
+imagestring($image,$font,16,16,"".__("Used").":".(100-$percent_free)."%",$black);
 imagefilledrectangle($image,4,18,14,28,$full_dark);
 //imagestring($image,$font,0,15,"Used:".(100-$percent_free)."%",$gray);
 
