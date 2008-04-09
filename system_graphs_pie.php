@@ -6,7 +6,7 @@ include("include_lang.php");
 function disk_percent_pie( $image,$percent_free, $width, $height  ) {
 // Dont like the font? 
 // Replace number with any of 0 -9 or whatever is installed on your system .
-$font = 4;
+$font = 3;
 // create image
 $image = imagecreatetruecolor($width, $height);
 
@@ -88,17 +88,22 @@ imagefilledarc($image, $width/2-$wedge_offset, $i, $width-($width*$width_distort
 // The text to draw
 $this_text = $percent_free;
 
-imagestring($image,$font,17,109,"".__("Current Usage").":%",$black);
+imagestring($image,$font,17,109,"".__("Current Usage").":%",$darkgray);
 // Uncomment this for a shadow effect, 
 //imagestring($image,$font,16,108,"".__("Current Usage").":%",$empty_dark);
 
 // Show Free space %
-imagestring($image,$font,16,0,"".__("Free").":".$percent_free."%",$black);
-imagefilledrectangle($image,4,2,14,12,$empty_dark);
+imagestring($image,$font,16,0,"".__("Free").":".$percent_free."%",$darkgray);
+imagefilledellipse($image,6,8,10,10,$empty_light);
+imagefilledellipse($image,6,8,6,6,$white);
+imagefilledellipse($image,6,8,4,4,$empty_dark);
 
 // Show used space %
-imagestring($image,$font,16,16,"".__("Used").":".(100-$percent_free)."%",$black);
-imagefilledrectangle($image,4,18,14,28,$full_dark);
+imagestring($image,$font,16,16,"".__("Used").":".(100-$percent_free)."%",$darkgray);
+imagefilledellipse($image,6,22,10,10,$full_light);
+imagefilledellipse($image,6,22,6,6,$white);
+imagefilledellipse($image,6,22,4,4,$full_dark);
+
 
 return($image);
 
