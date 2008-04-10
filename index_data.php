@@ -54,11 +54,11 @@ function GetSystemsAuditedGraph()
 			if ($myrow["cnt"]>$max){$max=$myrow["cnt"];};  // determine largest value for graph sizing
 		}	while ($myrow = mysql_fetch_array($result));
 	}
-
+if ($max != 0) {
 	// determine graph sizing
 	$img_col_width=$img_width/$systems_audited_days;
 	$scale = $img_height/$max;
-
+} else {}
 	echo "<div style='text-align: center;'>";
 	// iterate thru array and display results graph
 	foreach($dates as $dt => $cnt)
