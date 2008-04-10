@@ -25,7 +25,7 @@ $full_light = imagecolorallocate( $image, 166, 200, 232 );
 // Set som other colours we migh need
 $gray    = imagecolorallocate($image, 0xC0, 0xC0, 0xC0);
 $grey = $gray;
-$darkgray = imagecolorallocate($image, 0x90, 0x90, 0x90);
+$darkgray = imagecolorallocate($image, 0x8d, 0x8d, 0x8d);
 $navy    = imagecolorallocate($image, 0x00, 0x00, 0x80);
 $darknavy = imagecolorallocate($image, 0x00, 0x00, 0x50);
 $red      = imagecolorallocate($image, 0xFF, 0x00, 0x00);
@@ -94,15 +94,15 @@ imagestring($image,$font,17,109,"".__("Current Usage").":%",$darkgray);
 
 // Show Free space %
 imagestring($image,$font,16,0,"".__("Free").":".$percent_free."%",$darkgray);
-imagefilledellipse($image,6,8,10,10,$empty_light);
+imagefilledellipse($image,6,8,10,10,$empty_dark);
 imagefilledellipse($image,6,8,6,6,$white);
-imagefilledellipse($image,6,8,4,4,$empty_dark);
+imagefilledellipse($image,6,8,4,4,$empty_light);
 
 // Show used space %
 imagestring($image,$font,16,16,"".__("Used").":".(100-$percent_free)."%",$darkgray);
-imagefilledellipse($image,6,22,10,10,$full_light);
+imagefilledellipse($image,6,22,10,10,$full_dark);
 imagefilledellipse($image,6,22,6,6,$white);
-imagefilledellipse($image,6,22,4,4,$full_dark);
+imagefilledellipse($image,6,22,4,4,$full_light);
 
 
 return($image);
