@@ -10,6 +10,7 @@ OA_SAFEMODE=n
 OA_PACKAGES="apt azureus bash build-essential cdparanoia cdrdao cdrecord cpp cron cupsys cvs dbus dhcp3-client diff dpkg epiphany-browser esound evolution firefox flashplugin-nonfree foomatic-db g++ gaim gcc gdm gedit gimp gnome-about gnucash gnumeric gtk+ httpd inkscape iptables k3b kdebase koffice libgnome2-0 linux-image-386 metacity mozilla-browser mysql-admin mysql-query-browser mysql-server-4.1 nautilus openoffice.org openssh-client openssh-server perl php4 php5 postfix postgresql python python2.4 rdesktop rhythmbox samba-common sendmail smbclient subversion sun-j2re1.5 swf-player synaptic thunderbird tsclient udev vim vlc vnc-common webmin xfce xmms xserver-xorg"
 OA_DPKG_TRACK=$OA_PACKAGES
 OA_YUM_TRACK=$OA_PACKAGES
+OA_PKG_TRACK=$OA_PACKAGES
 
 # If you're not worried about attacks, you can just use the first one in the path.
 if [ $OA_SAFEMODE="n" ] || [ $OA_SAFEMODE="N" ]
@@ -29,6 +30,7 @@ then
     OA_HOSTNAME=`which hostname`
     OA_IFCONFIG=`which ifconfig`
     OA_LSPCI=`which lspci`
+    OA_PKG=`which pkgtool 2> /dev/null`
     OA_RM=`which rm`
     OA_UNAME=`which uname`
     OA_TAIL=`which tail`
@@ -50,6 +52,7 @@ else
     OA_HAL_LIST=/usr/bin/lshal
     OA_HOSTNAME=/bin/hostname
     OA_IFCONFIG=/sbin/ifconfig
+    OA_PKG=/var/log/packages
     OA_LSPCI=/usr/bin/lspci
     OA_RM=/bin/rm
     OA_TAIL=/usr/bin/tail
@@ -124,18 +127,6 @@ if [ "$name" = "Linux" ]
                 distribution="Novell SuSE"
                 OS_RELEASE=`$OA_CAT /etc/SuSE-release`
                 OS_PCK_MGR=$OA_YUM
-            elif test -f /etc/issue; then
-                distribution="Ubuntu"
-                OS_RELEASE=`$OA_CAT /etc/issue`
-                OS_PCK_MGR=$OA_DPKG
-            elif test -f /etc/debian_version; then
-                distribution="Debian"
-                OS_RELEASE=`$OA_CAT /etc/debian_version`
-                OS_PCK_MGR=$OA_DPKG
-            elif test -f /etc/debian-version; then
-                distribution="Debian"
-                OS_RELEASE=`$OA_CAT /etc/debian-version`
-                OS_PCK_MGR=$OA_DPKG
             elif test -f /etc/arch-release; then
                 distribution="Arch"
                 OS_RELEASE=`$OA_CAT /etc/arch-release`
@@ -147,18 +138,30 @@ if [ "$name" = "Linux" ]
             elif test -f /etc/slackware-release; then
                 distribution="Slackware"
                 OS_RELEASE=`$OA_CAT /etc/slackware-release`
-                OS_PCK_MGR=''
+                OS_PCK_MGR=$OA_PKG
             elif test -f /etc/slackware-version; then
                 distribution="Slackware"
                 OS_RELEASE=`$OA_CAT /etc/slackware-version`
-                OS_PCK_MGR=''
+                OS_PCK_MGR=$OA_PKG
             elif test -f /etc/yellowdog-release; then
                 distribution="Yellow dog"
                 OS_RELEASE=`$OA_CAT /etc/yellowdog-release`
                 OS_PCK_MGR=''
-            else distribution="unknown"
+            elif distribution="unknown"
                 OS_RELEASE="unknown"
                 OS_PCK_MGR=''
+            elif test -f /etc/issue; then
+                distribution="Ubuntu"
+                OS_RELEASE=`$OA_CAT /etc/issue`
+                OS_PCK_MGR=$OA_DPKG
+            elif test -f /etc/debian_version; then
+                distribution="Debian"
+                OS_RELEASE=`$OA_CAT /etc/debian_version`
+                OS_PCK_MGR=$OA_DPKG
+            else test -f /etc/debian-version; then
+                distribution="Debian"
+                OS_RELEASE=`$OA_CAT /etc/debian-version`
+                OS_PCK_MGR=$OA_DPKG
             fi
 fi
 
@@ -418,6 +421,33 @@ then
             fi
         done
     fi
+fi
+
+if [ "$OS_PCK_MGR" = "$OA_PKG" ]
+then
+   OA_ALL_PACKAGES=`ls /var/log/packages`
+
+   if [ "$OA_PKG_TRACK" = "" ]
+   then
+      for OA_PACKAGE_LINE in $OA_ALL_PACKAGES; do
+         OA_PACKAGE_NAME=`echo $OA_PACKAGE_LINE | $OA_AWK '{ match($0, /^([a-zA-Z\-]*)\-([0-9].*)$/, a); print a[1] }' 2> /dev/null`
+         OA_PACKAGE_VERSION=`echo $OA_PACKAGE_LINE | $OA_AWK '{ match($0, /^([a-zA-Z\-]*)\-([0-9].*)$/, a); print a[2] }' 2> /dev/null`
+
+            if [ "$OA_PACKAGE_NAME" ] && [ "$OA_PACKAGE_VERSION" ]
+            then
+                echo "software^^^$OA_PACKAGE_NAME^^^$OA_PACKAGE_VERSION^^^^^^^^^^^^^^^^^^^^^^^^^^^" >> $ReportFile
+            fi
+      done
+   else
+      for OA_PACKAGE_NAME in $OA_PKG_TRACK; do
+         OA_PACKAGE_VERSION=`ls /var/log/packages | $OA_GREP "$OA_PACKAGE_NAME" | $OA_TAIL -n1 | $OA_AWK '{ match($0, /^([a-zA-Z\-]*)\-([0-9].*)$/, a); print a[2] }' 2> /dev/null`
+
+           if [ "$OA_PACKAGE_VERSION" ]
+           then
+            echo "software^^^$OA_PACKAGE_NAME^^^$OA_PACKAGE_VERSION^^^^^^^^^^^^^^^^^^^^^^^^^^^" >> $ReportFile
+           fi
+      done
+   fi
 fi
 
 COLUMNS=OA_OLDCOLUMNS
