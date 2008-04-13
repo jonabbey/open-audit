@@ -51,9 +51,9 @@ include_once "include_lang.php";
     step2CheckPrereq();
   } else if ($_POST['step'] == 3.1) {
    step31SetupDB();
-  } else if ($_POST['step'] == 3.2 and $_POST['rootacc_database'] == y) {
+  } else if ($_POST['step'] == 3.2 and $_POST['rootacc_database'] == "y") {
     step33SetupDB();
-  } else if ($_POST['step'] == 3.2 and $_POST['rootacc_database'] == n) {
+  } else if ($_POST['step'] == 3.2 and $_POST['rootacc_database'] == "n") {
     step34SetupDB();
   } else if ($_POST['step'] == 3.5) {
     step35SetupDB();
