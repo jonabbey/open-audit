@@ -11,16 +11,41 @@
 
 DROP TABLE IF EXISTS `auth`;
 CREATE TABLE `auth` (
-`auth_id` INT( 10 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,
-`auth_username` VARCHAR( 25 ) NOT NULL ,
-`auth_hash` VARCHAR( 49 ) NOT NULL ,
-`auth_realname` VARCHAR( 255 ) NOT NULL ,
-`auth_enabled` BOOL NOT NULL DEFAULT '1' ,
-`auth_admin` BOOL NOT NULL DEFAULT '0' ,
-UNIQUE (
-`auth_username`
-)
+  `auth_id` INT( 10 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,
+  `auth_username` VARCHAR( 25 ) NOT NULL ,
+  `auth_hash` VARCHAR( 49 ) NOT NULL ,
+  `auth_realname` VARCHAR( 255 ) NOT NULL ,
+  `auth_enabled` BOOL NOT NULL DEFAULT '1' ,
+  `auth_admin` BOOL NOT NULL DEFAULT '0' ,
+  UNIQUE (
+  `auth_username`
+  )
 ) ENGINE = MYISAM DEFAULT CHARSET=latin1;
+
+DROP TABLE IF EXISTS `auto_updating`;
+CREATE TABLE `auto_updating` (
+  `au_id` int(10) unsigned NOT NULL auto_increment,
+  `au_uuid` varchar(100) NOT NULL default '',
+  `au_gpo_configured` varchar(10) NOT NULL default '',
+  `au_enabled` varchar(10) NOT NULL default '',
+  `au_behaviour` varchar(100) NOT NULL default '',
+  `au_sched_install_day` varchar(20) NOT NULL default '',
+  `au_sched_install_time` varchar(10) NOT NULL default '',
+  `au_use_wuserver` varchar(10) NOT NULL default '',
+  `au_wuserver` varchar(100) NOT NULL default '',
+  `au_wustatusserver` varchar(100) NOT NULL default '',
+  `au_target_group` varchar(100) NOT NULL default '',
+  `au_elevate_nonadmins` varchar(10) NOT NULL default '',
+  `au_auto_install` varchar(10) NOT NULL default '',
+  `au_detection_frequency` varchar(10) NOT NULL default '',
+  `au_reboot_timeout` varchar(10) NOT NULL default '',
+  `au_noautoreboot` varchar(10) NOT NULL default '',
+  `au_timestamp` bigint(20) unsigned NOT NULL default '0',
+  `au_first_timestamp` bigint(20) unsigned NOT NULL default '0',
+  PRIMARY KEY  (`au_id`),
+  KEY `id` (`au_uuid`),
+  KEY `id2` (`au_timestamp`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 DROP TABLE IF EXISTS `battery`;
 CREATE TABLE `battery` (
@@ -253,6 +278,14 @@ CREATE TABLE `iis` (
   `iis_default_documents` varchar(100) NOT NULL default '',
   `iis_secure_ip` varchar(100) NOT NULL default '',
   `iis_secure_port` varchar(100) NOT NULL default '',
+  `iis_site_state` varchar(20) NOT NULL default '',
+  `iis_site_app_pool` varchar(100) NOT NULL default '',
+  `iis_site_anonymous_user` varchar(100) NOT NULL default '',
+  `iis_site_anonymous_auth` varchar(10) NOT NULL default '',
+  `iis_site_basic_auth` varchar(10) NOT NULL default '',
+  `iis_site_ntlm_auth` varchar(10) NOT NULL default '',
+  `iis_site_ssl_en` varchar(10) NOT NULL default '',
+  `iis_site_ssl128_en` varchar(10) NOT NULL default '',
   `iis_timestamp` bigint(20) unsigned NOT NULL default '0',
   `iis_first_timestamp` bigint(20) unsigned NOT NULL default '0',
   PRIMARY KEY  (`iis_id`),
@@ -287,6 +320,20 @@ CREATE TABLE `iis_vd` (
   PRIMARY KEY  (`iis_vd_id`),
   KEY `id` (`iis_vd_uuid`),
   KEY `id2` (`iis_vd_timestamp`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+DROP TABLE IF EXISTS `iis_web_ext`;
+CREATE TABLE `iis_web_ext` (
+  `iis_web_ext_id` int(10) unsigned NOT NULL auto_increment,
+  `iis_web_ext_uuid` varchar(100) NOT NULL default '',
+  `iis_web_ext_path` varchar(100) NOT NULL default '',
+  `iis_web_ext_desc` varchar(100) NOT NULL default '',
+  `iis_web_ext_access` varchar(20) NOT NULL default '',
+  `iis_web_ext_timestamp` bigint(20) unsigned NOT NULL default '0',
+  `iis_web_ext_first_timestamp` bigint(20) unsigned NOT NULL default '0',
+  PRIMARY KEY  (`iis_web_ext_id`),
+  KEY `id` (`iis_web_ext_uuid`),
+  KEY `id2` (`iis_web_ext_timestamp`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 DROP TABLE IF EXISTS `invoice`;
@@ -971,6 +1018,7 @@ CREATE TABLE `system` (
   `date_virus_def` date NOT NULL default '0000-00-00',
   `system_last_boot` BIGINT( 20 ) UNSIGNED NOT NULL DEFAULT '0',
   `date_system_install` date NOT NULL default '0000-00-00',
+  `iis_version` varchar(10) NOT NULL default '',
   `system_timestamp` bigint(20) unsigned NOT NULL default '0',
   `system_first_timestamp` bigint(20) unsigned NOT NULL default '0',
   PRIMARY KEY  (`system_uuid`),
@@ -1139,7 +1187,7 @@ CREATE TABLE `video` (
   KEY `id2` (`video_timestamp`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
-INSERT INTO config (config_name, config_value) VALUES ('version','08.02.01');
+INSERT INTO config (config_name, config_value) VALUES ('version','08.04.15');
 
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 

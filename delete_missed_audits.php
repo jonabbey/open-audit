@@ -6,6 +6,9 @@ $time_start = microtime_float();
 if (!empty($_POST['Perform'])) {
   foreach($_POST as $id) {
 
+       $query = "DELETE FROM auto_updating WHERE au_uuid = '" . $id . "'";
+       $result = mysql_query($query)  or die("Query failed at delete stage. auto_updating");
+
        $query = "DELETE FROM battery WHERE battery_uuid = '" . $id . "'";
        $result = mysql_query($query)  or die("Query failed at delete stage. battery");
 
@@ -50,6 +53,9 @@ if (!empty($_POST['Perform'])) {
 
        $query = "DELETE FROM iis_vd WHERE iis_vd_uuid = '" . $id . "'";
        $result = mysql_query($query)  or die("Query failed at delete stage. iis_vd");
+
+       $query = "DELETE FROM iis_web_ext WHERE iis_web_ext_uuid = '" . $id . "'";
+       $result = mysql_query($query)  or die("Query failed at delete stage. iis_web_ext");
 
        $query = "DELETE FROM invoice WHERE invoice_uuid = '" . $id . "'";
        $result = mysql_query($query)  or die("Query failed at delete stage. invoice");

@@ -1642,7 +1642,7 @@ Next
         Else
           Err.Clear
         End If
-        On Error Goto 0:
+        On Error Resume Next
       ' END Associate with Device_ID in Win32_DiskPartition using objLogicalDiskToPartition
       Next
       form_input = "partition^^^" & partition_bootable & "^^^"  & partition_boot_partition            & "^^^" _
@@ -2416,9 +2416,14 @@ For Each objItem in colItems
                             & clean(objItem.State)       & "^^^"
   entry form_input,comment,objTextFile,oAdd,oComment
   form_input = ""
-  if objItem.Name = "W3SVC" then
-    iis = "True"
-  end if
+  ' Searching for IIS services
+  Select Case objItem.Name
+    Case "IISADMIN"   iis = "True"
+    Case "W3SVC"      iis_w3svc = "True"
+    Case "MSFTPSVC"   iis_ftpsvc = "True"
+    Case "SMTPSVC"    iis_smtpsvc = "True"
+    Case "NNTPSVC"    iis_nntpsvc = "True"
+  End Select
 Next
 
 '''''''''''''''''''''''''''''
@@ -3505,183 +3510,545 @@ strOffXPRUKey = key
     form_input = ""
 end if
 
+'''''''''''''''''''''''''''
+'   IIS Information       '
+'''''''''''''''''''''''''''
 
-    if iis = "True" then
-    '''''''''''''''''''''''''''
-    '   IIS Information       '
-    '''''''''''''''''''''''''''
+If iis = "True" Then
+  ' IISAdmin service installed
+  comment = "IIS Info"
+  If verbose = "y" Then
+    wscript.echo comment
+  End If
+  
+  ' Checking if IIS WMI provider is available
+  If CInt(SystemBuildNumber) >= 3790 Then
+    ' System is W2k3+
+    Set objWMIService_Root = GetObject("winmgmts:\\" & strComputer & "\root")
+    Set colItems = objWMIService_Root.InstancesOf("__NAMESPACE")
+    iis_wmi = "False"
+    For Each objItem In colItems
+      If objItem.Name = "MicrosoftIISv2" Then
+        iis_wmi = "True"
+      End If
+    Next
+  End If
+  If iis_wmi Then 
+    ' MicrosoftIISv2 WMI provider available
+    If strUser <> "" and strPass <> "" Then
+      Set objWMIService_IIS = wmiLocator.ConnectServer(strComputer, "\root\MicrosoftIISv2",strUser,strPass)
+      objWMIService_IIS.Security_.AuthenticationLevel = 6 'PacketPrivacy
+    Else
+      Set objWMIService_IIS = GetObject("winmgmts:{AuthenticationLevel=pktPrivacy}!\\" & strComputer & "\root\MicrosoftIISv2") 
+    End If
 
-    comment = "IIS Info"
-    if verbose = "y" then
-       wscript.echo comment
-    end if
+    Set colItems = objWMIService_IIS.ExecQuery("SELECT * FROM IIsWebInfo",,48) 
+    For Each objItem in colItems 
+      iis_version = objItem.MajorIIsVersionNumber & "." & objItem.MinorIIsVersionNumber
+    Next
+    form_input = "system12^^^" & iis_version   & "^^^"   
+    entry form_input,comment,objTextFile,oAdd,oComment
+    form_input = ""
 
-    WinDir = right(WinDir,len(WinDir)-2)
-    full_path = "\\" & system_name & "\c$" & WinDir & "\system32\inetsrv\inetinfo.exe"
-    if verbose = "y" then
-       Wscript.Echo "IIS Version: " & objFSO.GetFileVersion(full_path)
-    end if
-
-    On Error Resume Next
-
-    Dim objWWW
-    Set objWWW = GetObject("IIS://" & system_name & "/w3svc")
-    For Each WebSiteID in objWWW
-      If IsNumeric(WebSiteID.Name) Then
-
-       s = WebSiteID.Name
-       p = system_name
-
-      '  Initialize error checking
-       On Error Resume Next
-
-       ' Initialize variables
-       Dim ArgPhysicalServer, ArgSiteIndex, ArgFilter, ArgVirtualDirectory
-       Dim ArgsCounter, ArgNum
-       Dim objWebServer, objWebRootDir, objWebLog, objWebFilter, objWebVirtualDir
-       Dim BindingArray, strServerBinding, strSecureBinding
-       Dim SecurityDescriptor, DiscretionaryAcl, IPSecurity
-       Dim strPath, Item, Member, VirDirCounter, Counter
-
-      '  Default values
-       ArgNum = 0
-
-       ArgPhysicalServer = system_name
-       ArgSiteIndex = WebSiteID.Name
-
-       ' Specify and bind to the administrative objects
-       Set objWebServer = GetObject("IIS://" & ArgPhysicalServer & "/w3svc/" & ArgSiteIndex)
-       Set objWebRootDir = GetObject("IIS://" & ArgPhysicalServer & "/w3svc/" & ArgSiteIndex & "/Root")
-
-       ' Verify that the specified website exists
-       If Err <> 0 Then
-        '
-       else
-        ' do enumerate for this websiteID - will end if at end of function
-        ' ----- Web Site Tab -------
-        ' ---------------
-        iis_desc = objWebServer.ServerComment
-        For Each Item in objWebServer.ServerBindings
-         strServerBinding = Item
-         BindingArray = Split(strServerBinding, ":", -1, 1)
-         if BindingArray(0) = "" Then
-          iis_ip = "All Unassigned"
-         else
-          iis_ip =  BindingArray(0)
-         end if
-         iis_port =  BindingArray(1)
-         If BindingArray(2) = "" Then
-          iis_host = "None"
-         Else
-          iis_host = BindingArray(2)
-         End If
-         form_input = "iis_3^^^" & ArgSiteIndex & "^^^" _
-                                 & iis_ip       & "^^^" _
-                                 & iis_port     & "^^^" _
-                                 & iis_host     & "^^^"
-         entry form_input,comment,objTextFile,oAdd,oComment
-         form_input = ""
-        Next
-        For Each Item in objWebServer.SecureBindings
-         strSecureBinding = Item
-         BindingArray = Split(strSecureBinding, ":", -1, 1)
-         if BindingArray(0) = "" Then
-          iis_sec_ip = "All Unassigned"
-         else
-          iis_sec_ip = BindingArray(0)
-         end if
-         iis_sec_port = BindingArray(1)
-        Next
-        If strSecureBinding = "" Then
-         iis_sec_port = "No Secure Bindings"
-        End If
-        If objWebServer.LogType = 0 Then
-         iis_log_en =  "Disabled"
-        Else
-         iis_log_en =  "Enabled"
-         Set objWebLog = GetObject("IIS://" & ArgPhysicalServer & "/logging")
-         For Each Item in objWebLog
-          If objWebServer.LogPluginCLSID = Item.LogModuleID Then
-            iis_log_format = Item.Name
-            objWebLog = Item.Name
-          End If
-         Next
-         If objWebServer.LogFilePeriod = 0 Then
-          If objWebServer.LogFileTruncateSize = -1 Then
-            iis_log_per = "Unlimited file size"
+    If iis_w3svc Then
+      ' Web service installed: retrieving settings
+  
+      Set colItems = objWMIService_IIS.ExecQuery("SELECT * FROM IIsWebServiceSetting",,48) 
+      For Each objItem in colItems 
+        For i = 0 to Ubound(objItem.WebSvcExtRestrictionList)
+          If objItem.WebSvcExtRestrictionList(i).Access = 0 Then
+            iis_web_ext_access = "Not allowed"
           Else
-            iis_log_per = "When file size reaches " & (objWebServer.LogfileTruncateSize/1048576) & " MB"
+            iis_web_ext_access = "Allowed"
           End If
-         End If
-         If objWebServer.LogFilePeriod = 1 Then
-          iis_log_per = "Daily"
-         Else
-          If objWebServer.LogFilePeriod = 2 Then
-            iis_log_per = "Weekly"
-          Else
-            If objWebServer.LogFilePeriod =3 Then
-              iis_log_per = "Monthly"
-            End If
-          End If
-         End If
-         iis_log_dir = objWebServer.LogFileDirectory
-        End If
-        ' ----- Home Directory Tab -------
-        ' ----------------
-        If objWebRootDir.HttpRedirect <> "" Then
-         '
-        Else
-         strPath = objWebRootDir.Path
-         strPath = Left(strPath, 2)
-         iis_path = objWebRootDir.Path
-         iis_dir_browsing =  objWebRootDir.EnableDirBrowsing
-        End If
-        ' ----- Documents Tab -------
-        ' -----------------
-        If objWebRootDir.EnableDefaultDoc = False Then
-         iis_def_doc = "False"
-        Else
-         iis_def_doc = objWebRootDir.DefaultDoc
-        End If
-        form_input = "iis_1^^^" & WebSiteID.Name     & "^^^" _
-                                & clean(iis_desc)    & "^^^" _
-                                & iis_log_en         & "^^^" _
-                                & clean(iis_log_dir) & "^^^" _
-                                & iis_log_format     & "^^^" _
-                                & iis_log_per        & "^^^" _
-                                & clean(iis_path)    & "^^^" _
-                                & iis_dir_browsing   & "^^^" _
-                                & clean(iis_def_doc) & "^^^" _
-                                & iis_sec_ip         & "^^^" _
-                                & iis_sec_port       & "^^^"
-        entry form_input,comment,objTextFile,oAdd,oComment
-        form_input = ""
-        ' ------------------
-        ' --- Enumerating Virtual Directories ----
-        ' ------------------
-        VirDirCounter = 0
-        For Each Item in objWebRootDir
-         If Item.Class = "IIsWebVirtualDir" Then
-          ArgVirtualDirectory = Item.Name
-          Set objWebVirtualDir = GetObject("IIS://" & ArgPhysicalServer & "/w3svc/" & ArgSiteIndex & "/Root/" & ArgVirtualDirectory)
-          iis_vd_name = Item.Name
-          iis_vd_path = objWebVirtualDir.Path
-          form_input = "iis_2^^^" & ArgSiteIndex       & "^^^" _
-                                  & clean(iis_vd_name) & "^^^" _
-                                  & clean(iis_vd_path) & "^^^"
+          iis_web_ext_path = objItem.WebSvcExtRestrictionList(i).FilePath
+          iis_web_ext_desc = objItem.WebSvcExtRestrictionList(i).Description
+          Select Case iis_web_ext_path
+            Case "*.exe":  iis_web_ext_desc = "All unknown CGI extensions"
+            Case "*.dll":  iis_web_ext_desc = "All unknown ISAPI extensions"
+            Case Default:  
+          End Select
+          form_input = "iis_4^^^" & iis_web_ext_desc & "^^^" & iis_web_ext_path & "^^^" & iis_web_ext_access & "^^^" 
           entry form_input,comment,objTextFile,oAdd,oComment
           form_input = ""
-          VirDirCounter = VirDirCounter + 1
-         End If
         Next
-       end if
-      end if
-    ' next Site
-    next
+      Next
+    
+      Set colItems = objWMIService_IIS.ExecQuery("Select * from IIsWebServerSetting",,48)
+      For Each objItem in colItems
+        ArgSiteIndex = objItem.Name
+        ' Stripping out "w3svc/"
+        SiteId = Mid(ArgSiteIndex, 7)
+        iis_desc = objItem.ServerComment
+        strQuery = "SELECT * FROM IIsLogModuleSetting WHERE LogModuleId = '" & objItem.LogPluginClsid & "'"
+        Set colItems1 = objWMIService_IIS.ExecQuery(strQuery,,48) 
+        For Each objItem1 in colItems1 
+          LogFormat = Split(objItem1.Name, "/")
+          iis_log_format = LogFormat(1)
+        Next
+        iis_log_dir = objItem.LogFileDirectory
+        Select Case objItem.LogType
+          Case 0:       iis_log_en = "Disabled"
+          Case 1:       iis_log_en = "Enabled"
+          Case Default: iis_log_en = "Undefined"
+        End Select
+        Select Case objItem.LogFilePeriod
+          Case 0: If objItem.LogFileTruncateSize = -1 Then
+                      iis_log_per = "Unlimited file size"
+                  Else
+                      iis_log_per = "When file size reaches " & (objItem.LogFileTruncateSize/1048576) & " MB"
+                  End If 
+          Case 1:       iis_log_per = "Daily"
+          Case 2:       iis_log_per = "Weekly"
+          Case 3:       iis_log_per = "Monthly"
+          Case 4:       iis_log_per = "Hourly"
+          Case Default: iis_log_per = "Undefined"
+        End Select
 
-    else
-    ' End of IIS = True
-    end if
+        For i = 0 to Ubound(objItem.ServerBindings)
+          If objItem.ServerBindings(i).IP = "" Then
+            iis_ip = "All Unassigned"
+          Else
+            iis_ip =  objItem.ServerBindings(i).IP
+          End If
+          iis_port = objItem.ServerBindings(i).Port
+          If objItem.ServerBindings(i).Hostname = "" Then
+            iis_host = "none"
+          Else
+            iis_host = objItem.ServerBindings(i).Hostname
+          End If
+          form_input = "iis_3^^^" & SiteId    & "^^^" _
+                                  & iis_ip    & "^^^" _
+                                  & iis_port  & "^^^" _
+                                  & iis_host  & "^^^"
+          entry form_input,comment,objTextFile,oAdd,oComment
+          form_input = ""
+        Next
+
+        For i = 0 to Ubound(objItem.SecureBindings)
+          If objItem.SecureBindings(i).IP = "" Then
+            iis_sec_ip = "No secure bindings"
+          Else
+            iis_sec_ip = objItem.SecureBindings(i).IP
+          End If
+          iis_sec_port = objItem.SecureBindings(i).Port
+        Next
+
+        strQuery = "SELECT * FROM IIsWebServer WHERE Name = '" & ArgSiteIndex & "'"
+        Set colItems3 = objWMIService_IIS.ExecQuery(strQuery,,48)
+        For Each objItem3 in colItems3
+          Select Case objItem3.ServerState
+            Case 1:       iis_site_state = "Starting"
+            Case 2:       iis_site_state = "Running"
+            Case 3:       iis_site_state = "Stopping"
+            Case 4:       iis_site_state = "Stopped"
+            Case 5:       iis_site_state = "Pausing"
+            Case 6:       iis_site_state = "Paused"
+            Case 7:       iis_site_state = "Continuing"
+            Case Default: iis_site_state = "Unknown"
+          End Select
+        Next
+
+        Set colItems2 = objWMIService_IIS.ExecQuery("SELECT * FROM IIsWebVirtualDirSetting",,48)
+        For Each objItem2 in colItems2
+          If (UCase(objItem2.Name) = ArgSiteIndex & "/ROOT") Then
+            iis_path = objItem2.Path
+            iis_site_app_pool = objItem2.AppPoolId
+            iis_dir_browsing = objItem2.EnableDirBrowsing
+            iis_site_anonymous_user = objItem2.AnonymousUserName
+            iis_site_anonymous_auth = objItem2.AuthAnonymous
+            iis_site_basic_auth = objItem2.AuthBasic
+            iis_site_ntlm_auth = objItem2.AuthNTLM
+            iis_site_ssl_en = objItem2.AccessSSL
+            iis_site_ssl128_en = objItem2.AccessSSL128
+            iis_def_doc = objItem2.DefaultDoc
+          End If
+
+          If (InStr(Ucase(objItem2.Name),ArgSiteIndex & "/ROOT/")) Then
+            VirtualDir = Split(objItem2.Name, "/")
+            iis_vd_name = VirtualDir(3)
+            iis_vd_path = objItem2.Path
+            form_input = "iis_2^^^" & SiteId       & "^^^" _
+                                    & iis_vd_name  & "^^^" _
+                                    & iis_vd_path  & "^^^"
+            entry form_input,comment,objTextFile,oAdd,oComment
+            form_input = ""
+          End If
+        Next
+
+        form_input = "iis_1^^^" & SiteId                    & "^^^"   & iis_desc                  & "^^^" _
+                                & iis_log_en                & "^^^"   & iis_log_dir               & "^^^" _
+                                & iis_log_format            & "^^^"   & iis_log_per               & "^^^" _
+                                & iis_path                  & "^^^"   & iis_dir_browsing          & "^^^" _
+                                & iis_def_doc               & "^^^"   & iis_sec_ip                & "^^^" _
+                                & iis_sec_port              & "^^^"   & iis_site_state            & "^^^" _
+                                & iis_site_app_pool         & "^^^"   & iis_site_anonymous_user   & "^^^" _
+                                & iis_site_anonymous_auth   & "^^^"   & iis_site_basic_auth       & "^^^" _
+                                & iis_site_ntlm_auth        & "^^^"   & iis_site_ssl_en           & "^^^" _
+                                & iis_site_ssl128_en        & "^^^"
+        entry form_input,comment,objTextFile,oAdd,oComment
+        form_input = ""
+      Next ' objItem in colItems = objWMIService_IIS.ExecQuery("Select * from IIsWebServerSetting",,48)
+    End If 'iis_w3svc
+  Else
+    ' IIS WMI provider not available: trying IIS ADSI provider
+    ' Will work only if IIS is installed on the auditing host and inetinfo.exe is allowed on the audited host's firewall
+    
+    full_path = "\\" & system_name & "\admin$" & "\system32\inetsrv\inetinfo.exe"
+    iis_version = Left(objFSO.GetFileVersion(full_path), 3)
+
+    form_input = "system12^^^" & iis_version   & "^^^"   
+    entry form_input,comment,objTextFile,oAdd,oComment
+    form_input = ""
+
+    If iis_w3svc Then
+      ' Web service installed: retrieving settings
+      Err.Clear
+      Dim objWWW
+      Set objWWW = GetObject("IIS://" & system_name & "/w3svc")
+      ' Verify that the IIS ADSI provider is available
+      If Err <> 0 Then
+        '
+      Else
+        For Each WebSiteID in objWWW
+          If IsNumeric(WebSiteID.Name) Then
+            '  Initialize error checking
+            On Error Resume Next
+            ' Initialize variables
+            Dim ArgPhysicalServer, ArgSiteIndex, ArgFilter, ArgVirtualDirectory
+            Dim ArgsCounter, ArgNum
+            Dim objWebServer, objWebRootDir, objWebLog, objWebFilter, objWebVirtualDir
+            Dim BindingArray, strServerBinding, strSecureBinding
+            Dim SecurityDescriptor, DiscretionaryAcl, IPSecurity
+            Dim strPath, Item, Member, VirDirCounter, Counter
+
+            '  Default values
+            ArgNum = 0
+
+            ArgPhysicalServer = system_name
+            ArgSiteIndex = WebSiteID.Name
+
+            ' Specify and bind to the administrative objects
+            Set objWebServer = GetObject("IIS://" & ArgPhysicalServer & "/w3svc/" & ArgSiteIndex)
+            Set objWebRootDir = GetObject("IIS://" & ArgPhysicalServer & "/w3svc/" & ArgSiteIndex & "/Root")
+
+            ' do enumerate for this websiteID - will end if at end of function
+            ' ----- Web Site Tab -------
+            ' ---------------
+            iis_desc = objWebServer.ServerComment
+            iis_site_state = objWebServer.Status
+            Select Case iis_site_state
+              Case 1:       iis_site_state = "Starting"
+              Case 2:       iis_site_state = "Running"
+              Case 3:       iis_site_state = "Stopping"
+              Case 4:       iis_site_state = "Stopped"
+              Case 5:       iis_site_state = "Pausing"
+              Case 6:       iis_site_state = "Paused"
+              Case 7:       iis_site_state = "Continuing"
+              Case Default: iis_site_state = "Unknown"
+            End Select
+            iis_site_anonymous_user = objWebServer.AnonymousUserName
+            iis_site_anonymous_auth = objWebServer.AuthAnonymous
+            iis_site_basic_auth = objWebServer.AuthBasic
+            iis_site_ntlm_auth = objWebServer.AuthNTLM
+            iis_site_ssl_en = objWebServer.AccessSSL
+            iis_site_ssl128_en = objWebServer.AccessSSL128
+            For Each Item in objWebServer.ServerBindings
+              strServerBinding = Item
+              BindingArray = Split(strServerBinding, ":", -1, 1)
+              If BindingArray(0) = "" Then
+                iis_ip = "All Unassigned"
+              Else
+                iis_ip =  BindingArray(0)
+              End If
+              iis_port =  BindingArray(1)
+              If BindingArray(2) = "" Then
+                iis_host = "None"
+              Else
+                iis_host = BindingArray(2)
+              End If
+              form_input = "iis_3^^^" & ArgSiteIndex & "^^^" _
+                                      & iis_ip       & "^^^" _
+                                      & iis_port     & "^^^" _
+                                      & iis_host     & "^^^"
+              entry form_input,comment,objTextFile,oAdd,oComment
+              form_input = ""
+            Next
+            iis_sec_ip = "No Secure Bindings"
+            iis_sec_port = ""
+            For Each Item in objWebServer.SecureBindings
+              strSecureBinding = Item
+              BindingArray = Split(strSecureBinding, ":", -1, 1)
+              If BindingArray(0) = "" Then
+                iis_sec_ip = "All Unassigned"
+              Else
+                iis_sec_ip = BindingArray(0)
+              End If
+              iis_sec_port = BindingArray(1)
+            Next
+            If objWebServer.LogType = 0 Then
+              iis_log_en =  "Disabled"
+            Else
+              iis_log_en =  "Enabled"
+              Set objWebLog = GetObject("IIS://" & ArgPhysicalServer & "/logging")
+              For Each Item in objWebLog
+                If objWebServer.LogPluginCLSID = Item.LogModuleID Then
+                  iis_log_format = Item.Name
+                  objWebLog = Item.Name
+                End If
+              Next
+              If objWebServer.LogFilePeriod = 0 Then
+                If objWebServer.LogFileTruncateSize = -1 Then
+                  iis_log_per = "Unlimited file size"
+                Else
+                  iis_log_per = "When file size reaches " & (objWebServer.LogfileTruncateSize/1048576) & " MB"
+                End If
+              End If
+              If objWebServer.LogFilePeriod = 1 Then
+                iis_log_per = "Daily"
+              Else
+                If objWebServer.LogFilePeriod = 2 Then
+                  iis_log_per = "Weekly"
+                Else
+                  If objWebServer.LogFilePeriod =3 Then
+                    iis_log_per = "Monthly"
+                  End If
+                End If
+              End If
+              iis_log_dir = objWebServer.LogFileDirectory
+            End If
+            ' ----- Home Directory Tab -------
+            ' ----------------
+            If objWebRootDir.HttpRedirect <> "" Then
+              '
+            Else
+              strPath = objWebRootDir.Path
+              strPath = Left(strPath, 2)
+              iis_path = objWebRootDir.Path
+              iis_dir_browsing =  objWebRootDir.EnableDirBrowsing
+            End If
+            ' ----- Documents Tab -------
+            ' -----------------
+            If objWebRootDir.EnableDefaultDoc = False Then
+              iis_def_doc = "False"
+            Else
+              iis_def_doc = objWebRootDir.DefaultDoc
+            End If
+            form_input = "iis_1^^^" & ArgSiteIndex              & "^^^"   & iis_desc                  & "^^^" _
+                                    & iis_log_en                & "^^^"   & iis_log_dir               & "^^^" _
+                                    & iis_log_format            & "^^^"   & iis_log_per               & "^^^" _
+                                    & iis_path                  & "^^^"   & iis_dir_browsing          & "^^^" _
+                                    & iis_def_doc               & "^^^"   & iis_sec_ip                & "^^^" _
+                                    & iis_sec_port              & "^^^"   & iis_site_state            & "^^^" _
+                                    & iis_site_app_pool         & "^^^"   & iis_site_anonymous_user   & "^^^" _
+                                    & iis_site_anonymous_auth   & "^^^"   & iis_site_basic_auth       & "^^^" _
+                                    & iis_site_ntlm_auth        & "^^^"   & iis_site_ssl_en           & "^^^" _
+                                    & iis_site_ssl128_en        & "^^^"
+            entry form_input,comment,objTextFile,oAdd,oComment
+            form_input = ""
+            ' ------------------
+            ' --- Enumerating Virtual Directories ----
+            ' ------------------
+            VirDirCounter = 0
+            For Each Item in objWebRootDir
+              If Item.Class = "IIsWebVirtualDir" Then
+                ArgVirtualDirectory = Item.Name
+                Set objWebVirtualDir = GetObject("IIS://" & ArgPhysicalServer & "/w3svc/" & ArgSiteIndex & "/Root/" & ArgVirtualDirectory)
+                iis_vd_name = Item.Name
+                iis_vd_path = objWebVirtualDir.Path
+                form_input = "iis_2^^^" & ArgSiteIndex       & "^^^" _
+                                        & clean(iis_vd_name) & "^^^" _
+                                        & clean(iis_vd_path) & "^^^"
+                entry form_input,comment,objTextFile,oAdd,oComment
+                form_input = ""
+                VirDirCounter = VirDirCounter + 1
+              End If
+            Next
+          End If 'IsNumeric(WebSiteID.Name)
+        next 'WebSiteID in objWWW
+      End If 'Err <> 0
+    End If 'iis_w3svc
+  End If ' iis_wmi
+Else
+  ' End of iis = True
+End If
+
+'''''''''''''''''''''''''''
+'Automatic Updating Settings '
+'''''''''''''''''''''''''''
+
+' Check if system is Win2k+. Build Number: Win2k-->2195, Win98-->2222, WinME-->3000
+If (CInt(SystemBuildNumber) >= "2195" And Not SystemBuildNumber = "2222" And Not SystemBuildNumber = "3000") Then
+  comment = "Automatic Updating Settings"
+  If verbose = "y" Then
+    wscript.echo comment
+  End If
+  On Error Resume Next
+  strKeyPath = "Software\Policies\Microsoft\Windows\WindowsUpdate\AU"
+  strValueName = "NoAutoUpdate"
+  oReg.GetDWORDValue HKEY_LOCAL_MACHINE,strKeyPath,strValueName,NoAutoUpdate
+  Select Case Clean(NoAutoUpdate)
+    Case "0"     au_gpo_configured = "True"
+                 au_enabled = "True"
+    Case "1"     au_gpo_configured = "True"
+                 au_enabled = "False"
+    Case Else    au_gpo_configured = "False"
+                 au_enabled = ""
+  End Select
+  
+  If (au_gpo_configured = "True" And au_enabled = "True") Then
+    ' AU client is configured by a GPO and AU is enabled
+    strKeyPath = "Software\Policies\Microsoft\Windows\WindowsUpdate\AU"
+    strValueName = "AUOptions"
+    oReg.GetDWORDValue HKEY_LOCAL_MACHINE,strKeyPath,strValueName,AUOptions
+    Select Case AuOptions
+      Case "2"       au_behaviour = "Notify before download and install"
+      Case "3"       au_behaviour = "Automatically download and notify of installation"
+      Case "4"       au_behaviour = "Automatic download and scheduled installation"
+      Case "5"       au_behaviour = "Automatic Updates is required, but admins can configure it"
+      Case Else      au_behaviour = "Unknown"
+    End Select
+
+    If AuOptions = "4" Then 
+      ' Installation is scheduled
+      strKeyPath = "Software\Policies\Microsoft\Windows\WindowsUpdate\AU"
+      strValueName = "ScheduledInstallDay"
+      oReg.GetDWORDValue HKEY_LOCAL_MACHINE,strKeyPath,strValueName,ScheduledInstallDay
+      Select Case ScheduledInstallDay
+        Case "0"     au_sched_install_day = "Every Day"
+        Case "1"     au_sched_install_day = "Every Sunday"
+        Case "2"     au_sched_install_day = "Every Monday"
+        Case "3"     au_sched_install_day = "Every Tuesday"
+        Case "4"     au_sched_install_day = "Every Wednesday"
+        Case "5"     au_sched_install_day = "Every Thursday"
+        Case "6"     au_sched_install_day = "Every Friday"
+        Case "7"     au_sched_install_day = "Every Saturday"
+        Case Else    au_sched_install_day = "Unknown"
+      End select
+  
+      strKeyPath = "Software\Policies\Microsoft\Windows\WindowsUpdate\AU"
+      strValueName = "ScheduledInstallTime"
+      oReg.GetDWORDValue HKEY_LOCAL_MACHINE,strKeyPath,strValueName,ScheduledInstallTime
+      au_sched_install_time = ScheduledInstallTime & ":00"
+    End If
+  End If ' au_gpo_configured And au_enabled
+  
+  If (au_gpo_configured = "False" Or AuOptions = "5") Then
+    ' AU client is not configured by a GPO or a GPO lets admins choose settings: checking AU system properties
+    strKeyPath = "SOFTWARE\Microsoft\Windows\CurrentVersion\WindowsUpdate\Auto Update"
+    strValueName = "AUOptions"
+    oReg.GetDWORDValue HKEY_LOCAL_MACHINE,strKeyPath,strValueName,AuOptions
+    Select Case AuOptions
+      Case "1"       au_behaviour = "Automatic Updating disabled"
+      Case "2"       au_behaviour = "Notify before download and install"
+      Case "3"       au_behaviour = "Automatically download and notify of installation"
+      Case "4"       au_behaviour = "Automatic download and scheduled installation"
+      Case Else      au_behaviour = "Unknown"
+    End Select
+    If AuOptions = "4" Then 
+      strKeyPath = "SOFTWARE\Microsoft\Windows\CurrentVersion\WindowsUpdate\Auto Update"
+      strValueName = "ScheduledInstallDay"
+      oReg.GetDWORDValue HKEY_LOCAL_MACHINE,strKeyPath,strValueName,ScheduledInstallDay
+      Select Case ScheduledInstallDay
+        Case "0"     au_sched_install_day = "Every Day"
+        Case "1"     au_sched_install_day = "Every Sunday"
+        Case "2"     au_sched_install_day = "Every Monday"
+        Case "3"     au_sched_install_day = "Every Tuesday"
+        Case "4"     au_sched_install_day = "Every Wednesday"
+        Case "5"     au_sched_install_day = "Every Thursday"
+        Case "6"     au_sched_install_day = "Every Friday"
+        Case "7"     au_sched_install_day = "Every Saturday"
+        Case Else    au_sched_install_day = "Unknown"
+      End select
+      strKeyPath = "SOFTWARE\Microsoft\Windows\CurrentVersion\WindowsUpdate\Auto Update"
+      strValueName = "ScheduledInstallTime"
+      oReg.GetDWORDValue HKEY_LOCAL_MACHINE,strKeyPath,strValueName,ScheduledInstallTime
+      au_sched_install_time = ScheduledInstallTime & ":00"
+    End If
+  End If 'Not au_gpo_configured Or AuOptions = "5"
+  
+  If (au_gpo_configured = "True" And au_enabled = "True") Then
+    ' AU client is configured by a GPO and AU is enabled
+
+    strKeyPath = "Software\Policies\Microsoft\Windows\WindowsUpdate\AU"
+    strValueName = "UseWUServer"
+    oReg.GetDWORDValue HKEY_LOCAL_MACHINE,strKeyPath,strValueName,UseWUServer
+    au_use_wuserver = Clean(UseWUServer)
+    Select Case au_use_wuserver
+      Case "0"  au_use_wuserver = "False"
+      Case "1"  au_use_wuserver = "True"
+    End Select
+
+    If au_use_wuserver = "True" Then
+      strKeyPath = "Software\Policies\Microsoft\Windows\WindowsUpdate"
+      strValueName = "WUServer"
+      oReg.GetStringValue HKEY_LOCAL_MACHINE,strKeyPath,strValueName,WUServer
+      au_wuserver = Clean(WUServer)
+  
+      strKeyPath = "Software\Policies\Microsoft\Windows\WindowsUpdate"
+      strValueName = "WUStatusServer"
+      oReg.GetStringValue HKEY_LOCAL_MACHINE,strKeyPath,strValueName,WUStatusServer
+      au_wustatusserver = Clean(WUStatusServer)
+    End If
+
+    strKeyPath = "Software\Policies\Microsoft\Windows\WindowsUpdate"
+    strValueName = "TargetGroup"
+    oReg.GetStringValue HKEY_LOCAL_MACHINE,strKeyPath,strValueName,TargetGroup
+    au_target_group = Clean(TargetGroup)
+
+    strKeyPath = "Software\Policies\Microsoft\Windows\WindowsUpdate"
+    strValueName = "ElevateNonAdmins"
+    oReg.GetDWORDValue HKEY_LOCAL_MACHINE,strKeyPath,strValueName,ElevateNonAdmins
+    au_elevate_nonadmins = Clean(ElevateNonAdmins)
+    Select Case au_elevate_nonadmins
+      Case "0" au_elevate_nonadmins = "False"
+      Case "1" au_elevate_nonadmins = "True"      
+    End Select
+
+    strKeyPath = "Software\Policies\Microsoft\Windows\WindowsUpdate\AU"
+    strValueName = "AutoInstallMinorUpdates"
+    oReg.GetDWORDValue HKEY_LOCAL_MACHINE,strKeyPath,strValueName,AutoInstallMinorUpdates
+    au_auto_install = Clean(AutoInstallMinorUpdates)
+    Select Case au_auto_install
+      Case "0" au_auto_install = "False"
+      Case "1" au_auto_install = "True"
+    End Select
+
+    strKeyPath = "Software\Policies\Microsoft\Windows\WindowsUpdate\AU"
+    strValueName = "DetectionFrequency"
+    oReg.GetDWORDValue HKEY_LOCAL_MACHINE,strKeyPath,strValueName,DetectionFrequency
+    au_detection_frequency = Clean(DetectionFrequency)
+
+    strKeyPath = "Software\Policies\Microsoft\Windows\WindowsUpdate\AU"
+    strValueName = "RebootRelaunchTimeout"
+    oReg.GetDWORDValue HKEY_LOCAL_MACHINE,strKeyPath,strValueName,RebootRelaunchTimeout
+    au_reboot_timeout = Clean(RebootRelaunchTimeout)
+
+    strKeyPath = "Software\Policies\Microsoft\Windows\WindowsUpdate\AU"
+    strValueName = "NoAutoRebootWithLoggedOnUsers"
+    oReg.GetDWORDValue HKEY_LOCAL_MACHINE,strKeyPath,strValueName,NoAutoReboot
+    au_noautoreboot = Clean(NoAutoReboot)
+    Select Case au_noautoreboot
+      Case "0"  au_noautoreboot = "False"
+      Case "1"  au_noautoreboot = "True"
+    End Select
+
+
+  End If ' 2nd au_gpo_configured And au_enabled
+  
+  form_input = "auto_upd^^^" & au_gpo_configured      & "^^^"  & au_enabled              & "^^^"  & au_behaviour             & "^^^" _
+                             & au_sched_install_day   & "^^^"  & au_sched_install_time   & "^^^"  & au_use_wuserver          & "^^^" _
+                             & au_wuserver            & "^^^"  & au_wustatusserver       & "^^^"  & au_target_group          & "^^^" _
+                             & au_elevate_nonadmins   & "^^^"  & au_auto_install         & "^^^"  & au_detection_frequency   & "^^^" _
+                             & au_reboot_timeout      & "^^^"  & au_noautoreboot         & "^^^" 
+  entry form_input,comment,objTextFile,oAdd,oComment
+  form_input = ""
+
+End If 'Win2k+
+
+
+
+
 
 
 if online = "n" then

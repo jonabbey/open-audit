@@ -256,6 +256,57 @@ CREATE TABLE `onboard_device` (
 
 upgrade ($version,"08.02.01", $sql);
 
+$sql = "ALTER TABLE `system` ADD COLUMN `iis_version` varchar(10) NOT NULL default '' AFTER `date_system_install`;
+
+        ALTER TABLE `iis` ADD COLUMN `iis_site_state` varchar(20) NOT NULL default '' AFTER `iis_secure_port`,
+                          ADD COLUMN `iis_site_app_pool` varchar(100) NOT NULL default '' AFTER `iis_site_state`,
+                          ADD COLUMN `iis_site_anonymous_user` varchar(100) NOT NULL default '' AFTER `iis_site_app_pool`,
+                          ADD COLUMN `iis_site_anonymous_auth` varchar(10) NOT NULL default '' AFTER `iis_site_anonymous_user`,
+                          ADD COLUMN `iis_site_basic_auth` varchar(10) NOT NULL default '' AFTER `iis_site_anonymous_auth`,
+                          ADD COLUMN `iis_site_ntlm_auth` varchar(10) NOT NULL default '' AFTER `iis_site_basic_auth`,
+                          ADD COLUMN `iis_site_ssl_en` varchar(10) NOT NULL default '' AFTER `iis_site_ntlm_auth`,
+                          ADD COLUMN `iis_site_ssl128_en` varchar(10) NOT NULL default '' AFTER `iis_site_ssl_en`;
+
+        CREATE TABLE `iis_web_ext` (
+          `iis_web_ext_id` int(10) unsigned NOT NULL auto_increment,
+          `iis_web_ext_uuid` varchar(100) NOT NULL default '',
+          `iis_web_ext_path` varchar(100) NOT NULL default '',
+          `iis_web_ext_desc` varchar(100) NOT NULL default '',
+          `iis_web_ext_access` varchar(20) NOT NULL default '',
+          `iis_web_ext_timestamp` bigint(20) unsigned NOT NULL default '0',
+          `iis_web_ext_first_timestamp` bigint(20) unsigned NOT NULL default '0',
+          PRIMARY KEY  (`iis_web_ext_id`),
+          KEY `id` (`iis_web_ext_uuid`),
+          KEY `id2` (`iis_web_ext_timestamp`)
+        ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+        CREATE TABLE `auto_updating` (
+          `au_id` int(10) unsigned NOT NULL auto_increment,
+          `au_uuid` varchar(100) NOT NULL default '',
+          `au_gpo_configured` varchar(10) NOT NULL default '',
+          `au_enabled` varchar(10) NOT NULL default '',
+          `au_behaviour` varchar(100) NOT NULL default '',
+          `au_sched_install_day` varchar(20) NOT NULL default '',
+          `au_sched_install_time` varchar(10) NOT NULL default '',
+          `au_use_wuserver` varchar(10) NOT NULL default '',
+          `au_wuserver` varchar(100) NOT NULL default '',
+          `au_wustatusserver` varchar(100) NOT NULL default '',
+          `au_target_group` varchar(100) NOT NULL default '',
+          `au_elevate_nonadmins` varchar(10) NOT NULL default '',
+          `au_auto_install` varchar(10) NOT NULL default '',
+          `au_detection_frequency` varchar(10) NOT NULL default '',
+          `au_reboot_timeout` varchar(10) NOT NULL default '',
+          `au_noautoreboot` varchar(10) NOT NULL default '',
+          `au_timestamp` bigint(20) unsigned NOT NULL default '0',
+          `au_first_timestamp` bigint(20) unsigned NOT NULL default '0',
+          PRIMARY KEY  (`au_id`),
+          KEY `id` (`au_uuid`),
+          KEY `id2` (`au_timestamp`)
+        ) ENGINE=MyISAM DEFAULT CHARSET=latin1;";
+
+
+upgrade ($version,"08.04.15", $sql);
+
 
 ?>
     <br />Upgrade complete.

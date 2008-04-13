@@ -117,6 +117,7 @@ $ms_keys_timestamp = NULL;
 $iis_timestamp = NULL;
 $iis_vd_timestamp = NULL;
 $iis_ip_timestamp = NULL;
+$iis_web_ext_timestamp = NULL;
 $sched_task_timestamp = NULL;
 $env_var_timestamp = NULL;
 $evt_log_timestamp = NULL;
@@ -124,6 +125,7 @@ $ip_route_timestamp = NULL;
 $pagefile_timestamp = NULL;
 $motherboard_timestamp = NULL;
 $onboard_timestamp = NULL;
+$au_timestamp = NULL;
 
 $count = 0;
 
@@ -259,12 +261,16 @@ foreach ($input as $split) {
   if (substr($split, 0, 9) == "fire_port"){insert_fire_port($split); }
   // CD Keys
   if (substr($split, 0, 7) == "ms_keys"){ insert_ms_keys($split); }
-  // IIS
+  // Another system submit - IIS version
+  if (substr($split, 0, 8) == "system12"){ insert_system12($split); }
+  // IIS sites
   if (substr($split, 0, 5) == "iis_1"){ insert_iis_1($split); }
   // IIS - Virtual Directory
   if (substr($split, 0, 5) == "iis_2"){ insert_iis_2($split); }
-  // IIS - Site
+  // IIS - IP addresses
   if (substr($split, 0, 5) == "iis_3"){ insert_iis_3($split); }
+  // IIS - Web Service extensions
+  if (substr($split, 0, 5) == "iis_4"){ insert_iis_4($split); }
   // Scheduled task
   if (substr($split, 0, 10) == "sched_task"){ insert_sched_task($split); }
   // Environment variable
@@ -279,6 +285,8 @@ foreach ($input as $split) {
   if (substr($split, 0, 11) == "motherboard"){ insert_motherboard($split); }
   // Onboard device
   if (substr($split, 0, 7) == "onboard"){ insert_onboard($split); }
+  // Automatic Updating settings
+  if (substr($split, 0, 8) == "auto_upd"){ insert_auto_upd($split); }
   //Elapsed Time
   //if (substr($split, 0, 12) == "elapsed_time"){ insert_elapsed_time($split); }
 
@@ -1833,6 +1841,7 @@ function insert_software ($split) {
 
 function insert_system11 ($split) {
     global $timestamp, $uuid, $verbose;
+    if ($verbose == "y"){echo "<h2>Firewall Settings</h2><br />";}
     $extended = explode('^^^',$split);
     $firewall_enabled_domain = trim($extended[1]);
     $firewall_disablenotifications_domain = trim($extended[2]);
@@ -1850,7 +1859,6 @@ function insert_system11 ($split) {
     if ($verbose == "y"){echo $sql . "<br />\n\n";}
     $result = mysql_query($sql) or die ('Insert Failed: ' . mysql_error() . '<br />' . $sql);
   }
-
 
 function insert_fire_app ($split) {
     global $timestamp, $uuid, $verbose, $firewall_app_timestamp;
@@ -1939,8 +1947,6 @@ function insert_fire_port ($split) {
     }
   }
 
-
-
 function insert_ms_keys ($split) {
     global $timestamp, $uuid, $verbose, $ms_keys_timestamp;
     if ($verbose == "y"){echo "<h2>CD Key</h2><br />";}
@@ -1984,6 +1990,16 @@ function insert_ms_keys ($split) {
     }
   }
 
+function insert_system12 ($split) {
+    global $timestamp, $uuid, $verbose;
+    if ($verbose == "y"){echo "<h2>IIS version</h2><br />";}
+    $extended = explode('^^^',$split);
+    $iis_version = trim($extended[1]);
+    $sql  = "UPDATE system SET iis_version = '$iis_version' ";
+    $sql .= "WHERE system_uuid = '$uuid' AND system_timestamp = '$timestamp'";
+    if ($verbose == "y"){echo $sql . "<br />\n\n";}
+    $result = mysql_query($sql) or die ('Insert Failed: ' . mysql_error() . '<br />' . $sql);
+  }
 
 function insert_iis_1 ($split) {
     global $timestamp, $uuid, $verbose, $iis_timestamp;
@@ -2000,6 +2016,14 @@ function insert_iis_1 ($split) {
     $iis_default_documents = trim($extended[9]);
     $iis_secure_ip = trim($extended[10]);
     $iis_secure_port = trim($extended[11]);
+    $iis_site_state = trim($extended[12]);
+    $iis_site_app_pool = trim($extended[13]);
+    $iis_site_anonymous_user = trim($extended[14]);
+    $iis_site_anonymous_auth = trim($extended[15]);
+    $iis_site_basic_auth = trim($extended[16]);
+    $iis_site_ntlm_auth = trim($extended[17]);
+    $iis_site_ssl_en = trim($extended[18]);
+    $iis_site_ssl128_en = trim($extended[19]);
     if (is_null($iis_timestamp)) {
       $sql = "SELECT MAX(iis_timestamp) FROM iis WHERE iis_uuid = '$uuid'";
       if ($verbose == "y"){echo $sql . "<br />\n\n";}
@@ -2007,37 +2031,46 @@ function insert_iis_1 ($split) {
       $myrow = mysql_fetch_array($result);
       if ($myrow["MAX(iis_timestamp)"]) {$iis_timestamp = $myrow["MAX(iis_timestamp)"];} else {$iis_timestamp = "";}
       } else {}
-    $sql  = "SELECT count(iis_uuid) AS count FROM iis WHERE iis_uuid = '$uuid' AND ";
-    $sql .= "iis_site = '$iis_site' AND iis_description = '$iis_description' AND ";
-    $sql .= "iis_logging_enabled = '$iis_logging_enabled' AND iis_logging_dir = '$iis_logging_dir' AND ";
-    $sql .= "iis_logging_format = '$iis_logging_format' AND iis_logging_time_period = '$iis_logging_time_period' AND ";
-    $sql .= "iis_home_directory = '$iis_home_directory' AND iis_directory_browsing = '$iis_directory_browsing' AND ";
-    $sql .= "iis_default_documents = '$iis_default_documents' AND iis_secure_ip = '$iis_secure_ip' AND iis_secure_port = '$iis_secure_port' AND ";
+    $sql  = "SELECT count(iis_uuid) AS count FROM iis ";
+    $sql .= "WHERE iis_uuid = '$uuid' AND iis_site = '$iis_site' AND ";
     $sql .= "(iis_timestamp = '$iis_timestamp' OR iis_timestamp = '$timestamp')";
     if ($verbose == "y"){echo $sql . "<br />\n\n";}
     $result = mysql_query($sql) or die ('Insert Failed: ' . mysql_error() . '<br />' . $sql);
     $myrow = mysql_fetch_array($result);
     if ($verbose == "y"){echo "Count: " . $myrow['count'] . "<br />\n\n";}
     if ($myrow['count'] == "0"){
-      // Insert into database
+      // New site: insert into database
       $sql  = "INSERT INTO iis (iis_uuid, iis_site, iis_description, ";
       $sql .= "iis_logging_enabled, iis_logging_dir, iis_logging_format, ";
       $sql .= "iis_logging_time_period , iis_home_directory, iis_directory_browsing, ";
       $sql .= "iis_default_documents, iis_secure_ip, iis_secure_port, ";
+      $sql .= "iis_site_state, iis_site_app_pool, iis_site_anonymous_user, ";
+      $sql .= "iis_site_anonymous_auth , iis_site_basic_auth, iis_site_ntlm_auth, ";
+      $sql .= "iis_site_ssl_en, iis_site_ssl128_en, ";
       $sql .= "iis_timestamp, iis_first_timestamp) VALUES (";
       $sql .= "'$uuid', '$iis_site', '$iis_description', ";
       $sql .= "'$iis_logging_enabled', '$iis_logging_dir', '$iis_logging_format', ";
       $sql .= "'$iis_logging_time_period' , '$iis_home_directory', '$iis_directory_browsing', ";
       $sql .= "'$iis_default_documents', '$iis_secure_ip', '$iis_secure_port', ";
+      $sql .= "'$iis_site_state', '$iis_site_app_pool', '$iis_site_anonymous_user', ";
+      $sql .= "'$iis_site_anonymous_auth', '$iis_site_basic_auth', '$iis_site_ntlm_auth', ";
+      $sql .= "'$iis_site_ssl_en' , '$iis_site_ssl128_en', ";
       $sql .= "'$timestamp', '$timestamp')";
       if ($verbose == "y"){echo $sql . "<br />\n\n";}
       $result = mysql_query($sql) or die ('Insert Failed: ' . mysql_error() . '<br />' . $sql);
     } else {
-      // Already present in database - update timestamp
-      $sql = "UPDATE iis SET iis_timestamp = '$timestamp' WHERE iis_site = '$iis_site' AND ";
-      $sql .= "iis_uuid = '$uuid' AND iis_timestamp = '$iis_timestamp' AND ";
-      $sql .= "iis_description = '$iis_description' AND iis_logging_enabled = '$iis_logging_enabled' AND ";
-      $sql .= "iis_home_directory = '$iis_home_directory' AND iis_default_documents = '$iis_default_documents'";
+      // Site already present in database - update timestamp and dynamic fields
+      $sql  = "UPDATE iis SET iis_timestamp = '$timestamp', iis_description = '$iis_description', ";
+      $sql .= "iis_logging_enabled = '$iis_logging_enabled', iis_logging_dir = '$iis_logging_dir', ";
+      $sql .= "iis_logging_format = '$iis_logging_format', iis_logging_time_period = '$iis_logging_time_period', ";
+      $sql .= "iis_home_directory = '$iis_home_directory', iis_directory_browsing = '$iis_directory_browsing', ";
+      $sql .= "iis_default_documents = '$iis_default_documents', iis_secure_ip = '$iis_secure_ip', ";
+      $sql .= "iis_secure_port = '$iis_secure_port', iis_site_state = '$iis_site_state', ";
+      $sql .= "iis_site_app_pool = '$iis_site_app_pool', iis_site_anonymous_user = '$iis_site_anonymous_user', ";
+      $sql .= "iis_site_anonymous_auth = '$iis_site_anonymous_auth', iis_site_basic_auth = '$iis_site_basic_auth', ";
+      $sql .= "iis_site_ntlm_auth = '$iis_site_ntlm_auth', iis_site_ssl_en = '$iis_site_ssl_en', ";
+      $sql .= "iis_site_ssl128_en = '$iis_site_ssl128_en' ";
+      $sql .= "WHERE iis_site = '$iis_site' AND iis_uuid = '$uuid' AND iis_timestamp = '$iis_timestamp' ";
       if ($verbose == "y"){echo $sql . "<br />\n\n";}
       $result = mysql_query($sql) or die ('Insert Failed: ' . mysql_error() . '<br />' . $sql);
     }
@@ -2087,7 +2120,7 @@ function insert_iis_2 ($split) {
 
 function insert_iis_3 ($split) {
     global $timestamp, $uuid, $verbose, $iis_ip_timestamp;
-    if ($verbose == "y"){echo "<h2>IIS - Site</h2><br />";}
+    if ($verbose == "y"){echo "<h2>IIS - Site IP</h2><br />";}
     $extended = explode('^^^',$split);
     $iis_ip_site = trim($extended[1]);
     $iis_ip_ip_address = trim($extended[2]);
@@ -2126,6 +2159,45 @@ function insert_iis_3 ($split) {
     }
   }
 
+function insert_iis_4 ($split) {
+    global $timestamp, $uuid, $verbose, $iis_web_ext_timestamp;
+    if ($verbose == "y"){echo "<h2>IIS - Web Service Extension</h2><br />";}
+    $extended = explode('^^^',$split);
+    $iis_web_ext_desc = trim($extended[1]);
+    $iis_web_ext_path = trim($extended[2]);
+    $iis_web_ext_access = trim($extended[3]);
+    if (is_null($iis_web_ext_timestamp)) {
+      $sql = "SELECT MAX(iis_web_ext_timestamp) FROM iis_web_ext WHERE iis_web_ext_uuid = '$uuid'";
+      if ($verbose == "y"){echo $sql . "<br />\n\n";}
+      $result = mysql_query($sql) or die ('Insert Failed: ' . mysql_error() . '<br />' . $sql);
+      $myrow = mysql_fetch_array($result);
+      if ($myrow["MAX(iis_web_ext_timestamp)"]) {$iis_web_ext_timestamp = $myrow["MAX(iis_web_ext_timestamp)"];} else {$iis_web_ext_timestamp = "";}
+      } else {}
+    $sql  = "SELECT count(iis_web_ext_uuid) AS count FROM iis_web_ext ";
+    $sql .= "WHERE iis_web_ext_uuid = '$uuid' AND iis_web_ext_desc = '$iis_web_ext_desc' AND iis_web_ext_path = '$iis_web_ext_path' AND ";
+    $sql .= "(iis_web_ext_timestamp = '$iis_web_ext_timestamp' OR iis_web_ext_timestamp = '$timestamp')";
+    if ($verbose == "y"){echo $sql . "<br />\n\n";}
+    $result = mysql_query($sql) or die ('Insert Failed: ' . mysql_error() . '<br />' . $sql);
+    $myrow = mysql_fetch_array($result);
+    if ($verbose == "y"){echo "Count: " . $myrow['count'] . "<br />\n\n";}
+    if ($myrow['count'] == "0"){
+      // New web service extension: insert into database
+      $sql  = "INSERT INTO iis_web_ext (iis_web_ext_uuid, iis_web_ext_path, iis_web_ext_desc, ";
+      $sql .= "iis_web_ext_access, iis_web_ext_timestamp, iis_web_ext_first_timestamp) VALUES (";
+      $sql .= "'$uuid', '$iis_web_ext_path', '$iis_web_ext_desc', ";
+      $sql .= "'$iis_web_ext_access', '$timestamp', '$timestamp')";
+      if ($verbose == "y"){echo $sql . "<br />\n\n";}
+      $result = mysql_query($sql) or die ('Insert Failed: ' . mysql_error() . '<br />' . $sql);
+    } else {
+      // Already present in database - update timestamp and access
+      $sql  = "UPDATE iis_web_ext SET iis_web_ext_timestamp = '$timestamp', iis_web_ext_access = '$iis_web_ext_access' ";
+      $sql .= "WHERE iis_web_ext_uuid = '$uuid' AND iis_web_ext_timestamp = '$iis_web_ext_timestamp' AND ";
+      $sql .= "iis_web_ext_path = '$iis_web_ext_path' AND iis_web_ext_desc = '$iis_web_ext_desc' ";
+      if ($verbose == "y"){echo $sql . "<br />\n\n";}
+      $result = mysql_query($sql) or die ('Insert Failed: ' . mysql_error() . '<br />' . $sql);
+    }
+  }
+  
 function insert_sched_task ($split) {
     global $timestamp, $uuid, $verbose, $sched_task_timestamp;
     $extended = explode('^^^',$split);
@@ -2448,6 +2520,70 @@ function insert_onboard ($split) {
     }
    
 }
+
+function insert_auto_upd ($split) {
+    global $timestamp, $uuid, $verbose, $au_timestamp;
+    $extended = explode('^^^',$split);
+    if ($verbose == "y"){echo "<h2>Automatic Updating</h2><br />";}
+    $au_gpo_configured = trim($extended[1]);
+    $au_enabled = trim($extended[2]);
+    $au_behaviour = trim($extended[3]);
+    $au_sched_install_day = trim($extended[4]);
+    $au_sched_install_time = trim($extended[5]);
+    $au_use_wuserver = trim($extended[6]);
+    $au_wuserver = trim($extended[7]);
+    $au_wustatusserver = trim($extended[8]);
+    $au_target_group = trim($extended[9]);
+    $au_elevate_nonadmins = trim($extended[10]);
+    $au_auto_install = trim($extended[11]);
+    $au_detection_frequency = trim($extended[12]);
+    $au_reboot_timeout = trim($extended[13]);
+    $au_noautoreboot = trim($extended[14]);
+
+    if (is_null($au_timestamp)) {
+      $sql  = "SELECT MAX(au_timestamp) FROM auto_updating WHERE au_uuid = '$uuid'";
+      if ($verbose == "y"){echo $sql . "<br />\n\n";}
+      $result = mysql_query($sql) or die ('Insert Failed: ' . mysql_error() . '<br />' . $sql);
+      $myrow = mysql_fetch_array($result);
+      if ($myrow["MAX(au_timestamp)"]) {$au_timestamp = $myrow["MAX(au_timestamp)"];} else {$au_timestamp = "";}
+    } else {}
+    $sql  = "SELECT count(au_uuid) as count from auto_updating ";
+    $sql .= "WHERE au_uuid = '$uuid' ";
+    $sql .= "AND (au_timestamp = '$au_timestamp' OR au_timestamp = '$timestamp')";
+    if ($verbose == "y"){echo $sql . "<br />\n\n";}
+    $result = mysql_query($sql) or die ('Insert Failed: ' . mysql_error() . '<br />' . $sql);
+    $myrow = mysql_fetch_array($result);
+    if ($verbose == "y"){echo "Count: " . $myrow['count'] . "<br />\n\n";}
+    if ($myrow['count'] == "0"){
+      // New auto updating setting - Insert into database
+      $sql  = "INSERT INTO auto_updating (";
+      $sql .= "au_uuid, au_gpo_configured, au_enabled, au_behaviour, au_sched_install_day, au_sched_install_time, ";
+      $sql .= "au_use_wuserver, au_wuserver, au_wustatusserver, au_target_group, au_elevate_nonadmins, au_auto_install, ";
+      $sql .= "au_detection_frequency, au_reboot_timeout, au_noautoreboot, ";
+      $sql .= "au_timestamp, au_first_timestamp) VALUES (";
+      $sql .= "'$uuid', '$au_gpo_configured', '$au_enabled', '$au_behaviour', '$au_sched_install_day', '$au_sched_install_time', ";
+      $sql .= "'$au_use_wuserver', '$au_wuserver', '$au_wustatusserver', '$au_target_group', '$au_elevate_nonadmins', '$au_auto_install', ";
+      $sql .= "'$au_detection_frequency', '$au_reboot_timeout', '$au_noautoreboot', ";
+      $sql .= "'$timestamp', '$timestamp') ";
+
+      if ($verbose == "y"){echo $sql . "<br />\n\n";}
+      $result = mysql_query($sql) or die ('Insert Failed: ' . mysql_error() . '<br />' . $sql);
+    } else {
+      // Already present in database - Update timestamp and all fields
+      $sql  = "UPDATE auto_updating SET ";
+      $sql .= "au_timestamp = '$timestamp', au_gpo_configured = '$au_gpo_configured', au_enabled = '$au_enabled', ";
+      $sql .= "au_behaviour = '$au_behaviour', au_sched_install_day = '$au_sched_install_day', au_sched_install_time = '$au_sched_install_time', ";
+      $sql .= "au_use_wuserver = '$au_use_wuserver', au_wuserver = '$au_wuserver', au_wustatusserver = '$au_wustatusserver', ";
+      $sql .= "au_target_group = '$au_target_group', au_elevate_nonadmins = '$au_elevate_nonadmins', au_auto_install = '$au_auto_install', ";
+      $sql .= "au_detection_frequency = '$au_detection_frequency', au_reboot_timeout = '$au_reboot_timeout', au_noautoreboot = '$au_noautoreboot' ";
+      $sql .= "WHERE au_uuid = '$uuid' ";
+      $sql .= "AND au_timestamp = '$au_timestamp'";
+      if ($verbose == "y"){echo $sql . "<br />\n\n";}
+      $result = mysql_query($sql) or die ('Insert Failed: ' . mysql_error() . '<br />' . $sql);
+    }
+   
+}
+
 
 
 echo "<a href=\"javascript:window.close()\" name=\"clicktoclose\">Close</a>";
