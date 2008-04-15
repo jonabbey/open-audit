@@ -2299,14 +2299,18 @@ if ((ServicePack = "2" AND SystemBuildNumber = "2600") OR (SystemBuildNumber = "
   end if
   Set colItems = objWMIService_AV.ExecQuery("Select * from AntiVirusProduct")
   For Each objAntiVirusProduct In colItems
-    if isnull(objAntiVirusProduct.companyName) then av_prod = "" else av_prod = objAntiVirusProduct.companyName end if
-    if isnull(objAntiVirusProduct.displayName) then av_disp = "" else av_disp = objAntiVirusProduct.displayName end if
-    if isnull(objAntiVirusProduct.productUptoDate) then av_up2d = "" else av_up2d = objAntiVirusProduct.productUptoDate end if
-    if isnull(objAntiVirusProduct.versionNumber) then av_vers = "" else av_vers = objAntiVirusProduct.versionNumber end if
-    form_input = "system10^^^" & clean(av_prod) & "^^^" _
-                               & clean(av_disp) & "^^^" _
-                               & clean(av_up2d) & "^^^" _
-                               & clean(av_vers) & "^^^"
+    av_prod = Clean(objAntiVirusProduct.companyName)
+    av_disp = Clean(objAntiVirusProduct.displayName)
+    av_vers = Clean(objAntiVirusProduct.versionNumber)
+    av_up2d = Clean(objAntiVirusProduct.productUptoDate)
+    If av_up2d Then
+      av_up2d = "True"
+    Else
+      av_up2d = "False"
+    End If
+    
+    form_input = "system10^^^" & av_prod  & "^^^"   & av_disp  & "^^^" _
+                               & av_up2d  & "^^^"   & av_vers  & "^^^"
     entry form_input,comment,objTextFile,oAdd,oComment
     form_input = ""
   Next
