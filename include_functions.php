@@ -175,7 +175,7 @@ function special_field_converting($myrow, $field, $db, $page){
         $show_value=determine_img($myrow["system_os_name"],$myrow[$field["name"]]);
     }elseif($field["name"]=="other_type" AND $page=="list"){
         $show_value="<img src=\"images/o_" .str_replace(" ","_",$myrow[$field["name"]]). ".png\" alt=\"\" border=\"0\" width=\"16\" height=\"16\"  />";
-    }elseif($field["name"]=="other_ip_address"){
+    }elseif($field["name"]=="other_ip_address" OR $field["name"]=="net_ip_address"){
         $show_value=ip_trans($myrow[$field["name"]]);
     }elseif($field["name"]=="delete"){
         /*
