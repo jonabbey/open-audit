@@ -1,8 +1,14 @@
 <?php
+header( "Expires: Mon, 20 Dec 1998 01:00:00 GMT" );
+//header( "Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT" );
+header( "Cache-Control: no-cache, must-revalidate" );
+header( "Pragma: no-cache" );
 set_time_limit(60);
+
 include "include_config.php";
-include "include_functions.php";
 include "include_lang.php";
+include "include_functions.php";
+include "include_col_scheme.php";
 
 // Set up SQL connection 
 $db = mysql_connect($mysql_server,$mysql_user,$mysql_password);
@@ -12,20 +18,22 @@ mysql_select_db($mysql_database,$db);
 $sub=$_GET["sub"];
 
 // Call data functions
-if ($sub == "s1") GetDiscoveredSystemsData();
-if ($sub == "s2") GetOtherDiscoveredData();
-if ($sub == "s3") GetSystemsNotAuditedData();
-if ($sub == "s4") GetPartitionUsageData();
-if ($sub == "s5") GetDetectedSoftwareData();
-if ($sub == "s6") GetWebServers();
-if ($sub == "s7") GetFtpServers();
-if ($sub == "s8") GetTelnetServers();
-if ($sub == "s9") GetEmailServers();
-if ($sub == "s10") GetVncServers();
-if ($sub == "s11") GetDetectedXpAvData();
-if ($sub == "s12") GetSystemsAuditedGraph();
+if ($sub == "f1") GetDiscoveredSystemsData($sub);
+if ($sub == "f2") GetOtherDiscoveredData($sub);
+if ($sub == "f3") GetSystemsNotAuditedData($sub);
+if ($sub == "f4") GetPartitionUsageData($sub);
+if ($sub == "f5") GetDetectedSoftwareData($sub);
+if ($sub == "f6") GetWebServers($sub);
+if ($sub == "f7") GetFtpServers($sub);
+if ($sub == "f8") GetTelnetServers($sub);
+if ($sub == "f9") GetEmailServers($sub);
+if ($sub == "f10") GetVncServers($sub);
+if ($sub == "f11") GetDetectedXpAvData($sub);
+if ($sub == "f12") GetRdpServers($sub);
+if ($sub == "f13") GetDbServers($sub);
+if ($sub == "f14") GetSystemsAuditedGraph();
 
-// ****** GetSystemsAuditedGraph *****************************************************
+// ****** Get graph of number of systems audited in last $systems_audited_days days **************************************************
 function GetSystemsAuditedGraph()
 {	
 	//global $systems_audited;	
@@ -54,12 +62,12 @@ function GetSystemsAuditedGraph()
 			if ($myrow["cnt"]>$max){$max=$myrow["cnt"];};  // determine largest value for graph sizing
 		}	while ($myrow = mysql_fetch_array($result));
 	}
-if ($max != 0) {
+
 	// determine graph sizing
 	$img_col_width=$img_width/$systems_audited_days;
-	$scale = $img_height/$max;
-} else {}
+	$scale = ($max==0)?(1):($img_height/$max);
 	echo "<div style='text-align: center;'>";
+	
 	// iterate thru array and display results graph
 	foreach($dates as $dt => $cnt)
 	{
@@ -72,18 +80,21 @@ if ($max != 0) {
 	echo "</div>";
 }
 
-// ****** GetDiscoveredSystemsData *****************************************************
-function GetDiscoveredSystemsData()
+// ****** Get systems discovered in the last $system_detected days *****************************************************
+// $id = ID of the HTML element that this data is "bound" to
+function GetDiscoveredSystemsData($id)
 {
   global $db, $system_detected;
+	global $bgcolor,$bg1,$bg2;
 
   $sql  = "SELECT system_name, net_ip_address, system_uuid, system_first_timestamp FROM system ";
-  $sql .= "WHERE system_first_timestamp > '" . adjustdate(0,0,-$system_detected) . "000000' ORDER BY system_name";
+  $sql .= "WHERE system_first_timestamp > '" . adjustdate(0,0,-$system_detected) . "000000' ";
+  $sql .= "ORDER BY system_name";
 	
 	$result = mysql_query($sql, $db); 	
 	$count=mysql_numrows($result);
 
-	echo "<div style=\"display:none;\" id=\"f1\">\n";
+	echo "<div style=\"display:none;\" id=\"$id\">\n";
 	if ($myrow = mysql_fetch_array($result))
 	{
     echo "
@@ -99,7 +110,7 @@ function GetDiscoveredSystemsData()
       	$bgcolor = change_row_color($bgcolor,$bg1,$bg2);
 
       	echo "
-				<tr style=\"bgcolor:" . $bgcolor . ";\">
+				<tr style=\"background-color:" . $bgcolor . ";\">
         	<td>" . ip_trans($myrow["net_ip_address"]) . "</td>
 					<td><a href=\"system.php?pc=".$myrow["system_uuid"]."&amp;view=summary\">" . $myrow["system_name"] . "</a></td>
 						<td>" . return_date_time($myrow["system_first_timestamp"]) . "</td>
@@ -122,19 +133,22 @@ function GetDiscoveredSystemsData()
 	return; 
 }
 
-// ****** GetOtherDiscoveredData *****************************************************
-function GetOtherDiscoveredData()
+// ****** Get other systems discovered in the last $other_detected days *****************************************************
+// $id = ID of the HTML element that this data is "bound" to
+function GetOtherDiscoveredData($id)
 {
   global $db, $other_detected;
+	global $bgcolor,$bg1,$bg2;
 
-  $sql  = "SELECT * FROM other WHERE (other_ip_address <> '' AND ";
-  $sql .= "other_first_timestamp > '" . adjustdate(0,0,-$other_detected) . "000000') ORDER BY other_ip_address";
+  $sql  = "SELECT * FROM other ";
+  $sql .= "WHERE (other_ip_address <> '' AND other_first_timestamp > '" . adjustdate(0,0,-$other_detected) . "000000') ";
+  $sql .= "ORDER BY other_ip_address";
 	
 	$result = mysql_query($sql, $db);
 	$count=mysql_numrows($result);
 
 	echo "
-	<div style=\"display:none;\" id=\"f2\">\n";
+	<div style=\"display:none;\" id=\"$id\">\n";
 	
 	if ($myrow = mysql_fetch_array($result))
 	{
@@ -151,7 +165,7 @@ function GetOtherDiscoveredData()
 		{
       $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
       echo "
-			<tr style=\"bgcolor:" . $bgcolor . ";\">
+			<tr style=\"background-color:" . $bgcolor . ";\">
 				<td>" . ip_trans($myrow["other_ip_address"]) . "&nbsp;</td>
 				<td><a href=\"system.php?other=" . $myrow["other_id"] . "&amp;view=other_system\">" . $myrow["other_network_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
 				<td>" . $myrow["other_type"] . "&nbsp;</td>
@@ -175,19 +189,22 @@ function GetOtherDiscoveredData()
 	return; 
 }
 
-// ****** GetSystemsNotAuditedData *****************************************************
-function GetSystemsNotAuditedData()
+// ****** Get systems that have not been audited in the last $days_systems_not_audited days *****************************************************
+// $id = ID of the HTML element that this data is "bound" to
+function GetSystemsNotAuditedData($id)
 {
   global $db, $days_systems_not_audited;
+	global $bgcolor,$bg1,$bg2;
 
-  $sql  = "SELECT system_name, net_ip_address, system_uuid, system_timestamp FROM system WHERE ";
-  $sql .= "system_timestamp < '" . adjustdate(0,0,-$days_systems_not_audited) . "000000' ORDER BY system_name";
+  $sql  = "SELECT system_name, net_ip_address, system_uuid, system_timestamp FROM system ";
+  $sql .= "WHERE system_timestamp < '" . adjustdate(0,0,-$days_systems_not_audited) . "000000' ";
+  $sql .= "ORDER BY system_name";
 
 	$result = mysql_query($sql, $db);
 	$count=mysql_numrows($result);
 
 	echo "
-	<div style=\"display:none;\" id=\"f3\">\n";
+	<div style=\"display:none;\" id=\"$id\">\n";
 	
 	if ($myrow = mysql_fetch_array($result))
 	{
@@ -204,7 +221,7 @@ function GetSystemsNotAuditedData()
 	    $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
 	
 	    echo "
-	    <tr style=\"bgcolor:" . $bgcolor . ";\">
+	    <tr style=\"background-color:" . $bgcolor . ";\">
 				<td>" . ip_trans($myrow["net_ip_address"]) . "</td>
 				<td><a href=\"system.php?pc=".$myrow["system_uuid"]."&amp;view=summary\">" . $myrow["system_name"] . "</a></td>
 				<td>" . return_date_time($myrow["system_timestamp"]) . "</td>
@@ -227,15 +244,16 @@ function GetSystemsNotAuditedData()
 	return; 
 }
 
-// ****** GetPartitionUsageData *****************************************************
-function GetPartitionUsageData()
+// ****** Get partition usage for systems that have less than  $partition_free_space of free space *****************************************************
+// $id = ID of the HTML element that this data is "bound" to
+function GetPartitionUsageData($id)
 {
   global $db, $partition_free_space;
-
-  $sql  = "SELECT sys.system_name, sys.net_ip_address, par.partition_uuid, par.partition_volume_name, ";
-  $sql .= "par.partition_caption, par.partition_free_space, par.partition_size, par.partition_timestamp ";
-  $sql .= "FROM system sys, partition par WHERE par.partition_free_space < '$partition_free_space' ";
-  $sql .= "AND sys.system_uuid = par.partition_uuid AND par.partition_timestamp = sys.system_timestamp ";
+	global $bgcolor,$bg1,$bg2;
+	
+  $sql  = "SELECT sys.system_name, sys.net_ip_address, par.partition_uuid, par.partition_volume_name, par.partition_caption, par.partition_free_space, par.partition_size, par.partition_timestamp ";
+  $sql .= "FROM system sys, partition par ";
+  $sql .= "WHERE par.partition_free_space < '$partition_free_space' AND sys.system_uuid = par.partition_uuid AND par.partition_timestamp = sys.system_timestamp ";
   $sql .= "ORDER BY sys.system_name, par.partition_caption";
   
 	$result = mysql_query($sql, $db);
@@ -249,13 +267,13 @@ function GetPartitionUsageData()
 	  echo "
     <table style=\"border:0px;\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" >
     	<tr>
-      	<td style=\"width:150px;\"><b>".__("IP Address")."</b></td>
-        <td style=\"width:150px;\"><b>".__("Hostname")."</b></td>
-        <td style=\"width:150px;\"><b>".__("Free Space")." ".__("MB")."</b></td>
-        <td style=\"width:150px;\"><b>".__("Size")."</b></td>
-        <td style=\"width:150px;\"><b>".__("Free Space")." %</b></td>
-        <td style=\"width:150px;\"><b>".__("Drive Letter")."</b></td>
-        <td style=\"width:150px;\"><b>".__("Volume Name")."</b></td>
+				<td style=\"width:150px;\"><b>".__("IP Address")."</b></td>
+				<td style=\"width:150px;\"><b>".__("Hostname")."</b></td>
+				<td style=\"width:150px;\"><b>".__("Free Space")." ".__("MB")."</b></td>
+				<td style=\"width:150px;\"><b>".__("Size")." ".__("MB")."</b></td>
+				<td style=\"width:150px;\"><b>".__("Free Space")." %</b></td>
+				<td style=\"width:150px;\"><b>".__("Drive Letter")."</b></td>
+				<td style=\"width:150px;\"><b>".__("Volume Name")."</b></td>
       </tr>\n";
 
 		do
@@ -265,15 +283,15 @@ function GetPartitionUsageData()
  
       $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
       echo "
-      <tr style=\"bgcolor:" . $bgcolor . ";\">
-      	<td>" . ip_trans($myrow["net_ip_address"]) . "</td>
-        <td><a href=\"system.php?pc=" . $myrow["partition_uuid"] . "&amp;view=summary\">" . $myrow["system_name"] . "</a></td>
-        <td>" . $myrow["partition_free_space"] . " Mb</td>
-        <td>" . $myrow["partition_size"] . " Mb</td>
-        <td>" . $percent_free . " %</td>
-        <td>" . $myrow["partition_caption"] . " </td>
-         <td>" . $myrow["partition_volume_name"] . " </td>
-      </tr>\n";
+      <tr style=\"background-color:" . $bgcolor . ";\">
+				<td>" . ip_trans($myrow["net_ip_address"]) . "</td>
+				<td><a href=\"system.php?pc=" . $myrow["partition_uuid"] . "&amp;view=summary\">" . $myrow["system_name"] . "</a></td>
+				<td>" . $myrow["partition_free_space"] . " MB</td>
+				<td>" . $myrow["partition_size"] . " MB</td>
+				<td>" . $percent_free . " %</td>
+				<td>" . $myrow["partition_caption"] . " </td>
+				<td>" . $myrow["partition_volume_name"] . " </td>
+			</tr>\n";
     } while ($myrow = mysql_fetch_array($result));
 		echo "<tr><td>&nbsp;</td></tr>\n";
     echo "</table>";
@@ -292,45 +310,49 @@ function GetPartitionUsageData()
 	return; 
 }
 
-// ****** GetDetectedSoftwareData *****************************************************
-function GetDetectedSoftwareData()
+// ****** Get software that has been detected in the last $days_software_detected days *****************************************************
+// $id = ID of the HTML element that this data is "bound" to
+function GetDetectedSoftwareData($id)
 {
   global $db, $days_software_detected;
+	global $bgcolor,$bg1,$bg2;
 
-  $sql  = "SELECT sw.software_name, sw.software_first_timestamp, sys.system_name, sys.system_uuid, ";
-  $sql .= "sys.net_ip_address FROM software sw, system sys WHERE ";
-  $sql .= "software_first_timestamp >= '" . adjustdate(0,0,-$days_software_detected) . "000000' ";
-  $sql .= "AND sys.system_first_timestamp < '" . adjustdate(0,0,-$days_software_detected) . "000000' ";
-  $sql .= "AND sw.software_name NOT LIKE '%Hotfix%' AND sw.software_name NOT LIKE '%Update%' AND ";
-  $sql .= "sw.software_timestamp = sys.system_timestamp AND ";
-  $sql .= "sw.software_uuid = sys.system_uuid ";
+	$sql  = "SELECT sw.software_name, sw.software_first_timestamp, sys.system_name, sys.system_uuid, sys.net_ip_address ";
+	$sql .= "FROM software sw, system sys ";
+	$sql .= "WHERE sw.software_first_timestamp >= '" . adjustdate(0,0,-$days_software_detected) . "000000' ";
+	//$sql .= "WHERE software_first_timestamp >= '" . adjustdate(0,0,-$days_software_detected) . "000000' ";
+	$sql .= "AND sys.system_first_timestamp < '" . adjustdate(0,0,-$days_software_detected) . "000000' ";
+	$sql .= "AND sw.software_name NOT LIKE '%Hotfix%' AND sw.software_name NOT LIKE '%Update%' AND sw.software_name NOT LIKE '%Service Pack%' AND sw.software_name NOT REGEXP '[KB|Q][0-9]{6,}' ";
+	$sql .= "AND sw.software_timestamp = sys.system_timestamp ";
+	$sql .= "AND sw.software_uuid = sys.system_uuid ";
+	$sql .= "ORDER BY sw.software_name";
   
 	$result = mysql_query($sql, $db);
 	$count=mysql_numrows($result);
 
 	echo "
-	<div style=\"display:none;\" id=\"f5\">\n";
+	<div style=\"display:none;\" id=\"$id\">\n";
 	
 	if ($myrow = mysql_fetch_array($result))
 	{
 	  echo "
     <table style=\"border:0px;\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" >
     	<tr>
- 	    	<td style=\"width:120px;\"><b>".__("IP Address")."</b></td>
-        <td style=\"width:150px;\"><b>".__("Hostname")."</b></td>
-        <td style=\"width:100px;\"><b>".__("Date Audited")."</b></td>
-        <td><b>".__("Software")."</b></td>
+				<td style=\"width:120px;\"><b>".__("IP Address")."</b></td>
+				<td style=\"width:150px;\"><b>".__("Hostname")."</b></td>
+				<td style=\"width:100px;\"><b>".__("Date Audited")."</b></td>
+				<td><b>".__("Software")."</b></td>
       </tr>\n";
 		do
 		{
       $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
 
       echo "
-      <tr style=\"bgcolor:" . $bgcolor . ";\">
-      	<td>" . ip_trans($myrow["net_ip_address"]) . "</td>
-        <td><a href=\"system.php?pc=".$myrow["system_uuid"]."&amp;view=summary\">" . $myrow["system_name"] . "</a></td>
-        <td>" . return_date($myrow["software_first_timestamp"]) . "</td>
-        <td>" . $myrow["software_name"] . "</td>
+      <tr style=\"background-color:" . $bgcolor . ";\">
+				<td>" . ip_trans($myrow["net_ip_address"]) . "</td>
+				<td><a href=\"system.php?pc=".$myrow["system_uuid"]."&amp;view=summary\">" . $myrow["system_name"] . "</a></td>
+				<td>" . return_date($myrow["software_first_timestamp"]) . "</td>
+				<td>" . $myrow["software_name"] . "</td>
       </tr>\n";
     } while ($myrow = mysql_fetch_array($result));
 		echo "<tr><td>&nbsp;</td></tr>\n";
@@ -351,92 +373,134 @@ function GetDetectedSoftwareData()
 }
 
 
-// ****** Get Web Servers *****************************************************
-function GetWebServers()
+// ****** Get detected web servers *****************************************************
+// $id = ID of the HTML element that this data is "bound" to
+function GetWebServers($id)
+{
+	echo "<div style=\"display:none;\" id=\"$id\">\n
+					<table style=\"border:0px;\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" >\n";
+
+	$total=0;
+	GetWebServersAsService($total);
+	GetWebServersNmapAsAuditedSystem($total);
+	GetWebServersNmapAsOtherSystem($total);
+
+  echo "</table>
+					</div>
+					<table style=\"border:0px;\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" >
+						<tr>
+							<td colspan=\"3\">
+								<b>".__("Systems").": ".$total."</b>
+							</td>
+						</tr>
+				  </table>";
+
+	return; 
+}
+
+// ****** Get web servers detected as a Windows service *****************************************************
+function GetWebServersAsService(&$total)
 {
   global $db;
+	global $bgcolor,$bg1,$bg2;
 
-	// ****** Detected as a Windows service *****************************************************
-	$sql  = "SELECT DISTINCT ser.service_uuid, ser.service_display_name, ser.service_started, ";
-	$sql .= "sys.system_name, sys.net_ip_address FROM service ser, system sys ";
-	$sql .= "WHERE (ser.service_display_name LIKE 'IIS Admin%' OR ser.service_display_name LIKE 'Apache%') AND ";
-  $sql .= "ser.service_uuid = sys.system_uuid AND ser.service_timestamp = sys.system_timestamp ORDER BY system_name";
+	$sql  = "SELECT DISTINCT ser.service_uuid, ser.service_name, ser.service_display_name, ser.service_started, sys.system_name, sys.net_ip_address ";
+	$sql .= "FROM service ser, system sys ";
+	$sql .= "WHERE (ser.service_name = 'W3Svc' OR ser.service_name LIKE '%Apache%' OR ser.service_name LIKE 'Oracle%ServerProcessManager') ";
+	$sql .= "AND ser.service_uuid = sys.system_uuid AND ser.service_timestamp = sys.system_timestamp ";
+	$sql .= "ORDER BY system_name";
 	
 	$result = mysql_query($sql, $db);
-	$count=mysql_numrows($result);
-
-	echo "
-	<div style=\"display:none;\" id=\"f6\">\n
-  	<table style=\"border:0px;\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" >
-    	<tr><td colspan=\"2\"><b>".__("Windows")." ".__("Services")."</b></td></tr>\n";
+	$total .= mysql_numrows($result);
 	
 	if ($myrow = mysql_fetch_array($result))
-	{
+	{	
+		echo "<tr><td colspan=\"2\"><b>".__("Windows")." ".__("Services")."</b></td></tr>\n";
 		echo "
     	<tr>
 				<td><b>".__("IP Address")."</b></td>
-      	<td><b>".__("Hostname")."</b></td>
-      	<td><b>".__("Service")."</b></td>
-      	<td><b>".__("State")."</b></td>
+				<td><b>".__("Hostname")."</b></td>
+				<td><b>".__("Service")."</b></td>
+				<td><b>".__("Started")."</b></td>
     	</tr>\n";
     do
 		{
       $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
       
       echo "
-			<tr style=\"bgcolor:" . $bgcolor . ";\">
-      	<td>" . ip_trans($myrow["net_ip_address"]) . "&nbsp;</td>
-        <td><a href=\"system.php?pc=" . $myrow["service_uuid"] . "&amp;view=summary\">" . $myrow["system_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
+			<tr style=\"background-color:" . $bgcolor . ";\">
+				<td>" . ip_trans($myrow["net_ip_address"]) . "&nbsp;</td>
+				<td><a href=\"system.php?pc=" . $myrow["service_uuid"] . "&amp;view=summary\">" . $myrow["system_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
 				<td>" . $myrow["service_display_name"] . "</td>
-				<td><a href= \"http://".$myrow["system_name"]."\" onclick=\"this.target='_blank';\" />" . $myrow["service_started"] . "</td>
+				<td>" . $myrow["service_started"] . "</td>
 			</tr>\n";
     } while ($myrow = mysql_fetch_array($result));
     
 		echo "<tr><td>&nbsp;</td></tr>\n";
 	}
+
+}
+
+// ****** Get web servers detected by nmap as audited system *****************************************************
+function GetWebServersNmapAsAuditedSystem(&$total)
+{
+	global $db;
+	global $bgcolor,$bg1,$bg2;
 	
-	
-	// ****** Detected by NMap as an audited PC *****************************************************
-  $sql  = "select sys.net_ip_address,sys.system_name,sys.system_uuid, port.nmap_port_number ";
-	$sql .= "FROM system sys, nmap_ports port where port.nmap_port_number = '80' ";
-	$sql .= "AND port.nmap_other_id = sys.system_uuid";
+  $sql  = "SELECT sys.net_ip_address, sys.system_name, sys.system_uuid, sys.net_domain, port.nmap_port_number, port.nmap_port_proto, port.nmap_port_name, port.nmap_port_version ";
+  $sql .= "FROM system sys, nmap_ports port ";
+  $sql .= "WHERE (port.nmap_port_number = '80' OR port.nmap_port_number = '443') AND port.nmap_port_proto = 'tcp' AND port.nmap_other_id = sys.system_uuid ";
+  $sql .= "ORDER BY sys.system_name";
   
 	$result = mysql_query($sql, $db);
-  $count += mysql_numrows($result);
+  $total += mysql_numrows($result);
 
   if ($myrow = mysql_fetch_array($result))
 	{
   	echo "
 		<tr><td colspan=\"4\"><b>".__("Nmap discovered on Audited PC")."</b></td></tr>
     <tr>
-    	<td><b>".__("IP Address")."</b></td>
-    	<td><b>".__("Hostname")."</b></td>
+      <td><b>".__("IP Address")."</b></td>
+      <td><b>".__("Hostname")."</b></td>
+      <td><b>".__("TCP Port")."</b></td>
+			<td><b>".__("Service")."</b></td>
+      <td><b>".__("Version")."</b></td>
     </tr>\n";
 
     do
 		{
-  		$bgcolor = change_row_color($bgcolor,$bg1,$bg2);
-
-        echo "
-				<tr style=\"bgcolor:" . $bgcolor . ";\">
-        	<td>" . ip_trans($myrow["net_ip_address"]) . "&nbsp;</td>
-          <td><a href=\"system.php?pc=" . $myrow["system_uuid"] . "&amp;view=summary\">" . $myrow["system_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
-          <td>" . $myrow["nmap_port_number"] . "&nbsp;</td>
-          <td></td>
-        </tr>\n";
+      $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
+		
+      $app = "http";
+	    if ($myrow["nmap_port_number"] <> "80") { $app = "https"; }
+		
+			echo
+				"<tr style=\"background-color:" . $bgcolor . ";\">
+					<td>" . ip_trans($myrow["net_ip_address"]) . "&nbsp;</td>
+					<td><a href=\"system.php?pc=" . $myrow["system_uuid"] . "&amp;view=summary\">" . $myrow["system_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
+					<td><a href= \"launch.php?hostname=".$myrow["system_name"]."&amp;domain=".$myrow["net_domain"]."&amp;application=".$app."\"/>" . $myrow["nmap_port_number"] . "&nbsp;</td>
+					<td>" . $myrow["nmap_port_name"] . "&nbsp;</td>
+					<td>" . $myrow["nmap_port_version"] . "&nbsp;</td>
+				</tr>\n";
     } while ($myrow = mysql_fetch_array($result));
     
 		echo "<tr><td>&nbsp;</td></tr>\n";
 	}
+}
 
-	// ****** Detected by NMap as other system *****************************************************
-  $sql  = "select oth.other_id, oth.other_ip_address, oth.other_network_name, oth.other_mac_address, ";
-	$sql .= "port.nmap_port_number FROM other oth, nmap_ports port WHERE ";
-	$sql .= "(port.nmap_port_number = '80' OR port.nmap_port_number = '443') ";
-	$sql .= "AND port.nmap_other_id = oth.other_mac_address";
+// ****** Get web servers detected by nmap as other system *****************************************************
+function GetWebServersNmapAsOtherSystem(&$total)
+{
+	global $db;
+	global $bgcolor,$bg1,$bg2;
+	
+  $sql  = "SELECT oth.other_id, oth.other_ip_address, oth.other_network_name, oth.other_mac_address, port.nmap_port_number, port.nmap_port_proto, port.nmap_port_name, port.nmap_port_version ";
+  $sql .= "FROM other oth, nmap_ports port ";
+  $sql .= "WHERE (port.nmap_port_number = '80' OR port.nmap_port_number = '443') AND port.nmap_port_proto = 'tcp' AND (port.nmap_other_id = oth.other_mac_address OR port.nmap_other_id = oth.other_id) ";
+  $sql .= "ORDER BY oth.other_network_name";
   
 	$result = mysql_query($sql, $db);
-  $count += mysql_numrows($result);
+  $total += mysql_numrows($result);
   
 	if ($myrow = mysql_fetch_array($result))
 	{
@@ -444,129 +508,159 @@ function GetWebServers()
 
     echo "
     <tr><td colspan=\"4\"><b>".__("Nmap discovered on Other equipment")."</b></td></tr>
-    <tr style=\"bgcolor:" . $bgcolor . ";\">
+    <tr style=\"background-color:" . $bgcolor . ";\">
 			<td><b>".__("IP Address")."</b></td>
-      <td><b>".__("Hostname")."</b></td>
-      <td><b>".__("Port")."</b></td>
-      <td></td>
-    </tr>\n";
+			<td><b>".__("Hostname")."</b></td>
+			<td><b>".__("TCP Port")."</b></td>
+			<td><b>".__("Service")."</b></td>
+			<td><b>".__("Version")."</b></td>
+		</tr>\n";
 
-    do 
+    do
 		{
       $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
-
-		echo "
-			<tr style=\"bgcolor:" . $bgcolor . ";\">
-      	<td>" . ip_trans($myrow["other_ip_address"]) . "&nbsp;</td>
-        <td><a href=\"system.php?other=" . $myrow["other_id"] . "&amp;view=other_system\">" . $myrow["other_network_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
-        <td>" . $myrow["nmap_port_number"] . "&nbsp;</td>
-        <td></td>
-      </tr>\n";
+	  
+      $app = "http";
+			if ($myrow["nmap_port_number"] <> "80") { $app = "https"; } 
+	
+      echo
+      "<tr style=\"background-color:" . $bgcolor . ";\">
+         <td>" . ip_trans($myrow["other_ip_address"]) . "&nbsp;</td>
+         <td><a href=\"system.php?other=" . $myrow["other_id"] . "&amp;view=other_system\">" . $myrow["other_network_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
+         <td><a href= \"launch_other.php?hostname=".$myrow["other_ip_address"]."&amp;application=".$app."\"/>" . $myrow["nmap_port_number"] . "&nbsp;&nbsp;&nbsp;</td>
+         <td>" . $myrow["nmap_port_name"] . "&nbsp;</td>
+         <td>" . $myrow["nmap_port_version"] . "&nbsp;</td>
+       </tr>\n";
     } while ($myrow = mysql_fetch_array($result));
    
 	  echo "<tr><td>&nbsp;</td></tr>\n";
   }
 	
-  echo "</table>";	
-	
-	echo "
-	</div>
-	<table style=\"border:0px;\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" >
-		<tr>
-			<td colspan=\"3\">
-				<b>".__("Systems").": ".$count."</b>
-			</td>
-		</tr>
-  </table>";
+}
+
+// ****** Get detected FTP Servers *****************************************************
+// $id = ID of the HTML element that this data is "bound" to
+function GetFtpServers($id)
+{
+	echo "<div style=\"display:none;\" id=\"f7\">\n
+					<table style=\"border:0px;\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" >\n";
+
+	$total=0;
+	GetFtpServersAsService($total);
+	GetFtpServersNmapAsAuditedSystem($total);
+	GetFtpServersNmapAsOtherSystem($total);
+
+  echo "</table>
+					</div>
+					<table style=\"border:0px;\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" >
+						<tr>
+							<td colspan=\"3\">
+								<b>".__("Systems").": ".$total."</b>
+							</td>
+						</tr>
+				  </table>";
 
 	return; 
 }
 
-// ****** Get FTP Servers *****************************************************
-function GetFtpServers()
+// ****** Get ftp servers detected as a Windows service *****************************************************
+function GetFtpServersAsService(&$total)
 {
   global $db;
-
-	// ****** Detected as a Windows service *****************************************************
-  $sql  = "SELECT DISTINCT service_uuid, service_display_name, service_started, system_name, net_ip_address ";
-	$sql .= "FROM service, system WHERE service_display_name LIKE 'FTP%' AND service_uuid = system_uuid ";
-	$sql .= "AND service_timestamp = system_timestamp ORDER BY system_name";
+	global $bgcolor,$bg1,$bg2;
+	 
+  $sql  = "SELECT DISTINCT ser.service_uuid, ser.service_display_name, ser.service_started, sys.system_name, sys.net_ip_address ";
+  $sql .= "FROM service ser, system sys ";
+  $sql .= "WHERE ser.service_display_name LIKE 'FTP%' AND ser.service_uuid = sys.system_uuid AND ser.service_timestamp = sys.system_timestamp ";
+  $sql .= "ORDER BY sys.system_name";
 	
 	$result = mysql_query($sql, $db);
-	$count=mysql_numrows($result);
-
-	echo "
-	<div style=\"display:none;\" id=\"f7\">\n
-  	<table style=\"border:0px;\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" >
-    	<tr><td colspan=\"2\"><b>".__("Windows")." ".__("Services")."</b></td></tr>\n";
+	$total .= mysql_numrows($result);
 	
 	if ($myrow = mysql_fetch_array($result))
 	{
+		echo "<tr><td colspan=\"2\"><b>".__("Windows")." ".__("Services")."</b></td></tr>\n";
 		echo "
     	<tr>
 				<td><b>".__("IP Address")."</b></td>
-      	<td><b>".__("Hostname")."</b></td>
-      	<td><b>".__("Service")."</b></td>
-      	<td><b>".__("State")."</b></td>
+				<td><b>".__("Hostname")."</b></td>
+				<td><b>".__("Service")."</b></td>
+				<td><b>".__("Started")."</b></td>
     	</tr>\n";
     do
 		{
       $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
       
       echo "
-			<tr style=\"bgcolor:" . $bgcolor . ";\">
-      	<td>" . ip_trans($myrow["net_ip_address"]) . "&nbsp;</td>
-        <td><a href=\"system.php?pc=" . $myrow["service_uuid"] . "&amp;view=summary\">" . $myrow["system_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
+			<tr style=\"background-color:" . $bgcolor . ";\">
+				<td>" . ip_trans($myrow["net_ip_address"]) . "&nbsp;</td>
+				<td><a href=\"system.php?pc=" . $myrow["service_uuid"] . "&amp;view=summary\">" . $myrow["system_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
 				<td>" . $myrow["service_display_name"] . "</td>
-				<td><a href= \"http://".$myrow["system_name"]."\" onclick=\"this.target='_blank';\" />" . $myrow["service_started"] . "</td>
+				<td>" . $myrow["service_started"] . "</td>
 			</tr>\n";
     } while ($myrow = mysql_fetch_array($result));
     
 		echo "<tr><td>&nbsp;</td></tr>\n";
 	}
+}
+
+// ****** Get ftp servers detected by nmap as audited system *****************************************************
+function GetFtpServersNmapAsAuditedSystem(&$total)
+{
+  global $db;
+	global $bgcolor,$bg1,$bg2;
 	
-	
-	// ****** Detected by NMap as an audited PC *****************************************************
-  $sql  = "select sys.net_ip_address,sys.system_name,sys.system_uuid, port.nmap_port_number ";
-	$sql .= "FROM system sys, nmap_ports port where port.nmap_port_number = '21' ";
-	$sql .= "AND port.nmap_other_id = sys.system_uuid";
-  
+	$sql  = "SELECT sys.net_ip_address, sys.system_name, sys.system_uuid, sys.net_domain, port.nmap_port_number, port.nmap_port_proto, port.nmap_port_name, port.nmap_port_version ";
+  $sql .= "FROM system sys, nmap_ports port ";
+  $sql .= "WHERE port.nmap_port_number = '21' AND port.nmap_port_proto = 'tcp' AND port.nmap_other_id = sys.system_uuid ";
+  $sql .= "ORDER BY sys.system_name";
   
 	$result = mysql_query($sql, $db);
-  $count += mysql_numrows($result);
+  $total += mysql_numrows($result);
 
   if ($myrow = mysql_fetch_array($result))
 	{
   	echo "
 		<tr><td colspan=\"4\"><b>".__("Nmap discovered on Audited PC")."</b></td></tr>
     <tr>
-    	<td><b>".__("IP Address")."</b></td>
-    	<td><b>".__("Hostname")."</b></td>
+      <td><b>".__("IP Address")."</b></td>
+      <td><b>".__("Hostname")."</b></td>
+      <td><b>".__("TCP Port")."</b></td>
+			<td><b>".__("Service")."</b></td>
+			<td><b>".__("Version")."</b></td>
     </tr>\n";
 
     do
 		{
-  		$bgcolor = change_row_color($bgcolor,$bg1,$bg2);
+			$bgcolor = change_row_color($bgcolor,$bg1,$bg2);
 
-        echo "
-				<tr style=\"bgcolor:" . $bgcolor . ";\">
-        	<td>" . ip_trans($myrow["net_ip_address"]) . "&nbsp;</td>
-          <td><a href=\"system.php?pc=" . $myrow["system_uuid"] . "&amp;view=summary\">" . $myrow["system_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
-          <td>" . $myrow["nmap_port_number"] . "&nbsp;</td>
-          <td></td>
-        </tr>\n";
+			echo
+				"<tr style=\"background-color:" . $bgcolor . ";\">
+					 <td>" . ip_trans($myrow["net_ip_address"]) . "&nbsp;</td>
+					 <td><a href=\"system.php?pc=" . $myrow["system_uuid"] . "&amp;view=summary\">" . $myrow["system_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
+					 <td><a href= \"launch.php?hostname=".$myrow["system_name"]."&amp;domain=".$myrow["net_domain"]."&amp;application=ftp\"/>" . $myrow["nmap_port_number"] . "&nbsp;</td>
+					 <td>" . $myrow["nmap_port_name"] . "&nbsp;</td>
+					 <td>" . $myrow["nmap_port_version"] . "&nbsp;</td>
+				 </tr>\n";
     } while ($myrow = mysql_fetch_array($result));
     
 		echo "<tr><td>&nbsp;</td></tr>\n";
 	}
+}
 
-	// ****** Detected by NMap as other system *****************************************************
-  $sql  = "select oth.other_id, oth.other_ip_address, oth.other_network_name, oth.other_mac_address, ";
-  $sql .= "port.nmap_port_number from other oth, nmap_ports port where port.nmap_port_number = '21' ";
-  $sql .= "AND port.nmap_other_id = oth.other_mac_address";
+// ****** Get ftp servers detected by nmap as other system *****************************************************
+function GetFtpServersNmapAsOtherSystem(&$total)
+{
+  global $db;
+	global $bgcolor,$bg1,$bg2;
+  
+  $sql  = "SELECT oth.other_id, oth.other_ip_address, oth.other_network_name, oth.other_mac_address, port.nmap_port_number, port.nmap_port_proto, port.nmap_port_name, port.nmap_port_version ";
+  $sql .= "FROM other oth, nmap_ports port ";
+  $sql .= "WHERE port.nmap_port_number = '21' AND port.nmap_port_proto = 'tcp' AND (port.nmap_other_id = oth.other_mac_address OR port.nmap_other_id = oth.other_id) ";
+  $sql .= "ORDER BY oth.other_network_name";
   
 	$result = mysql_query($sql, $db);
-  $count += mysql_numrows($result);
+  $total += mysql_numrows($result);
   
 	if ($myrow = mysql_fetch_array($result))
 	{
@@ -574,11 +668,12 @@ function GetFtpServers()
 
     echo "
     <tr><td colspan=\"4\"><b>".__("Nmap discovered on Other equipment")."</b></td></tr>
-    <tr style=\"bgcolor:" . $bgcolor . ";\">
+    <tr style=\"background-color:" . $bgcolor . ";\">
 			<td><b>".__("IP Address")."</b></td>
-      <td><b>".__("Hostname")."</b></td>
-      <td><b>".__("Port")."</b></td>
-      <td></td>
+			<td><b>".__("Hostname")."</b></td>
+			<td><b>".__("TCP Port")."</b></td>
+			<td><b>".__("Service")."</b></td>
+			<td><b>".__("Version")."</b></td>
     </tr>\n";
 
     do 
@@ -586,90 +681,109 @@ function GetFtpServers()
       $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
 
 		echo "
-			<tr style=\"bgcolor:" . $bgcolor . ";\">
-      	<td>" . ip_trans($myrow["other_ip_address"]) . "&nbsp;</td>
-        <td><a href=\"system.php?other=" . $myrow["other_id"] . "&amp;view=other_system\">" . $myrow["other_network_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
-        <td>" . $myrow["nmap_port_number"] . "&nbsp;</td>
-        <td></td>
-      </tr>\n";
+			<tr style=\"background-color:" . $bgcolor . ";\">
+				<td>" . ip_trans($myrow["other_ip_address"]) . "&nbsp;</td>
+				<td ><a href=\"system.php?other=" . $myrow["other_id"] . "&amp;view=other_system\">" . $myrow["other_network_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
+				<td><a href= \"launch_other.php?hostname=".$myrow["other_ip_address"]."&amp;application=ftp\"/>" . $myrow["nmap_port_number"] . "&nbsp;</td>
+				<td>" . $myrow["nmap_port_name"] . "&nbsp;</td>
+				<td>" . $myrow["nmap_port_version"] . "&nbsp;</td>
+				</tr>\n";
     } while ($myrow = mysql_fetch_array($result));
    
 	  echo "<tr><td>&nbsp;</td></tr>\n";
   }
+}
+
+// ****** Get detected Telnet servers *****************************************************
+// $id = ID of the HTML element that this data is "bound" to
+function GetTelnetServers($id)
+{
+	echo "<div style=\"display:none;\" id=\"$id\">\n
+					<table style=\"border:0px;\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" >\n";
 	
-  echo "</table>";	
-	
-	echo "
-	</div>
-	<table style=\"border:0px;\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" >
-		<tr>
-			<td colspan=\"3\">
-				<b>".__("Systems").": ".$count."</b>
-			</td>
-		</tr>
-  </table>";
+	$total=0;
+	GetTelnetServersAsService($total);
+	GetTelnetServersNmapAsAuditedSystem($total);
+	GetTelnetServersNmapAsOtherSystem($total);
+
+  echo "</table>
+				</div>
+				<table style=\"border:0px;\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" >
+					<tr>
+						<td colspan=\"3\">
+							<b>".__("Systems").": ".$total."</b>
+						</td>
+					</tr>
+			  </table>";
 
 	return; 
 }
 
-// ****** Get Telnet Servers *****************************************************
-function GetTelnetServers()
+// ****** Get telnet servers detected as a Windows service *****************************************************
+function GetTelnetServersAsService(&$total)
 {
-  global $db;
-
-	// ****** Detected as a Windows service *****************************************************
-  $sql  = "SELECT DISTINCT service_uuid, service_display_name, service_started, system_name, net_ip_address ";
-	$sql .= "FROM service, system WHERE service_display_name = 'Telnet' AND service_started = 'True' AND ";
-	$sql .= "service_timestamp = system_timestamp AND service_uuid = system_uuid ORDER BY system_name";
+	global $db;
+	global $bgcolor,$bg1,$bg2;
+	
+  $sql  = "SELECT DISTINCT ser.service_uuid, ser.service_display_name, ser.service_started, sys.system_name, sys.net_ip_address ";
+  $sql .= "FROM service ser, system sys ";
+  $sql .= "WHERE ser.service_display_name = 'Telnet' AND ser.service_started = 'True' AND ser.service_timestamp = sys.system_timestamp AND ser.service_uuid = sys.system_uuid ";
+  $sql .= "ORDER BY sys.system_name";
   
 	$result = mysql_query($sql, $db);
-	$count=mysql_numrows($result);
-
-	echo "
-	<div style=\"display:none;\" id=\"f8\">\n
-  	<table style=\"border:0px;\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" >
-    	<tr><td colspan=\"2\"><b>".__("Windows")." ".__("Services")."</b></td></tr>\n";
+	$total .= mysql_numrows($result);
 	
 	if ($myrow = mysql_fetch_array($result))
 	{
+    echo "<tr><td colspan=\"2\"><b>".__("Windows")." ".__("Services")."</b></td></tr>\n";
 		echo "
     	<tr>
 				<td><b>".__("IP Address")."</b></td>
-      	<td><b>".__("Hostname")."</b></td>
-      	<td><b>".__("Service")."</b></td>
-      	<td><b>".__("State")."</b></td>
+				<td><b>".__("Hostname")."</b></td>
+				<td><b>".__("Service")."</b></td>
+				<td><b>".__("Started")."</b></td>
     	</tr>\n";
     do
 		{
       $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
       
       echo "
-			<tr style=\"bgcolor:" . $bgcolor . ";\">
-      	<td>" . ip_trans($myrow["net_ip_address"]) . "&nbsp;</td>
-        <td><a href=\"system.php?pc=" . $myrow["service_uuid"] . "&amp;view=summary\">" . $myrow["system_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
+			<tr style=\"background-color:" . $bgcolor . ";\">
+				<td>" . ip_trans($myrow["net_ip_address"]) . "&nbsp;</td>
+				<td><a href=\"system.php?pc=" . $myrow["service_uuid"] . "&amp;view=summary\">" . $myrow["system_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
 				<td>" . $myrow["service_display_name"] . "</td>
-				<td><a href= \"http://".$myrow["system_name"]."\" onclick=\"this.target='_blank';\" />" . $myrow["service_started"] . "</td>
+				<td>" . $myrow["service_started"] . "</td>
 			</tr>\n";
     } while ($myrow = mysql_fetch_array($result));
     
 		echo "<tr><td>&nbsp;</td></tr>\n";
 	}
+}
+
+// ****** Get telnet servers detected by nmap as audited system *****************************************************
+function GetTelnetServersNmapAsAuditedSystem(&$total)
+{
+  global $db;
+	global $bgcolor,$bg1,$bg2;
 	
-	
-	// ****** Detected by NMap as an audited PC *****************************************************
-  $sql  = "select sys.net_ip_address,sys.system_name,sys.system_uuid, port.nmap_port_number from system sys, ";
-  $sql .= "	nmap_ports port where port.nmap_port_number = '23' AND port.nmap_other_id = sys.system_uuid";  
+  $sql  = "SELECT sys.net_ip_address, sys.system_name, sys.system_uuid, sys.net_domain, port.nmap_port_number, port.nmap_port_proto, port.nmap_port_name, port.nmap_port_version ";
+  $sql .= "FROM system sys, nmap_ports port ";
+  $sql .= "WHERE port.nmap_port_number = '23' AND port.nmap_port_proto = 'tcp' AND port.nmap_other_id = sys.system_uuid ";
+  $sql .= "ORDER BY sys.system_name";
   
 	$result = mysql_query($sql, $db);
-  $count += mysql_numrows($result);
+  $total += mysql_numrows($result);
 
   if ($myrow = mysql_fetch_array($result))
 	{
   	echo "
 		<tr><td colspan=\"4\"><b>".__("Nmap discovered on Audited PC")."</b></td></tr>
     <tr>
-    	<td><b>".__("IP Address")."</b></td>
-    	<td><b>".__("Hostname")."</b></td>
+			<td><b>".__("IP Address")."</b></td>
+			<td><b>".__("Hostname")."</b></td>
+			<td><b>".__("TCP Port")."</b></td>
+			<td><b>".__("Service")."</b></td>
+			<td><b>".__("Version")."</b></td>
     </tr>\n";
 
     do
@@ -677,24 +791,32 @@ function GetTelnetServers()
   		$bgcolor = change_row_color($bgcolor,$bg1,$bg2);
 
         echo "
-				<tr style=\"bgcolor:" . $bgcolor . ";\">
-        	<td>" . ip_trans($myrow["net_ip_address"]) . "&nbsp;</td>
-          <td><a href=\"system.php?pc=" . $myrow["system_uuid"] . "&amp;view=summary\">" . $myrow["system_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
-          <td>" . $myrow["nmap_port_number"] . "&nbsp;</td>
-          <td></td>
+				<tr style=\"background-color:" . $bgcolor . ";\">
+					<td>" . ip_trans($myrow["net_ip_address"]) . "&nbsp;</td>
+					<td><a href=\"system.php?pc=" . $myrow["system_uuid"] . "&amp;view=summary\">" . $myrow["system_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
+					<td><a href= \"launch.php?hostname=".$myrow["system_name"]."&amp;domain=".$myrow["net_domain"]."&amp;application=telnet&amp;ext=vbs\"/>" . $myrow["nmap_port_number"] . "&nbsp;</td>
+					<td>" . $myrow["nmap_port_name"] . "&nbsp;</td>
+					<td>" . $myrow["nmap_port_version"] . "&nbsp;</td>
         </tr>\n";
     } while ($myrow = mysql_fetch_array($result));
     
 		echo "<tr><td>&nbsp;</td></tr>\n";
 	}
+}
 
-	// ****** Detected by NMap as other system *****************************************************
-	$sql  = "select oth.other_id, oth.other_ip_address, oth.other_network_name, oth.other_mac_address, ";
-  $sql .= "port.nmap_port_number from other oth, nmap_ports port where port.nmap_port_number = '23' AND ";
-  $sql .= "port.nmap_other_id = oth.other_id";
+// ****** Get telnet servers detected by nmap as other system *****************************************************
+function GetTelnetServersNmapAsOtherSystem(&$total)
+{  
+	global $db;
+	global $bgcolor,$bg1,$bg2;
+	
+  $sql  = "SELECT oth.other_id, oth.other_ip_address, oth.other_network_name, oth.other_mac_address, port.nmap_port_number, port.nmap_port_proto, port.nmap_port_name, port.nmap_port_version ";
+  $sql .= "FROM other oth, nmap_ports port ";
+  $sql .= "WHERE port.nmap_port_number = '23' AND port.nmap_port_proto = 'tcp' AND (port.nmap_other_id = oth.other_mac_address OR port.nmap_other_id = oth.other_id) ";
+  $sql .= "ORDER BY oth.other_network_name";
   
 	$result = mysql_query($sql, $db);
-  $count += mysql_numrows($result);
+  $total += mysql_numrows($result);
   
 	if ($myrow = mysql_fetch_array($result))
 	{
@@ -702,11 +824,12 @@ function GetTelnetServers()
 
     echo "
     <tr><td colspan=\"4\"><b>".__("Nmap discovered on Other equipment")."</b></td></tr>
-    <tr style=\"bgcolor:" . $bgcolor . ";\">
+    <tr style=\"background-color:" . $bgcolor . ";\">
 			<td><b>".__("IP Address")."</b></td>
-      <td><b>".__("Hostname")."</b></td>
-      <td><b>".__("Port")."</b></td>
-      <td></td>
+			<td><b>".__("Hostname")."</b></td>
+			<td><b>".__("TCP Port")."</b></td>
+			<td><b>".__("Service")."</b></td>
+			<td><b>".__("Version")."</b></td>
     </tr>\n";
 
     do 
@@ -714,25 +837,39 @@ function GetTelnetServers()
       $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
 
 		echo "
-			<tr style=\"bgcolor:" . $bgcolor . ";\">
-      	<td>" . ip_trans($myrow["other_ip_address"]) . "&nbsp;</td>
-        <td><a href=\"system.php?other=" . $myrow["other_id"] . "&amp;view=other_system\">" . $myrow["other_network_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
-        <td>" . $myrow["nmap_port_number"] . "&nbsp;</td>
-        <td></td>
+			<tr style=\"background-color:" . $bgcolor . ";\">
+				<td>" . ip_trans($myrow["other_ip_address"]) . "&nbsp;</td>
+				<td><a href=\"system.php?other=" . $myrow["other_id"] . "&amp;view=other_system\">" . $myrow["other_network_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
+				<td><a href= \"launch_other.php?hostname=".$myrow["other_ip_address"]."&amp;application=telnet&amp;ext=vbs\"/>" . $myrow["nmap_port_number"] . "&nbsp;</td>
+				<td>" . $myrow["nmap_port_name"] . "&nbsp;</td>
+				<td>" . $myrow["nmap_port_version"] . "&nbsp;</td>
       </tr>\n";
     } while ($myrow = mysql_fetch_array($result));
    
 	  echo "<tr><td>&nbsp;</td></tr>\n";
   }
-	
-  echo "</table>";	
-	
+}
+
+// ****** Get detected email servers *****************************************************
+// $id = ID of the HTML element that this data is "bound" to
+function GetEmailServers($id)
+{
 	echo "
-	</div>
-	<table style=\"border:0px;\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" >
+	<div style=\"display:none;\" id=\"$id\">\n
+  	<table style=\"border:0px;\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" >\n";
+
+	$total=0;
+	GetEmailServersAsService($total);
+	GetEmailServersNmapAsAuditedSystem($total);
+	GetEmailServersNmapAsOtherSystem($total);
+
+  echo "
+	</table>
+		</div>
+		<table style=\"border:0px;\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" >
 		<tr>
 			<td colspan=\"3\">
-				<b>".__("Systems").": ".$count."</b>
+				<b>".__("Systems").": ".$total."</b>
 			</td>
 		</tr>
   </table>";
@@ -740,67 +877,72 @@ function GetTelnetServers()
 	return; 
 }
 
-// ****** Get Email Servers *****************************************************
-function GetEmailServers()
+// ****** Get email servers detected as a Windows service *****************************************************
+function GetEmailServersAsService(&$total)
 {
   global $db;
-
-	// ****** Detected as a Windows service *****************************************************
-  $sql  = "SELECT DISTINCT service_uuid, service_display_name, service_started, system_name, net_ip_address ";
-  $sql .= "FROM service, system WHERE (service_display_name = 'Microsoft Exchange Information Store' OR ";
-  $sql .= "service_display_name = 'Simple Mail Transport Protocol (SMTP)' OR ";
-  $sql .= "service_display_name LIKE '%Lotus%Domino%' OR ";
-  $sql .= "service_display_name = 'Simple Mail Transfer Protocol (SMTP)') ";
-  $sql .= "AND service_timestamp = system_timestamp AND service_uuid = system_uuid ORDER BY system_name";
+	global $bgcolor,$bg1,$bg2;
+  
+  $sql  = "SELECT DISTINCT ser.service_uuid, ser.service_display_name, ser.service_name, ser.service_started, sys.system_name, sys.net_ip_address ";
+  $sql .= "FROM service ser, system sys ";
+  $sql .= "WHERE (ser.service_name = 'MSExchangeIS' OR ser.service_name = 'SMTPSvc' OR ser.service_display_name LIKE 'SMTP' OR ser.service_display_name LIKE '%Lotus%Domino%') ";
+  $sql .= "AND ser.service_timestamp = sys.system_timestamp AND ser.service_uuid = sys.system_uuid ";
+  $sql .= "ORDER BY sys.system_name";
   
 	$result = mysql_query($sql, $db);
-	$count=mysql_numrows($result);
-
-	echo "
-	<div style=\"display:none;\" id=\"f9\">\n
-  	<table style=\"border:0px;\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" >
-    	<tr><td colspan=\"2\"><b>".__("Windows")." ".__("Services")."</b></td></tr>\n";
+	$total .= mysql_numrows($result);
 	
 	if ($myrow = mysql_fetch_array($result))
 	{
+    echo "<tr><td colspan=\"2\"><b>".__("Windows")." ".__("Services")."</b></td></tr>\n";
 		echo "
     	<tr>
 				<td><b>".__("IP Address")."</b></td>
-      	<td><b>".__("Hostname")."</b></td>
-      	<td><b>".__("Service")."</b></td>
-      	<td><b>".__("State")."</b></td>
+				<td><b>".__("Hostname")."</b></td>
+				<td><b>".__("Service")."</b></td>
+				<td><b>".__("Started")."</b></td>
     	</tr>\n";
     do
 		{
       $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
       
       echo "
-			<tr style=\"bgcolor:" . $bgcolor . ";\">
-      	<td>" . ip_trans($myrow["net_ip_address"]) . "&nbsp;</td>
-        <td><a href=\"system.php?pc=" . $myrow["service_uuid"] . "&amp;view=summary\">" . $myrow["system_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
+			<tr style=\"background-color:" . $bgcolor . ";\">
+				<td>" . ip_trans($myrow["net_ip_address"]) . "&nbsp;</td>
+				<td><a href=\"system.php?pc=" . $myrow["service_uuid"] . "&amp;view=summary\">" . $myrow["system_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
 				<td>" . $myrow["service_display_name"] . "</td>
-				<td><a href= \"http://".$myrow["system_name"]."\" onclick=\"this.target='_blank';\" />" . $myrow["service_started"] . "</td>
+				<td>" . $myrow["service_started"] . "</td>
 			</tr>\n";
     } while ($myrow = mysql_fetch_array($result));
     
 		echo "<tr><td>&nbsp;</td></tr>\n";
 	}
-	
-	
-	// ****** Detected by NMap as an audited PC *****************************************************
-  $sql  = "select sys.net_ip_address,sys.system_name,sys.system_uuid, port.nmap_port_number FROM ";
-  $sql .= "system sys, nmap_ports port where port.nmap_port_number = '25' AND port.nmap_other_id = sys.system_uuid";
+}
+
+// ****** Get email servers detected by nmap as audited system *****************************************************
+function GetEmailServersNmapAsAuditedSystem(&$total)
+{
+  global $db;
+	global $bgcolor,$bg1,$bg2;
+
+  $sql  = "SELECT sys.net_ip_address, sys.system_name, sys.system_uuid, sys.net_domain, port.nmap_port_number, port.nmap_port_proto, port.nmap_port_name, port.nmap_port_version ";
+  $sql .= "FROM system sys, nmap_ports port ";
+  $sql .= "WHERE port.nmap_port_number = '25' AND port.nmap_port_proto = 'tcp' AND port.nmap_other_id = sys.system_uuid ";
+  $sql .= "ORDER BY sys.system_name";
   
 	$result = mysql_query($sql, $db);
-  $count += mysql_numrows($result);
+  $total += mysql_numrows($result);
 
   if ($myrow = mysql_fetch_array($result))
 	{
   	echo "
 		<tr><td colspan=\"4\"><b>".__("Nmap discovered on Audited PC")."</b></td></tr>
     <tr>
-    	<td><b>".__("IP Address")."</b></td>
-    	<td><b>".__("Hostname")."</b></td>
+			<td><b>".__("IP Address")."</b></td>
+			<td><b>".__("Hostname")."</b></td>
+			<td><b>".__("TCP Port")."</b></td>
+			<td><b>".__("Service")."</b></td>
+			<td><b>".__("Version")."</b></td>
     </tr>\n";
 
     do
@@ -808,24 +950,32 @@ function GetEmailServers()
   		$bgcolor = change_row_color($bgcolor,$bg1,$bg2);
 
         echo "
-				<tr style=\"bgcolor:" . $bgcolor . ";\">
-        	<td>" . ip_trans($myrow["net_ip_address"]) . "&nbsp;</td>
-          <td><a href=\"system.php?pc=" . $myrow["system_uuid"] . "&amp;view=summary\">" . $myrow["system_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
-          <td>" . $myrow["nmap_port_number"] . "&nbsp;</td>
-          <td></td>
+				<tr style=\"background-color:" . $bgcolor . ";\">
+					<td>" . ip_trans($myrow["net_ip_address"]) . "&nbsp;</td>
+					<td><a href=\"system.php?pc=" . $myrow["system_uuid"] . "&amp;view=summary\">" . $myrow["system_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
+					<td><a href= \"launch.php?hostname=".$myrow["system_name"]."&amp;domain=".$myrow["net_domain"]."&amp;application=telnet&amp;ext=vbs\"/>" . $myrow["nmap_port_number"] . "&nbsp;</td>
+					<td>" . $myrow["nmap_port_name"] . "&nbsp;</td>
+					<td>" . $myrow["nmap_port_version"] . "&nbsp;</td>
         </tr>\n";
     } while ($myrow = mysql_fetch_array($result));
     
 		echo "<tr><td>&nbsp;</td></tr>\n";
 	}
+}
 
-	// ****** Detected by NMap as other system *****************************************************
-  $sql  = "select oth.other_id, oth.other_ip_address, oth.other_network_name, oth.other_mac_address, ";
-  $sql .= "port.nmap_port_number from other oth, nmap_ports port where port.nmap_port_number = '25' AND ";
-  $sql .= "port.nmap_other_id = oth.other_id";
+// ****** Get email servers detected by nmap as other system *****************************************************
+function GetEmailServersNmapAsOtherSystem(&$total)
+{  
+	global $db;
+	global $bgcolor,$bg1,$bg2;
+	
+  $sql  = "SELECT oth.other_id, oth.other_ip_address, oth.other_network_name, oth.other_mac_address, port.nmap_port_number, port.nmap_port_proto, port.nmap_port_name, port.nmap_port_version ";
+  $sql .= "FROM other oth, nmap_ports port ";
+  $sql .= "WHERE port.nmap_port_number = '25' AND port.nmap_port_proto = 'tcp' AND (port.nmap_other_id = oth.other_mac_address OR port.nmap_other_id = oth.other_id) ";
+  $sql .= "ORDER BY oth.other_network_name";
   
 	$result = mysql_query($sql, $db);
-  $count += mysql_numrows($result);
+  $total += mysql_numrows($result);
   
 	if ($myrow = mysql_fetch_array($result))
 	{
@@ -833,11 +983,12 @@ function GetEmailServers()
 
     echo "
     <tr><td colspan=\"4\"><b>".__("Nmap discovered on Other equipment")."</b></td></tr>
-    <tr style=\"bgcolor:" . $bgcolor . ";\">
+    <tr style=\"background-color:" . $bgcolor . ";\">
 			<td><b>".__("IP Address")."</b></td>
-      <td><b>".__("Hostname")."</b></td>
-      <td><b>".__("Port")."</b></td>
-      <td></td>
+			<td><b>".__("Hostname")."</b></td>
+			<td><b>".__("TCP Port")."</b></td>
+			<td><b>".__("Service")."</b></td>
+			<td><b>".__("Version")."</b></td>
     </tr>\n";
 
     do 
@@ -845,91 +996,112 @@ function GetEmailServers()
       $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
 
 		echo "
-			<tr style=\"bgcolor:" . $bgcolor . ";\">
-      	<td>" . ip_trans($myrow["other_ip_address"]) . "&nbsp;</td>
-        <td><a href=\"system.php?other=" . $myrow["other_id"] . "&amp;view=other_system\">" . $myrow["other_network_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
-        <td>" . $myrow["nmap_port_number"] . "&nbsp;</td>
-        <td></td>
+			<tr style=\"background-color:" . $bgcolor . ";\">
+				<td>" . ip_trans($myrow["other_ip_address"]) . "&nbsp;</td>
+				<td><a href=\"system.php?other=" . $myrow["other_id"] . "&amp;view=other_system\">" . $myrow["other_network_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
+				<td><a href= \"launch_other.php?hostname=".$myrow["other_ip_address"]."&amp;application=telnet&amp;ext=vbs\"/>" . $myrow["nmap_port_number"] . "&nbsp;</td>
+				<td>" . $myrow["nmap_port_name"] . "&nbsp;</td>
+				<td>" . $myrow["nmap_port_version"] . "&nbsp;</td>
       </tr>\n";
     } while ($myrow = mysql_fetch_array($result));
    
 	  echo "<tr><td>&nbsp;</td></tr>\n";
   }
-	
-  echo "</table>";	
-	
+}
+
+// ****** Get detected VNC servers *****************************************************
+// $id = ID of the HTML element that this data is "bound" to
+function GetVncServers($id)
+{
 	echo "
-	</div>
-	<table style=\"border:0px;\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" >
-		<tr>
-			<td colspan=\"3\">
-				<b>".__("Systems").": ".$count."</b>
-			</td>
-		</tr>
+	<div style=\"display:none;\" id=\"$id\">\n
+  	<table style=\"border:0px;\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" >";
+	
+	$total=0;
+	GetVncServersAsService($total);
+	GetVncServersNmapAsAuditedSystem($total);
+	GetVncServersNmapAsOtherSystem($total);
+
+  echo "
+	</table>
+		</div>
+		<table style=\"border:0px;\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" >
+			<tr>
+				<td colspan=\"3\">
+					<b>".__("Systems").": ".$total."</b>
+				</td>
+			</tr>
   </table>";
 
 	return; 
 }
 
-
-// ****** Get VNC Servers *****************************************************
-function GetVncServers()
+// ****** Get vnc servers detected as a Windows service *****************************************************
+function GetVncServersAsService(&$total)
 {
   global $db;
-
-	// ****** Detected as a Windows service *****************************************************
-  $sql  = "SELECT DISTINCT service_uuid, service_display_name, service_started, system_name, net_ip_address ";
-  $sql .= "FROM service, system WHERE service_display_name LIKE '%VNC%' AND ";
-  $sql .= "service_timestamp = system_timestamp AND service_uuid = system_uuid ORDER BY system_name";
+	global $bgcolor,$bg1,$bg2;
+	
+  $sql  = "SELECT DISTINCT ser.service_uuid, ser.service_display_name, ser.service_name, ser.service_started, sys.system_name, sys.net_ip_address ";
+  $sql .= "FROM service ser, system sys ";
+  $sql .= "WHERE ser.service_name LIKE '%VNC%' AND ser.service_timestamp = sys.system_timestamp AND ser.service_uuid = sys.system_uuid ";
+  $sql .= "ORDER BY sys.system_name";
 
 	$result = mysql_query($sql, $db);
-	$count=mysql_numrows($result);
-
-	echo "
-	<div style=\"display:none;\" id=\"f10\">\n
-  	<table style=\"border:0px;\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" >
-    	<tr><td colspan=\"2\"><b>".__("Windows")." ".__("Services")."</b></td></tr>\n";
+	$total .= mysql_numrows($result);
 	
 	if ($myrow = mysql_fetch_array($result))
 	{
+		echo "<tr><td colspan=\"2\"><b>".__("Windows")." ".__("Services")."</b></td></tr>\n";
 		echo "
     	<tr>
 				<td><b>".__("IP Address")."</b></td>
-      	<td><b>".__("Hostname")."</b></td>
-      	<td><b>".__("Service")."</b></td>
-      	<td><b>".__("State")."</b></td>
+				<td><b>".__("Hostname")."</b></td>
+				<td><b>".__("Service")."</b></td>
+				<td><b>".__("Started")."</b></td>
     	</tr>\n";
     do
 		{
       $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
       
       echo "
-			<tr style=\"bgcolor:" . $bgcolor . ";\">
-      	<td>" . ip_trans($myrow["net_ip_address"]) . "&nbsp;</td>
-        <td><a href=\"system.php?pc=" . $myrow["service_uuid"] . "&amp;view=summary\">" . $myrow["system_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
-				<td>" . $myrow["service_display_name"] . "</td>
-				<td><a href= \"http://".$myrow["system_name"]."\" onclick=\"this.target='_blank';\" />" . $myrow["service_started"] . "</td>
+			<tr style=\"background-color:" . $bgcolor . ";\">
+           <td>" . ip_trans($myrow["net_ip_address"]) . "&nbsp;</td>
+           <td><a href=\"system.php?pc=" . $myrow["service_uuid"] . "&amp;view=summary\">" . $myrow["system_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
+           <td>" . $myrow["service_display_name"] . "</td>
+           <td>" . $myrow["service_started"] . "</td>
 			</tr>\n";
     } while ($myrow = mysql_fetch_array($result));
     
 		echo "<tr><td>&nbsp;</td></tr>\n";
 	}
+}
+
+// ****** Get VNC servers detected by nmap as audited system *****************************************************
+function GetVncServersNmapAsAuditedSystem(&$total)
+{
+  global $db;
+	global $bgcolor,$bg1,$bg2;
+	global $vnc_type;
 	
-	
-	// ****** Detected by NMap as an audited PC *****************************************************
-  $sql  = "select sys.net_ip_address,sys.system_name,sys.system_uuid, port.nmap_port_number FROM ";
-  $sql .=	"system sys, nmap_ports port where port.nmap_port_number = '5900' AND port.nmap_other_id = sys.system_uuid";
+  $sql  = "SELECT sys.net_ip_address, sys.system_name, sys.system_uuid, sys.net_domain, port.nmap_port_number, port.nmap_port_proto, port.nmap_port_name, port.nmap_port_version ";
+  $sql .= "FROM system sys, nmap_ports port ";
+  $sql .= "WHERE port.nmap_port_number = '5900' AND port.nmap_port_proto = 'tcp' AND port.nmap_other_id = sys.system_uuid ";
+  $sql .= "ORDER BY sys.system_name";
   
 	$result = mysql_query($sql, $db);
-  $count += mysql_numrows($result);
+  $total += mysql_numrows($result);
 
   if ($myrow = mysql_fetch_array($result))
 	{
   	echo "
 		<tr><td colspan=\"4\"><b>".__("Nmap discovered on Audited PC")."</b></td></tr>
     <tr>
-    	<td><b>".__("IP Address")."</b></td>
-    	<td><b>".__("Hostname")."</b></td>
+			<td><b>".__("IP Address")."</b></td>
+			<td><b>".__("Hostname")."</b></td>
+			<td><b>".__("TCP Port")."</b></td>
+			<td><b>".__("Service")."</b></td>
+			<td><b>".__("Version")."</b></td>
     </tr>\n";
 
     do
@@ -937,24 +1109,33 @@ function GetVncServers()
   		$bgcolor = change_row_color($bgcolor,$bg1,$bg2);
 
         echo "
-				<tr style=\"bgcolor:" . $bgcolor . ";\">
-        	<td>" . ip_trans($myrow["net_ip_address"]) . "&nbsp;</td>
-          <td><a href=\"system.php?pc=" . $myrow["system_uuid"] . "&amp;view=summary\">" . $myrow["system_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
-          <td>" . $myrow["nmap_port_number"] . "&nbsp;</td>
-          <td></td>
+				<tr style=\"background-color:" . $bgcolor . ";\">
+             <td>" . ip_trans($myrow["net_ip_address"]) . "&nbsp;</td>
+             <td><a href=\"system.php?pc=" . $myrow["system_uuid"] . "&amp;view=summary\">" . $myrow["system_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
+             <td><a href= \"launch.php?hostname=".$myrow["system_name"]."&amp;domain=".$myrow["net_domain"]."&amp;application=".$vnc_type."_"."vnc&amp;ext=vnc\"/>" . $myrow["nmap_port_number"] . "&nbsp;</td>
+             <td>" . $myrow["nmap_port_name"] . "&nbsp;</td>
+             <td>" . $myrow["nmap_port_version"] . "&nbsp;</td>
         </tr>\n";
     } while ($myrow = mysql_fetch_array($result));
     
 		echo "<tr><td>&nbsp;</td></tr>\n";
 	}
+}
 
-	// ****** Detected by NMap as other system *****************************************************
-  $sql  = "select oth.other_id, oth.other_ip_address, oth.other_network_name, oth.other_mac_address, ";
-  $sql .= "port.nmap_port_number from other oth, nmap_ports port where port.nmap_port_number = '5900' AND ";
-  $sql .= "port.nmap_other_id = oth.other_mac_address";
+// ****** Get VNC servers detected by nmap as other system *****************************************************
+function GetVncServersNmapAsOtherSystem(&$total)
+{
+  global $db;
+	global $bgcolor,$bg1,$bg2;
+	global $vnc_type;
+
+  $sql  = "SELECT oth.other_id, oth.other_ip_address, oth.other_network_name, oth.other_mac_address, port.nmap_port_number, port.nmap_port_proto, port.nmap_port_name, port.nmap_port_version ";
+  $sql .= "FROM other oth, nmap_ports port ";
+  $sql .= "WHERE port.nmap_port_number = '5900' AND port.nmap_port_proto = 'tcp' AND (port.nmap_other_id = oth.other_mac_address OR port.nmap_other_id = oth.other_id) ";
+  $sql .= "ORDER BY oth.other_network_name";
   
 	$result = mysql_query($sql, $db);
-  $count += mysql_numrows($result);
+  $total += mysql_numrows($result);
   
 	if ($myrow = mysql_fetch_array($result))
 	{
@@ -962,11 +1143,12 @@ function GetVncServers()
 
     echo "
     <tr><td colspan=\"4\"><b>".__("Nmap discovered on Other equipment")."</b></td></tr>
-    <tr style=\"bgcolor:" . $bgcolor . ";\">
+    <tr style=\"background-color:" . $bgcolor . ";\">
 			<td><b>".__("IP Address")."</b></td>
-      <td><b>".__("Hostname")."</b></td>
-      <td><b>".__("Port")."</b></td>
-      <td></td>
+			<td><b>".__("Hostname")."</b></td>
+			<td><b>".__("TCP Port")."</b></td>
+			<td><b>".__("Service")."</b></td>
+			<td><b>".__("Version")."</b></td>
     </tr>\n";
 
     do 
@@ -974,47 +1156,352 @@ function GetVncServers()
       $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
 
 		echo "
-			<tr style=\"bgcolor:" . $bgcolor . ";\">
-      	<td>" . ip_trans($myrow["other_ip_address"]) . "&nbsp;</td>
-        <td><a href=\"system.php?other=" . $myrow["other_id"] . "&amp;view=other_system\">" . $myrow["other_network_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
-        <td>" . $myrow["nmap_port_number"] . "&nbsp;</td>
-        <td></td>
+			<tr style=\"background-color:" . $bgcolor . ";\">
+           <td>" . ip_trans($myrow["other_ip_address"]) . "&nbsp;</td>
+           <td><a href=\"system.php?other=" . $myrow["other_id"] . "&amp;view=other_system\">" . $myrow["other_network_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
+           <td><a href= \"launch_other.php?hostname=".$myrow["other_ip_address"]."&amp;application=".$vnc_type."_"."vnc&amp;ext=vnc\"/>" . $myrow["nmap_port_number"] . "&nbsp;</td>
+           <td>" . $myrow["nmap_port_name"] . "&nbsp;</td>
+           <td>" . $myrow["nmap_port_version"] . "&nbsp;</td>
       </tr>\n";
     } while ($myrow = mysql_fetch_array($result));
    
 	  echo "<tr><td>&nbsp;</td></tr>\n";
   }
-	
-  echo "</table>";	
-	
+}
+
+// ****** Get decected RDP servers *****************************************************
+// $id = ID of the HTML element that this data is "bound" to
+function GetRdpServers($id)
+{
 	echo "
-	</div>
-	<table style=\"border:0px;\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" >
-		<tr>
-			<td colspan=\"3\">
-				<b>".__("Systems").": ".$count."</b>
-			</td>
-		</tr>
+	<div style=\"display:none;\" id=\"$id\">\n
+  	<table style=\"border:0px;\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" >";
+	
+	$total=0;
+	GetRdpServersAsService($total);
+	GetRdpServersNmapAsAuditedSystem($total);
+	GetRdpServersNmapAsOtherSystem($total);
+
+  echo "
+	</table>
+		</div>
+		<table style=\"border:0px;\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" >
+			<tr>
+				<td colspan=\"3\">
+					<b>".__("Systems").": ".$total."</b>
+				</td>
+			</tr>
   </table>";
 
 	return; 
 }
 
-
-// ****** GetDetectedXpAvData *****************************************************
-function GetDetectedXpAvData()
+// ****** Get RDP servers detected as a Windows service *****************************************************
+function GetRdpServersAsService(&$total)
 {
   global $db;
+	global $bgcolor,$bg1,$bg2;
+	
+  $sql  = "SELECT DISTINCT ser.service_uuid, ser.service_display_name, ser.service_name, ser.service_started, sys.system_name, sys.net_ip_address ";
+  $sql .= "FROM service ser, system sys ";
+  $sql .= "WHERE ser.service_name LIKE '%TermService%' AND ser.service_timestamp = sys.system_timestamp AND ser.service_uuid = sys.system_uuid ";
+  $sql .= "ORDER BY sys.system_name";
 
-  $sql  = "SELECT system_name, net_ip_address, system_uuid, virus_name, virus_uptodate ";
-	$sql .= "FROM system WHERE (virus_name = '' OR virus_uptodate = 'False') AND system_service_pack = '2.0' ";
-	$sql .= "AND system_os_name LIKE 'Microsoft Windows XP%' ORDER BY system_name";
+	$result = mysql_query($sql, $db);
+	$total .= mysql_numrows($result);
+	
+	if ($myrow = mysql_fetch_array($result))
+	{
+		echo "<tr><td colspan=\"2\"><b>".__("Windows")." ".__("Services")."</b></td></tr>\n";
+		echo "
+    	<tr>
+				<td><b>".__("IP Address")."</b></td>
+				<td><b>".__("Hostname")."</b></td>
+				<td><b>".__("Service")."</b></td>
+				<td><b>".__("Started")."</b></td>
+    	</tr>\n";
+    do
+		{
+      $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
+      
+      echo "
+			<tr style=\"background-color:" . $bgcolor . ";\">
+				<td>" . ip_trans($myrow["net_ip_address"]) . "&nbsp;</td>
+				<td><a href=\"system.php?pc=" . $myrow["service_uuid"] . "&amp;view=summary\">" . $myrow["system_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
+				<td>" . $myrow["service_display_name"] . "</td>
+				<td>" . $myrow["service_started"] . "</td>
+			</tr>\n";
+    } while ($myrow = mysql_fetch_array($result));
+    
+		echo "<tr><td>&nbsp;</td></tr>\n";
+	}
+}
+
+// ****** Get RDP servers detected by nmap as audited system *****************************************************
+function GetRdpServersNmapAsAuditedSystem(&$total)
+{
+  global $db;
+	global $bgcolor,$bg1,$bg2;
+	
+  $sql  = "SELECT sys.net_ip_address, sys.system_name, sys.system_uuid, sys.net_domain, port.nmap_port_number, port.nmap_port_proto, port.nmap_port_name, port.nmap_port_version ";
+  $sql .= "FROM system sys, nmap_ports port ";
+  $sql .= "WHERE port.nmap_port_number = '3389' AND port.nmap_port_proto = 'tcp' AND port.nmap_other_id = sys.system_uuid ";
+  $sql .= "ORDER BY sys.system_name";
+  
+	$result = mysql_query($sql, $db);
+  $total += mysql_numrows($result);
+
+  if ($myrow = mysql_fetch_array($result))
+	{
+  	echo "
+		<tr><td colspan=\"4\"><b>".__("Nmap discovered on Audited PC")."</b></td></tr>
+    <tr>
+			<td><b>".__("IP Address")."</b></td>
+			<td><b>".__("Hostname")."</b></td>
+			<td><b>".__("TCP Port")."</b></td>
+			<td><b>".__("Service")."</b></td>
+			<td><b>".__("Version")."</b></td>
+    </tr>\n";
+
+    do
+		{
+  		$bgcolor = change_row_color($bgcolor,$bg1,$bg2);
+
+        echo "
+				<tr style=\"background-color:" . $bgcolor . ";\">
+					<td>" . ip_trans($myrow["net_ip_address"]) . "&nbsp;</td>
+					<td ><a href=\"system.php?pc=" . $myrow["system_uuid"] . "&amp;view=summary\">" . $myrow["system_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
+					<td><a href= \"launch.php?hostname=".$myrow["system_name"]."&amp;domain=".$myrow["net_domain"]."&amp;application=rdp&amp;ext=rdp\"/>" . $myrow["nmap_port_number"] . "&nbsp;</td>
+					<td>" . $myrow["nmap_port_name"] . "&nbsp;</td>
+					<td>" . $myrow["nmap_port_version"] . "&nbsp;</td>
+        </tr>\n";
+    } while ($myrow = mysql_fetch_array($result));
+    
+		echo "<tr><td>&nbsp;</td></tr>\n";
+	}
+}
+
+// ****** Get RDP servers detected by nmap as other system *****************************************************
+function GetRdpServersNmapAsOtherSystem(&$total)
+{
+  global $db;
+	global $bgcolor,$bg1,$bg2;
+
+  $sql  = "SELECT oth.other_id, oth.other_ip_address, oth.other_network_name, oth.other_mac_address, port.nmap_port_number, port.nmap_port_proto, port.nmap_port_name, port.nmap_port_version ";
+  $sql .= "FROM other oth, nmap_ports port ";
+  $sql .= "WHERE port.nmap_port_number = '3389' AND port.nmap_port_proto = 'tcp' AND (port.nmap_other_id = oth.other_mac_address OR port.nmap_other_id = oth.other_id) ";
+  $sql .= "ORDER BY oth.other_network_name";
+  
+	$result = mysql_query($sql, $db);
+  $total += mysql_numrows($result);
+  
+	if ($myrow = mysql_fetch_array($result))
+	{
+  	$bgcolor = change_row_color($bgcolor,$bg1,$bg2);
+
+    echo "
+    <tr><td colspan=\"4\"><b>".__("Nmap discovered on Other equipment")."</b></td></tr>
+    <tr style=\"background-color:" . $bgcolor . ";\">
+			<td><b>".__("IP Address")."</b></td>
+			<td><b>".__("Hostname")."</b></td>
+			<td><b>".__("TCP Port")."</b></td>
+			<td><b>".__("Service")."</b></td>
+			<td><b>".__("Version")."</b></td>
+    </tr>\n";
+
+    do 
+		{
+      $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
+
+		echo "
+			<tr style=\"background-color:" . $bgcolor . ";\">
+				<td>" . ip_trans($myrow["other_ip_address"]) . "&nbsp;</td>
+				<td ><a href=\"system.php?other=" . $myrow["other_id"] . "&amp;view=other_system\">" . $myrow["other_network_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
+				<td><a href= \"launch_other.php?hostname=".$myrow["other_ip_address"]."&amp;application=rdp&amp;ext=rdp\"/>" . $myrow["nmap_port_number"] . "&nbsp;</td>
+				<td>" . $myrow["nmap_port_name"] . "&nbsp;</td>
+				<td>" . $myrow["nmap_port_version"] . "&nbsp;</td>
+      </tr>\n";
+    } while ($myrow = mysql_fetch_array($result));
+   
+	  echo "<tr><td>&nbsp;</td></tr>\n";
+  }
+}
+
+
+// ****** Get detected database servers *****************************************************
+// $id = ID of the HTML element that this data is "bound" to
+function GetDbServers($id)
+{	
+	echo "
+	<div style=\"display:none;\" id=\"$id\">\n
+  	<table style=\"border:0px;\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" >";
+	
+	$total=0;
+	GetDbServersAsService($total);
+	GetDbServersNmapAsAuditedSystem($total);
+	GetDbServersNmapAsOtherSystem($total);
+
+  echo "
+	</table>
+		</div>
+		<table style=\"border:0px;\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" >
+			<tr>
+				<td colspan=\"3\">
+					<b>".__("Systems").": ".$total."</b>
+				</td>
+			</tr>
+  </table>";
+
+	return; 
+}
+
+// ****** Get database servers detected as a Windows service *****************************************************
+function GetDbServersAsService(&$total)
+{
+  global $db;
+	global $bgcolor,$bg1,$bg2;
+	
+  $sql  = "SELECT DISTINCT ser.service_uuid, ser.service_display_name, ser.service_name, ser.service_started, sys.system_name, sys.net_ip_address ";
+  $sql .= "FROM service ser, system sys ";
+  $sql .= "WHERE (ser.service_name LIKE '%MySql%' OR ser.service_name = 'MSSQLSERVER' OR ser.service_name LIKE 'MSSQL$%' OR ser.service_name LIKE 'Oracle%TNSListener' OR ser.service_name = 'DB2') AND ser.service_timestamp = sys.system_timestamp AND ser.service_uuid = sys.system_uuid ";
+  $sql .= "ORDER BY sys.system_name";
+
+	$result = mysql_query($sql, $db);
+	$total .= mysql_numrows($result);
+	
+	if ($myrow = mysql_fetch_array($result))
+	{
+		echo "<tr><td colspan=\"2\"><b>".__("Windows")." ".__("Services")."</b></td></tr>\n";
+		echo "
+    	<tr>
+				<td><b>".__("IP Address")."</b></td>
+				<td><b>".__("Hostname")."</b></td>
+				<td><b>".__("Service")."</b></td>
+				<td><b>".__("Started")."</b></td>
+    	</tr>\n";
+    do
+		{
+      $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
+      
+      echo "
+			<tr style=\"background-color:" . $bgcolor . ";\">
+				<td>" . ip_trans($myrow["net_ip_address"]) . "&nbsp;</td>
+				<td><a href=\"system.php?pc=" . $myrow["service_uuid"] . "&amp;view=summary\">" . $myrow["system_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
+				<td>" . $myrow["service_display_name"] . "</td>
+				<td>" . $myrow["service_started"] . "</td>
+			</tr>\n";
+    } while ($myrow = mysql_fetch_array($result));
+    
+		echo "<tr><td>&nbsp;</td></tr>\n";
+	}
+}
+
+// ****** Get database servers detected by nmap as audited system *****************************************************
+function GetDbServersNmapAsAuditedSystem(&$total)
+{
+  global $db;
+	global $bgcolor,$bg1,$bg2;
+	
+  $sql  = "SELECT sys.net_ip_address, sys.system_name, sys.system_uuid, sys.net_domain, port.nmap_port_number, port.nmap_port_proto, port.nmap_port_name, port.nmap_port_version ";
+  $sql .= "FROM system sys, nmap_ports port ";
+  $sql .= "WHERE (port.nmap_port_number = '3306' OR port.nmap_port_number = '1433' OR port.nmap_port_number = '1521' OR port.nmap_port_number = '523') AND port.nmap_port_proto = 'tcp' AND port.nmap_other_id = sys.system_uuid ";
+  $sql .= "ORDER BY sys.system_name";
+  
+	$result = mysql_query($sql, $db);
+  $total += mysql_numrows($result);
+
+  if ($myrow = mysql_fetch_array($result))
+	{
+  	echo "
+		<tr><td colspan=\"4\"><b>".__("Nmap discovered on Audited PC")."</b></td></tr>
+    <tr>
+			<td><b>".__("IP Address")."</b></td>
+			<td><b>".__("Hostname")."</b></td>
+			<td><b>".__("TCP Port")."</b></td>
+			<td><b>".__("Service")."</b></td>
+			<td><b>".__("Version")."</b></td>
+    </tr>\n";
+
+    do
+		{
+  		$bgcolor = change_row_color($bgcolor,$bg1,$bg2);
+
+        echo "
+				<tr style=\"background-color:" . $bgcolor . ";\">
+					<td>" . ip_trans($myrow["net_ip_address"]) . "&nbsp;</td>
+					<td ><a href=\"system.php?pc=" . $myrow["system_uuid"] . "&amp;view=summary\">" . $myrow["system_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
+					<td>" . $myrow["nmap_port_number"] . "&nbsp;</td>
+					<td>" . $myrow["nmap_port_name"] . "&nbsp;</td>
+					<td>" . $myrow["nmap_port_version"] . "&nbsp;</td>
+        </tr>\n";
+    } while ($myrow = mysql_fetch_array($result));
+    
+		echo "<tr><td>&nbsp;</td></tr>\n";
+	}
+}
+
+// ****** Get database servers detected by nmap as other system *****************************************************
+function GetDbServersNmapAsOtherSystem(&$total)
+{
+  global $db;
+	global $bgcolor,$bg1,$bg2;
+
+  $sql  = "SELECT oth.other_id, oth.other_ip_address, oth.other_network_name, oth.other_mac_address, port.nmap_port_number, port.nmap_port_proto, port.nmap_port_name, port.nmap_port_version ";
+  $sql .= "FROM other oth, nmap_ports port ";
+  $sql .= "WHERE (port.nmap_port_number = '3306' OR port.nmap_port_number = '1433' OR port.nmap_port_number = '1521' OR port.nmap_port_number = '523') AND port.nmap_port_proto = 'tcp' AND (port.nmap_other_id = oth.other_mac_address OR port.nmap_other_id = oth.other_id) ";
+  $sql .= "ORDER BY oth.other_network_name";
+  
+	$result = mysql_query($sql, $db);
+  $total += mysql_numrows($result);
+  
+	if ($myrow = mysql_fetch_array($result))
+	{
+  	$bgcolor = change_row_color($bgcolor,$bg1,$bg2);
+
+    echo "
+    <tr><td colspan=\"4\"><b>".__("Nmap discovered on Other equipment")."</b></td></tr>
+    <tr style=\"background-color:" . $bgcolor . ";\">
+			<td><b>".__("IP Address")."</b></td>
+			<td><b>".__("Hostname")."</b></td>
+			<td><b>".__("TCP Port")."</b></td>
+			<td><b>".__("Service")."</b></td>
+			<td><b>".__("Version")."</b></td>
+    </tr>\n";
+
+    do 
+		{
+      $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
+
+		echo "
+			<tr style=\"background-color:" . $bgcolor . ";\">
+				<td>" . ip_trans($myrow["other_ip_address"]) . "&nbsp;</td>
+				<td ><a href=\"system.php?other=" . $myrow["other_id"] . "&amp;view=other_system\">" . $myrow["other_network_name"] . "</a>&nbsp;&nbsp;&nbsp;</td>
+				<td>" . $myrow["nmap_port_number"] . "&nbsp;</td>
+				<td>" . $myrow["nmap_port_name"] . "&nbsp;</td>
+				<td>" . $myrow["nmap_port_version"] . "&nbsp;</td>
+      </tr>\n";
+    } while ($myrow = mysql_fetch_array($result));
+   
+	  echo "<tr><td>&nbsp;</td></tr>\n";
+  }
+}
+
+// ****** Get XP SP2 systems without up to date AntiVirus *****************************************************
+// $id = ID of the HTML element that this data is "bound" to
+function GetDetectedXpAvData($id)
+{
+  global $db;
+	global $bgcolor,$bg1,$bg2;
+
+  $sql  = "SELECT system_name, net_ip_address, system_uuid, virus_name, virus_uptodate FROM system ";
+  $sql .= "WHERE (virus_name = '' OR virus_uptodate = 'False') AND system_service_pack = '2.0' AND system_os_name LIKE 'Microsoft Windows XP%' ";
+  $sql .= "ORDER BY system_name";
 	
 	$result = mysql_query($sql, $db);
 	$count=mysql_numrows($result);
 
 	echo "
-	<div style=\"display:none;\" id=\"f11\">\n";
+	<div style=\"display:none;\" id=\"$id\">\n";
 	
 	if ($myrow = mysql_fetch_array($result))
 	{
@@ -1032,7 +1519,7 @@ function GetDetectedXpAvData()
       $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
 
       echo "
-      <tr style=\"bgcolor:" . $bgcolor . ";\">
+      <tr style=\"background-color:" . $bgcolor . ";\">
       	<td>" . ip_trans($myrow["net_ip_address"]) . "</td>
         <td><a href=\"system.php?pc=" . $myrow["system_uuid"] . "&amp;view=summary\">" . $myrow["system_name"] . "</a></td>
         <td>" . $myrow["virus_name"] . "</td>

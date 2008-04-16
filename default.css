@@ -18,6 +18,11 @@ body {
   margin: 2px;
   padding: 5px;
   border: 1px solid #ccc; }
+	
+td.main_each {
+	border: none; 
+	background-image: url(images/grad.png); 
+	background-repeat: repeat-x;}
 
 td.indexheadlines {
   vertical-align:top;

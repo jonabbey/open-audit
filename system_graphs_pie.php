@@ -13,6 +13,9 @@ $image = imagecreatetruecolor($width, $height);
 // allocate some colors
 $white    = imagecolorallocate($image, 0xFF, 0xFF, 0xFF);
 $black    = imagecolorallocate($image, 0x00, 0x00, 0x00);
+// Orange #FF8407
+$orange = imagecolorallocate($image,0xff, 0x84, 0x07);
+
 
 //Set "Empty colours
 $empty_dark = imagecolorallocate( $image, 210, 210, 210 );
@@ -94,15 +97,15 @@ imagestring($image,$font,17,109,"".__("Current Usage").":%",$darkgray);
 
 // Show Free space %
 imagestring($image,$font,16,0,"".__("Free").":".$percent_free."%",$darkgray);
-imagefilledellipse($image,6,8,10,10,$empty_dark);
-imagefilledellipse($image,6,8,6,6,$white);
-imagefilledellipse($image,6,8,4,4,$empty_light);
+imagefilledellipse($image,6,8,12,12,$empty_dark);
+imagefilledellipse($image,6,8,6,6,$empty_light);
+imagefilledellipse($image,6,8,5,5,$red);
 
 // Show used space %
 imagestring($image,$font,16,16,"".__("Used").":".(100-$percent_free)."%",$darkgray);
-imagefilledellipse($image,6,22,10,10,$full_dark);
-imagefilledellipse($image,6,22,6,6,$white);
-imagefilledellipse($image,6,22,4,4,$full_light);
+imagefilledellipse($image,6,22,12,12,$full_dark);
+imagefilledellipse($image,6,22,6,6,$full_light);
+imagefilledellipse($image,6,22,5,5,$red);
 
 
 return($image);

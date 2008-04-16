@@ -12,7 +12,6 @@ $top=$_GET["top"];
 
 header("Content-type: image/png");
 
-global $db, $systems_audited;
 $border = 4;
 
 // create image
