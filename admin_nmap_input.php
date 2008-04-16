@@ -75,7 +75,7 @@ if (isset($_POST["submit"])){
         echo "Name: " . $name . "<br />";
       }
     }
-    if ((substr($split, 0, 25) == "All 1697 scanned ports on") or (substr($split, 0, 25) == "All 1488 scanned ports on") or (substr($split, 0, 25) == "All 3185 scanned ports on")) {
+    if ((substr($split, 0, 25) == "All 3199 scanned ports on") or (substr($split, 0, 25) == "All 3185 scanned ports on") or (substr($split, 0, 25) == "All 1711 scanned ports on") or (substr($split, 0, 25) == "All 1697 scanned ports on") or (substr($split, 0, 25) == "All 1488 scanned ports on")) {
       // OK - we have a hit (all scanned ports are closed or filtered).
       $temp = explode(" ", $split);
       $temp2 = $temp[6];
