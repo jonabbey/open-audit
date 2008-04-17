@@ -1,7 +1,7 @@
 '''''''''''''''''''''''''''''''''''
 ' Open Audit                      '
 ' Software and Hardware Inventory '
-' Outputs into MySQL              '
+' Outputs into MySQL              'e
 ' (c) Open-Audit.org 2003-2007    '
 ' Licensed under the GPL          '
 '''''''''''''''''''''''''''''''''''
@@ -216,11 +216,10 @@ if (software_audit = "y" and software_file_audit = "y") then
   xmlDoc.load("softwarefiles.xml")
 
   if (xmlDoc.parseError.errorCode <> 0) then
-    WScript.Echo("Error Code: " & xmlDoc.parseError.errorCode)
-    WScript.Echo("Error Reason: " & xmlDoc.parseError.reason)
-    WScript.Echo("Error Line: " & xmlDoc.parseError.srcText)
-    WScript.Echo("Error Line Number: " & xmlDoc.parseError.line)
-    WScript.Echo("")
+    Echo("Error Code: " & xmlDoc.parseError.errorCode)
+    Echo("Error Reason: " & xmlDoc.parseError.reason)
+    Echo("Error Line: " & xmlDoc.parseError.srcText)
+    Echo("Error Line Number: " & xmlDoc.parseError.line) & vbnewline
     WScript.quit
   end if
 end if
@@ -296,16 +295,12 @@ if strComputer <> "" then
       objFile.Close
     End If
     
-    if verbose = "y" then 
-    wscript.echo "" & Now & "," & strComputer & " - Able to connect to WMI. "
-    end if
+    Echo("" & Now & "," & strComputer & " - Able to connect to WMI. ")
     
     ' wscript.sleep 10000
     if strUser <> "" and strPass <> "" then
     ' Username & Password provided - assume not a domain local PC.
-      if verbose = "y" then
-        wscript.echo "Username and password provided - therefore assuming NOT a local domain PC."
-      end if
+      Echo("Username and password provided - therefore assuming NOT a local domain PC.")
       Set wmiLocator = CreateObject("WbemScripting.SWbemLocator")
       Set wmiNameSpace = wmiLocator.ConnectServer( strComputer, "root\default", strUser, strPass)
       Set oReg = wmiNameSpace.Get("StdRegProv")
@@ -314,9 +309,7 @@ if strComputer <> "" then
     end if
     if strUser = "" and strPass = "" then
     ' No Username & Password provided - assume a domain local PC
-      if verbose = "y" then
-        wscript.echo "No username and password provided - therefore assuming local domain PC."
-      end if
+      Echo("No username and password provided - therefore assuming local domain PC.")
       Set oReg=GetObject("winmgmts:{impersonationLevel=impersonate}!\\" & strComputer & "\root\default:StdRegProv")
       Set objWMIService = GetObject("winmgmts:\\" & strComputer & "\root\cimv2")
     end if
@@ -336,9 +329,7 @@ if strComputer <> "" then
     end if
     
   else
-    if verbose = "y" then
-      wscript.echo strComputer & " not available."
-    end if
+    Echo(strComputer & " not available.")
     if use_audit_log = "y" then 
         Set objFSO = CreateObject("Scripting.FileSystemObject")
         Set objFile = objFSO.OpenTextFile(this_audit_log, 8)
@@ -396,35 +387,27 @@ if audit_local_domain = "y" then
     strComputer = objRecordSet.Fields("Name").Value
     comparray(count) = strComputer ' Feed computers into array
     count = count + 1
-    if verbose = "y" then
-      wscript.echo "Computer Name from ldap: " & strComputer
-    end if
+    Echo("Computer Name from ldap: " & strComputer)
     objRecordSet.MoveNext
    Loop
 
    num_running = HowMany
-   if verbose = "y" then
-    wscript.echo "Number of systems retrieved from ldap: " & Ubound(comparray)
-    wscript.echo "--------------"
-   end if
+   Echo("Number of systems retrieved from ldap: " & Ubound(comparray))
+   Echo("--------------")
   end if 
     For i = 0 To Ubound(comparray)
    '  For i = 118 To 128
     while num_running > number_of_audits
-      if verbose = "y" then
-        wscript.echo "Processes running (" & num_running & ") greater than number wanted (" & number_of_audits & ")"
-        wscript.echo "Therefore - sleeping for 4 seconds."
-      end if
+      Echo("Processes running (" & num_running & ") greater than number wanted (" & number_of_audits & ")")
+      Echo("Therefore - sleeping for 4 seconds.")
       wscript.Sleep 4000
       num_running = HowMany
     wend
     if comparray(i) <> "" then
-      if verbose = "y" then
-        wscript.echo i & " of " & Ubound(comparray)
-        wscript.echo "Processes running: " & num_running
-        wscript.echo "Next System: " & comparray(i)
-        wscript.echo "--------------"
-      end if
+      Echo(i & " of " & Ubound(comparray))
+      Echo("Processes running: " & num_running)
+      Echo("Next System: " & comparray(i))
+      Echo("--------------")
       command1 = "cscript " & script_name & " " & comparray(i)
       set sh1=WScript.CreateObject("WScript.Shell")
       sh1.Run command1, 6, False
@@ -459,27 +442,21 @@ if input_file <> "" then
       count = count + 1
   Loop
   num_running = HowMany
-  if verbose = "y" then
-    wscript.echo "File " & input_file & " read into array."
-    wscript.echo "Number of systems retrieved from file: " & Ubound(comparray)
-    wscript.echo "--------------"
-  end if
+  Echo("File " & input_file & " read into array.")
+  Echo("Number of systems retrieved from file: " & Ubound(comparray))
+  Echo("--------------")
   For i = 0 To Ubound(comparray)
     while num_running > number_of_audits
-      if verbose = "y" then
-        wscript.echo "Processes running (" & num_running & ") greater than number wanted (" & number_of_audits & ")"
-        wscript.echo "Therefore - sleeping for 4 seconds."
-      end if
+      Echo("Processes running (" & num_running & ") greater than number wanted (" & number_of_audits & ")")
+      Echo("Therefore - sleeping for 4 seconds.")
       wscript.Sleep 4000
       num_running = HowMany
     wend
     if comparray(i) <> "" then
-      if verbose = "y" then
-        wscript.echo i & " of " & Ubound(comparray)
-        wscript.echo "Processes running: " & num_running
-        wscript.echo "Next System: " & comparray(i)
-        wscript.echo "--------------"
-      end if
+      Echo(i & " of " & Ubound(comparray))
+      Echo("Processes running: " & num_running)
+      Echo("Next System: " & comparray(i))
+      Echo("--------------")
       command1 = "cscript " & script_name & " " & comparray(i) & " " & userarray(i) & " " & passarray(i)
       set sh1=WScript.CreateObject("WScript.Shell")
       sh1.Run command1, 6, False
@@ -504,9 +481,7 @@ Do Until (i = 5 or end_of_audits = "true")
       End If
    Next
    If end_of_audits = "false"  Then
-     If verbose = "y" then
-       wscript.echo "Waiting 1 min for remaining " & num_running & " scripts to complete."
-     End if
+     Echo("Waiting 1 min for remaining " & num_running & " scripts to complete.")
      wscript.Sleep 60000
    End if
    i = i + 1
@@ -529,9 +504,7 @@ If send_email Then
     end if
   if email_failed <> "" then
     On Error Resume Next
-    if verbose = "y" then
-    wscript.echo "Some systems may have failed to audit. See " & this_audit_log & " for details."
-    end if
+    Echo("Some systems may have failed to audit. See " & this_audit_log & " for details.")
     if use_audit_log = "y" then 
         Set objShell = WScript.CreateObject("WScript.Shell")
         this_folder = objShell.CurrentDirectory
@@ -557,13 +530,9 @@ If send_email Then
     end if
     objEmail.Send
     if Err.Number <> 0 then
-      if verbose = "y" then
-        wscript.echo "Error sending email: " & Err.Description
-      end if
+      Echo("Error sending email: " & Err.Description)
     else
-      if verbose = "y" then
-        wscript.echo "Email sent."
-      end if
+      Echo("Email sent.")
     end if
     Err.Clear
   end if
@@ -618,17 +587,13 @@ For Each objItem in colItems
    system_uuid = objItem.UUID
 Next
 
-if verbose = "y" then
-   wscript.echo "PC name supplied: " & strComputer
-   wscript.echo "PC name from WMI: " & system_name
-   full_system_name = LCase(system_name) & "." & LCase(domain)
-   wscript.echo "User executing this script: " & user_name
-  wscript.echo "System UUID: " & system_uuid
-end if
+Echo("PC name supplied: " & strComputer)
+Echo("PC name from WMI: " & system_name)
+full_system_name = LCase(system_name) & "." & LCase(domain)
+Echo("User executing this script: " & user_name)
+Echo("System UUID: " & system_uuid)
 ns_ip = NSlookup(system_name)
-if verbose = "y" then
-  wscript.echo "IP: " & ns_ip
-end if
+Echo("IP: " & ns_ip)
 if online = "p" then
   oIE.document.WriteLn "<h1>Open Audit</h1><br />"
 end if
@@ -662,9 +627,7 @@ dim net_adapter_type, net_manufacturer, net_connection_id, net_connection_status
 dim net_gateway_metric(2), net_ip_metric, net_ip_address, net_ip_mask, is_installed
 
 comment = "Network Info"
-if verbose = "y" then
-  wscript.echo comment
-end if
+Echo(comment)
 On Error Resume Next
 
 if strUser <> "" and strPass <> "" then
@@ -916,7 +879,7 @@ form_input = "system01^^^" & clean(net_ip_address) & "^^^" & clean(net_domain) _
 entry form_input,comment,objTextFile,oAdd,oComment
 form_input = ""
 
-'''''''''''''''''
+'''''''''''''''''=
 ' Make the UUID '
 '''''''''''''''''
 if uuid_type = "uuid" then
@@ -945,9 +908,7 @@ entry form_input,comment,objTextFile,oAdd,oComment
 '   System Information  & Timezone  '
 '''''''''''''''''''''''''''''''''''''
 comment = "System Info"
-if verbose = "y" then
-   wscript.echo comment
-end if
+Echo(comment)
 On Error Resume Next
 Set colItems = objWMIService.ExecQuery("Select * from Win32_LogicalMemoryConfiguration",,48)
 mem_count = 0
@@ -1035,9 +996,7 @@ form_input = ""
 '   Windows Information   '
 '''''''''''''''''''''''''''
 comment = "Windows Info"
-if verbose = "y" then
-   wscript.echo comment
-end if
+Echo(comment)
 On Error Resume Next
 
 Set colItems = objWMIService.ExecQuery("Select * from Win32_OperatingSystem",,48)
@@ -1145,9 +1104,7 @@ end if
 '   Bios Information      '
 '''''''''''''''''''''''''''
 comment = "Bios Info"
-if verbose = "y" then
-   wscript.echo comment
-end if
+Echo(comment)
 On Error Resume Next
 
 Set colSMBIOS = objWMIService.ExecQuery ("Select * from Win32_SystemEnclosure",,48)
@@ -1177,9 +1134,7 @@ Next
 '   Processor Information '
 '''''''''''''''''''''''''''
 comment = "Processor Info"
-if verbose = "y" then
-   wscript.echo comment
-end if
+Echo(comment)
 On Error Resume Next
 Set colItems = objWMIService.ExecQuery("Select * from Win32_Processor",,48)
 count = 0
@@ -1205,9 +1160,7 @@ Next
 '   Memory Information
 '''''''''''''''''''''''''''
 comment = "Memory Info"
-if verbose = "y" then
-   wscript.echo comment
-end if
+Echo(comment)
 Set colItems = objWMIService.ExecQuery("Select MemoryDevices FROM Win32_PhysicalMemoryArray ",,48)
 For Each objItem in colItems
    memory_slots = objItem.MemoryDevices
@@ -1326,9 +1279,7 @@ End If
 '   Video Information     '
 '''''''''''''''''''''''''''
 comment = "Video Info"
-if verbose = "y" then
-   wscript.echo comment
-end if
+Echo(comment)
 On Error Resume Next
 Set colItems = objWMIService.ExecQuery("Select * from Win32_VideoController",,48)
 For Each objItem in colItems
@@ -1357,9 +1308,7 @@ Next
 ' Monitor Information '
 '''''''''''''''''''''''
 comment = "Monitor Info"
-if verbose = "y" then
-   wscript.echo comment
-end if
+Echo(comment)
 Dim strarrRawEDID()
 intMonitorCount=0
 Const HKLM = &H80000002
@@ -1507,9 +1456,7 @@ tmpctr=0
                                     & mon_md & "^^^" & mon_sr & "^^^" & mon_ed & "^^^"
       entry form_input,comment,objTextFile,oAdd,oComment
       form_input = ""
-      if verbose = "y" then
-        wscript.echo comment
-      end if
+      Echo(comment)
       if online = "p" then
         oIE.document.WriteLn "<tr bgcolor=""#F1F1F1""><td>Monitor Manufacturer: </td><td>" & man_id & "</td></tr>"
         oIE.document.WriteLn "<tr><td>Monitor Model: </td><td>" & mon_md & "</td></tr>"
@@ -1522,9 +1469,7 @@ tmpctr=0
 ' USB Attached Devices '
 ''''''''''''''''''''''''
 comment = "USB Devices"
-if verbose = "y" then
-   wscript.echo comment
-end if
+Echo(comment)
 Set colDevices = objWMIService.ExecQuery ("Select * From Win32_USBControllerDevice")
 For Each objDevice in colDevices
   strDeviceName = objDevice.Dependent
@@ -1562,9 +1507,7 @@ Next
 '   H.Drive Information   '
 '''''''''''''''''''''''''''
 comment = "Hard Disk Info"
-if verbose = "y" then
-   wscript.echo comment
-end if
+Echo(comment)
 On Error Resume Next
 Set colItems = objWMIService.ExecQuery("Select * from Win32_DiskDrive",,48)
 For Each objItem in colItems
@@ -1586,9 +1529,7 @@ Next
     '   Partition Information '
     '''''''''''''''''''''''''''
     comment = "Partition Info"
-    if verbose = "y" then
-       wscript.echo comment
-    end if
+    Echo(comment)
 
     ' Get the LogicalDisk's Path
     strQueryFields = "DeviceID,Caption,FileSystem,FreeSpace,Size,VolumeName"
@@ -1659,9 +1600,7 @@ Next
 '   SCSI Cards                  '
 '''''''''''''''''''''''''''''''''
 comment = "SCSI Cards"
-if verbose = "y" then
-   wscript.echo comment
-end if
+Echo(comment)
 On Error Resume Next
 Set colItems = objWMIService.ExecQuery("Select * from Win32_SCSIController",,48)
 For Each objItem in colItems
@@ -1678,9 +1617,7 @@ Next
 '   SCSI Devices '
 ''''''''''''''''''
 comment = "SCSI Devices"
-if verbose = "y" then
-   wscript.echo comment
-end if
+Echo(comment)
 On Error Resume Next
 Set colItems = objWMIService.ExecQuery("Select * from Win32_SCSIControllerDevice",,48)
 For Each objItem in colItems
@@ -1694,9 +1631,7 @@ Next
 '   Optical Drive Information   '
 '''''''''''''''''''''''''''''''''
 comment = "Optical Drive Info"
-if verbose = "y" then
-   wscript.echo comment
-end if
+Echo(comment)
 On Error Resume Next
 Set colItems = objWMIService.ExecQuery("Select * from Win32_CDROMDrive",,48)
 For Each objItem in colItems
@@ -1713,9 +1648,7 @@ Next
 '  Floppy Drives  '
 '''''''''''''''''''
 comment = "Floppy Drives"
-if verbose = "y" then
-   wscript.echo comment
-end if
+Echo(comment)
 Set colItems = objWMIService.ExecQuery("SELECT * FROM Win32_FloppyDrive",,48)
 For Each objItem In colItems
    form_input = "floppy^^^" & clean(objItem.Description)  & "^^^" _
@@ -1733,9 +1666,7 @@ Next
 '   Tape Information      '
 '''''''''''''''''''''''''''
 comment = "Tape Drive Info"
-if verbose = "y" then
-   wscript.echo comment
-end if
+Echo(comment)
 On Error Resume Next
 
 Set colItems = objWMIService.ExecQuery("Select * from Win32_TapeDrive",,48)
@@ -1754,9 +1685,7 @@ Next
 '   Keyboard Information  '
 '''''''''''''''''''''''''''
 comment = "Keyboard Info"
-if verbose = "y" then
-   wscript.echo comment
-end if
+Echo(comment)
 On Error Resume Next
 Set colItems = objWMIService.ExecQuery("Select * from Win32_Keyboard",,48)
 For Each objItem in colItems
@@ -1772,9 +1701,7 @@ Next
 '   Battery Information   '
 '''''''''''''''''''''''''''
 comment = "Battery Info"
-if verbose = "y" then
-   wscript.echo comment
-end if
+Echo(comment)
 On Error Resume Next
 Set colItems = objWMIService.ExecQuery("Select * from Win32_Battery",,48)
 For Each objItem in colItems
@@ -1790,9 +1717,7 @@ Next
 '   Modem Information     '
 '''''''''''''''''''''''''''
 comment = "Modem Info"
-if verbose = "y" then
-   wscript.echo comment
-end if
+Echo(comment)
 On Error Resume Next
 Set colItems = objWMIService.ExecQuery("Select * from Win32_POTSModem",,48)
 For Each objItem in colItems
@@ -1810,9 +1735,7 @@ Next
 '   Mouse Information     '
 '''''''''''''''''''''''''''
 comment = "Mouse Info"
-if verbose = "y" then
-   wscript.echo comment
-end if
+Echo(comment)
 On Error Resume Next
 Set colItems = objWMIService.ExecQuery("Select * from Win32_PointingDevice",,48)
 For Each objItem in colItems
@@ -1854,9 +1777,7 @@ Next
 '   Sound Information     '
 '''''''''''''''''''''''''''
 comment = "Sound Card Info"
-if verbose = "y" then
-   wscript.echo comment
-end if
+Echo(comment)
 On Error Resume Next
 Set colItems = objWMIService.ExecQuery("Select * from Win32_SoundDevice",,48)
 For Each objItem in colItems
@@ -1880,9 +1801,7 @@ end if
 '   Printer Information   '
 '''''''''''''''''''''''''''
 comment = "Printer Info"
-if verbose = "y" then
-   wscript.echo comment
-end if
+Echo(comment)
 create_sql sql, objTextFile, database
 On Error Resume Next
 Set colItems = objWMIService.ExecQuery("Select * from Win32_Printer",,48)
@@ -1914,9 +1833,7 @@ Next
 '   Shares                '
 '''''''''''''''''''''''''''
 comment = "Share Info"
-if verbose = "y" then
-   wscript.echo comment
-end if
+Echo(comment)
 On Error Resume Next
 Set colItems = objWMIService.ExecQuery("Select * from Win32_Share",,48)
 For Each objItem in colItems
@@ -1930,9 +1847,7 @@ Next
 '''''''''''''''''''''''''''
 if audit_location = "l" then
   comment = "Mapped Drives Info"
-  if verbose = "y" then
-    wscript.echo comment
-  end if
+  Echo(comment)
   On Error Resume Next
   Set colItems = objWMIService.ExecQuery("Select * from Win32_LogicalDisk where not DriveType=<2 ",,48)
   For Each objItem in colItems 
@@ -1952,14 +1867,10 @@ end if
 '   Local Groups          '
 '''''''''''''''''''''''''''
 if ((domain_role = "4") or (domain_role="5")) then
-   if verbose = "y" then
-     wscript.echo "Bypassing Local Groups - This is a domain controller."
-   end if
+   Echo("Bypassing Local Groups - This is a domain controller.")
 else
   comment = "Local Groups Info"
-  if verbose = "y" then
-     wscript.echo comment
-  end if
+  Echo(comment)
   On Error Resume Next
   Set colItems = objWMIService.ExecQuery("Select * from Win32_Group where Domain = '" & system_name & "'",,48)
   For Each objItem in colItems
@@ -1993,14 +1904,10 @@ end if
 '   Local Users           '
 '''''''''''''''''''''''''''
 if ((domain_role = "4") or (domain_role="5")) then
-  if verbose = "y" then
-    wscript.echo "Bypassing Local Users - This is a domain controller."
-  end if
+  Echo("Bypassing Local Users - This is a domain controller.")
 else
   comment = "Local Users Info"
-  if verbose = "y" then
-    wscript.echo comment
-  end if
+  Echo(comment)
   On Error Resume Next
   Set colItems = objWMIService.ExecQuery("Select * from Win32_UserAccount where Domain = '" & system_name & "'",,48)
   For Each objItem in colItems
@@ -2024,9 +1931,7 @@ end if
 if (strComputer <> "KEDRON-QPCU" AND strComputer <> "ACADEMY02-QPCU" AND strComputer <> "ACADEMY05-QPCU") then 'QPCU
 if hfnet = "y" then
   comment = "HFNetChk"
-  if verbose = "y" then
-    wscript.echo comment
-  end if
+  Echo(comment)
   Set oShell = CreateObject("Wscript.Shell")
   Set oFS = CreateObject("Scripting.FileSystemObject")
   sTemp = oShell.ExpandEnvironmentStrings("%TEMP%")
@@ -2087,9 +1992,7 @@ end if 'QPCU
 '   Scheduled Tasks information      '
 ''''''''''''''''''''''''''''''''''''''''''''''
 comment = "Scheduled Tasks Info"
-if verbose = "y" then
-  wscript.echo comment
-end if
+Echo(comment)
 On Error Resume Next
 
 ' We rely on schtasks.exe so skipping if local system is older than WinXP
@@ -2149,9 +2052,7 @@ end if
 '   System Environment Variables information      '
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 comment = "System Environment Variables Info"
-if verbose = "y" then
-  wscript.echo comment
-end if
+Echo(comment)
 On Error Resume Next   
 
 Set colItems = objWMIService.ExecQuery("Select * from Win32_Environment where username = '<SYSTEM>'",,48)
@@ -2165,9 +2066,7 @@ Next
 '   Event Logs information      '
 '''''''''''''''''''''''''''''''''''''''
 comment = "Event Logs Info"
-if verbose = "y" then
-  wscript.echo comment
-end if
+Echo(comment)
 On Error Resume Next   
 
 Set colItems = objWMIService.ExecQuery("Select * from Win32_NTEventLogFile",,48)
@@ -2190,9 +2089,7 @@ Next
 '   Ip Routes information      '
 '''''''''''''''''''''''''''''''''''''
 comment = "Ip Routes Info"
-if verbose = "y" then
-  wscript.echo comment
-end if
+Echo(comment)
 On Error Resume Next   
 
 Set colItems = objWMIService.ExecQuery("Select * from Win32_IP4RouteTable",,48)
@@ -2233,9 +2130,7 @@ Next
 '   Pagefile information      '
 ''''''''''''''''''''''''''''''''''''
 comment = "Pagefile Info"
-if verbose = "y" then
-  wscript.echo comment
-end if
+Echo(comment)
 On Error Resume Next   
 
 Set colItems = objWMIService.ExecQuery("Select * from Win32_PageFile",,48)
@@ -2249,9 +2144,7 @@ Next
 '   Motherboard information      '
 '''''''''''''''''''''''''''''''''''''''''
 comment = "Motherboard Info"
-if verbose = "y" then
-  wscript.echo comment
-end if
+Echo(comment)
 On Error Resume Next   
 
 Set colItems = objWMIService.ExecQuery("Select * from Win32_BaseBoard",,48)
@@ -2265,9 +2158,7 @@ Next
 '   Onboard devices information      '
 ''''''''''''''''''''''''''''''''''''''''''''''
 comment = "Onboard devices Info"
-if verbose = "y" then
-  wscript.echo comment
-end if
+Echo(comment)
 On Error Resume Next   
 
 Set colItems = objWMIService.ExecQuery("Select * from Win32_OnBoardDevice",,48)
@@ -2294,9 +2185,7 @@ Next
 if ((ServicePack = "2" AND SystemBuildNumber = "2600") OR (SystemBuildNumber = "6000")) then
   Set objWMIService_AV = GetObject("winmgmts:\\" & strComputer & "\root\SecurityCenter")
   comment = "AV - Security Center Settings"
-  if verbose = "y" then
-    wscript.echo comment
-  end if
+  Echo(comment)
   Set colItems = objWMIService_AV.ExecQuery("Select * from AntiVirusProduct")
   For Each objAntiVirusProduct In colItems
     av_prod = Clean(objAntiVirusProduct.companyName)
@@ -2326,9 +2215,7 @@ if software_audit = "y" then
 
 if software_file_audit = "y" then
  comment = "Software Files"
- if verbose = "y" then
-   wscript.echo comment
- end if
+ Echo(comment)
  Dim softName,softVersion, softPublisher
 
  set rootNode =  xmlDoc.documentElement ' should be detect
@@ -2337,9 +2224,7 @@ if software_file_audit = "y" then
     softVersion = ""
     softPublisher = ""
 
-    if verbose = "y" then
-     WScript.Echo "Testing for " & child.nodeName & ":" & child.getAttribute("name")
-    end if
+    Echo("Testing for " & child.nodeName & ":" & child.getAttribute("name"))
     if (getResultFromFileExpression(child.childNodes.Item(1))) then
        softPublisher = child.getAttribute("publisher")
        If (child.childNodes.Item(0).nodeName = "version") then
@@ -2364,14 +2249,12 @@ if software_file_audit = "y" then
                                & clean(" ")
        entry form_input,comment,objTextFile,oAdd,oComment
        form_input = ""
-       if verbose = "y" then
-         WScript.Echo "Software detected"
-         WScript.Echo "Name       :" & softName
-         WScript.Echo "Publisher  :" & softPublisher
-         WScript.Echo "Version    :" & softVersion
-       end if
+       Echo("Software detected")
+       Echo("Name       :" & softName)
+       Echo("Publisher  :" & softPublisher)
+       Echo("Version    :" & softVersion)
     else
-       WScript.Echo "Not Detected"
+       Echo("Not Detected")
     end if
  next
 end if
@@ -2382,9 +2265,7 @@ end if
 '   Startup Programs      '
 '''''''''''''''''''''''''''
 comment = "Startup Programs"
-if verbose = "y" then
-   wscript.echo comment
-end if
+Echo(comment)
 On Error Resume Next
 Set colItems = objWMIService.ExecQuery("Select * from Win32_StartupCommand",,48)
 For Each objItem in colItems
@@ -2405,9 +2286,7 @@ Next
 '   Services              '
 '''''''''''''''''''''''''''
 comment = "Services"
-if verbose = "y" then
-   wscript.echo comment
-end if
+Echo(comment)
 On Error Resume Next
 Set colItems = objWMIService.ExecQuery("Select * from Win32_Service",,48)
 For Each objItem in colItems
@@ -2435,9 +2314,7 @@ Next
 '''''''''''''''''''''''''''''
 if (OSName <> "Microsoft Windows 95" AND OSName <> "Microsoft Windows 98") then
   comment = "Internet Explorer Browser Helper Objects"
-  if verbose = "y" then
-    wscript.echo comment
-  end if
+  Echo(comment)
   if strUser <> "" and strPass <> "" then
     Set objWMIService_IE = wmiLocator.ConnectServer(strComputer, "root\cimv2\Applications\MicrosoftIE",strUser,strPass)
     objWMIService_IE.Security_.ImpersonationLevel = 3
@@ -2458,9 +2335,7 @@ end if
 '   Installed Software    '
 '''''''''''''''''''''''''''
 comment = "Installed Software"
-if verbose = "y" then
-   wscript.echo comment
-end if
+Echo(comment)
 if online = "p" then
     dim software
     oIE.document.WriteLn "<div id=""content"">"
@@ -2551,9 +2426,7 @@ ExecuteGlobal CreateObject("Scripting.FileSystemObject").OpenTextFile("audit_cus
 
 ' Installed Codecs
 comment = "Installed Media Codecs"
-if verbose = "y" then
-   wscript.echo comment
-end if
+Echo(comment)
 Set colItems = objWMIService.ExecQuery("SELECT * FROM Win32_CodecFile", , 48)
 For Each objItem In colItems
   if clean(objItem.Manufacturer) <> "Microsoft Corporation" then
@@ -2573,9 +2446,7 @@ For Each objItem In colItems
 Next
 
 comment = "MDAC/WDAC, DirectX, Media Player, IE and OE Versions"
-if verbose = "y" then
-   wscript.echo comment
-end if
+Echo(comment)
 
 ' Add MDAC/WDAC to the Software Register
 strKeyPath = "SOFTWARE\Microsoft\DataAccess"
@@ -2712,9 +2583,7 @@ end if
 
 ' FireFox Extensions
 comment = "Firefox Extensions"
-if verbose = "y" then
-   wscript.echo comment
-end if
+Echo(comment)
 folder = "c:\documents and settings"
 dim folder_array()
 dim folder_array_2()
@@ -2855,9 +2724,7 @@ end if
 '''''''''''''''''''''''''''
 if ((ServicePack = "2" AND SystemBuildNumber = "2600") OR (SystemBuildNumber = "3790" AND ServicePack = "1" OR ServicePack = "2") OR (SystemBuildNumber = "6000")) then
   comment = "Windows Firewall Settings"
-  if verbose = "y" then
-    wscript.echo comment
-  end if
+  Echo(comment)
   On Error Resume Next
   ' Domain Settings
   strKeyPath = "SYSTEM\CurrentControlSet\Services\SharedAccess\Parameters\FirewallPolicy\DomainProfile"
@@ -2983,9 +2850,7 @@ end if
 
 
 comment = "CD Keys"
-if verbose = "y" then
-  wscript.echo comment
-end if
+Echo(comment)
 
 ''''''''''''''''''''''''''''''''
 '   MS CD Keys for Office 2007 '
@@ -3521,9 +3386,7 @@ end if
 If iis = "True" Then
   ' IISAdmin service installed
   comment = "IIS Info"
-  If verbose = "y" Then
-    wscript.echo comment
-  End If
+  Echo(comment)
   
   ' Checking if IIS WMI provider is available
   If CInt(SystemBuildNumber) >= 3790 Then
@@ -3884,9 +3747,7 @@ End If
 ' Check if system is Win2k+. Build Number: Win2k-->2195, Win98-->2222, WinME-->3000
 If (CInt(SystemBuildNumber) >= "2195" And Not SystemBuildNumber = "2222" And Not SystemBuildNumber = "3000") Then
   comment = "Automatic Updating Settings"
-  If verbose = "y" Then
-    wscript.echo comment
-  End If
+  Echo(comment)
   On Error Resume Next
   strKeyPath = "Software\Policies\Microsoft\Windows\WindowsUpdate\AU"
   strValueName = "NoAutoUpdate"
@@ -4061,9 +3922,7 @@ end if
 
 end_time = Timer
 elapsed_time = end_time - start_time
-if verbose = "y" then
-  wscript.echo "Audit.vbs Execution Time: " & int(elapsed_time) & " seconds."
-end if
+Echo("Audit.vbs Execution Time: " & int(elapsed_time) & " seconds.")
 
 
 if online = "ie" then
@@ -4102,9 +3961,7 @@ if online = "ie" then
 
   end_time = Timer
   elapsed_time = end_time - ie_time
-  if verbose = "y" then
-    wscript.echo "IE Execution Time: " & int(elapsed_time) & " seconds."
-  end if
+  Echo("IE Execution Time: " & int(elapsed_time) & " seconds.")
 
 end if ' End of IE
 
@@ -4133,14 +3990,12 @@ if online = "yesxml" then
        objHTTP.Send "add=" + escape(Deconstruct(form_total + vbcrlf))
      end if
    end if
-   if verbose = "y" then 
-     if (Err.Number <> 0 or objHTTP.status <> 200) then
-       wscript.Echo "Unable to send XML to server using " & XmlObj & " - HTTP Response: " & objHTTP.status & " (" & objHTTP.statusText & ") - Error " & Err.Number & " " & Err.Description 
-     else
-       wscript.Echo "XML sent to server using " & XmlObj & ": " & objHTTP.status & " (" & objHTTP.statusText & ")"
-     end if
+	 if (Err.Number <> 0 or objHTTP.status <> 200) then
+		 Echo("Unable to send XML to server using " & XmlObj & " - HTTP Response: " & objHTTP.status & " (" & objHTTP.statusText & ") - Error " & Err.Number & " " & Err.Description)
+	 else
+		 Echo("XML sent to server using " & XmlObj & ": " & objHTTP.status & " (" & objHTTP.statusText & ")")
+	 end if
      Err.clear
-   end if
 end if
 
 if online = "p" then
@@ -4149,11 +4004,8 @@ end if
 
 end_time = Timer
 elapsed_time = end_time - start_time
-if verbose = "y" then
-  wscript.echo "Total Execution Time: " & int(elapsed_time) & " seconds."
-  wscript.echo
-  WScript.sleep(2500)
-end if
+Echo("Total Execution Time: " & int(elapsed_time) & " seconds.") & vbnewline
+WScript.sleep(2500)
 ' database.close conn
 
 End Function
@@ -4815,3 +4667,6 @@ End Function
 
  End Function
 
+ Function Echo(sText)
+	If verbose = "y" then wscript.echo sText
+ End Function
