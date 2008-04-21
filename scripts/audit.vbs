@@ -1013,6 +1013,9 @@ For Each objItem in colItems
         OSName = objItem.Name
      end if
    end if
+   If InStr(objItem.OtherTypeDescription, "R2") Then
+     OSName = OSName & " R2"
+   End If
    OSInstall = objItem.InstallDate
    OSInstall = Left(OSInstall, 8)
    OSInstallYear = Left(OSInstall, 4)
