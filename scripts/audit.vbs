@@ -1,7 +1,7 @@
 '''''''''''''''''''''''''''''''''''
 ' Open Audit                      '
 ' Software and Hardware Inventory '
-' Outputs into MySQL              'e
+' Outputs into MySQL              '
 ' (c) Open-Audit.org 2003-2007    '
 ' Licensed under the GPL          '
 '''''''''''''''''''''''''''''''''''
@@ -2190,6 +2190,26 @@ if ((ServicePack = "2" AND SystemBuildNumber = "2600") OR (SystemBuildNumber = "
   comment = "AV - Security Center Settings"
   Echo(comment)
   Set colItems = objWMIService_AV.ExecQuery("Select * from AntiVirusProduct")
+
+'
+' If we have previously seen Anti-virus, and now the machine is re-imaged or whatever then 
+' we dont want to report the AV up to date when it no longer exists. Therefore we need to add an empty entry for AV if we find nothing. 
+' 
+' Thanks to acraiger for spotting this...
+' 
+ if colItems = "" then
+ av_prod = ""
+ av_disp = ""
+ av_vers = ""
+ av_up2d = ""
+   form_input = "system10^^^" & av_prod & "^^^" & av_disp & "^^^" _
+   & av_up2d & "^^^" & av_vers & "^^^"
+   entry form_input,comment,objTextFile,oAdd,oComment
+   form_input = ""
+end if
+
+'
+  
   For Each objAntiVirusProduct In colItems
     av_prod = Clean(objAntiVirusProduct.companyName)
     av_disp = Clean(objAntiVirusProduct.displayName)
