@@ -318,14 +318,14 @@ function step35SetupDB() {
     echo __("Success!") . "<br />";
     $sql = "GRANT SELECT , INSERT , UPDATE , DELETE , CREATE , DROP , INDEX , ALTER , CREATE TEMPORARY TABLES";
     $sql .= " , CREATE VIEW , SHOW VIEW , CREATE ROUTINE, ALTER ROUTINE, EXECUTE ";
-    $sql .= "ON `" . $_POST['mysql_new_db'] . "`.* TO '" . $_POST['mysql_new_user'] . "'@";
+    $sql .= "ON " . $_POST['mysql_new_db'] . ".* TO " . $_POST['mysql_new_user'] . "@";
     if ($_POST['bindlocal'] = 'y') {
       $sql .= "'localhost'";
     } else {
       $sql .= "'%'";
     }
-    echo __("Granting user priveleges... ");
-    $result = mysql_query($sql, $db) or die('Could not grant priveleges: ' . mysql_error());
+    echo __("Granting user privileges... ");
+    $result = mysql_query($sql, $db) or die('Could not grant privileges: ' . mysql_error());
     echo __("Success!") . "<br />";
     echo __("Switching connection to new user... ");
     mysql_close($db);
