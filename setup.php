@@ -201,6 +201,7 @@ if (isset($_POST['bindlocal']))  {$bindlocal = $_POST['bindlocal'];}  else { $bi
 function step33SetupDB() {
 ?>
   <span class="contenthead"><?php echo __("Setup") ?></span>
+
   <p><?php echo __("To perform an automated setup, enter the details on the root account below. This user must have the privileges to create and modify users and databases.") ?></p>
   <p><?php echo __("By clicking 'Submit Credentials,' you are allowing Open-AudIT to create a user and database for use with Open-AudIT. This is the recommended configuration, as Open-AudIT does not need root privileges after installation.") ?></p>
   <hr />
@@ -316,9 +317,30 @@ function step35SetupDB() {
     echo __("Creating the user... ");
     $result = mysql_query($sql, $db) ;//or die('Could not create the user: ' . mysql_error());
     echo __("Success!") . "<br />";
+    //
+    // Test for MySQL Version to ensure we can grant the correct permissions. 
+    // 
+    $sql_version = mysql_get_server_info() ;
+    list($sql_version_major, $sql_version_minor, $sql_version_sub) = split('\.', $sql_version);
+    echo __("MySQL Version is ").$sql_version_major.".".$sql_version_minor.".".$sql_version_sub . "<br />";
+    
+    if ($sql_version_major >= 5) {    
+        echo __("Set permissions for MySQL 5 or above "). "<br />";
+ 
     $sql = "GRANT SELECT , INSERT , UPDATE , DELETE , CREATE , DROP , INDEX , ALTER , CREATE TEMPORARY TABLES";
     $sql .= " , CREATE VIEW , SHOW VIEW , CREATE ROUTINE, ALTER ROUTINE, EXECUTE ";
     $sql .= "ON " . $_POST['mysql_new_db'] . ".* TO " . $_POST['mysql_new_user'] . "@";
+    }
+    else
+    {
+    echo __("Set permissions for MySQL prior to Version 5"). "<br />";
+    $sql = "GRANT SELECT , INSERT , UPDATE , DELETE , CREATE , DROP , INDEX , ALTER , CREATE TEMPORARY TABLES";
+    $sql .= " , EXECUTE ";
+    $sql .= "ON " . $_POST['mysql_new_db'] . ".* TO " . $_POST['mysql_new_user'] . "@";
+    }
+    
+    
+    
     if ($_POST['bindlocal'] = 'y') {
       $sql .= "'localhost'";
     } else {
