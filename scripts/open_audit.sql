@@ -894,7 +894,7 @@ CREATE TABLE `software_licenses` (
   `license_id` int(10) unsigned NOT NULL auto_increment,
   `license_software_id` int(10) unsigned NOT NULL default '0',
   `license_purchase_cost_each` int(10) NOT NULL default '0',
-  `license_purchase_number` int(10) unsigned NOT NULL default '0',
+  `license_purchase_number` int(10) NOT NULL default '0',
   `license_purchase_date` date NOT NULL default '0000-00-00',
   `license_purchase_vendor` varchar(150) NOT NULL default '',
   `license_comments` varchar(200) NOT NULL default '',

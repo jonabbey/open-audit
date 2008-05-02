@@ -307,6 +307,10 @@ $sql = "ALTER TABLE `system` ADD COLUMN `iis_version` varchar(10) NOT NULL defau
 
 upgrade ($version,"08.04.15", $sql);
 
+$sql = "ALTER TABLE `software_licenses` CHANGE `license_purchase_number` `license_purchase_number` INT( 10 ) NOT NULL DEFAULT '0';";
+
+upgrade ($version,"08.05.02", $sql);
+
 
 ?>
     <br />Upgrade complete.

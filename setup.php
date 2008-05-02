@@ -318,34 +318,38 @@ function step35SetupDB() {
     $result = mysql_query($sql, $db) ;//or die('Could not create the user: ' . mysql_error());
     echo __("Success!") . "<br />";
     //
-    // Test for MySQL Version to ensure we can grant the correct permissions. 
+    // Test for MySQL Version to ensure we can grant the correct privileges. 
     // 
     $sql_version = mysql_get_server_info() ;
     list($sql_version_major, $sql_version_minor, $sql_version_sub) = split('\.', $sql_version);
     echo __("MySQL Version is ").$sql_version_major.".".$sql_version_minor.".".$sql_version_sub . "<br />";
     
     if ($sql_version_major >= 5) {    
-        echo __("Set permissions for MySQL 5 or above "). "<br />";
+        echo __("Set database privileges for MySQL 5 or above "). "<br />";
  
     $sql = "GRANT SELECT , INSERT , UPDATE , DELETE , CREATE , DROP , INDEX , ALTER , CREATE TEMPORARY TABLES";
     $sql .= " , CREATE VIEW , SHOW VIEW , CREATE ROUTINE, ALTER ROUTINE, EXECUTE ";
     $sql .= "ON " . $_POST['mysql_new_db'] . ".* TO " . $_POST['mysql_new_user'] . "@";
-    }
-    else
-    {
-    echo __("Set permissions for MySQL prior to Version 5"). "<br />";
-    $sql = "GRANT SELECT , INSERT , UPDATE , DELETE , CREATE , DROP , INDEX , ALTER , CREATE TEMPORARY TABLES";
-    $sql .= " , EXECUTE ";
-    $sql .= "ON " . $_POST['mysql_new_db'] . ".* TO " . $_POST['mysql_new_user'] . "@";
-    }
-    
-    
-    
+     
     if ($_POST['bindlocal'] = 'y') {
       $sql .= "'localhost'";
     } else {
       $sql .= "'%'";
     }
+    }
+    else
+    {
+    echo __("Set database privileges for MySQL prior to Version 5"). "<br />";
+    $sql = "GRANT ALL ";
+    $sql .= "ON " . $_POST['mysql_new_db'] . ".* TO " . $_POST['mysql_new_user'] . "@";
+            
+    if ($_POST['bindlocal'] = 'y') {
+      $sql .= "'localhost'";
+    } else {
+      $sql .= "'%'";
+    }
+    }
+
     echo __("Granting user privileges... ");
     $result = mysql_query($sql, $db) or die('Could not grant privileges: ' . mysql_error());
     echo __("Success!") . "<br />";
@@ -437,7 +441,13 @@ function step36SetupDB() {
 function step4Finish() {
   echo "<span class=\"contenthead\">" . __("Setup Completed") . "</span>";
   echo "<p>" . __("Setup has completed. Please configure the audits and web interface through the Admin menu.") . "</p>";
-  echo "<p>" . __("It is recommended that you setup usernames and passwords in the user management section of the admin menu.") . " (" . __("Coming Soon") . ")</p>";
+  echo "<p>" . __("It is recommended that you setup usernames and passwords in the user management section of the admin menu.") ."</p>";
+  echo "<p>" . __("Alternatively Configure LDAP Authentication to authenticate against Active Directrory or OpenLDAP") . "</p>";
+  echo "<p>" . __("Also set up secure web pages if your web host supports them.") . "</p>";
+  echo "<p>" . __("If you have any problems, visit the Open-Audit Forums")."</p>";
+  echo "<a href=\"http://www.open-audit.org/phpBB3/viewforum.php?f=13\">" . __("To see the forums now, open this link in a new tab.") . "</a>";
+  echo "<p>" . __("or follow the link from the Help menu.") . "</p>";
+  echo "<p></p>";
   echo "<p>" . __("This file, setup.php, is no longer needed. Remove it to secure your installation of Open-AudIT.") . "</p>";
   echo "<a href=\"index.php\">" . __("Click here to enter Open-AudIT!") . "</a>";
 }

@@ -26,7 +26,7 @@ $extra = "";
 $software = "";
 $count = 0;
 $total_rows = 0;
-$latest_version = "08.04.15";
+$latest_version = "08.05.02";
 
 // Check for config, otherwise run setup
 @(include_once "include_config.php") OR die(header("Location: setup.php"));
