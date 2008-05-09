@@ -39,6 +39,8 @@ Dim local_domain
 Dim sql
 Dim comment
 Dim net_mac_uuid
+Dim script_timeout
+script_timeout = 1200 ' 20 mins = 1200 seconds, adjust as necessary
 '
 ' (AJH) Moved the file read-write-append constants to here, they were defined much later.
 '
@@ -408,7 +410,8 @@ if audit_local_domain = "y" then
       Echo("Processes running: " & num_running)
       Echo("Next System: " & comparray(i))
       Echo("--------------")
-      command1 = "cscript " & script_name & " " & comparray(i)
+      ' command1 = "cscript " & script_name & " " & comparray(i) ' wait forever. 
+      command1 = "cscript //T:" & script_timeout & " " & script_name & " " & comparray(i)
       set sh1=WScript.CreateObject("WScript.Shell")
       sh1.Run command1, 6, False
       set sh1 = nothing
