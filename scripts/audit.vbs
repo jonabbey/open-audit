@@ -1,5 +1,5 @@
 '''''''''''''''''''''''''''''''''''
-' Open Audit                      '
+' Open Audit                   '
 ' Software and Hardware Inventory '
 ' Outputs into MySQL              '
 ' (c) Open-Audit.org 2003-2007    '
@@ -4694,5 +4694,18 @@ End Function
  End Function
 
  Function Echo(sText)
-	If verbose = "y" then wscript.echo sText
+	If verbose = "y" then 
+    wscript.echo sText
+    End If
+    ' Also add to Audit Log 
+    if use_audit_log = "y" then 
+    Set objFSO = CreateObject("Scripting.FileSystemObject")
+        If objFSO.FileExists(this_audit_log) Then
+        Set objFile = objFSO.OpenTextFile(this_audit_log, ForAppending)
+'        objFile.WriteLine
+        objFile.WriteLine "" & Now & "," & strComputer & ",Audit Result - "  & sText 
+        objFile.Close
+        End If
+    End if
+    
  End Function
