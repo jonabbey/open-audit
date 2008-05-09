@@ -4030,7 +4030,7 @@ end if
 
 end_time = Timer
 elapsed_time = end_time - start_time
-Echo("Total Execution Time: " & int(elapsed_time) & " seconds.") & vbnewline
+Echo("Total Execution Time: " & int(elapsed_time) & " seconds.") 
 WScript.sleep(2500)
 ' database.close conn
 
@@ -4703,7 +4703,7 @@ End Function
         If objFSO.FileExists(this_audit_log) Then
         Set objFile = objFSO.OpenTextFile(this_audit_log, ForAppending)
 '        objFile.WriteLine
-        objFile.WriteLine "" & Now & "," & strComputer & ",Audit Result - "  & sText 
+        objFile.WriteLine "" & Now & "," & strComputer & ",'Audit Result - "  & sText & " - Completed OK.'"
         objFile.Close
         End If
     End if
