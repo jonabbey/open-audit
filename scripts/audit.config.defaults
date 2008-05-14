@@ -31,6 +31,9 @@ email_timeout = "60"              ' In seconds
 
 audit_local_domain = "y" 
 '
+random_order = false ' Set true to audit in a random order to try to ensure traffic is spread if using slow WAN links. 
+
+'
 ' Set domain_type = 'nt' for NT4 or SAMBA otherwise leave blank or set to ldap
 'domain_type = "nt"
 
