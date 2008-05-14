@@ -39,8 +39,15 @@ Dim local_domain
 Dim sql
 Dim comment
 Dim net_mac_uuid
+
+' Set this to a suitable value to ensure we dont allow the script to hang. 
 Dim script_timeout
 script_timeout = 1200 ' 20 mins = 1200 seconds, adjust as necessary
+' Used to randomise a domain scan, to keep the traffic down to a dull roar over slow links.
+Dim random_order
+random_order = false
+
+
 '
 ' (AJH) Moved the file read-write-append constants to here, they were defined much later.
 '
@@ -392,7 +399,11 @@ if audit_local_domain = "y" then
     Echo("Computer Name from ldap: " & strComputer)
     objRecordSet.MoveNext
    Loop
-
+' Randomise the scan if asked. 
+   if random_order = true
+       Call ArrayShuffle(comparray)
+   end if   
+   
    num_running = HowMany
    Echo("Number of systems retrieved from ldap: " & Ubound(comparray))
    Echo("--------------")
@@ -4709,3 +4720,26 @@ End Function
     End if
     
  End Function
+
+Sub ArrayShuffle(arr)
+    Dim index
+    Dim newIndex
+    Dim firstIndex
+    Dim itemCount
+    Dim tmpValue
+   
+    firstIndex = LBound(arr)
+    itemCount = UBound(arr) - LBound(arr) + 1
+   
+    For index = UBound(arr) To LBound(arr) + 1 Step -1
+        ' evaluate a random index from LBound to INDEX
+        newIndex = firstIndex + Int(Rnd * itemCount)
+        ' swap the two items
+        tmpValue = arr(index)
+        arr(index) = arr(newIndex)
+        arr(newIndex) = tmpValue
+        ' prepare for next iteration
+        itemCount = itemCount - 1
+    Next
+   
+End Sub
