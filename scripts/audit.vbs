@@ -400,8 +400,9 @@ if audit_local_domain = "y" then
     objRecordSet.MoveNext
    Loop
 ' Randomise the scan if asked. 
-   if random_order = true
+   if random_order <> false then
        Call ArrayShuffle(comparray)
+       Echo ("Computer List Randomised")
    end if   
    
    num_running = HowMany
