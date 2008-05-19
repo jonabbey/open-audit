@@ -338,6 +338,10 @@ function insert_network ($split) {
     $net_connection_id = trim($extended[39]);
     $net_connection_status = trim($extended[40]);
     $net_speed = trim($extended[41]);
+    $net_driver_provider = trim($extended[42]);
+    $net_driver_version = trim($extended[43]);
+    $net_driver_date = trim($extended[44]);
+
 
     if (is_null($net_timestamp)) {
       $sql  = "SELECT MAX(net_timestamp) FROM network_card WHERE net_uuid = '$uuid'";
@@ -365,14 +369,16 @@ function insert_network ($split) {
       $sql .= "net_dns_domain_full_reg_enabled, net_ip_address, net_ip_subnet, net_ip_address_2, net_ip_subnet_2, net_ip_address_3, ";
       $sql .= "net_ip_subnet_3, net_wins_primary, net_wins_secondary, net_wins_lmhosts_enabled, net_netbios_options, net_adapter_type, ";
       $sql .= "net_manufacturer, net_connection_id, net_connection_status, net_speed, net_gateway, net_gateway_metric, net_gateway_2, ";
-      $sql .= "net_gateway_metric_2, net_gateway_3, net_gateway_metric_3, net_ip_metric, net_timestamp, net_first_timestamp) VALUES (";
+      $sql .= "net_gateway_metric_2, net_gateway_3, net_gateway_metric_3, net_ip_metric, net_driver_provider, net_driver_version, net_driver_date, ";
+      $sql .= "net_timestamp, net_first_timestamp) VALUES (";
       $sql .= "'$net_mac_address', '$uuid', '$net_ip_enabled', '$net_index', '$net_service_name', '$net_description', '$net_dhcp_enabled', '$net_dhcp_server', ";
       $sql .= "'$net_dhcp_lease_obtained', '$net_dhcp_lease_expires', '$net_dns_host_name', '$net_dns_server', '$net_dns_server_2', '$net_dns_server_3', ";
       $sql .= "'$net_dns_domain', '$net_dns_domain_suffix', '$net_dns_domain_suffix_2', '$net_dns_domain_suffix_3', '$net_dns_domain_reg_enabled', ";
       $sql .= "'$net_dns_domain_full_reg_enabled', '$net_ip_address', '$net_ip_subnet', '$net_ip_address_2', '$net_ip_subnet_2', '$net_ip_address_3', ";
       $sql .= "'$net_ip_subnet_3', '$net_wins_primary', '$net_wins_secondary', '$net_wins_lmhosts_enabled', '$net_netbios_options', '$net_adapter_type', ";
       $sql .= "'$net_manufacturer', '$net_connection_id', '$net_connection_status', '$net_speed', '$net_gateway', '$net_gateway_metric', '$net_gateway_2', ";
-      $sql .= "'$net_gateway_metric_2', '$net_gateway_3', '$net_gateway_metric_3', '$net_ip_metric', '$timestamp', '$timestamp') ";
+      $sql .= "'$net_gateway_metric_2', '$net_gateway_3', '$net_gateway_metric_3', '$net_ip_metric', '$net_driver_provider', '$net_driver_version', '$net_driver_date', ";
+      $sql .= "'$timestamp', '$timestamp') ";
 
       if ($verbose == "y"){echo $sql . "<br />\n\n";}
       $result = mysql_query($sql) or die ('Insert Failed: ' . mysql_error() . '<br />' . $sql);
@@ -388,7 +394,8 @@ function insert_network ($split) {
       $sql .= "net_ip_subnet_3 = '$net_ip_subnet_3', net_wins_primary = '$net_wins_primary', net_wins_secondary = '$net_wins_secondary', ";
       $sql .= "net_wins_lmhosts_enabled = '$net_wins_lmhosts_enabled', net_netbios_options = '$net_netbios_options', net_gateway = '$net_gateway', ";
       $sql .= "net_connection_status = '$net_connection_status', net_speed = '$net_speed', net_gateway_metric = '$net_gateway_metric', net_gateway_2 = '$net_gateway_2', ";
-      $sql .= "net_gateway_metric_2 = '$net_gateway_metric_2', net_gateway_3 = '$net_gateway_3', net_gateway_metric_3 = '$net_gateway_metric_3', net_ip_metric = '$net_ip_metric' ";
+      $sql .= "net_gateway_metric_2 = '$net_gateway_metric_2', net_gateway_3 = '$net_gateway_3', net_gateway_metric_3 = '$net_gateway_metric_3', net_ip_metric = '$net_ip_metric', ";
+      $sql .= "net_driver_provider = '$net_driver_provider', net_driver_version = '$net_driver_version', net_driver_date = '$net_driver_date' ";
       $sql .= "WHERE net_mac_address = '$net_mac_address' AND net_uuid = '$uuid' AND net_description = '$net_description' ";
       $sql .= "AND net_dhcp_enabled = '$net_dhcp_enabled' AND net_dns_host_name = '$net_dns_host_name' AND net_adapter_type = '$net_adapter_type' ";
       $sql .= "AND net_manufacturer = '$net_manufacturer' AND net_ip_enabled = '$net_ip_enabled' AND net_index = '$net_index' ";

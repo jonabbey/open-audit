@@ -311,6 +311,12 @@ $sql = "ALTER TABLE `software_licenses` CHANGE `license_purchase_number` `licens
 
 upgrade ($version,"08.05.02", $sql);
 
+$sql = "ALTER TABLE `network_card` ADD COLUMN `net_driver_provider` varchar(100) NOT NULL default '' AFTER `net_ip_metric`,
+                                   ADD COLUMN `net_driver_version` varchar(20) NOT NULL default '' AFTER `net_driver_provider`,
+                                   ADD COLUMN `net_driver_date` varchar(10) NOT NULL default '' AFTER `net_driver_version`;";
+
+upgrade ($version,"08.05.19", $sql);
+
 
 ?>
     <br />Upgrade complete.

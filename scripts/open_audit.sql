@@ -573,6 +573,9 @@ CREATE TABLE `network_card` (
       `net_gateway_3` varchar(100) NOT NULL default '',
       `net_gateway_metric_3` varchar(10) NOT NULL default '',
       `net_ip_metric` varchar(10) NOT NULL default '',
+      `net_driver_provider` varchar(100) NOT NULL default '',
+      `net_driver_version` varchar(20) NOT NULL default '',
+      `net_driver_date` varchar(10) NOT NULL default '',
       `net_timestamp` bigint(20) unsigned NOT NULL default '0',
       `net_first_timestamp` bigint(20) unsigned NOT NULL default '0',
       PRIMARY KEY  (`net_id`),
@@ -1187,7 +1190,7 @@ CREATE TABLE `video` (
   KEY `id2` (`video_timestamp`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
-INSERT INTO config (config_name, config_value) VALUES ('version','08.05.02');
+INSERT INTO config (config_name, config_value) VALUES ('version','08.05.19');
 
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 

@@ -157,7 +157,8 @@ function special_field_converting($myrow, $field, $db, $page){
         $show_value=determine_os($myrow[$field["name"]]);
      }elseif($field["name"]=="system_timestamp" OR
             $field["name"]=="net_dhcp_lease_obtained" OR
-            $field["name"]=="net_dhcp_lease_expires"){
+            $field["name"]=="net_dhcp_lease_expires" OR
+            $field["name"]=="net_driver_date"){
         $show_value=return_date($myrow[$field["name"]]);
     }elseif($field["name"]=="net_speed"){
         $show_value=number_format($myrow[$field["name"]])." Mbps";

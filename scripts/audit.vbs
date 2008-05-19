@@ -679,23 +679,17 @@ For Each objItem in colItems
             if objItem3.InstanceName = net_description then net_speed = objItem3.NdisLinkSpeed  end if
           Next
         end if
-      end if
-      ' Find Driver version
-      net_pnp_device_id = objItem2.PNPDeviceId
-       Echo( "NIC: " & net_description )
-        Echo("PNP device ID: " & net_pnp_device_id)
+        ' Find Driver version
+        net_pnp_device_id = objItem2.PNPDeviceId
         Set colItems4 = objWMIService.ExecQuery("Select * from Win32_PNPSignedDriver WHERE DeviceClass = 'NET'",,48)
         For Each objItem4 in colItems4
           if objItem4.DeviceID = net_pnp_device_id then
             net_driver_provider = objItem4.DriverProviderName
             net_driver_version = objItem4.DriverVersion
-            net_driver_date = objItem4.DriverDate
-            Echo( "NIC Driver Provider: " & net_driver_provider)
-            Echo( "NIC Driver Version: " & net_driver_version)
-            Echo( "NIC Driver Date: " & net_driver_date)
+            net_driver_date = Left(objItem4.DriverDate, 8)
           end if
         Next
-        '
+      end if 'not isnull(objItem2.Manufacturer) or objItem2.Manufacturer <> ""
    Next
    if is_installed = "true" then
      net_mac = objItem.MACAddress
@@ -703,8 +697,8 @@ For Each objItem in colItems
      net_service_name = objItem.ServiceName
      net_dhcp_enabled = objItem.DHCPEnabled
      net_dhcp_server = objItem.DHCPServer
-     net_dhcp_lease_obtained = objItem.DHCPLeaseObtained
-     net_dhcp_lease_expires = objItem.DHCPLeaseExpires
+     net_dhcp_lease_obtained = Clean(objItem.DHCPLeaseObtained)
+     net_dhcp_lease_expires = Clean(objItem.DHCPLeaseExpires)
      net_dns_host_name = objItem.DNSHostName
      For i = LBound(objItem.DNSServerSearchOrder) to UBound(objItem.DNSServerSearchOrder)
         if i > 2 then exit for End if
@@ -746,8 +740,6 @@ For Each objItem in colItems
      if (isnull(net_description) or net_description = "") then net_description = "unknown" End if
      if (isnull(net_dhcp_enabled) or net_dhcp_enabled = "") then net_dhcp_enabled = "false" End if
      if (isnull(net_dhcp_server) or net_dhcp_server = "") then net_dhcp_server = "none" End if
-     if isnull(net_dhcp_lease_obtained) then net_dhcp_lease_obtained = "" End if
-     if isnull(net_dhcp_lease_expires) then net_dhcp_lease_expires = "" End if
      if (isnull(net_dns_host_name) or net_dns_host_name = "") then net_dns_host_name = "none" End if
      if (isnull(net_dns_domain) or net_dns_domain = "") then net_dns_domain = "none" End if
      if (isnull(net_dns_domain_reg_enabled) or net_dns_domain_reg_enabled = "") then net_dns_domain_reg_enabled = "false" End if
@@ -830,7 +822,7 @@ For Each objItem in colItems
                                  & net_dhcp_server            & "^^^" & net_dns_host_name               & "^^^" & net_dns_server(0)        & "^^^" _
                                  & net_dns_server(1)          & "^^^" & net_ip(0)                       & "^^^" & net_ip_subnet(0)         & "^^^" _
                                  & net_wins_primary           & "^^^" & net_wins_secondary              & "^^^" & net_adapter_type         & "^^^" _
-                                 & net_manufacturer           & "^^^" & net_gateway(0)                  & "^^^" & net_ip_enabled              & "^^^" _
+                                 & net_manufacturer           & "^^^" & net_gateway(0)                  & "^^^" & net_ip_enabled           & "^^^" _
                                  & net_index                  & "^^^" & net_service_name                & "^^^" & net_dhcp_lease_obtained  & "^^^" _
                                  & net_dhcp_lease_expires     & "^^^" & net_dns_server(2)               & "^^^" & net_dns_domain           & "^^^" _
                                  & net_dns_domain_suffix(0)   & "^^^" & net_dns_domain_suffix(1)        & "^^^" & net_dns_domain_suffix(2) & "^^^" _
@@ -839,7 +831,8 @@ For Each objItem in colItems
                                  & net_wins_lmhosts_enabled   & "^^^" & net_netbios_options             & "^^^" & net_gateway_metric(0)    & "^^^" _   
                                  & net_gateway(1)             & "^^^" & net_gateway_metric(1)           & "^^^" & net_gateway(2)           & "^^^" _
                                  & net_gateway_metric(2)      & "^^^" & net_ip_metric                   & "^^^" & net_connection_id        & "^^^" _ 
-                                 & net_connection_status      & "^^^" & net_speed                       & "^^^"   
+                                 & net_connection_status      & "^^^" & net_speed                       & "^^^" & net_driver_provider      & "^^^" _
+                                 & net_driver_version         & "^^^" & net_driver_date                 & "^^^" 
        entry form_input,comment,objTextFile,oAdd,oComment
        form_input = ""
        erase net_dns_server
