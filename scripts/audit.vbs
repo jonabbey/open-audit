@@ -680,6 +680,22 @@ For Each objItem in colItems
           Next
         end if
       end if
+      ' Find Driver version
+      net_pnp_device_id = objItem2.PNPDeviceId
+       Echo( "NIC: " & net_description )
+        Echo("PNP device ID: " & net_pnp_device_id)
+        Set colItems4 = objWMIService.ExecQuery("Select * from Win32_PNPSignedDriver WHERE DeviceClass = 'NET'",,48)
+        For Each objItem4 in colItems4
+          if objItem4.DeviceID = net_pnp_device_id then
+            net_driver_provider = objItem4.DriverProviderName
+            net_driver_version = objItem4.DriverVersion
+            net_driver_date = objItem4.DriverDate
+            Echo( "NIC Driver Provider: " & net_driver_provider)
+            Echo( "NIC Driver Version: " & net_driver_version)
+            Echo( "NIC Driver Date: " & net_driver_date)
+          end if
+        Next
+        '
    Next
    if is_installed = "true" then
      net_mac = objItem.MACAddress
