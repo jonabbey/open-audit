@@ -2209,10 +2209,10 @@ Next
 '''''''''''''''''
 '  AV Settings  '
 '''''''''''''''''
-if ((ServicePack = "2" AND SystemBuildNumber = "2600") OR (SystemBuildNumber = "6000")) then
-  Set objWMIService_AV = GetObject("winmgmts:\\" & strComputer & "\root\SecurityCenter")
+if ((SystemBuildNumber = "2600" AND CInt(ServicePack) > 1) OR (SystemBuildNumber = "6000")) then
   comment = "AV - Security Center Settings"
   Echo(comment)
+  Set objWMIService_AV = GetObject("winmgmts:\\" & strComputer & "\root\SecurityCenter")
   Set colItems = objWMIService_AV.ExecQuery("Select * from AntiVirusProduct")
 
 '
@@ -2769,7 +2769,7 @@ end if
 '''''''''''''''''''''''''''
 'Windows Firewall Settings '
 '''''''''''''''''''''''''''
-if ((ServicePack = "2" AND SystemBuildNumber = "2600") OR (SystemBuildNumber = "3790" AND ServicePack = "1" OR ServicePack = "2") OR (SystemBuildNumber = "6000")) then
+if ((SystemBuildNumber = "2600" AND CInt(ServicePack) > 1) OR (SystemBuildNumber = "3790" AND CInt(ServicePack) > 0) OR (SystemBuildNumber = "6000")) then
   comment = "Windows Firewall Settings"
   Echo(comment)
   On Error Resume Next
