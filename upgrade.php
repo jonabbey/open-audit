@@ -317,6 +317,63 @@ $sql = "ALTER TABLE `network_card` ADD COLUMN `net_driver_provider` varchar(100)
 
 upgrade ($version,"08.05.19", $sql);
 
+$sql ="DROP TABLE IF EXISTS `openaudit`.`ad_computers`;
+        CREATE TABLE  `openaudit`.`ad_computers` (
+        `guid` varchar(45) NOT NULL,	# Computer object GUID from AD as a string
+        `cn` varchar(45) NOT NULL,		# Computer object CN value from AD
+          `audit_timestamp` varchar(45) NOT NULL,	# last audit timestamp
+          `usnchanged` int(10) unsigned NOT NULL,	# Computer object usnchanged value from AD
+          `first_audit_timestamp` varchar(45) NOT NULL, # First audit timestamp
+          `ou_id` varchar(45) NOT NULL,	# Reference to ad_ous.ou_id (the OU that owns this computer account)
+          `description` varchar(45) default NULL,	# Computer object description value from AD
+          `os` varchar(45) default NULL,	# Computer object operatingsystem value from AD
+          `service_pack` varchar(45) default NULL,	# Computer object operatingsystemservicepack value from AD
+          `dn` varchar(255) NOT NULL,	# Computer object distinguishedname value from AD
+          PRIMARY KEY  (`guid`)
+        ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+
+        DROP TABLE IF EXISTS `openaudit`.`ad_domains`;
+        CREATE TABLE  `openaudit`.`ad_domains` (
+          `guid` varchar(45) NOT NULL,	# Unique ID for the domain (intend to use the domain AD GUID at some point)
+          `default_nc` varchar(45) NOT NULL,	# Domain defaultnamingcontext
+          `fqdn` varchar(45) NOT NULL,	# Domain FQDN
+          `ldap_server` varchar(45) NOT NULL,	# LDAP host server
+          `ldap_user` varchar(45) NOT NULL,	# LDAP login (AD Account)
+          `ldap_password` varchar(45) NOT NULL,	# LDAP password 
+          `netbios_name` varchar(45) NOT NULL,	# Domain NetBIOS name
+          PRIMARY KEY  (`guid`)
+        ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+
+        DROP TABLE IF EXISTS `openaudit`.`ad_ous`;
+        CREATE TABLE  `openaudit`.`ad_ous` (
+          `ou_id` varchar(45) NOT NULL,	# Unique ID for the OU (intend to use the OU AD GUID at some point)
+          `ou_dn` varchar(255) default NULL,	# OU object distinguished name
+          `ou_domain_guid` varchar(45) default NULL,	# Reference to ad_domains.guid (the domain that owns this OU)
+          `ou_audit_timestamp` varchar(45) default NULL,	# Audit timestamp for this OU
+          `include_in_audit` tinyint(1) default NULL,	# Flag to include/exclude OU from audit
+          PRIMARY KEY  (`ou_id`)
+        ) ENGINE=MyISAM DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
+
+
+        DROP TABLE IF EXISTS `openaudit`.`ad_users`;
+        CREATE TABLE  `openaudit`.`ad_users` (
+          `guid` varchar(45) NOT NULL,
+          `cn` varchar(45) NOT NULL,
+          `audit_timestamp` varchar(45) NOT NULL,
+          `usnchanged` int(10) unsigned NOT NULL,
+          `first_audit_timestamp` varchar(45) NOT NULL,
+          `ou_id` varchar(45) NOT NULL,
+          `description` varchar(45) default NULL,
+          `department` varchar(45) default NULL,
+          `users_dn` varchar(255) NOT NULL,
+          PRIMARY KEY  (`guid`)
+        ) ENGINE=MyISAM DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;";
+
+upgrade ($version,"08.05.21", $sql);
+
+
 
 ?>
     <br />Upgrade complete.
