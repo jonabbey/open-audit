@@ -1,6 +1,6 @@
 <?php
 $query_array=array("headline"=>__("List all Windows Shares with hosts"),
-                   "sql" => "SELECT system.system_uuid, system.net_domain, system.system_name, system.net_user_name, shares.shares_name, shares.shares_caption, shares.shares_path FROM system AS system, shares AS shares WHERE system.system_uuid = shares.shares_uuid ",
+                   "sql" => "SELECT system.system_uuid, system.net_domain, system.system_name, system.net_user_name, shares.shares_name, shares.shares_caption, shares.shares_path FROM system AS system, shares AS shares WHERE system.system_uuid = shares.shares_uuid AND shares.shares_timestamp = system.system_timestamp ",
                    "sort"=>"system_name",
                    "dir"=>"ASC",
                    "get"=>array("file"=>"system.php",
