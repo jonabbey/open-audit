@@ -317,8 +317,8 @@ $sql = "ALTER TABLE `network_card` ADD COLUMN `net_driver_provider` varchar(100)
 
 upgrade ($version,"08.05.19", $sql);
 
-$sql ="DROP TABLE IF EXISTS `openaudit`.`ad_computers`;
-        CREATE TABLE  `openaudit`.`ad_computers` (
+$sql ="DROP TABLE IF EXISTS `ad_computers`;
+        CREATE TABLE `ad_computers` (
         `guid` varchar(45) NOT NULL,	# Computer object GUID from AD as a string
         `cn` varchar(45) NOT NULL,		# Computer object CN value from AD
           `audit_timestamp` varchar(45) NOT NULL,	# last audit timestamp
@@ -333,8 +333,8 @@ $sql ="DROP TABLE IF EXISTS `openaudit`.`ad_computers`;
         ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 
-        DROP TABLE IF EXISTS `openaudit`.`ad_domains`;
-        CREATE TABLE  `openaudit`.`ad_domains` (
+        DROP TABLE IF EXISTS `ad_domains`;
+        CREATE TABLE  `ad_domains` (
           `guid` varchar(45) NOT NULL,	# Unique ID for the domain (intend to use the domain AD GUID at some point)
           `default_nc` varchar(45) NOT NULL,	# Domain defaultnamingcontext
           `fqdn` varchar(45) NOT NULL,	# Domain FQDN
@@ -346,8 +346,8 @@ $sql ="DROP TABLE IF EXISTS `openaudit`.`ad_computers`;
         ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 
-        DROP TABLE IF EXISTS `openaudit`.`ad_ous`;
-        CREATE TABLE  `openaudit`.`ad_ous` (
+        DROP TABLE IF EXISTS `ad_ous`;
+        CREATE TABLE  `ad_ous` (
           `ou_id` varchar(45) NOT NULL,	# Unique ID for the OU (intend to use the OU AD GUID at some point)
           `ou_dn` varchar(255) default NULL,	# OU object distinguished name
           `ou_domain_guid` varchar(45) default NULL,	# Reference to ad_domains.guid (the domain that owns this OU)
@@ -357,8 +357,8 @@ $sql ="DROP TABLE IF EXISTS `openaudit`.`ad_computers`;
         ) ENGINE=MyISAM DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
 
 
-        DROP TABLE IF EXISTS `openaudit`.`ad_users`;
-        CREATE TABLE  `openaudit`.`ad_users` (
+        DROP TABLE IF EXISTS `ad_users`;
+        CREATE TABLE  `ad_users` (
           `guid` varchar(45) NOT NULL,
           `cn` varchar(45) NOT NULL,
           `audit_timestamp` varchar(45) NOT NULL,
