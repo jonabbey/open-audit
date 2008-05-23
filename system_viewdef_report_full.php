@@ -598,6 +598,7 @@ $query_array=array("name"=>array("name"=>__("Report"),
                                    "groups"=>array(
                                                     "headline"=>__("Groups"),
                                                     "sql"=>"SELECT * FROM groups WHERE groups_uuid = '".$pc."' AND groups_timestamp = '".$GLOBAL["system_timestamp"]."' ORDER BY groups_name ",
+                                                    "table_layout"=>"horizontal",
                                                     "fields"=>array("10"=>array("name"=>"groups_name", "head"=>__("Name"),),
                                                                     "20"=>array("name"=>"groups_members", "head"=>__("Members"),),
                                                                     "30"=>array("name"=>"gd_description", "head"=>__("Description"),),

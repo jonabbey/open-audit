@@ -20,6 +20,7 @@ $query_array=array("name"=>array("name"=>__("Users & Groups"),
                                    "groups"=>array(
                                                     "headline"=>__("Groups"),
                                                     "sql"=>"SELECT * FROM groups WHERE groups_uuid = '".$_GET["pc"]."' AND groups_timestamp = '".$GLOBAL["system_timestamp"]."' ORDER BY groups_name ",
+                                                    "table_layout"=>"horizontal",
                                                     "image"=>"images/groups_l.png",
                                                     "fields"=>array("10"=>array("name"=>"groups_name", "head"=>__("Name"),),
                                                                     "20"=>array("name"=>"groups_members", "head"=>__("Members"),),
