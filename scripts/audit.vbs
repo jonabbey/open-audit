@@ -1164,17 +1164,39 @@ comment = "Processor Info"
 Echo(comment)
 On Error Resume Next
 Set colItems = objWMIService.ExecQuery("Select * from Win32_Processor",,48)
-count = 0
+'count = 0
 For Each objItem in colItems
-  count = count + 1
-  if count > int(system_num_processors) then
-     Exit For
-  end if
+  'count = count + 1
+  'if count > int(system_num_processors) then
+     'Exit For
+  'end if
+  Select Case clean(objItem.UpgradeMethod)
+    Case "1"      cpu_socket = "Other"
+    Case "2"      cpu_socket = "Unknown"
+    Case "3"      cpu_socket = "Daughter Board"
+    Case "4"      cpu_socket = "ZIF Socket"
+    Case "5"      cpu_socket = "Replacement or Piggy Back"
+    Case "6"      cpu_socket = "None"
+    Case "7"      cpu_socket = "LIF Socket"
+    Case "8"      cpu_socket = "Slot 1"
+    Case "9"      cpu_socket = "Slot 2"
+    Case "10"     cpu_socket = "370 Pin Socket"
+    Case "11"     cpu_socket = "Slot A"
+    Case "12"     cpu_socket = "Slot M"
+    Case "13"     cpu_socket = "Socket 423"
+    Case "14"     cpu_socket = "Socket A (462)"
+    Case "15"     cpu_socket = "Socket 478"
+    Case "16"     cpu_socket = "Socket 754"
+    Case "17"     cpu_socket = "Socket 940"
+    Case "18"     cpu_socket = "Socket 939"
+    Case Default  cpu_socket = "Unknown"
+  End Select
+  cpu_socket =  cpu_socket & " (" & clean(objItem.SocketDesignation) & ")"
   form_input = "processor^^^" & clean(objItem.Caption)                  & "^^^" & clean(objItem.CurrentClockSpeed) & "^^^" _
                               & clean(objItem.CurrentVoltage)           & "^^^" & clean(objItem.DeviceID)          & "^^^" _
                               & clean(objItem.ExtClock)                 & "^^^" & clean(objItem.Manufacturer)      & "^^^" _
                               & clean(objItem.MaxClockSpeed)            & "^^^" & LTrim(clean(objItem.Name))       & "^^^" _
-                              & clean(objItem.PowerManagementSupported) & "^^^" & clean(objItem.SocketDesignation) & "^^^"
+                              & clean(objItem.PowerManagementSupported) & "^^^" & cpu_socket                       & "^^^"
   entry form_input,comment,objTextFile,oAdd,oComment
   form_input = ""
   if online = "p" then
