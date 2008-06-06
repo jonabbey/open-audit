@@ -133,6 +133,7 @@ $menue_array = array(
                                     "120"=>array("name"=>"All MS Windows-Keys", "link"=>"./list.php?view=keys_for_software&amp;type=windows%&amp;headline_addition=Windows", "image"=>"images/key_3.png", "title"=>"All Widnows Keys",),
                                     "130"=>array("name"=>"All MS Windows Shares", "link"=>"./list.php?view=all_network_shares", "image"=>"images/shared_drive_l.png", "title"=>"All Windows Shares by Host",),
                                     "140"=>array("name"=>"All MS Windows Local Administrators", "link"=>"./list.php?view=all_win_admins", "image"=>"images/users.png", "title"=>"All Windows Administrators by Host",),
+                                    "150"=>array("name"=>"All Mapped Drives", "link"=>"./list.php?view=all_mapped_drives", "image"=>"images/shared_drive_l.png", "title"=>"All Mapped Drives by Host",),
                               ),
               ),
       "20" => array("name"=>"Other Items",
