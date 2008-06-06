@@ -373,6 +373,16 @@ $sql ="DROP TABLE IF EXISTS `ad_computers`;
 
 upgrade ($version,"08.05.21", $sql);
 
+$sql = "ALTER TABLE `mapped` ADD COLUMN `mapped_username` varchar(100) NOT NULL default '' AFTER `mapped_size`,
+                             ADD COLUMN `mapped_connect_as` varchar(100) NOT NULL default '' AFTER `mapped_username`;
+
+        ALTER TABLE `motherboard` ADD COLUMN `motherboard_cpu_sockets` INT( 10 ) NOT NULL DEFAULT '0' AFTER `motherboard_product`,
+                                  ADD COLUMN `motherboard_memory_slots` INT( 10 ) NOT NULL DEFAULT '0' AFTER `motherboard_cpu_sockets`;
+
+        ALTER TABLE `groups` CHANGE `groups_members` `groups_members` VARCHAR( 255 ) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL;";
+
+upgrade ($version,"08.06.06", $sql);
+
 
 
 ?>

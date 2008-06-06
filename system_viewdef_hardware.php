@@ -21,6 +21,8 @@ $query_array=array("name"=>array("name"=>__("Hardware"),
                                                     "image"=>"images/memory_l.png",
                                                     "fields"=>array("10"=>array("name"=>"motherboard_manufacturer", "head"=>__("Manufacturer"),),
                                                                     "20"=>array("name"=>"motherboard_product", "head"=>__("Product"),),
+                                                                    "30"=>array("name"=>"motherboard_cpu_sockets", "head"=>__("CPU Sockets"),),
+                                                                    "40"=>array("name"=>"motherboard_memory_slots", "head"=>__("Memory Slots"),),
                                                                    ),
                                                     ),
                                    "onboard_device"=>array(

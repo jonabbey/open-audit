@@ -1486,6 +1486,8 @@ function insert_mapped ($split){
     $mapped_free_space = trim($extended[3]);
     $mapped_provider_name = trim($extended[4]);
     $mapped_size = trim($extended[5]);
+    $mapped_username = trim($extended[6]);
+    $mapped_connect_as = trim($extended[7]);
     if (is_null($mapped_timestamp)){
       $sql = "SELECT MAX(mapped_timestamp) FROM mapped WHERE mapped_uuid = '$uuid'";
       if ($verbose == "y"){echo $sql . "<br />\n\n";}
@@ -1494,24 +1496,26 @@ function insert_mapped ($split){
       if ($myrow["MAX(mapped_timestamp)"]) {$mapped_timestamp = $myrow["MAX(mapped_timestamp)"];} else {$mapped_timestamp = "";}
     } else {}
     $sql  = "SELECT count(mapped_uuid) AS count FROM mapped WHERE mapped_uuid = '$uuid' AND ";
-    $sql .= "mapped_device_id = '$mapped_device_id' AND mapped_file_system = '$mapped_file_system' AND ";
-    $sql .= "mapped_free_space = '$mapped_free_space' AND mapped_provider_name = '$mapped_provider_name' AND ";
-    $sql .= "mapped_size = '$mapped_size' AND (mapped_timestamp = '$mapped_timestamp' OR mapped_timestamp = '$timestamp')";
+    $sql .= "mapped_device_id = '$mapped_device_id' AND mapped_username = '$mapped_username' AND ";
+    $sql .= "(mapped_timestamp = '$mapped_timestamp' OR mapped_timestamp = '$timestamp')";
     if ($verbose == "y"){echo $sql . "<br />\n\n";}
     $result = mysql_query($sql) or die ('Insert Failed: ' . mysql_error() . '<br />' . $sql);
     $myrow = mysql_fetch_array($result);
     if ($verbose == "y"){echo "Count: " . $myrow['count'] . "<br />\n\n";}
     if ($myrow['count'] == "0"){
-      // Insert into database
-      $sql  = "INSERT INTO mapped (mapped_uuid, mapped_device_id, mapped_file_system, ";
-      $sql .= "mapped_free_space, mapped_provider_name, mapped_size, mapped_timestamp, mapped_first_timestamp ) VALUES (";
-      $sql .= "'$uuid', '$mapped_device_id', '$mapped_file_system', ";
-      $sql .= "'$mapped_free_space', '$mapped_provider_name', '$mapped_size', '$timestamp', '$timestamp')";
+      // New mapped drive - Insert into database
+      $sql  = "INSERT INTO mapped (mapped_uuid, mapped_device_id, mapped_file_system, mapped_free_space, mapped_provider_name, ";
+      $sql .= "mapped_size, mapped_username, mapped_connect_as, mapped_timestamp, mapped_first_timestamp ) VALUES (";
+      $sql .= "'$uuid', '$mapped_device_id', '$mapped_file_system', '$mapped_free_space', '$mapped_provider_name', ";
+      $sql .= "'$mapped_size', '$mapped_username', '$mapped_connect_as', '$timestamp', '$timestamp')";
       if ($verbose == "y"){echo $sql . "<br />\n\n";}
       $result = mysql_query($sql) or die ('Insert Failed: ' . mysql_error() . '<br />' . $sql);
     } else {
-      // Already present in database - update timestamp
-      $sql = "UPDATE mapped SET mapped_timestamp = '$timestamp' WHERE mapped_device_id = '$mapped_device_id' AND mapped_uuid = '$uuid' AND mapped_timestamp = '$mapped_timestamp'";
+      // Already present in database - update timestamp and dynamic values
+      $sql  = "UPDATE mapped SET mapped_file_system = '$mapped_file_system', mapped_free_space = '$mapped_free_space', ";
+      $sql .= "mapped_provider_name = '$mapped_provider_name', mapped_size = '$mapped_size', mapped_connect_as = '$mapped_connect_as', ";
+      $sql .= "mapped_timestamp = '$timestamp' WHERE mapped_uuid = '$uuid' AND ";
+      $sql .= "mapped_device_id = '$mapped_device_id' AND mapped_username = '$mapped_username' AND mapped_timestamp = '$mapped_timestamp'";
       if ($verbose == "y"){echo $sql . "<br />\n\n";}
       $result = mysql_query($sql) or die ('Insert Failed: ' . mysql_error() . '<br />' . $sql);
     }
@@ -2448,6 +2452,8 @@ function insert_motherboard ($split) {
     if ($verbose == "y"){echo "<h2>Motherboard</h2><br />";}
     $motherboard_manufacturer = trim($extended[1]);
     $motherboard_product = trim($extended[2]);
+    $motherboard_cpu_sockets = trim($extended[3]);
+    $motherboard_memory_slots = trim($extended[4]);
 
     if (is_null($motherboard_timestamp)) {
       $sql  = "SELECT MAX(motherboard_timestamp) FROM motherboard WHERE motherboard_uuid = '$uuid'";
@@ -2458,6 +2464,7 @@ function insert_motherboard ($split) {
     } else {}
     $sql  = "SELECT count(motherboard_uuid) as count from motherboard ";
     $sql .= "WHERE motherboard_uuid = '$uuid' AND motherboard_manufacturer = '$motherboard_manufacturer' AND motherboard_product = '$motherboard_product' ";
+    $sql .= "AND motherboard_cpu_sockets = '$motherboard_cpu_sockets' AND motherboard_memory_slots = '$motherboard_memory_slots' ";
     $sql .= "AND (motherboard_timestamp = '$motherboard_timestamp' OR motherboard_timestamp = '$timestamp')";
     if ($verbose == "y"){echo $sql . "<br />\n\n";}
     $result = mysql_query($sql) or die ('Insert Failed: ' . mysql_error() . '<br />' . $sql);
@@ -2466,9 +2473,9 @@ function insert_motherboard ($split) {
     if ($myrow['count'] == "0"){
       // New motherboard - Insert into database
       $sql  = "INSERT INTO motherboard (";
-      $sql .= "motherboard_uuid, motherboard_manufacturer, motherboard_product, ";
+      $sql .= "motherboard_uuid, motherboard_manufacturer, motherboard_product, motherboard_cpu_sockets, motherboard_memory_slots, ";
       $sql .= "motherboard_timestamp, motherboard_first_timestamp) VALUES (";
-      $sql .= "'$uuid', '$motherboard_manufacturer', '$motherboard_product', ";
+      $sql .= "'$uuid', '$motherboard_manufacturer', '$motherboard_product', '$motherboard_cpu_sockets', '$motherboard_memory_slots', ";
       $sql .= "'$timestamp', '$timestamp') ";
 
       if ($verbose == "y"){echo $sql . "<br />\n\n";}
@@ -2478,6 +2485,7 @@ function insert_motherboard ($split) {
       $sql  = "UPDATE motherboard SET ";
       $sql .= "motherboard_timestamp = '$timestamp' ";
       $sql .= "WHERE motherboard_uuid = '$uuid' AND motherboard_manufacturer = '$motherboard_manufacturer' AND motherboard_product = '$motherboard_product' ";
+      $sql .= "AND motherboard_cpu_sockets = '$motherboard_cpu_sockets' AND motherboard_memory_slots = '$motherboard_memory_slots' ";
       $sql .= "AND motherboard_timestamp = '$motherboard_timestamp'";
       if ($verbose == "y"){echo $sql . "<br />\n\n";}
       $result = mysql_query($sql) or die ('Insert Failed: ' . mysql_error() . '<br />' . $sql);

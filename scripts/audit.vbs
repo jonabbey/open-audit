@@ -1210,10 +1210,6 @@ Next
 '''''''''''''''''''''''''''
 comment = "Memory Info"
 Echo(comment)
-Set colItems = objWMIService.ExecQuery("Select MemoryDevices FROM Win32_PhysicalMemoryArray ",,48)
-For Each objItem in colItems
-   memory_slots = objItem.MemoryDevices
-Next
 On Error Resume Next
 Set colItems = objWMIService.ExecQuery("Select Capacity,DeviceLocator,FormFactor,MemoryType,TypeDetail,Speed FROM Win32_PhysicalMemory",,48)
 mem_size = 0
@@ -1288,7 +1284,7 @@ For Each objItem in colItems
      Case Else    mem_typedetail = "Unknown"
    End Select
 
-   mem_bank = objItem.DeviceLocator & "/" & memory_slots
+   mem_bank = objItem.DeviceLocator
    mem_size = int(objItem.Capacity /1024 /1024)
    mem_speed = clean(objItem.Speed)
 
@@ -1309,9 +1305,8 @@ If mem_size = 0 Then
       mem_size = objItem.TotalPhysicalMemory
    Next
    mem_size = int(mem_size /1024)
-   mem_bank = "Unknown (out of " & memory_slots & " slots)"
 
-   form_input = "memory^^^" & mem_bank  & "^^^" & "Unknown" & "^^^" & "Unknown" & "^^^" _
+   form_input = "memory^^^" & "Unknown"  & "^^^" & "Unknown" & "^^^" & "Unknown" & "^^^" _
                             & "Unknown" & "^^^" & mem_size  & "^^^" & "0"       & "^^^"
    entry form_input,comment,objTextFile,oAdd,oComment
    form_input = ""
@@ -1894,23 +1889,86 @@ Next
 '''''''''''''''''''''''''''
 ' Mapped Drives '
 '''''''''''''''''''''''''''
-if audit_location = "l" then
-  comment = "Mapped Drives Info"
-  Echo(comment)
-  On Error Resume Next
-  Set colItems = objWMIService.ExecQuery("Select * from Win32_LogicalDisk where not DriveType=<2 ",,48)
-  For Each objItem in colItems 
-    if Left(objItem.ProviderName,2)="\\" then
-      form_input = "mapped^^^" & clean(objItem.DeviceID)                            & "^^^" _
-                               & clean(objItem.FileSystem)                          & "^^^" _
-                               & int(Round(objItem.FreeSpace /1024 /1024 /1024 ,1)) & "^^^" _
-                               & clean(objItem.ProviderName)                        & "^^^" _
-                               & int(Round(objItem.Size /1024 /1024 /1024 ,1))      & "^^^"
-      entry form_input,comment,objTextFile,oAdd,oComment
-      form_input = ""
-    end if
-  Next
-end if
+' This commented code lists only current users's mapped drives
+
+'if audit_location = "l" then
+'  comment = "Mapped Drives Info"
+'  Echo(comment)
+'  On Error Resume Next
+'  Set colItems = objWMIService.ExecQuery("Select * from Win32_LogicalDisk ",,48)
+'  For Each objItem in colItems 
+'    if Left(objItem.ProviderName,2)="\\" then
+'      form_input = "mapped^^^" & clean(objItem.DeviceID)                            & "^^^" _
+'                               & clean(objItem.FileSystem)                          & "^^^" _
+'                               & int(Round(objItem.FreeSpace /1024 /1024 /1024 ,1)) & "^^^" _
+'                               & clean(objItem.ProviderName)                        & "^^^" _
+'                               & int(Round(objItem.Size /1024 /1024 /1024 ,1))      & "^^^"
+'      entry form_input,comment,objTextFile,oAdd,oComment
+'      form_input = ""
+'    end if
+'  Next
+'end if
+
+comment = "Mapped Drives Info"
+Echo(comment)
+On Error Resume Next
+
+'Searching the registry for stored profiles 
+strKeyPath = ""
+oReg.EnumKey HKEY_USERS, strKeyPath, arrSubKeys
+For Each subkey In arrSubKeys
+  ' Filtering out some well-known SIDs
+  Select Case subkey
+    Case ".DEFAULT"
+    Case "S-1-5-18" 'Local System
+    Case "S-1-5-19" 'Local Service
+    Case "S-1-5-20" 'Network service
+    Case Else 
+           If Instr(subkey, "_Classes") = 0 Then
+             'Searching for mapped drives    
+             strKeyPath2 = subkey & "\Network"
+             oReg.EnumKey HKEY_USERS, strKeyPath2, arrSubKeys2
+             For Each subkey2 in arrSubKeys2
+               If subkey2 <> "" Then
+                 'Found mapped drive
+                 'Searching for the username matching the SID
+                 DeviceID = ""
+                 ProviderName = ""
+                 MapUserName = ""
+                 MapUserDomain = ""
+                 ConnectAs = ""
+                 Set colItems = objWMIService.ExecQuery("Select Name, Domain from Win32_UserAccount where SID = '" & subkey & "'",,48)
+                 If colItems <> "" Then 
+                   ' Found local user
+                   For Each objItem in colItems
+                     MapUserName = objItem.Domain & "\" & objItem.Name
+                   Next
+                 End If
+                 If MapUserName = "" Then
+                   'Searching the registry for domain user info
+                   strKeyPath3 = subkey & "\Software\Microsoft\Windows\CurrentVersion\Explorer" 
+                   oReg.GetStringValue HKEY_USERS, strKeyPath3, "Logon User name", MapUserName
+                   strKeyPath4 = subkey & "\Volatile Environment" 
+                   oReg.GetStringValue HKEY_USERS, strKeyPath4, "USERDNSDOMAIN", MapUserDomain
+                   MapUserName = MapUserName & "@" & LCase(MapUserDomain)
+                 End If
+                 'Reading  mapped drive details
+                 DeviceId = subkey2
+                 strKeyPath5 = strKeyPath2 & "\" & subkey2
+                 oReg.GetStringValue HKEY_USERS, strKeyPath5, "RemotePath", ProviderName
+                 oReg.GetStringValue HKEY_USERS, strKeyPath5, "UserName", ConnectAs
+                 FileSystem = ""
+                 FreeSpace = 0
+                 Size = 0
+                 form_input = "mapped^^^" & DeviceID  & "^^^"  & FileSystem   & "^^^"  & FreeSpace  & "^^^"  & ProviderName  & "^^^"  _
+                                          & Size      & "^^^"  & MapUserName  & "^^^"  & ConnectAs  & "^^^"
+                 entry form_input,comment,objTextFile,oAdd,oComment
+                 form_input = ""
+               End If 'subkey2 <> ""
+             Next 'subkey2 in arrSubKeys2
+           End If 'Instr(subkey, "_Classes") = 0
+  End Select
+Next ' subkey In arrSubKeys
 
 '''''''''''''''''''''''''''
 '   Local Groups          '
@@ -2198,10 +2256,28 @@ On Error Resume Next
 
 Set colItems = objWMIService.ExecQuery("Select * from Win32_BaseBoard",,48)
 For Each objItem in colItems
-   form_input = "motherboard^^^" & clean(objItem.Manufacturer) & "^^^" & clean(objItem.Product) & "^^^" 
-   entry form_input,comment,objTextFile,oAdd,oComment
-   form_input = ""
+  Manufacturer = clean(objItem.Manufacturer)
+  Product = clean(objItem.Product)
 Next
+' Counting CPU sockets 
+Set colItems = objWMIService.ExecQuery("SELECT * FROM Win32_Processor",,48)
+SocketDesignation = ""
+CpuSockets = 0
+For Each objItem In colItems
+  If Instr(SocketDesignation, objItem.SocketDesignation) = 0 Then
+    CpuSockets = CpuSockets + 1
+    SocketDesignation = SocketDesignation & objItem.SocketDesignation
+  End If
+Next
+' Counting RAM slots
+Set colItems = objWMIService.ExecQuery("Select MemoryDevices FROM Win32_PhysicalMemoryArray ",,48)
+For Each objItem in colItems
+  MemorySlots = objItem.MemoryDevices
+Next
+
+form_input = "motherboard^^^"  & Manufacturer  & "^^^"  & Product  & "^^^"  & CpuSockets  & "^^^"  & MemorySlots  & "^^^"
+entry form_input,comment,objTextFile,oAdd,oComment
+form_input = ""
 
 ''''''''''''''''''''''''''''''''''''''''''''''
 '   Onboard devices information      '

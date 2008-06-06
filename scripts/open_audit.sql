@@ -9,6 +9,58 @@
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
+
+DROP TABLE IF EXISTS `ad_computers`;
+CREATE TABLE `ad_computers` (
+  `guid` varchar(45) NOT NULL,	# Computer object GUID from AD as a string
+  `cn` varchar(45) NOT NULL,		# Computer object CN value from AD
+  `audit_timestamp` varchar(45) NOT NULL,	# last audit timestamp
+  `usnchanged` int(10) unsigned NOT NULL,	# Computer object usnchanged value from AD
+  `first_audit_timestamp` varchar(45) NOT NULL, # First audit timestamp
+  `ou_id` varchar(45) NOT NULL,	# Reference to ad_ous.ou_id (the OU that owns this computer account)
+  `description` varchar(45) default NULL,	# Computer object description value from AD
+  `os` varchar(45) default NULL,	# Computer object operatingsystem value from AD
+  `service_pack` varchar(45) default NULL,	# Computer object operatingsystemservicepack value from AD
+  `dn` varchar(255) NOT NULL,	# Computer object distinguishedname value from AD
+  PRIMARY KEY  (`guid`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+DROP TABLE IF EXISTS `ad_domains`;
+CREATE TABLE  `ad_domains` (
+  `guid` varchar(45) NOT NULL,	# Unique ID for the domain (intend to use the domain AD GUID at some point)
+  `default_nc` varchar(45) NOT NULL,	# Domain defaultnamingcontext
+  `fqdn` varchar(45) NOT NULL,	# Domain FQDN
+  `ldap_server` varchar(45) NOT NULL,	# LDAP host server
+  `ldap_user` varchar(45) NOT NULL,	# LDAP login (AD Account)
+  `ldap_password` varchar(45) NOT NULL,	# LDAP password 
+  `netbios_name` varchar(45) NOT NULL,	# Domain NetBIOS name
+  PRIMARY KEY  (`guid`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+DROP TABLE IF EXISTS `ad_ous`;
+CREATE TABLE  `ad_ous` (
+  `ou_id` varchar(45) NOT NULL,	# Unique ID for the OU (intend to use the OU AD GUID at some point)
+  `ou_dn` varchar(255) default NULL,	# OU object distinguished name
+  `ou_domain_guid` varchar(45) default NULL,	# Reference to ad_domains.guid (the domain that owns this OU)
+  `ou_audit_timestamp` varchar(45) default NULL,	# Audit timestamp for this OU
+  `include_in_audit` tinyint(1) default NULL,	# Flag to include/exclude OU from audit
+  PRIMARY KEY  (`ou_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
+
+DROP TABLE IF EXISTS `ad_users`;
+CREATE TABLE  `ad_users` (
+  `guid` varchar(45) NOT NULL,
+  `cn` varchar(45) NOT NULL,
+  `audit_timestamp` varchar(45) NOT NULL,
+  `usnchanged` int(10) unsigned NOT NULL,
+  `first_audit_timestamp` varchar(45) NOT NULL,
+  `ou_id` varchar(45) NOT NULL,
+  `description` varchar(45) default NULL,
+  `department` varchar(45) default NULL,
+  `users_dn` varchar(255) NOT NULL,
+  PRIMARY KEY  (`guid`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
+
 DROP TABLE IF EXISTS `auth`;
 CREATE TABLE `auth` (
   `auth_id` INT( 10 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,
@@ -224,7 +276,7 @@ CREATE TABLE `groups` (
   `groups_uuid` varchar(100) NOT NULL default '',
   `groups_description` varchar(200) NOT NULL default '',
   `groups_name` varchar(100) NOT NULL default '',
-  `groups_members` varchar(100) NOT NULL default '',
+  `groups_members` varchar(255) NOT NULL default '',
   `groups_sid` varchar(100) NOT NULL default '',
   `groups_timestamp` bigint(20) unsigned NOT NULL default '0',
   `groups_first_timestamp` bigint(20) unsigned NOT NULL default '0',
@@ -409,6 +461,8 @@ CREATE TABLE `mapped` (
   `mapped_provider_name` varchar(100) NOT NULL default '',
   `mapped_free_space` int(10) unsigned NOT NULL default '0',
   `mapped_size` int(11) unsigned NOT NULL default '0',
+  `mapped_username` varchar(100) NOT NULL default '',
+  `mapped_connect_as` varchar(100) NOT NULL default '',
   `mapped_timestamp` bigint(20) unsigned NOT NULL default '0',
   `mapped_first_timestamp` bigint(20) unsigned NOT NULL default '0',
   PRIMARY KEY  (`mapped_id`),
@@ -489,6 +543,8 @@ CREATE TABLE `motherboard` (
   `motherboard_uuid` VARCHAR( 100 ) NOT NULL DEFAULT '',
   `motherboard_manufacturer` VARCHAR( 50 ) NOT NULL DEFAULT '',
   `motherboard_product` VARCHAR( 50 ) NOT NULL DEFAULT '',
+  `motherboard_cpu_sockets` INT( 10 ) NOT NULL DEFAULT '0',
+  `motherboard_memory_slots` INT( 10 ) NOT NULL DEFAULT '0',
   `motherboard_timestamp` BIGINT( 20 ) UNSIGNED NOT NULL DEFAULT '0',
   `motherboard_first_timestamp` BIGINT( 20 ) UNSIGNED NOT NULL DEFAULT '0',
   PRIMARY KEY  (`motherboard_id`),
@@ -1190,7 +1246,7 @@ CREATE TABLE `video` (
   KEY `id2` (`video_timestamp`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
-INSERT INTO config (config_name, config_value) VALUES ('version','08.05.19');
+INSERT INTO config (config_name, config_value) VALUES ('version','08.06.06');
 
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
