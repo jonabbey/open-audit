@@ -1953,7 +1953,7 @@ For Each subkey In arrSubKeys
                    MapUserName = MapUserName & "@" & LCase(MapUserDomain)
                  End If
                  'Reading  mapped drive details
-                 DeviceId = subkey2
+                 DeviceId = Ucase(subkey2)
                  strKeyPath5 = strKeyPath2 & "\" & subkey2
                  oReg.GetStringValue HKEY_USERS, strKeyPath5, "RemotePath", ProviderName
                  oReg.GetStringValue HKEY_USERS, strKeyPath5, "UserName", ConnectAs
