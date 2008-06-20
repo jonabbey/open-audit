@@ -1982,7 +1982,7 @@ else
   Set colItems = objWMIService.ExecQuery("Select * from Win32_Group where Domain = '" & system_name & "'",,48)
   For Each objItem in colItems
     users = ""
-    Set colGroups = GetObject("WinNT://" & strComputer & "")
+    Set colGroups = GetObject("WinNT://" & system_name & "")
     colGroups.Filter = Array("group")
     For Each objGroup In colGroups
       if objGroup.Name = objItem.Name then
