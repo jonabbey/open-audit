@@ -182,11 +182,15 @@ $sql = "UPDATE system SET system_timestamp = '$timestamp' WHERE system_uuid = '$
 if ($verbose == "y"){echo $sql . "<br />\n\n";}
 $result = mysql_query($sql);
 $sql = "";
-
+//
 foreach ($input as $split) {
+// Strip unnecesary slashes if required. 
+if(get_magic_quotes_gpc()) {
   $split = stripslashes($split);
-  $split = mysql_real_escape_string($split);
-  //Network
+}
+//
+$split = mysql_real_escape_string($split);  
+//Network
   if (substr($split, 0, 7) == "network")  { insert_network($split); }
   // First system submit - Initial insert
   if (substr($split, 0, 8) == "system01") { insert_system01($split); }
