@@ -4508,6 +4508,7 @@ End Function
 
 Function HowMany()
   Dim Proc1,Proc2,Proc3
+  CheckForHungWMI()
   Set Proc1 = GetObject("winmgmts:{impersonationLevel=impersonate}!\\.\root\cimv2")
   Set Proc2 = Proc1.ExecQuery("select * from win32_process" )
   HowMany=0
@@ -4529,6 +4530,43 @@ if form_input <> "" then
 end if
 end sub
 
+Sub CheckForHungWMI()
+
+    ' Get the current date in UTC format
+    Set dtmStart = CreateObject("WbemScripting.SWbemDateTime")
+    dtmStart.SetVarDate Now, True
+
+    ' Subtract the script_timeout value
+    dtmNew = DateAdd("s", (script_timeout * -1), dtmStart.GetVarDate(True))
+
+    ' Convert our dtmNew time back to UTC format, since that's the format needed for the WMIService query, below.
+    Set dtmTarget = CreateObject("WbemScripting.SWbemDateTime")
+    dtmTarget.SetVarDate dtmNew, True
+
+    Set objWMIService = GetObject("winmgmts:{impersonationLevel=impersonate}!\\.\root\cimv2")
+   
+    ' Pull a list of all processes that are over (script_timeout) seconds old
+    Set colProcesses = objWMIService.ExecQuery _
+        ("Select * from Win32_Process WHERE CreationDate < '" & dtmTarget & "'")
+
+    For each objProcess in colProcesses
+        ' Look for cscript.exe processes only
+        if objProcess.Name = "cscript.exe" then
+            ' Look for audit.vbs processes with the //Nologo cmd line option. 
+         ' NOTE: The //Nologo cmd line option should NOT be used to start the initial audit, or it will kill itself off after script_timeout seconds
+            if InStr(objProcess.CommandLine, "//Nologo") and InStr(objProcess.CommandLine, "audit.vbs") then
+            ' The command line looks something like this: "C:\WINDOWS\system32\cscript.exe" //Nologo audit.vbs S0259W11
+            ' Get the position of audit.vbs in the command line, and add 10 to get to the start of the workstation name
+            position = InStr(objProcess.CommandLine, "audit.vbs") + 10
+            affectedComputer = Mid(objProcess.CommandLine,position)
+            Echo("" & Now & "," & affectedComputer & " - Hung Process Killed. ")
+            LogKilledAudit("Hung Process Killed for machine: " & affectedComputer)
+                objProcess.Terminate
+            end if
+        end if
+    Next
+
+End Sub
 
 
 function getResultFromFileExpression(node)
@@ -4851,3 +4889,34 @@ Sub ArrayShuffle(arr)
     Next
    
 End Sub
+
+Function LogKilledAudit(txt)
+   on error resume next
+   dim Today, YYYYmmdd, fp, txtarr, txtline, todaystr
+   today=Now
+   logfilename="killed_audits.log"
+   todaystr=datepart("yyyy", today)&"/"&_
+         right("00"&datepart("m", today), 2)&"/"&_
+         right("00"&datepart("d", today), 2)&" "&_
+         right("00"&datepart("h", today), 2)&":"&_
+         right("00"&datepart("n", today), 2)&":"&_
+         right("00"&datepart("s", today), 2)
+   Set objFSO = CreateObject("Scripting.FileSystemObject")
+   set fp=objFSO.OpenTextFile(logfilename, 8, true)
+   If err<>0 then wscript.echo err.number&" "&err.description
+   txtarr=Split(txt, vbcrlf)
+   txt=""
+   For each txtline in txtarr
+     txtline=trim(txtline)
+     if txtline<>"" then
+       txt=txt&todaystr&" - "&txtline&vbcrlf
+     End if
+   Next
+
+   WScript.Echo(left(txt, len(txt)-2))
+   fp.write txt
+   fp.Close
+   set fp=Nothing
+
+   LogKilledAudit=True
+End Function 
