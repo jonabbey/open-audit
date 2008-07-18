@@ -423,7 +423,8 @@ if audit_local_domain = "y" then
       Echo("Next System: " & comparray(i))
       Echo("--------------")
       ' command1 = "cscript " & script_name & " " & comparray(i) ' wait forever. 
-      command1 = "cscript //T:" & script_timeout & " " & script_name & " " & comparray(i)
+      'command1 = "cscript //T:" & script_timeout & " " & script_name & " " & comparray(i)
+       command1 = "cscript //Nologo " & script_name & " " & comparray(i)
       set sh1=WScript.CreateObject("WScript.Shell")
       sh1.Run command1, 6, False
       set sh1 = nothing
