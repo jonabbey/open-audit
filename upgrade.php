@@ -383,6 +383,9 @@ $sql = "ALTER TABLE `mapped` ADD COLUMN `mapped_username` varchar(100) NOT NULL 
 
 upgrade ($version,"08.06.06", $sql);
 
+$sql = "ALTER TABLE `memory` ADD COLUMN `memory_tag` varchar(256) NOT NULL default '' AFTER `memory_speed`";
+
+upgrade ($version,"08.07.23", $sql);
 
 
 ?>

@@ -614,6 +614,7 @@ function insert_memory ($split){
     $memory_detail = trim($extended[4]);
     $memory_capacity = trim($extended[5]);
     $memory_speed = trim($extended[6]);
+    $memory_tag = trim($extended[7]);
     if (is_null($memory_timestamp)){
       $sql  = "SELECT MAX(memory_timestamp) FROM memory WHERE memory_uuid = '$uuid'";
       if ($verbose == "y"){echo $sql . "<br />\n\n";}
@@ -624,7 +625,7 @@ function insert_memory ($split){
     $sql  = "SELECT count(memory_bank) as count FROM memory WHERE ";
     $sql .= "memory_bank = '$memory_bank' AND memory_type = '$memory_type' AND ";
     $sql .= "memory_form_factor = '$memory_form_factor' AND memory_detail = '$memory_detail' AND ";
-    $sql .= "memory_capacity = '$memory_capacity' AND memory_speed = '$memory_speed' AND ";
+    $sql .= "memory_capacity = '$memory_capacity' AND memory_speed = '$memory_speed' AND memory_tag = '$memory_tag' AND ";
     $sql .= "memory_uuid = '$uuid' AND (memory_timestamp = '$memory_timestamp' OR memory_timestamp = '$timestamp')";
     if ($verbose == "y"){echo $sql . "<br />\n\n";}
     $result = mysql_query($sql) or die ('Insert Failed: ' . mysql_error() . '<br />' . $sql);
@@ -633,14 +634,14 @@ function insert_memory ($split){
     if ($myrow['count'] == "0"){
       // Insert into database
       $sql  = "INSERT INTO memory (memory_uuid, memory_bank, memory_type, memory_form_factor, ";
-      $sql .= "memory_detail, memory_capacity, memory_speed, memory_timestamp, memory_first_timestamp) VALUES (";
+      $sql .= "memory_detail, memory_capacity, memory_speed, memory_tag, memory_timestamp, memory_first_timestamp) VALUES (";
       $sql .= "'$uuid', '$memory_bank', '$memory_type', '$memory_form_factor', ";
-      $sql .= "'$memory_detail', '$memory_capacity', '$memory_speed', '$timestamp', '$timestamp')";
+      $sql .= "'$memory_detail', '$memory_capacity', '$memory_speed', '$memory_tag', '$timestamp', '$timestamp')";
       if ($verbose == "y"){echo $sql . "<br />\n\n";}
       $result = mysql_query($sql) or die ('Insert Failed: ' . mysql_error() . '<br />' . $sql);
     } else {
       // Already present in database - update timestamp
-      $sql = "UPDATE memory SET memory_timestamp = '$timestamp' WHERE memory_bank = '$memory_bank' AND memory_uuid = '$uuid' AND memory_timestamp = '$memory_timestamp'";
+      $sql = "UPDATE memory SET memory_timestamp = '$timestamp' WHERE memory_bank = '$memory_bank' AND memory_tag = '$memory_tag' AND memory_uuid = '$uuid' AND memory_timestamp = '$memory_timestamp'";
       if ($verbose == "y"){echo $sql . "<br />\n\n";}
       $result = mysql_query($sql) or die ('Insert Failed: ' . mysql_error() . '<br />' . $sql);
     }

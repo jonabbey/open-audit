@@ -1212,7 +1212,7 @@ Next
 comment = "Memory Info"
 Echo(comment)
 On Error Resume Next
-Set colItems = objWMIService.ExecQuery("Select Capacity,DeviceLocator,FormFactor,MemoryType,TypeDetail,Speed FROM Win32_PhysicalMemory",,48)
+Set colItems = objWMIService.ExecQuery("Select Capacity,DeviceLocator,FormFactor,MemoryType,TypeDetail,Speed,Tag FROM Win32_PhysicalMemory",,48)
 mem_size = 0
 
 For Each objItem in colItems
@@ -1288,9 +1288,10 @@ For Each objItem in colItems
    mem_bank = objItem.DeviceLocator
    mem_size = int(objItem.Capacity /1024 /1024)
    mem_speed = clean(objItem.Speed)
+   mem_tag = clean(objItem.Tag)
 
    form_input = "memory^^^" & mem_bank       & "^^^" & mem_formfactor & "^^^" & mem_detail & "^^^" _
-                            & mem_typedetail & "^^^" & mem_size       & "^^^" & mem_speed  & "^^^"
+                            & mem_typedetail & "^^^" & mem_size       & "^^^" & mem_speed  & "^^^" & mem_tag & "^^^"
    entry form_input,comment,objTextFile,oAdd,oComment
    form_input = ""
    if online = "p" then
@@ -1308,7 +1309,7 @@ If mem_size = 0 Then
    mem_size = int(mem_size /1024)
 
    form_input = "memory^^^" & "Unknown"  & "^^^" & "Unknown" & "^^^" & "Unknown" & "^^^" _
-                            & "Unknown" & "^^^" & mem_size  & "^^^" & "0"       & "^^^"
+                            & "Unknown"  & "^^^" & mem_size  & "^^^" & "0"       & "^^^" & "Unknown" & "^^^"
    entry form_input,comment,objTextFile,oAdd,oComment
    form_input = ""
 
