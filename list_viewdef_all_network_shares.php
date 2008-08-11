@@ -39,6 +39,12 @@ $query_array=array("headline"=>__("List all Windows Shares with hosts"),
                                                "show"=>"y",
                                                "link"=>"n",
                                               ),
+                                   "60"=>array("name"=>"net_user_name",
+                                               "head"=>__("User Name"),
+                                               "show"=>"y",
+                                               "link"=>"n",
+                                              ),
+ 
  
                                   ),
                   );

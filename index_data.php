@@ -48,7 +48,7 @@ function GetSystemsAuditedGraph()
 	for($i=$systems_audited_days-1;$i>=0;$i--) {$dates[adjustdate(0,0,-$i)]=0;}
 	
 	// SQL query to get number of systems audited each day 
-	$sql = "SELECT left(system_audits_timestamp,8) as dt, count(*) as cnt FROM system_audits ";
+	$sql = "SELECT left(system_audits_timestamp,8) as dt, count(DISTINCT system_audits_uuid) as cnt FROM system_audits ";
 	$sql.= "WHERE system_audits_timestamp>='".adjustdate(0,0,-($systems_audited_days-1))."000000' ";
 	$sql.= "GROUP BY left(system_audits_timestamp,8)";
 	$result = mysql_query($sql, $db);
