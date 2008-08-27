@@ -1926,7 +1926,11 @@ For Each subkey In arrSubKeys
     Case "S-1-5-19" 'Local Service
     Case "S-1-5-20" 'Network service
     Case Else 
-           If Instr(subkey, "_Classes") = 0 Then
+         If Instr(subkey, "_Classes") = 0 Then
+           ' Checking query access rights on the subkey
+           oReg.CheckAccess HKEY_USERS, subkey, &H0001, bHasQueryAccessRight
+           If bHasQueryAccessRight = True Then
+             ' Check Passed 
              'Searching for mapped drives    
              strKeyPath2 = subkey & "\Network"
              oReg.EnumKey HKEY_USERS, strKeyPath2, arrSubKeys2
@@ -1968,7 +1972,8 @@ For Each subkey In arrSubKeys
                  form_input = ""
                End If 'subkey2 <> ""
              Next 'subkey2 in arrSubKeys2
-           End If 'Instr(subkey, "_Classes") = 0
+           End If ' bHasQueryAccessRight = True
+         End If 'Instr(subkey, "_Classes") = 0
   End Select
 Next ' subkey In arrSubKeys
 
