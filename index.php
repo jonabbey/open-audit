@@ -114,7 +114,7 @@ if ($show_detected_servers == "y" )
 	DisplaySection('f13',__('Database Servers'),'DbServers','Systems');
 }
 if ($show_detected_xp_av == "y") 
-	DisplaySection('f11',__("XP SP2 without up to date AntiVirus"),'DetectedXpAv','Systems');
+	DisplaySection('f11',__("XP SP2 or SP3 without up to date AntiVirus"),'DetectedXpAv','Systems');
 	
 DisplayAuditGraph();
 

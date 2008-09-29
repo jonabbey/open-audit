@@ -23,6 +23,7 @@ $query_array=array("headline"=>array("name"=>__("Keys"),
                                                "show"=>"y",
                                                "link"=>"n",
                                               ),
-                                  ),
+
+                            ),
                   );
 ?>

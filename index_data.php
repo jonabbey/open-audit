@@ -1494,7 +1494,8 @@ function GetDetectedXpAvData($id)
 	global $bgcolor,$bg1,$bg2;
 
   $sql  = "SELECT system_name, net_ip_address, system_uuid, virus_name, virus_uptodate FROM system ";
-  $sql .= "WHERE (virus_name = '' OR virus_uptodate = 'False') AND system_service_pack = '2.0' AND system_os_name LIKE 'Microsoft Windows XP%' ";
+//  $sql .= "WHERE (virus_name = '' OR virus_uptodate = 'False') AND system_service_pack = '2.0' AND system_os_name LIKE 'Microsoft Windows XP%' ";
+  $sql .= "WHERE (virus_name = '' OR virus_uptodate = 'False') AND ((system_service_pack = '2.0') OR (system_service_pack = '3.0')) AND system_os_name LIKE 'Microsoft Windows XP%' ";
   $sql .= "ORDER BY system_name";
 	
 	$result = mysql_query($sql, $db);
