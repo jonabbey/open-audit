@@ -1259,3 +1259,63 @@ INSERT INTO config (config_name, config_value) VALUES ('version','08.07.23');
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
+DROP TABLE IF EXISTS `openaudit`.`ldap_computers`;
+CREATE TABLE  `openaudit`.`ldap_computers` (
+  `guid` varchar(45) NOT NULL,
+  `cn` varchar(45) NOT NULL,
+  `audit_timestamp` varchar(45) NOT NULL,
+  `usnchanged` int(10) unsigned NOT NULL,
+  `first_audit_timestamp` varchar(45) NOT NULL,
+  `ou_id` varchar(45) NOT NULL,
+  `description` varchar(45) default NULL,
+  `os` varchar(45) default NULL,
+  `service_pack` varchar(45) default NULL,
+  `dn` varchar(255) NOT NULL,
+  PRIMARY KEY  (`guid`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+DROP TABLE IF EXISTS `openaudit`.`ldap_connections`;
+CREATE TABLE  `openaudit`.`ldap_connections` (
+  `guid` varchar(45) NOT NULL,
+  `default_nc` varchar(45) NOT NULL,
+  `fqdn` varchar(45) NOT NULL,
+  `ldap_server` varchar(45) NOT NULL,
+  `ldap_user` varchar(45) NOT NULL,
+  `ldap_password` varchar(45) NOT NULL,
+  `netbios_name` varchar(45) NOT NULL,
+  `schema` varchar(45) NOT NULL,
+  PRIMARY KEY  (`guid`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+DROP TABLE IF EXISTS `openaudit`.`ldap_paths`;
+CREATE TABLE  `openaudit`.`ldap_paths` (
+  `ou_id` int(10) unsigned NOT NULL auto_increment,
+  `ou_dn` varchar(255) default NULL,
+  `ou_domain_guid` varchar(45) default NULL,
+  `ou_audit_timestamp` varchar(45) default NULL,
+  `include_in_audit` tinyint(1) default NULL,
+  PRIMARY KEY  (`ou_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
+
+DROP TABLE IF EXISTS `openaudit`.`ldap_users`;
+CREATE TABLE  `openaudit`.`ldap_users` (
+  `guid` varchar(45) NOT NULL,
+  `cn` varchar(45) NOT NULL,
+  `audit_timestamp` varchar(45) NOT NULL,
+  `usnchanged` int(10) unsigned NOT NULL,
+  `first_audit_timestamp` varchar(45) NOT NULL,
+  `ou_id` varchar(45) NOT NULL,
+  `description` varchar(45) default NULL,
+  `department` varchar(45) default NULL,
+  `users_dn` varchar(255) NOT NULL,
+  PRIMARY KEY  (`guid`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
+
+DROP TABLE IF EXISTS `openaudit`.`log`;
+CREATE TABLE  `openaudit`.`log` (
+  `timestamp` varchar(45) NOT NULL,
+  `message` varchar(1024) NOT NULL,
+  `severity` int(10) unsigned NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
+
+

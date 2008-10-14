@@ -201,7 +201,6 @@ if (isset($_POST['bindlocal']))  {$bindlocal = $_POST['bindlocal'];}  else { $bi
 function step33SetupDB() {
 ?>
   <span class="contenthead"><?php echo __("Setup") ?></span>
-
   <p><?php echo __("To perform an automated setup, enter the details on the root account below. This user must have the privileges to create and modify users and databases.") ?></p>
   <p><?php echo __("By clicking 'Submit Credentials,' you are allowing Open-AudIT to create a user and database for use with Open-AudIT. This is the recommended configuration, as Open-AudIT does not need root privileges after installation.") ?></p>
   <hr />
@@ -317,41 +316,16 @@ function step35SetupDB() {
     echo __("Creating the user... ");
     $result = mysql_query($sql, $db) ;//or die('Could not create the user: ' . mysql_error());
     echo __("Success!") . "<br />";
-    //
-    // Test for MySQL Version to ensure we can grant the correct privileges. 
-    // 
-    $sql_version = mysql_get_server_info() ;
-    list($sql_version_major, $sql_version_minor, $sql_version_sub) = split('\.', $sql_version);
-    echo __("MySQL Version is ").$sql_version_major.".".$sql_version_minor.".".$sql_version_sub . "<br />";
-    
-    if ($sql_version_major >= 5) {    
-        echo __("Set database privileges for MySQL 5 or above "). "<br />";
- 
     $sql = "GRANT SELECT , INSERT , UPDATE , DELETE , CREATE , DROP , INDEX , ALTER , CREATE TEMPORARY TABLES";
     $sql .= " , CREATE VIEW , SHOW VIEW , CREATE ROUTINE, ALTER ROUTINE, EXECUTE ";
-    $sql .= "ON " . $_POST['mysql_new_db'] . ".* TO " . $_POST['mysql_new_user'] . "@";
-     
+    $sql .= "ON `" . $_POST['mysql_new_db'] . "`.* TO '" . $_POST['mysql_new_user'] . "'@";
     if ($_POST['bindlocal'] = 'y') {
       $sql .= "'localhost'";
     } else {
       $sql .= "'%'";
     }
-    }
-    else
-    {
-    echo __("Set database privileges for MySQL prior to Version 5"). "<br />";
-    $sql = "GRANT ALL ";
-    $sql .= "ON " . $_POST['mysql_new_db'] . ".* TO " . $_POST['mysql_new_user'] . "@";
-            
-    if ($_POST['bindlocal'] = 'y') {
-      $sql .= "'localhost'";
-    } else {
-      $sql .= "'%'";
-    }
-    }
-
-    echo __("Granting user privileges... ");
-    $result = mysql_query($sql, $db) or die('Could not grant privileges: ' . mysql_error());
+    echo __("Granting user priveleges... ");
+    $result = mysql_query($sql, $db) or die('Could not grant priveleges: ' . mysql_error());
     echo __("Success!") . "<br />";
     echo __("Switching connection to new user... ");
     mysql_close($db);
@@ -441,13 +415,7 @@ function step36SetupDB() {
 function step4Finish() {
   echo "<span class=\"contenthead\">" . __("Setup Completed") . "</span>";
   echo "<p>" . __("Setup has completed. Please configure the audits and web interface through the Admin menu.") . "</p>";
-  echo "<p>" . __("It is recommended that you setup usernames and passwords in the user management section of the admin menu.") ."</p>";
-  echo "<p>" . __("Alternatively Configure LDAP Authentication to authenticate against Active Directrory or OpenLDAP") . "</p>";
-  echo "<p>" . __("Also set up secure web pages if your web host supports them.") . "</p>";
-  echo "<p>" . __("If you have any problems, visit the Open-Audit Forums")."</p>";
-  echo "<a href=\"http://www.open-audit.org/phpBB3/viewforum.php?f=13\">" . __("To see the forums now, open this link in a new tab.") . "</a>";
-  echo "<p>" . __("or follow the link from the Help menu.") . "</p>";
-  echo "<p></p>";
+  echo "<p>" . __("It is recommended that you setup usernames and passwords in the user management section of the admin menu.") . " (" . __("Coming Soon") . ")</p>";
   echo "<p>" . __("This file, setup.php, is no longer needed. Remove it to secure your installation of Open-AudIT.") . "</p>";
   echo "<a href=\"index.php\">" . __("Click here to enter Open-AudIT!") . "</a>";
 }
@@ -529,18 +497,17 @@ function returnConfig() {
 \$ldap_server = 'myserver.local';
 \$ldap_base_dn = 'dc=domain,dc=local';
 \$ldap_connect_string = 'LDAP:\/\/server.domain.local';
-\$use_ldap_login = 'n';
+\$use_ldap_login = 'n';";
+$content .= "\$show_ad_changes = 'y';\n";
+$content .= "\$ad_changes_days = 7;\n";
+$content .= "\$show_systems_audited_graph = 'y';\n";
+$content .= "\$systems_audited_days = 30;\n";
 
-
-\$ldap_attributes = array(\"displayname\",\"description\",\"userprincipalname\",\"homedirectory\",\"homedrive\",\"profilepath\",\"scriptpath\",\"mail\",\"samaccountname\",\"telephonenumber\",\"usncreated\",\"department\",\"sn\");
-\$ldap_filter = '\"(&(objectClass=user)(objectCategory=person)(|(samaccountname=\"*\")(name=\"*\")(displayname=\"*\")(cn=\"\"*\")))\"';
-
- 
-\$language = '";
-  $content .= $_POST['language_post'];
-  $content .= "'; ";
-  $content .= "?";
-  $content .= ">";
+$content .= "\$language = '";
+$content .= $_POST['language_post'];
+$content .= "'; ";
+$content .= "?";
+$content .= ">";
 
   return $content;
 }

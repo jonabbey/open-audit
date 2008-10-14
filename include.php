@@ -1,8 +1,11 @@
 <?php
+include_once "include_config_defaults.php"; // Added by Nick Brown - ensures that all variables have a default value 
 include_once "include_config.php";
 include_once "include_lang.php";
 include_once "include_functions.php";
 include_once "include_col_scheme.php";
+
+/* Commented by Nick Brown - this functionality doesn't appear to be implemented anywhere?
 $is_refreshable = false ;
 $refresh_period = 10;
 $jscript_count = 0;
@@ -13,8 +16,9 @@ if ($show_partition_usage == 'y'){ $jscript_count = $jscript_count + 1; }
 if ($show_software_detected == 'y'){ $jscript_count = $jscript_count + 1; }
 if ($show_patches_not_detected == 'y'){ $jscript_count = $jscript_count + 1; }
 if ($show_detected_servers == 'y'){ $jscript_count = $jscript_count + 5; }
+*/
 
-if (!isset($page)) {$page = ""; }
+$page = GetVarOrDefaultValue($page,"");
 
 if ($page == "add_pc"){
     $use_pass = "n";
@@ -56,6 +60,7 @@ if ($use_pass != "n") {
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
 <?php
+/* Commented by Nick Brown - this functionality doesn't appear to be implemented
 if ($is_refreshable) {
 
     #gets the URI of the script
@@ -68,6 +73,7 @@ if ($is_refreshable) {
     $destination = $chopped[scheme]."://".$chopped[host].$chopped[path];
     echo " <META HTTP-EQUIV=REFRESH CONTENT=".$refresh_period.";URL=".$destination.">";
         }
+*/
 ?>        
     <title>Open-AudIT</title>
     <link rel="icon" href="favicon.ico" type="image/x-icon">
@@ -75,45 +81,39 @@ if ($is_refreshable) {
     <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
     <link media="screen" rel="stylesheet" type="text/css" href="default.css" />
     <link media="print" rel="stylesheet" type="text/css" href="defaultprint.css" />
+		<!--[if lt IE 7]><link media="screen" rel="stylesheet" type="text/css" href="iefix.css" /><![endif]-->
+		<!--[if lt IE 7]><link media="print" rel="stylesheet" type="text/css" href="iefix.css" /><![endif]-->
+		
     <script type="text/javascript">
-      /*<![CDATA[*/
+     /*<![CDATA[*/
       function IEHoverPseudo() {
         var navItems = document.getElementById("primary-nav").getElementsByTagName("li");
         for (var i=0; i<navItems.length; i++) {
           if(navItems[i].className == "menuparent") {
             navItems[i].onmouseover=function() { this.className += " over"; }
-            navItems[i].onmouseout=function() { this.className = "menuparent"; }
+            navItems[i].onmouseout=function() {window.status=this.className; this.className = "menuparent";}
           }
         }
       }
 
-          window.onload = IEHoverPseudo;
+      window.onload = IEHoverPseudo;
 
-      /*]]>*/
-    </script>
-
-    <script type="text/javascript">
-      <!--
-      function switchUl(id){
+			function switchUl(id){
         if(document.getElementById){
           a=document.getElementById(id);
           a.style.display=(a.style.display!="none")?"none":"block";
         }
       }
-      // -->
+      /*]]>*/
     </script>
 
   </head>
   <body>
 <?php
 
-$sub = "0";
-$pc = "";
-
-if (isset($_GET['pc'])) { $pc = $_GET['pc'];   } else { }
-if (isset($_GET['sub'])) { $sub = $_GET['sub']; } else { $sub="all"; }
-if (isset($_GET['sort'])) { $sort = $_GET['sort']; } else { $sort="system_name"; }
-
+$pc = GetGETOrDefaultValue("pc", "");
+$sub = GetGETOrDefaultValue("sub", "all");
+$sort = GetGETOrDefaultValue("sort", "system_name");
 $mac = $pc;
 
 if ($page <> "setup"){
@@ -147,7 +147,8 @@ if ($page <> "setup"){
 //    if (strpos($_SERVER['REQUEST_URI'],"list")){
 //    $page_type="list";
 //    } 
- 
+
+/* 
 if ((isset($use_ldap_login) and ($use_ldap_login == 'y'))) {
     echo "<table width=\"100%\">\n";
     echo "<td colspan=\"3\" class=\"main_each\">\n";
@@ -157,6 +158,7 @@ if ((isset($use_ldap_login) and ($use_ldap_login == 'y'))) {
     echo "</td>\n";
     echo "</table>\n";
 } else {}
+*/
 /*
 ?>
 /
@@ -166,7 +168,13 @@ if ((isset($use_ldap_login) and ($use_ldap_login == 'y'))) {
 ?>
 <table width="100%">
   <tr>
-        <td colspan="3" class="main_each"><a href="index.php"><img src="images/logo.png" width="300" height="48" alt="" style="border:0px;" /></a></td>
+    <td colspan="3" class="main_each"><a href="index.php"><img src="images/logo.png" width="300" height="48" alt="" style="border:0px;" /></a>
+		</td>
+
+<?php
+	if (isset($use_ldap_login) and ($use_ldap_login == 'y')) 
+	{echo "<a class='npb_ldap_logout' href=\"ldap_logout.php\">".__("Logout ").$_SESSION["username"]."</a>";}
+?>		
   </tr>
 
   <tr>
@@ -176,7 +184,6 @@ if ((isset($use_ldap_login) and ($use_ldap_login == 'y'))) {
         
 
 <?php
-// echo "<li><a href=\"include_ldap_logout.php\">".__("Logout ").$_SESSION["username"]."</a></li>\n";
 if ($pc > "0") {
   $sql = "SELECT system_uuid, system_timestamp, system_name, system.net_ip_address, net_domain FROM system, network_card WHERE system_uuid = '$pc' OR system_name = '$pc' OR (net_mac_address = '$pc' AND net_uuid = system_uuid)";
   $result = mysql_query($sql, $db);
@@ -302,7 +309,6 @@ echo "<noscript><a href=\"http://www.altavista.com/babelfish/tr\"></noscript>";
 //echo "<script language=\"JavaScript1.2\" src=\"http://www.altavista.com/static/scripts/translate_engl.js\"></script>\"";
 echo "</p>";
 //
-
 
 echo "</body>\n</html>";
 }

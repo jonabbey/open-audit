@@ -9,23 +9,21 @@ function return_unknown($something)
 
 function ip_trans($ip)
 {
- if ($ip <> "none"){
-   if (($ip <> "") AND (!(is_null($ip)))){
-     $myip = explode(".",$ip);
-     $myip[0] = ltrim($myip[0], "0");
-     if ($myip[0] == "") { $myip[0] = "0"; }
-     if(isset($myip[1])) $myip[1] = ltrim($myip[1], "0");
-     if (!isset($myip[1]) OR $myip[1] == "") { $myip[1] = "0"; }
-     if(isset($myip[2])) $myip[2] = ltrim($myip[2], "0");
-     if (!isset($myip[2]) OR $myip[2] == "") { $myip[2] = "0"; }
-     if(isset($myip[3])) $myip[3] = ltrim($myip[3], "0");
-     if (!isset($myip[3]) OR $myip[3] == "") { $myip[3] = "0"; }
-     $ip = $myip[0] . "." . $myip[1] . "." . $myip[2] . "." . $myip[3];
-   } else {
-     $ip = " Not-Networked";
-   }
- }
- return $ip;
+  if (($ip <> "") AND (!(is_null($ip)))){
+   $myip = explode(".",$ip);
+   $myip[0] = ltrim($myip[0], "0");
+   if ($myip[0] == "") { $myip[0] = "0"; }
+   if(isset($myip[1])) $myip[1] = ltrim($myip[1], "0");
+   if (!isset($myip[1]) OR $myip[1] == "") { $myip[1] = "0"; }
+   if(isset($myip[2])) $myip[2] = ltrim($myip[2], "0");
+   if (!isset($myip[2]) OR $myip[2] == "") { $myip[2] = "0"; }
+   if(isset($myip[3])) $myip[3] = ltrim($myip[3], "0");
+   if (!isset($myip[3]) OR $myip[3] == "") { $myip[3] = "0"; }
+   $ip = $myip[0] . "." . $myip[1] . "." . $myip[2] . "." . $myip[3];
+  } else {
+   $ip = " Not-Networked";
+  }
+  return $ip;
 }
 
 function ip_trans_to($ip)
@@ -95,6 +93,14 @@ function adjustdate($years=0,$months=0,$days=0)
   return date("Ymd",mktime(0,0,0,$todaymonth+$months,$todayday+$days,$todayyear+ $years));
 }
 
+
+function alternate_tr_class(&$current_class)
+{
+	$current_class = ($current_class == 'npb_highlight_row') ? '' : 'npb_highlight_row';
+	return $current_class;
+}
+
+
 function change_row_color($bgcolor,$bg1,$bg2)
 {
   if ($bgcolor == $bg1) {
@@ -158,7 +164,7 @@ function special_field_converting($myrow, $field, $db, $page){
      }elseif($field["name"]=="system_timestamp" OR
             $field["name"]=="net_dhcp_lease_obtained" OR
             $field["name"]=="net_dhcp_lease_expires" OR
-            $field["name"]=="net_driver_date"){
+            $field["name"]=="net_driver_date"){						
         $show_value=return_date($myrow[$field["name"]]);
     }elseif($field["name"]=="net_speed"){
         $show_value=number_format($myrow[$field["name"]])." Mbps";
@@ -178,7 +184,7 @@ function special_field_converting($myrow, $field, $db, $page){
         $show_value=determine_img($myrow["system_os_name"],$myrow[$field["name"]]);
     }elseif($field["name"]=="other_type" AND $page=="list"){
         $show_value="<img src=\"images/o_" .str_replace(" ","_",$myrow[$field["name"]]). ".png\" alt=\"\" border=\"0\" width=\"16\" height=\"16\"  />";
-    }elseif($field["name"]=="other_ip_address" OR $field["name"]=="net_ip_address"){
+    }elseif($field["name"]=="other_ip_address"){
         $show_value=ip_trans($myrow[$field["name"]]);
     }elseif($field["name"]=="delete"){
         /*
@@ -365,7 +371,6 @@ function determine_os($os) {
     }
 
     return $os_returned;
-
 }
 
 function determine_img($os,$system_type) {
@@ -733,24 +738,46 @@ return
 strlen($value) == '16';
 } 
 
-function formatGUID($value) {
-$hex_string='';
-for ($guid_bytes = 0; $guid_bytes<= strlen($value); $guid_bytes++){
-$hex_string = $hex_string.bin2hex(substr($value,$guid_bytes, 1));
-if (($guid_bytes == '3') or ($guid_bytes == '5') or ($guid_bytes == '7')or ($guid_bytes == '9')) {
-$hex_string = $hex_string."-";
-        }
-    }
-    return $hex_string;
+/**********************************************************************************************************
+Function Name:
+	formatGUID
+Description:
+	Returns an character string representation of a binary GUID
+Arguments:
+	$ByteArray		[IN]	Binary GUID
+Returns:
+	[String]	GUID as a string
+Change Log:
+	20/08/2008			New function (replacing previous function of same name)	 [Nick Brown]
+**********************************************************************************************************/
+function formatGUID($ByteArray)
+{
+	$s = bin2hex(substr($ByteArray, 3, 1));
+	$s .= bin2hex(substr($ByteArray, 2, 1));
+	$s .= bin2hex(substr($ByteArray, 1, 1));
+	$s .= bin2hex(substr($ByteArray, 0, 1));
+	$s .= "-" ;
+	$s .= bin2hex(substr($ByteArray, 5, 1));
+	$s .= bin2hex(substr($ByteArray, 4, 1));
+	$s .= "-";
+	$s .= bin2hex(substr($ByteArray, 7, 1));
+	$s .= bin2hex(substr($ByteArray, 6, 1));
+	$s .= "-";
+	$s .= bin2hex(substr($ByteArray, 8, 1));
+	$s .= bin2hex(substr($ByteArray, 9, 1));
+	$s .= "-";
+	$s .= bin2hex(substr($ByteArray, 10, 1));
+	$s .= bin2hex(substr($ByteArray, 11, 1));
+	$s .= bin2hex(substr($ByteArray, 12, 1));
+	$s .= bin2hex(substr($ByteArray, 13, 1));
+	$s .= bin2hex(substr($ByteArray, 14, 1));
+	$s .= bin2hex(substr($ByteArray, 15, 1));
+  return $s;
 }
 
-
 function isSID($value) {
-
 return 
 strpos( $value, "sid") <> 0 ;
-
-
 } 
 
 function formatSID($value) {
@@ -764,5 +791,89 @@ $hex_string = $hex_string."-";
     return $hex_string;
 }
 
+/**********************************************************************************************************
+Function Name:
+	GetVolumeLabel
+Description:
+	Gets the volume label of the requested drive (Don't have linux solution for this yet)
+Arguments:
+	$drive		[IN]	[String]		Drive letter
+Returns:
+	[String]	volume label of drive
+Change Log:
+	20/08/2008			New function	[Nick Brown]
+**********************************************************************************************************/
+function GetVolumeLabel($drive)
+{
+  // Try to grab the volume name
+  if (preg_match('#Volume Serial Number[a-zA-Z]* is (.*)\n#i', shell_exec('vol '.$drive.':'), $m))
+	{$volname = $m[1];}	else {$volname = 'openaudit';}
+	return $volname;
+}
 
+/**********************************************************************************************************
+Function Name:
+	EventLog
+Description:
+	Logs Event to Logs table in DB
+Arguments:
+	$message		[IN]	[String]			Event log message
+	$severity		[IN]	[INTEGER]		Severity value (1=low, 5=high)
+Returns:
+	None
+Change Log:
+	20/08/2008			New function	[Nick Brown]
+**********************************************************************************************************/
+function EventLog($message,$severity=3)
+{
+	global $db;
+	$timestamp = date("YmdHis");
+	mysql_query("INSERT INTO `log` (`timestamp`,`message`,`severity`) VALUES ('".$timestamp."','".$message."','".$severity."')", $db);
+	$rows = mysql_affected_rows();
+}
+
+/**********************************************************************************************************
+Function Name:
+	GetPOSTOrDefaultValue
+Description:
+	Checks whether $_POST value is defined. If it is, returns the value. If not, returns $default
+Arguments:
+	$var			[IN] [string]	$_POST array key name
+	$default		[IN] [String]	Default value to return if array value not set
+Returns:	[String]	$_POST value or $default value
+Change Log:
+	20/08/2008			New function	[Nick Brown]
+**********************************************************************************************************/
+function GetPOSTOrDefaultValue($var, $default)
+{if (isset($_POST[$var])) return $_POST[$var]; else return $default;}
+
+/**********************************************************************************************************
+Function Name:
+	GetGETOrDefaultValue
+Description:
+	Checks whether $_GET value is defined. If it is, returns the value. If not, returns $default
+Arguments:
+	$var			[IN] [string]	$_GET array key name
+	$default		[IN] [String]	Default value to return if array value not set
+Returns:	[String]	$_GET value or $default value
+Change Log:
+	26/08/2008			New function	[Nick Brown]
+**********************************************************************************************************/
+function GetGETOrDefaultValue($var, $default)
+{if (isset($_GET[$var])) return $_GET[$var]; else return $default;}
+
+/**********************************************************************************************************
+Function Name:
+	GetVarOrDefaultValue
+Description:
+	Checks whether $var is defined. If it is, returns it's value. If not, returns $default 
+Arguments:
+	&$var		[IN] [string]	variable
+	$default		[IN] [String]	Default value to return if variable not set
+Returns:	[String]	$var value or $default value
+Change Log:
+	26/08/2008			New function	[Nick Brown]
+**********************************************************************************************************/
+function GetVarOrDefaultValue(&$var, $default)
+{if (isset($var)) return $var; else return $default;}
 ?>

@@ -16,31 +16,26 @@
 *
 */ 
 
-header( "Expires: Mon, 20 Dec 1998 01:00:00 GMT" );
-//header( "Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT" );
-header( "Cache-Control: no-cache, must-revalidate" );
-header( "Pragma: no-cache" );
-
 $page = "";
 $extra = "";
 $software = "";
 $count = 0;
 $total_rows = 0;
-$latest_version = "08.07.23";
+$latest_version = "08.08.29";
 
 // Check for config, otherwise run setup
-@(include_once "include_config.php") OR die(header("Location: setup.php"));
-
-if (isset($_GET['software'])) {$software = $_GET['software'];} else {}
-if (isset($_GET['sort'])) {$sort = $_GET['sort'];} else {$sort= "system_name";}
-if (isset($_GET['validate'])) {$validate = $_GET['validate'];} else {$validate= "n";}
-
+//@(include_once "include_config.php") OR die(header("Location: setup.php"));  // Modified by Nick Brown - don't want to actually include the file yet
+if(!file_exists("include_config.php"))exit(header("Location: setup.php")); // Nick Brown - alternative method
 include "include.php";
+
+$software = GetGETOrDefaultValue("software","");
+$sort = GetGETOrDefaultValue("sort","system_name");
+$validate = GetGETOrDefaultValue("validate","n");
 ?>
 
-<script src="HttpRequestor.js"></script>
+<script type='text/javascript' src="javascript/ajax.js"></script>
 <!-- Create HttpRequestors -->
-<script>
+<script type='text/javascript'>//<![CDATA[
 <?php
 if ($show_system_discovered == "y") echo "var DiscoveredSystemsXml=new HttpRequestor('RecentlyDiscoveredSystems');\n";
 if ($show_other_discovered == "y") echo "var OtherDiscoveredXml=new HttpRequestor('OtherDiscovered');\n";
@@ -58,9 +53,10 @@ if ($show_detected_servers == "y" )
   echo "var DbServersXml=new HttpRequestor('DbServers');\n";
 }
 if ($show_detected_xp_av == "y")  echo "var DetectedXpAvXml=new HttpRequestor('DetectedXpAv');\n";
-echo "var AuditedSystemsXml=new HttpRequestor('AuditedSystems');\n";
+if ($show_ad_changes == 'y') echo "var AdInfoXml=new HttpRequestor('AdInfo');\n";
+if ($show_systems_audited_graph == 'y') echo "var AuditedSystemsXml=new HttpRequestor('AuditedSystems');\n";
 ?>
-</script> 
+//]]></script>
 
 <?php
 $title = "";
@@ -103,7 +99,7 @@ if ($show_partition_usage == "y")
 	DisplaySection('f4',__("Partition free space less than ").$partition_free_space.__(" MB"),'PartitionUsage','Partitions');
 if ($show_software_detected == "y")
 	DisplaySection('f5',__("Software detected in the last ").$days_software_detected.__(" Days"),'DetectedSoftware','Packages','rss_new_software.php');
-if ($show_detected_servers == "y" )
+if ($show_detected_servers == "y")
 {
   DisplaySection('f6',__("Web Servers"),'WebServers','Systems');
   DisplaySection('f7',__("FTP Servers"),'FtpServers','Systems');  
@@ -116,20 +112,25 @@ if ($show_detected_servers == "y" )
 if ($show_detected_xp_av == "y") 
 	DisplaySection('f11',__("XP SP2 or SP3 without up to date AntiVirus"),'DetectedXpAv','Systems');
 	
-DisplayAuditGraph();
+if ($show_ad_changes == 'y') DisplaySection('f15',__("Active Directory changes in the last ".$ad_changes_days." days"),'AdInfo','Accounts');
+if ($show_systems_audited_graph == 'y') DisplayAuditGraph();
+
 
 //******* Display Graph *****************************************************
 function DisplayAuditGraph()
 {
-	$systems_audited=30;
-	//global $systems_audited;
-	echo "<div class='main_each'>";
-	echo "<table style='border:0px;' cellpadding='0' cellspacing='0' width='100%'>";
-	echo "<tr><td class='indexheadlines'><a>Systems Audited in the last ".$systems_audited." Days</a></td></tr>";
-	echo "<tr><td id='AuditedSystems' align='center'>";
-	echo "<img alt=' Retrieving...' src='images/hourglass-busy.gif' width=\"32\" height=\"32\" style=\"border:0px;vertical-align:middle;\">";
-	echo "</td></tr>";
-	echo "</table><div>";
+	global $systems_audited_days;
+	
+	echo "<div class='npb_section_shadow'>";
+	echo "	<div class='npb_section_content'>";
+	echo "		<div class='npb_section_heading'>";
+	echo "			<a>Systems Audited in the last ".$systems_audited_days." Days</a>";
+	echo "		</div>";
+	echo "		<div class='npb_section_data' id='AuditedSystems'>";
+	echo "			<img class='npb_auditedsystems_hourglass' alt=' Retrieving...' src='images/hourglass-busy.gif'>";
+	echo "		</div>";
+	echo "	</div>";
+	echo "</div>";
 }
 
 /******* Generic display section function *****************************************************
@@ -142,50 +143,29 @@ function DisplayAuditGraph()
 function DisplaySection($SwitchID, $Display, $DivID, $TotalString, $RssUrl='')
 {
   $i="i".$SwitchID;
-  echo "
-	<div class=\"main_each\">
-  	<table style=\"border:0px;\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" >
-    	<tr>
-      	<td class=\"indexheadlines\">";
-  
-	// **** Only for sections with RSS feed *******************
-	if (strlen($RssUrl)>0) 
-	{
-	  echo "
-	  			<a href='$RssUrl'>
-					<img src=\"images/feed-icon.png\" width=\"16\" height=\"16\" style=\"border:0px;\" alt=\"\" />
-					</a>";
-	}
-	// **** Only for sections with RSS feed ******************
+	echo "<div class='npb_section_shadow'>";
+	echo "	<div class='npb_section_content'>";
+	echo "		<div class='npb_section_heading'>";
 	
-  echo "
-					<a href=\"javascript://\" onclick=\"switchUl('$SwitchID');\">$Display</a>
-				</td>
-        <td align=\"right\"><a href=\"javascript://\" onclick=\"switchUl('$SwitchID');\"><img src=\"images/down.png\" width=\"16\" height=\"16\" style=\"border:0px;\" alt=\"\" /></a></td>
-      </tr>
-    </table>
-		
-		<div id='$DivID'>
-			<div style=\"display:none;\" id='$SwitchID'></div>
-			<table style=\"border:0px;\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" >
-				<tr>
-          <td colspan=\"2\">
-						<b>".__($TotalString).": </b>
-						<img id='$i' alt=' Retrieving...' src='images/hourglass-busy.gif' width=\"16\" height=\"16\" style=\"border:0px;vertical-align:bottom;\">
-					</td>
-				</tr>
-			</table>
-		</div>
-	</div>";
+	// **** Only for sections with RSS feed *******************
+	if (strlen($RssUrl)>0){echo "<a href='$RssUrl'><img class='npb_rss' src=\"images/feed-icon.png\" alt=\"RSS Feed\" /></a>";}
+	// ****************************************************
+	
+	echo "			<a href=\"javascript://\" onclick=\"switchUl('$SwitchID');\">$Display</a>";
+	echo "			<img class='npb_down' src=\"images/down.png\" alt=\"\" onclick=\"switchUl('$SwitchID');\"/>";
+	echo "		</div>";
+	echo "		<div class='npb_section_data' id='$DivID'>";
+	echo "			<p class='npb_section_summary'>".__($TotalString).": <img class='npb_hourglass' alt='Retrieving...' src='images/hourglass-busy.gif'></p>";
+	echo "		</div>";
+	echo "	</div>";
+	echo "</div>";
 }
-
 
 echo "</td>\n";
 include "include_right_column.php";
 ?>
 
-<script type='text/javascript'>
-
+<script type='text/javascript'>//<![CDATA[
 <?php
 // Initiate retrieval of data for each section
 if ($show_system_discovered == "y") echo "DiscoveredSystemsXml.send(\"index_data.php?sub=f1\");\n";
@@ -204,10 +184,11 @@ if ($show_detected_servers == "y" )
   echo "DbServersXml.send('index_data.php?sub=f13');\n";
 }
 if ($show_detected_xp_av == "y") echo "DetectedXpAvXml.send('index_data.php?sub=f11');\n";
-echo "AuditedSystemsXml.send('index_data.php?sub=f14');\n";
+if ($show_ad_changes == 'y') echo "AdInfoXml.send('index_data.php?sub=f15');\n";
+if ($show_systems_audited_graph == 'y') echo "AuditedSystemsXml.send('index_data.php?sub=f14');\n";
 ?>
-</script>
+//]]></script>
 
-</BODY>
-</HTML>
+</body>
+</html>
 

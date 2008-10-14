@@ -383,10 +383,71 @@ $sql = "ALTER TABLE `mapped` ADD COLUMN `mapped_username` varchar(100) NOT NULL 
 
 upgrade ($version,"08.06.06", $sql);
 
-$sql = "ALTER TABLE `memory` ADD COLUMN `memory_tag` varchar(256) NOT NULL default '' AFTER `memory_speed`";
+$sql = "DROP TABLE IF EXISTS `ad_computers`;
+        DROP TABLE IF EXISTS `ad_domains`;
+				DROP TABLE IF EXISTS `ad_ous`;
+			  DROP TABLE IF EXISTS `ad_users`;
 
-upgrade ($version,"08.07.23", $sql);
+				DROP TABLE IF EXISTS `ldap_computers`;
+				CREATE TABLE  `ldap_computers` (
+				  `guid` varchar(45) NOT NULL,
+				  `cn` varchar(45) NOT NULL,
+				  `audit_timestamp` varchar(45) NOT NULL,
+				  `usnchanged` int(10) unsigned NOT NULL,
+				  `first_audit_timestamp` varchar(45) NOT NULL,
+				  `ou_id` varchar(45) NOT NULL,
+				  `description` varchar(45) default NULL,
+				  `os` varchar(45) default NULL,
+				  `service_pack` varchar(45) default NULL,
+				  `dn` varchar(255) NOT NULL,
+				  PRIMARY KEY  (`guid`)
+				) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
+				DROP TABLE IF EXISTS `ldap_connections`;
+				CREATE TABLE  `ldap_connections` (
+				  `guid` varchar(45) NOT NULL,
+				  `default_nc` varchar(45) NOT NULL,
+				  `fqdn` varchar(45) NOT NULL,
+				  `ldap_server` varchar(45) NOT NULL,
+				  `ldap_user` varchar(45) NOT NULL,
+				  `ldap_password` varchar(45) NOT NULL,
+				  `netbios_name` varchar(45) NOT NULL,
+				  `schema` varchar(45) NOT NULL,
+				  PRIMARY KEY  (`guid`)
+				) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+				DROP TABLE IF EXISTS `ldap_paths`;
+				CREATE TABLE  `ldap_paths` (
+				  `ou_id` int(10) unsigned NOT NULL auto_increment,
+				  `ou_dn` varchar(255) default NULL,
+				  `ou_domain_guid` varchar(45) default NULL,
+				  `ou_audit_timestamp` varchar(45) default NULL,
+				  `include_in_audit` tinyint(1) default NULL,
+				  PRIMARY KEY  (`ou_id`)
+				) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+				DROP TABLE IF EXISTS `ldap_users`;
+				CREATE TABLE  `ldap_users` (
+				  `guid` varchar(45) NOT NULL,
+				  `cn` varchar(45) NOT NULL,
+				  `audit_timestamp` varchar(45) NOT NULL,
+				  `usnchanged` int(10) unsigned NOT NULL,
+				  `first_audit_timestamp` varchar(45) NOT NULL,
+				  `ou_id` varchar(45) NOT NULL,
+				  `description` varchar(45) default NULL,
+				  `department` varchar(45) default NULL,
+				  `users_dn` varchar(255) NOT NULL,
+				  PRIMARY KEY  (`guid`)
+				) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+				DROP TABLE IF EXISTS `log`;
+				CREATE TABLE  `log` (
+				  `timestamp` varchar(45) NOT NULL,
+				  `message` varchar(1024) NOT NULL,
+				  `severity` int(10) unsigned NOT NULL
+				) ENGINE=MyISAM DEFAULT CHARSET=latin1;"
+
+upgrade ($version,"08.08.29", $sql);
 
 ?>
     <br />Upgrade complete.

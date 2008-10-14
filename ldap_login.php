@@ -152,6 +152,7 @@ if (isset($_POST['username'])) {
     }
 } else {
 ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html>
 <head>
 <title>Open-AudIT Login</title>
@@ -159,6 +160,7 @@ if (isset($_POST['username'])) {
 <meta http-equiv="expires" content="0">
 <meta http-equiv="pragma" content="no-cache">
 <link rel="stylesheet" type="text/css" href="default.css" />
+<!--[if lt IE 7]><link media="screen" rel="stylesheet" type="text/css" href="iefix.css" /><![endif]-->
 </head>
 <SCRIPT LANGUAGE="JavaScript">
        <!--
@@ -169,69 +171,49 @@ if (isset($_POST['username'])) {
                      }
 
 //--></SCRIPT>
-<form method="post" action="<?php echo $_SERVER['SCRIPT_NAME']; ?>">
-<div align="center">
-<table width="35%" border="0" cellspacing="0" cellpadding="0">
-<tr>
-<td colspan="1" ><a href="index.php"><img src="images/logo.png" width="300" height="48" alt="" style="border:0px;" /></a></td>
-</tr>
-<tr>
-<td align="center">
-<fieldset>
-<Legend><font face="Verdana,Tahoma,Arial,sans-serif" size="3" color="gray"><?php echo __("Enter Your Login Name");?></font></Legend>
-<table border="0" cellspacing="3" cellpadding="0">
-<tr>
-<td align="right" valign="middle"><b><font face="Verdana,Tahoma,Arial,sans-serif" size="1" color="gray"><?php echo __("Username:");?></font></td>
-<td align="center" valign="middle">
-<input class="clear" type="text" size="15" name="username">
-</td>
-</tr>
-<tr>
-<td align="right" valign="middle"><b><font face="Verdana,Tahoma,Arial,sans-serif" size="1" color="gray"><?php echo __("Password:");?></font></td>
-<td align="center" valign="middle">
-<input class="pass" type="password" size="15" name="password">
-</td>
-</tr>
-</table>
-<input type="submit" value="Submit">
-<br>
+	<div class='npb_ldap_login_header'>
+		<a href="index.php"><img src="images/logo.png"/></a>
+	</div>
+
+	<div class='npb_ldap_login'>
+	<img src="/images/key.png"/>
+	<h2 class='npb_ldap_login'>Please Login</h2>
+
+	<form action="<? echo $_SERVER['SCRIPT_NAME']; ?>" method="POST">
+
+	<label><?php echo "Login Name:";?></label>
+	<input TYPE="Text" name="username"><br />
+	<label><?php echo __("Password:");?></label>
+	<input TYPE="Password" name="password"><br />
+
+	<input TYPE="Submit" id="submit" name="submit" value="Submit">
+
+	</form>
 </div>
-</td>
-</tr>
-</fieldset>
-</table>
-<br>
-<table width="35%" border="0" cellspacing="0" cellpadding="0">
-<td align="center">
-<font face="Verdana,Tahoma,Arial,sans-serif" size="1"
- color="gray"><?php echo __("This System is for the use of authorized users only.");?></font>
-</td></tr><td align="center">
-<font face="Verdana,Tahoma,Arial,sans-serif" size="1"
- color="gray"><?php echo __("Please login using your LDAP or Active Directory User Name and Password.");?></font>
-</td></tr><td align="center">
+
+<div class='npb_ldap_login_disclaimer'>
+	<br /><?php echo __("This System is for the use of authorized users only.");?>
+	<br /><?php echo __("Please login using your LDAP or Active Directory User Name and Password.");?>
+
 <?php 
 //
 // Look for Result=false in the calling URI (actually just look for 'sult' cos we aren't that bothered ;} )
 // This method seems to work regardless of register_globals, see http://uk2.php.net/manual/en/reserved.variables.php
-//
+
 if (@preg_match("/sult/i",$_SERVER['REQUEST_URI'])) {
 // Warn them off if they screwed up the login.
-echo '<br><font face="Verdana,Tahoma,Arial,sans-serif" size="1" color="gray">'. __("Unauthorised use of this site may be a criminal offence.").'</font>';
-echo '<br><font face="Verdana,Tahoma,Arial,sans-serif" size="1" color="gray">'.__(" Access attempt from ").' '.$_SERVER['REMOTE_ADDR']."<br>".__("Your IP address and browser details will be logged.").'</font>';
-echo '<br><font face="Verdana,Tahoma,Arial,sans-serif" size="1" color="gray">'. __("Any malicious attempt to access this site will be investigated.").'</font>';
-echo '<br><font face="Verdana,Tahoma,Arial,sans-serif" size="1" color="gray">'. __("Please contact the administrator if you are having problems logging in.").'</font>';
+echo '<br />'. __("Unauthorised use of this site may be a criminal offence.");
+echo '<br />'.__(" Access attempt from ").' '.$_SERVER['REMOTE_ADDR'];
+echo '<br />'.__("Your IP address and browser details will be logged.");
+echo '<br />'. __("Any malicious attempt to access this site will be investigated.");
+echo '<br />'. __("Please contact the administrator if you are having problems logging in.");
 
-//
 }else{
 // Be gentle with them the first time.
-echo '<br><font face="Verdana,Tahoma,Arial,sans-serif" size="1" color="gray">'. __("Use of this site is subject to legal restrictions.").'</font>';
-//
+//echo '<br><font face="Verdana,Tahoma,Arial,sans-serif" size="1" color="gray">'. __("Use of this site is subject to legal restrictions.").'</font>';
+echo '<br />'. __("Use of this site is subject to legal restrictions.");
 }
 ?>
-</td>
-</tr></table>
-</div>
-</form>
 </div>
 </body>
 </html>

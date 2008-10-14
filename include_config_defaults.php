@@ -12,7 +12,6 @@ $users = array(
   'admin' => 'Open-AudIT'
 );
 
-
 // Config options for index.php
 $show_other_discovered = 'y';
 $other_detected = '3';
@@ -53,15 +52,12 @@ $domain_suffix = 'local' ;
 $ldap_base_db = 'dc=mydomain,dc=local';
 $ldap_user = 'unknown@domain.local';
 $ldap_secret = 'password';
-$ldap_attributes = array('displayname','description','userprincipalname','homedirectory','homedrive','profilepath','scriptpath','mail','samaccountname','telephonenumber','usncreated','department','sn');
-
-$ldap_filter = '(&(objectClass=user)(objectCategory=person)(|(samaccountname='.$name.chr(42).')(name='.$name.chr(42).')(displayname='.$name.chr(42).')(cn='.$name.chr(42).')))';
 
 $ldap_connect_string = 'LDAP://server.domain.local';
 $use_ldap_login = 'n';
 
- 
-
-
-
+$show_ad_changes = 'y';
+$ad_changes_days = 7;
+$show_systems_audited_graph = 'y';
+$systems_audited_days = 30;
 ?>
