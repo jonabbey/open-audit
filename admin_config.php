@@ -149,12 +149,7 @@ if(isset($_POST['submit_button']))
 	  $content .= "\$ldap_base_dn= '" . $ldap_base_dn_post. "';\n\n";
 	  $content .= "\$ldap_server = '" . $ldap_server_post . "';\n\n";
 	  $content .= "\$ldap_user = '" . $ldap_user_post . "';\n\n";
-	 /*  
-	  if ($ldap_secret_post == "") {$thepassword = $ldap_secret_post;} else {$thepassword = md5($ldap_secret_post);}
-	  
-	  $content .= "\$ldap_secret = '" . $thepassword. "';\n";
-	  $content .= "\n";
-	*/  
+ 
 	  $content .= "\$ldap_secret = '" . $ldap_secret_post. "';\n\n";
 	  $content .= "\$full_details = '" . $full_details_post. "';\n\n";
 	  $content .= "\$use_ldap_login = '" . $use_ldap_login_post. "';\n\n";
@@ -331,8 +326,9 @@ echo "<label>".__("VNC Type 'real' or 'ultra' ").":</label><input type='text' na
 echo "<label>".__("Number of decimal places to display").":</label><input type='text' name='decimalplaces_post' size='12' value='$round_to_decimal_places'><br />";
 echo "<label>".__("FQDN Domain Suffix for Management Utilities").":</label><input type='text' name='management_domain_suffix_post' size='10' value='$management_domain_suffix'><br />";
 
-echo "<label>".__("Display 'Active Directory changes' on homepage").":</label>";
-echo "<input type='checkbox' name='show_ldap_changes_post' value='y'".CheckedIfYes($show_ad_changes);
+echo "<label>".__("Display 'LDAP Directory changes' on homepage").":</label>";
+echo "<input type='checkbox' name='show_ldap_changes_post' value='y'".CheckedIfYes($show_ldap_changes);
+
 echo "<div class=\"npb_config_col\">".__("Days").":<input type='text' name='ldap_changes_days_post' size='4' value='$ldap_changes_days'/></div><br />";
 
 echo "<label>".__("Display 'Systems Audited' graph on homepage").":</label>";

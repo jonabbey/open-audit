@@ -497,7 +497,7 @@ function returnConfig() {
 \$ldap_server = 'myserver.local';
 \$ldap_base_dn = 'dc=domain,dc=local';
 \$ldap_connect_string = 'LDAP:\/\/server.domain.local';
-\$use_ldap_login = 'n';";
+\$use_ldap_login = 'n';\n";
 $content .= "\$show_ldap_changes = 'y';\n";
 $content .= "\$ldap_changes_days = 7;\n";
 $content .= "\$show_systems_audited_graph = 'y';\n";
