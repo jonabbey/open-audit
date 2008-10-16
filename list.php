@@ -17,7 +17,7 @@ $count_system_max="10000";
 // If you would like to have a new View, you have to modify 3 parts:
 // -> include_menu_array.php: $menue_array
 // -> list_viewdef_X.php: "Table and fields to select and show"
-// -> option: include_functions.php: special_field_converting()
+// -> option: include_functions.php: ConvertSpecialField()
 
 //Include the view-definition
 if(isset($_REQUEST["view"]) AND $_REQUEST["view"]!=""){
@@ -352,29 +352,29 @@ if ($myrow = mysql_fetch_array($result)){
                     $field["link"]="n";
                 }
 
-                if(isset($field["link"]) AND $field["link"]=="y"){
-                    unset($link_query);
-                    @reset ($get_array["var"]);
-                    while (list ($varname, $value) = @each ($get_array["var"])) {
-                        if(substr($value,0,1)=="%"){
-                            $value=substr($value,1);
-                            if(isset($$value)){
-                                $value2=$$value;
-                            }
-                        }else{
-                            $value2=$value;
-                        }
-                        if(!isset($link_query)) {
-                            $link_query = $varname."=".urlencode($value2)."&amp;";
-                        }else{
-                            $link_query.= $varname."=".urlencode($value2)."&amp;";
-                        }
-                        //Don't show the link if one GET-variable is empty
-                        if($value2==""){
-                            $field["link"]="n";
-                        }
-                    }
-                }
+                if(isset($field["link"]) AND $field["link"]=="y")
+								{
+									unset($link_query);
+									@reset ($get_array["var"]);
+									while (list ($varname, $value) = @each ($get_array["var"])) 
+									{
+										$value = (isset($value)) ? $value : "";
+										if(substr($value,0,1)=="%")
+										{
+											$value = substr($value,1);
+											$value2 = (isset($$value)) ? $$value : "";
+										}
+										else {$value2 = $value;}
+
+										if(!isset($link_query)) 
+										{$link_query = $varname."=".urlencode($value2)."&amp;";}
+										else{$link_query.= $varname."=".urlencode($value2)."&amp;";}
+
+										//Don't show the link if one GET-variable is empty
+										if(!isset($value2) or $value2==""){$field["link"]="n";}
+									}
+								}
+                
 
                 if(isset($link_query) AND $link_query!=""){
                     $url=parse_url($get_array["file"]);
@@ -400,7 +400,7 @@ if ($myrow = mysql_fetch_array($result)){
                 }
 
                 //Special field-converting
-                $show_value = special_field_converting($myrow, $field, $db, "list");
+                $show_value = ConvertSpecialField($myrow, $field, $db, "list");
 
                 if(isset($field["link"]) AND $field["link"]=="y"){
                     if(!isset($get_array["title"])) $get_array["title"]=$show_value;

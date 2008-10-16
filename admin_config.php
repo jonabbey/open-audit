@@ -91,8 +91,8 @@ if(isset($_POST['submit_button']))
 	$decimalplaces_post = GetPOSTOrDefaultValue('decimalplaces_post','2');
 	$management_domain_suffix_post = GetPOSTOrDefaultValue('management_domain_suffix_post','local');
 	
-	$show_ad_changes_post = GetPOSTOrDefaultValue('show_ad_changes_post','n');
-	$ad_changes_days_post = GetPOSTOrDefaultValue('ad_changes_days_post','n');
+	$show_ldap_changes_post = GetPOSTOrDefaultValue('show_ldap_changes_post','n');
+	$ldap_changes_days_post = GetPOSTOrDefaultValue('ldap_changes_days_post','n');
 	$show_systems_audited_graph_post = GetPOSTOrDefaultValue('show_systems_audited_graph_post','n');
 	$systems_audited_days_post = GetPOSTOrDefaultValue('systems_audited_days_post','n');
 
@@ -159,8 +159,8 @@ if(isset($_POST['submit_button']))
 	  $content .= "\$full_details = '" . $full_details_post. "';\n\n";
 	  $content .= "\$use_ldap_login = '" . $use_ldap_login_post. "';\n\n";
 	  $content .= "\$language = '" . $language_post . "';\n\n";
-	  $content .= "\$show_ad_changes = '".$show_ad_changes_post."';\n";	// Added by Nick Brown	
-	  $content .= "\$ad_changes_days = ".$ad_changes_days_post.";\n";	// Added by Nick Brown	
+	  $content .= "\$show_ldap_changes = '".$show_ldap_changes_post."';\n";	// Added by Nick Brown	
+	  $content .= "\$ldap_changes_days = ".$ldap_changes_days_post.";\n";	// Added by Nick Brown	
 	  $content .= "\$show_systems_audited_graph = '".$show_systems_audited_graph_post."';\n";	// Added by Nick Brown	
 	  $content .= "\$systems_audited_days = ".$systems_audited_days_post.";\n"; // Added by Nick brown
 	  $content .= "?>";
@@ -332,8 +332,8 @@ echo "<label>".__("Number of decimal places to display").":</label><input type='
 echo "<label>".__("FQDN Domain Suffix for Management Utilities").":</label><input type='text' name='management_domain_suffix_post' size='10' value='$management_domain_suffix'><br />";
 
 echo "<label>".__("Display 'Active Directory changes' on homepage").":</label>";
-echo "<input type='checkbox' name='show_ad_changes_post' value='y'".CheckedIfYes($show_ad_changes);
-echo "<div class=\"npb_config_col\">".__("Days").":<input type='text' name='ad_changes_days_post' size='4' value='$ad_changes_days'/></div><br />";
+echo "<input type='checkbox' name='show_ldap_changes_post' value='y'".CheckedIfYes($show_ad_changes);
+echo "<div class=\"npb_config_col\">".__("Days").":<input type='text' name='ldap_changes_days_post' size='4' value='$ldap_changes_days'/></div><br />";
 
 echo "<label>".__("Display 'Systems Audited' graph on homepage").":</label>";
 echo "<input type='checkbox' name='show_systems_audited_graph_post' value='y'".CheckedIfYes($show_systems_audited_graph);
@@ -369,12 +369,13 @@ function CheckedIfYes(&$var)
 	<!-- LDAP Connection Config -->
 	<div id='npb_ldap_connection_config_div'>
 		<fieldset><legend>LDAP Connection Details</legend>
-			<label for="ldap_server">LDAP Server Name:</label>
-			<input type='text' id='ldap_server' size='50'/><br />
-			<label for="ldap_user">LDAP User Name:</label>
-			<input type='text' id='ldap_user' size='20'/><br />
-			<label for="ldap_password">LDAP Password:</label>
-			<input type='password' id='ldap_password' size='20'/><br />
+			<input type="hidden" id="ldap_connection_id" />
+			<label for="ldap_connection_server">LDAP Server Name:</label>
+			<input type='text' id='ldap_connection_server' size='50'/><br />
+			<label for="ldap_connection_user">LDAP User Name:</label>
+			<input type='text' id='ldap_connection_user' size='20'/><br />
+			<label for="ldap_connection_password">LDAP Password:</label>
+			<input type='password' id='ldap_connection_password' size='20'/><br />
 			<button type="button" OnClick="TestLdapConnection();">Test Connection</button>
 			<button type="button" OnClick="SaveLdapConnection();">Save</button>
 			<button type="button" OnClick="document.getElementById('npb_ldap_connection_config_div').style.display = 'none';">Cancel</button>
@@ -382,13 +383,13 @@ function CheckedIfYes(&$var)
 		<fieldset><legend>Connection Results</legend><p id="ldap_connection_results"></p></fieldset>
 	</div>
 
-	<!-- LDAP Path -->
+	<!-- LDAP Path Config -->
 	<div id='npb_ldap_path_config_div'>
 		<fieldset><legend>LDAP Path</legend>
-			<input type="hidden" id="ldap_path_domain_guid" />
-			<input type="hidden" id="ldap_path_uid" />
+			<input type="hidden" id="ldap_path_connection_id" />
+			<input type="hidden" id="ldap_path_id" />
 			<label for="ldap_path">LDAP Path:</label>
-			<input type="text" id='ldap_path_path' size='50'/><br />
+			<input type="text" id='ldap_path_dn' size='50'/><br />
 			<label for="ldap_path_audit">Include in audit:</label>
 			<input type="checkbox" id='ldap_path_audit'/><br />
 			<button type="button" OnClick="SaveLdapPath();">Save</button>

@@ -119,14 +119,18 @@ function XmlRequestor(url)
 	this.XmlDomObject = undefined;
 
 	this.IE = (window.ActiveXObject) ? true : false;
-	if (!this.IE) {this.XmlSerial = new XMLSerializer();}
+	if (!this.IE)
+	{
+		this.XmlSerial = new XMLSerializer();
+		this.XmlParser = new DOMParser();
+	}
 
 	/******************************************************************************************************
 	Function Name:	GetXMLDocFromUrl
 	Description:
 		Loads an XML file from supplied URL into XML DOM and stores XML string in this.XmlString
 	Arguments:
-		url	[IN] [string]	url from which XML string is returned
+		url	[IN] [string]	url from which XML DOM is returned
 	Returns:	XML DOM object
 	Change Log:
 		20/08/2008			New function	[Nick Brown]
@@ -140,9 +144,68 @@ function XmlRequestor(url)
 		return this.XmlDomObject;
 	}
 
+	/******************************************************************************************************
+	Function Name:	SerializeXmlNode
+	Description:
+		Returns a serialized XML string representation of an XML node
+	Arguments:
+		url	[IN] [node object]		XML DOM node
+	Returns:	[string]  XML string
+	Change Log:
+		10/09/2008			New function	[Nick Brown]
+	******************************************************************************************************/
+	this.SerializeXmlNode = function (node)
+	{
+		XmlString = (this.IE == true) ? node.xml : this.XmlSerial.serializeToString(node);
+		return XmlString;
+	}
+
+	/******************************************************************************************************
+	Function Name:	GetXMLDocFromString
+	Description:
+		Loads an XML file from supplied string into XML DOM (and stores XML string in this.XmlString)
+	Arguments:
+		url	[IN] [string]	url from which XML DOM is returned
+	Returns:	XML DOM object
+	Change Log:
+		10/09/2008			New function	[Nick Brown]
+	******************************************************************************************************/
+	this.GetXMLDocFromString = function(XmlString)
+	{
+		this.XmlString = str;
+		if (this.IE) 
+		{
+			this.XmlDomObject = GetXmlDomObject();
+			this.XmlDomObject.loadXML(XmlString);
+		}
+		else 
+    {
+			this.XmlDomObject = parser.parseFromString(XmlString,"text/xml");
+		}
+    return(this.XmlDomObject);
+	}
+	
 	// If constructor was passed a URL, invoke GetXMLDocFromUrl to load XML file immediately
 	if (url != undefined) {this.GetXMLDocFromUrl(url);}
 	
+	/******************************************************************************************************
+	Function Name:	GetNode
+	Description:
+		Returns the *first* XML node whose tag matches the supplied Tag name
+	Arguments:
+		TagName	[IN] [string]	Name of node tag whose value is to be returned
+	Returns:	
+		[node object]	The node within the XML doc
+	Change Log:
+		10/09/2008			New function	[Nick Brown]
+	******************************************************************************************************/
+	this.GetNode = function(TagName)
+	{
+		var nodes = this.XmlDomObject.documentElement.getElementsByTagName(TagName);
+		if(nodes.length == 0){return "";}
+		return nodes[0];
+	}
+
 	/******************************************************************************************************
 	Function Name:	GetValue
 	Description:
@@ -156,9 +219,8 @@ function XmlRequestor(url)
 	******************************************************************************************************/
 	this.GetValue = function(TagName)
 	{
-		var nodes = this.XmlDomObject.documentElement.getElementsByTagName(TagName);
-		if(nodes.length == 0){return "";}
-		return nodes[0].firstChild.nodeValue;
+		//if(nodes.length == 0){return "";}
+		return this.GetNode(TagName).firstChild.nodeValue;
 	}
 }
 
@@ -199,5 +261,4 @@ function GetXmlDomObject()
 	oXmlDoc.async = false;
 	return oXmlDoc;
 }
-
 

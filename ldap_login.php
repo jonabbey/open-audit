@@ -159,8 +159,7 @@ if (isset($_POST['username'])) {
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 <meta http-equiv="expires" content="0">
 <meta http-equiv="pragma" content="no-cache">
-<link rel="stylesheet" type="text/css" href="default.css" />
-<!--[if lt IE 7]><link media="screen" rel="stylesheet" type="text/css" href="iefix.css" /><![endif]-->
+<link rel="stylesheet" type="text/css" href="ldap_login.css" />
 </head>
 <SCRIPT LANGUAGE="JavaScript">
        <!--

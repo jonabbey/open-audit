@@ -78,8 +78,9 @@ if ($is_refreshable) {
     <title>Open-AudIT</title>
     <link rel="icon" href="favicon.ico" type="image/x-icon">
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon"> 
-    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
-    <link media="screen" rel="stylesheet" type="text/css" href="default.css" />
+    <!--<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />-->
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link media="screen" rel="stylesheet" type="text/css" href="default.css" />
     <link media="print" rel="stylesheet" type="text/css" href="defaultprint.css" />
 		<!--[if lt IE 7]><link media="screen" rel="stylesheet" type="text/css" href="iefix.css" /><![endif]-->
 		<!--[if lt IE 7]><link media="print" rel="stylesheet" type="text/css" href="iefix.css" /><![endif]-->
@@ -170,6 +171,7 @@ if ((isset($use_ldap_login) and ($use_ldap_login == 'y'))) {
   <tr>
     <td colspan="3" class="main_each"><a href="index.php"><img src="images/logo.png" width="300" height="48" alt="" style="border:0px;" /></a>
 		</td>
+
 
 <?php
 	if (isset($use_ldap_login) and ($use_ldap_login == 'y')) 

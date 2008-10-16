@@ -1,8 +1,4 @@
 <?php
-//header( "Expires: Mon, 20 Dec 1998 01:00:00 GMT" );
-//header( "Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT" );
-//header( "Cache-Control: no-cache, must-revalidate" );
-//header( "Pragma: no-cache" );
 set_time_limit(60);
 
 include "include_config.php";
@@ -37,49 +33,56 @@ if ($sub == "f15") GetLdapInfo($sub);
 // ****** GetLdapInfo**************************************************
 function GetLdapInfo($id)
 {	
-	global $ad_changes_days;
+	global $ldap_changes_days, $db;
 	$total=0;
 	$tr_class='npb_highlight_row';
 	
 	echo "<div class='npb_content_data' id='".$id."' style='display: none;'>";	
 	echo "<table>";
-	GetLdapUsersInfo($total, $ad_changes_days,$tr_class);
-	GetLdapComputersInfo($total, $ad_changes_days,$tr_class);
-	echo "</table>";
-	echo "</div>";
-	echo "<p class='npb_section_summary'>Accounts: ".$total."</p>";
-}
 
-// ****** GetLdapUsersInfo**************************************************
-function GetLdapUsersInfo(&$total, &$ad_changes_days,&$tr_class)
-{
-	global $db;
+	$sql ="
+	SELECT * FROM (
 
-	$sql  = "SELECT * FROM ("; 
-	// SQL clause to get deleted user accounts 
-	$sql .= "(SELECT netbios_name, cn, users_dn, 'user_deleted' as img, audit_timestamp FROM ldap_connections "; 
-	$sql .= "INNER JOIN ldap_paths on ldap_paths.ou_domain_guid=ldap_connections.guid ";
-	$sql .= "INNER JOIN ldap_users on ldap_users.ou_id=ldap_paths.ou_id ";
-	$sql .= "WHERE audit_timestamp<>ou_audit_timestamp ";
-	$sql .= "AND audit_timestamp>'".adjustdate(0,0,-$ad_changes_days) ."000000') ";
+	(SELECT ldap_connections_name, ldap_users_cn as cn, ldap_users_dn as dn, 'deleted' as img, 'User' as objtype
+	FROM ldap_users
+	LEFT JOIN ldap_paths ON ldap_users.ldap_users_path_id=ldap_paths.ldap_paths_id
+	LEFT JOIN ldap_connections ON ldap_paths.ldap_paths_connection_id=ldap_connections.ldap_connections_id
+	WHERE ldap_users_timestamp<>ldap_paths_timestamp
+	AND ldap_users_timestamp>'".adjustdate(0,0,-$ldap_changes_days)."000000')
 
-	// Join the clauses
-	$sql .= "UNION ";
-	
-	// SQL clause to get added user accounts 
-	$sql .= "(SELECT netbios_name, cn, users_dn, 'user_added' as img, audit_timestamp FROM ldap_connections "; 
-	$sql .= "INNER JOIN ldap_paths on ldap_paths.ou_domain_guid=ldap_connections.guid ";
-	$sql .= "INNER JOIN ldap_users on ldap_users.ou_id=ldap_paths.ou_id ";
-	$sql .= "WHERE audit_timestamp=ou_audit_timestamp ";
-	$sql .= "AND first_audit_timestamp>'".adjustdate(0,0,-$ad_changes_days) ."000000') ";
+	UNION
 
-	// Filter and sort
-	$sql .= ") AS U ORDER BY netbios_name, cn";
-	//echo $sql;
+	(SELECT ldap_connections_name, ldap_users_cn as cn, ldap_users_dn as dn, 'active' as img, 'User' as objtype
+	FROM ldap_users
+	LEFT JOIN ldap_paths ON ldap_users.ldap_users_path_id=ldap_paths.ldap_paths_id
+	LEFT JOIN ldap_connections ON ldap_paths.ldap_paths_connection_id=ldap_connections.ldap_connections_id
+	WHERE ldap_users_timestamp=ldap_paths_timestamp
+	AND ldap_users_first_timestamp>'".adjustdate(0,0,-$ldap_changes_days)."000000')
+
+	UNION
+
+	(SELECT ldap_connections_name, ldap_computers_cn as cn, ldap_computers_dn as dn, 'deleted' as img, 'Computer' as objtype
+	FROM ldap_computers
+	LEFT JOIN ldap_paths ON ldap_computers.ldap_computers_path_id=ldap_paths.ldap_paths_id
+	LEFT JOIN ldap_connections ON ldap_paths.ldap_paths_connection_id=ldap_connections.ldap_connections_id
+	WHERE ldap_computers_timestamp<>ldap_paths_timestamp
+	AND ldap_computers_timestamp>'".adjustdate(0,0,-$ldap_changes_days)."000000')
+
+	UNION
+
+	(SELECT ldap_connections_name, ldap_computers_cn as cn, ldap_computers_dn as dn, 'active' as img, 'Computer' as objtype 
+	FROM ldap_computers
+	LEFT JOIN ldap_paths ON ldap_computers.ldap_computers_path_id=ldap_paths.ldap_paths_id
+	LEFT JOIN ldap_connections ON ldap_paths.ldap_paths_connection_id=ldap_connections.ldap_connections_id
+	WHERE ldap_computers_timestamp=ldap_paths_timestamp
+	AND ldap_computers_first_timestamp>'".adjustdate(0,0,-$ldap_changes_days)."000000')
+
+	)
+	AS U ORDER BY ldap_connections_name, cn";
 	
 	$result = mysql_query($sql, $db);
-	$total += mysql_numrows($result); 
 
+	$total = mysql_numrows($result);
 	if($total==0) return;
 	
 	// Display results table
@@ -88,76 +91,23 @@ function GetLdapUsersInfo(&$total, &$ad_changes_days,&$tr_class)
 		echo "<tr>";
 		echo "<th>&nbsp</th>";
 		echo "<th>Account</th>";
-		echo "<th>Domain</th>";
+		echo "<th>LDAP Connection</th>";
 		echo "<th>Parent OU</th>";
 		echo "</tr>";
 		do
 		{
 			echo "<tr class='".alternate_tr_class($tr_class)."'>";
-			echo "<td><img src='../images/".$myrow['img'].".gif'></td>";
+			echo "<td><img src='../images/".$myrow['objtype']."_".$myrow['img'].".gif'></td>";
 			echo "<td>".$myrow['cn']."</td>";
-			echo "<td>".$myrow['netbios_name']."</td>";
-			echo "<td>".GetParentOuCn($myrow['users_dn'])."</td>";
-			echo "</tr>";
-		}	while ($myrow = mysql_fetch_array($result));
-	}
-}
-
-// ****** GetLdapComputersInfo**************************************************
-function GetLdapComputersInfo(&$total, &$ad_changes_days,&$tr_class)
-{
-	global $db;
-
-	$sql  = "SELECT * FROM ("; 
-	// SQL clause to get deleted user accounts 
-	$sql .= "(SELECT netbios_name, cn, dn, 'computer_deleted' as img, audit_timestamp FROM ldap_connections "; 
-	$sql .= "INNER JOIN ldap_paths on ldap_paths.ou_domain_guid=ldap_connections.guid ";
-	$sql .= "INNER JOIN ldap_computers on ldap_computers.ou_id=ldap_paths.ou_id ";
-	$sql .= "WHERE audit_timestamp<>ou_audit_timestamp ";
-	$sql .= "AND audit_timestamp>'".adjustdate(0,0,-$ad_changes_days) ."000000') ";
-
-	// Join the clauses
-	$sql .= "UNION ";
-	
-	// SQL clause to get added user accounts 
-	$sql .= "(SELECT netbios_name, cn, dn, 'computer_added' as img, audit_timestamp FROM ldap_connections "; 
-	$sql .= "INNER JOIN ldap_paths on ldap_paths.ou_domain_guid=ldap_connections.guid ";
-	$sql .= "INNER JOIN ldap_computers on ldap_computers.ou_id=ldap_paths.ou_id ";
-	$sql .= "WHERE audit_timestamp=ou_audit_timestamp ";
-	$sql .= "AND first_audit_timestamp>'".adjustdate(0,0,-$ad_changes_days) ."000000') ";
-
-	// Filter and sort
-	$sql .= ") AS U ORDER BY netbios_name, cn";
-	//echo $sql;
-	
-	$result = mysql_query($sql, $db);
-	$total==0 ? $need_header = True : $need_header = False; // No user changes -> need header
-	$total += mysql_numrows($result); 
-
-	if($total==0) return;
-	
-	// Display results table
-	if ($myrow = mysql_fetch_array($result))
-	{
-		if ($need_header)
-		{
-			echo "<tr>";
-			echo "<th>&nbsp</th>";
-			echo "<th>Account</th>";
-			echo "<th>Domain</th>";
-			echo "<th>Parent OU</th>";
-			echo "</tr>";
-		}
-		do
-		{
-			echo "<tr class='".alternate_tr_class($tr_class)."'>";
-			echo "<td><img src='../images/".$myrow['img'].".gif'></td>";
-			echo "<td>".$myrow['cn']."</td>";
-			echo "<td>".$myrow['netbios_name']."</td>";
+			echo "<td>".$myrow['ldap_connections_name']."</td>";
 			echo "<td>".GetParentOuCn($myrow['dn'])."</td>";
 			echo "</tr>";
 		}	while ($myrow = mysql_fetch_array($result));
 	}
+
+	echo "</table>";
+	echo "</div>";
+	echo "<p class='npb_section_summary'>Accounts: ".$total."</p>";
 }
 
 
@@ -308,8 +258,8 @@ function GetOtherDiscoveredData($id)
 		do
 		{
 			echo "<tr class='".alternate_tr_class($tr_class)."'>";
-			echo "	<td>".ip_trans($myrow["net_ip_address"])."</td>";
-			echo "	<td><a href=\"system.php?pc=".$myrow["other_id"]."&amp;view=other_system\">".$myrow["other_network_name"]."</a></td>";
+			echo "	<td>".ip_trans($myrow["other_ip_address"])."</td>";
+			echo "	<td><a href=\"system.php?other=".$myrow["other_id"]."&amp;view=other_system\">".$myrow["other_network_name"]."</a></td>";
 			echo "	<td>".$myrow["other_type"]."</td>";
 			echo "	<td>".$myrow["other_description"]."</td>";
 			echo "</tr>";
@@ -1388,8 +1338,7 @@ function GetDetectedXpAvData($id)
 	$tr_class='npb_highlight_row';
 
   $sql  = "SELECT system_name, net_ip_address, system_uuid, virus_name, virus_uptodate FROM system ";
-//  $sql .= "WHERE (virus_name = '' OR virus_uptodate = 'False') AND system_service_pack = '2.0' AND system_os_name LIKE 'Microsoft Windows XP%' ";
-  $sql .= "WHERE (virus_name = '' OR virus_uptodate = 'False') AND ((system_service_pack = '2.0') OR (system_service_pack = '3.0')) AND system_os_name LIKE 'Microsoft Windows XP%' ";
+  $sql .= "WHERE (virus_name = '' OR virus_uptodate = 'False') AND system_service_pack = '2.0' AND system_os_name LIKE 'Microsoft Windows XP%' ";
   $sql .= "ORDER BY system_name";
 	
 	$result = mysql_query($sql, $db);

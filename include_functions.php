@@ -155,141 +155,118 @@ function versionCheck($dbversion, $latestversion) {
   }
 }
 
-//Converts values from database to human-readable fields
-function special_field_converting($myrow, $field, $db, $page){
+/**********************************************************************************************************
+Function Name:
+	ConvertSpecialField
+Description:
+	Originally named "special_field_converting"
+	Converts values from database to human-readable fields
+Arguments:
+	$myrow		[IN] [Array]		Database data row
+	$field		[IN] [Array]		Fileld from $query_array, $Fields defined in the list_viewdef 
+	$db			[IN] [Resource]	Reference to the Open Audit db
+	$page		[IN] [String]		Name of PHP module (page) calling the function
+Returns:	[String]	Formatted string
+Change Log:
+	10/09/2008		Function re-written based on original "special_field_converting" function	[Nick Brown]
+**********************************************************************************************************/
+function ConvertSpecialField($myrow, $field, $db, $page)
+{
+	if(!isset($field["name"])) {return "";}
 
-  if(isset($field["name"])){
-    if($field["name"]=="system_os_name"){
-        $show_value=determine_os($myrow[$field["name"]]);
-     }elseif($field["name"]=="system_timestamp" OR
-            $field["name"]=="net_dhcp_lease_obtained" OR
-            $field["name"]=="net_dhcp_lease_expires" OR
-            $field["name"]=="net_driver_date"){						
-        $show_value=return_date($myrow[$field["name"]]);
-    }elseif($field["name"]=="net_speed"){
-        $show_value=number_format($myrow[$field["name"]])." Mbps";
-    }elseif($field["name"]=="software_first_timestamp" OR
-            $field["name"]=="software_timestamp" OR
-            $field["name"]=="system_first_timestamp" OR
-            $field["name"]=="system_timestamp" OR
-            $field["name"]=="other_first_timestamp" OR
-            $field["name"]=="other_timestamp" OR
-            $field["name"]=="monitor_first_timestamp" OR
-            $field["name"]=="monitor_timestamp" OR
-            $field["name"]=="system_audits_timestamp" OR
-            $field["name"]=="system_last_boot") 
-    {
-        $show_value=return_date_time($myrow[$field["name"]]);
-    }elseif($field["name"]=="system_system_type" AND $page=="list"){
-        $show_value=determine_img($myrow["system_os_name"],$myrow[$field["name"]]);
-    }elseif($field["name"]=="other_type" AND $page=="list"){
-        $show_value="<img src=\"images/o_" .str_replace(" ","_",$myrow[$field["name"]]). ".png\" alt=\"\" border=\"0\" width=\"16\" height=\"16\"  />";
-    }elseif($field["name"]=="other_ip_address"){
-        $show_value=ip_trans($myrow[$field["name"]]);
-    }elseif($field["name"]=="delete"){
-        /*
-        $misc =" onMouseOver=\" document.getElementById('button".$random."').src='images/button_delete_over.png'\" ";
-        $misc.=" onMouseDown=\"document.getElementById('button".$random."').src='images/button_delete_down.png'\" ";
-        $misc.=" onMouseout=\"document.getElementById('button".$random."').src='images/button_delete_out.png'\" ";
-        */
-        $misc = "";
-        $random=rand(0,999999999);
-        $show_value="<img src=\"images/button_delete_out.png\" id=\"button" . $random . "\" width=\"58\" height=\"22\" border=\"0\" alt=\"\" $misc />";
-    }elseif($field["name"]=="startup_location"){
-        if (substr($myrow[$field["name"]],0,2) == "HK"){
-            $show_value = __("Registry");
-        }
-    }elseif($field["name"]=="percentage"){
-        $show_value=$myrow[$field["name"]]." %";
-    }elseif($field["name"]=="system_memory" OR
-            $field["name"]=="video_adapter_ram" OR
-            $field["name"]=="hard_drive_size" OR
-            $field["name"]=="partition_size" OR
-            $field["name"]=="partition_free_space" OR
-            $field["name"]=="total_memory" OR
-            $field["name"]=="pagefile_initial_size" OR
-            $field["name"]=="pagefile_max_size")
-    {
-        $show_value=number_format($myrow[$field["name"]])." MB";
-    }elseif($field["name"]=="evt_log_file_size" OR
-            $field["name"]=="evt_log_max_file_size"){
-        $show_value=number_format($myrow[$field["name"]])." KB";
-    }elseif($field["name"]=="video_current_number_colours"){
-        $show_value=(strlen(decbin($myrow[$field["name"]]))+1)." Bit";
-    }elseif($field["name"]=="video_current_refresh_rate"){
-        $show_value=$myrow[$field["name"]]." Hz";
-
-    }elseif($field["name"]=="firewall_enabled_domain" OR
-            $field["name"]=="firewall_enabled_standard" OR
-            $field["name"]=="firewall_disablenotifications_standard" OR
-            $field["name"]=="firewall_donotallowexceptions_standard" OR
-            $field["name"]=="firewall_disablenotifications_domain" OR
-            $field["name"]=="firewall_donotallowexceptions_domain")
-    {
-        if($myrow[$field["name"]]=="1" OR $myrow[$field["name"]]=="0"){
-            if($myrow[$field["name"]]=="1"){
-                $show_value=__("Yes");
-            }elseif($myrow[$field["name"]]=="0"){
-                $show_value=__("No");
-            }
-        }else{
-            $show_value="Profile Not Detected";
-        }
-    }elseif($field["name"]=="other_linked_pc"){
-        if(!isset($_REQUEST["edit"])){
-            $result3 = mysql_query("SELECT system_name FROM system WHERE system_uuid='".$myrow[$field["name"]]."' AND system_uuid != '' ", $db);
-            if ($myrow3 = mysql_fetch_array($result3)){
-                $show_value=$myrow3["system_name"];
-            }else{
-                $show_value=$myrow[$field["name"]];
-            }
-        }
-    }elseif($field["name"]=="monitor_uuid"){
-        if(!isset($_REQUEST["edit"]) OR
-           (isset($_REQUEST["edit"]) AND isset($field["edit"]) AND $field["edit"]=="n"))
-            {
-            $result3 = mysql_query("SELECT system_name FROM system WHERE system_uuid = '".$myrow[$field["name"]]."' AND system_uuid != '' ", $db);
-            if ($myrow3 = mysql_fetch_array($result3)){
-                $show_value=$myrow3["system_name"];
-            }else{
-                $show_value=$myrow[$field["name"]];
-            }
-        }
-    }elseif($field["name"]=="other_ip_address"){
-        if($myrow["other_ip_address"]=="" AND !isset($_REQUEST["edit"])){
-            $show_value = "Not-Networked";
-        }else{
-            $show_value = $myrow[$field["name"]];
-        }
-    }elseif($field["name"]=="net_dhcp_server"){
-        if($myrow[$field["name"]]=="none"){
-            $show_value=__("No");
-        }else{
-            $show_value=__("Yes")." / ".$myrow[$field["name"]];
-        }
-    }elseif($field["name"]=="auth_enabled" OR $field["name"]=="auth_admin"){
-        if($myrow[$field["name"]]=="0"){
-            $show_value=__("No");
-        }elseif($myrow[$field["name"]]=="1"){
-            $show_value=__("Yes");
-        }else{
-            $show_value=$myrow[$field["name"]];
-        }
-    }elseif($field["name"]=="auth_hash"){
-            $show_value="*****";
-    }else{
-        if(isset($myrow[$field["name"]])){
-            $show_value=$myrow[$field["name"]];
-        }
-    }
-
-    if(!isset($show_value)){
-        $show_value="";
-    }
-    return $show_value;
-
-  }
-
+	switch($field["name"])
+	{
+		case "system_os_name":
+			return determine_os($myrow[$field["name"]]);
+		case "system_timestamp":
+		case "net_dhcp_lease_obtained":
+		case "net_dhcp_lease_expires":
+		case "net_driver_date":
+		case "ldap_computers_timestamp";
+		case "ldap_users_timestamp";
+			return return_date($myrow[$field["name"]]);
+		case "net_speed":
+			return number_format($myrow[$field["name"]])." Mbps";
+		case "software_first_timestamp":
+		case "software_timestamp":
+		case "system_first_timestamp":
+		case "other_first_timestamp":
+		case "other_timestamp":
+		case "monitor_first_timestamp":
+		case "monitor_timestamp":
+		case "system_audits_timestamp":
+		case "system_last_boot":
+		case "timestamp";
+			return return_date_time($myrow[$field["name"]]);
+		case "system_system_type":
+			if($page=="list") return determine_img($myrow["system_os_name"],$myrow[$field["name"]]);
+			break;
+		case "other_type":
+			if($page=="list") return "<img src=\"images/o_".str_replace(" ","_",$myrow[$field["name"]]).".png\" alt=\"\" border=\"0\" width=\"16\" height=\"16\"/>";
+		case "other_ip_address":
+			return ip_trans($myrow[$field["name"]]);
+		case "delete":
+			return "<img src=\"images/button_delete_out.png\" id=\"button".rand(0,999999999)."\" width=\"58\" height=\"22\" border=\"0\" alt=\"\" />";
+		case "ldap_user_status":
+			return "<img src='../images/user_".$myrow[$field["name"]].".gif'>";			
+		case "ldap_computer_status":
+			return "<img src='../images/computer_".$myrow[$field["name"]].".gif'>";			
+		case "startup_location":
+			if(substr($myrow[$field["name"]],0,2) == "HK") return __("Registry");
+		case "percentage":
+			return $myrow[$field["name"]]." %";
+		case "system_memory":
+		case "video_adapter_ram":
+		case "hard_drive_size":
+		case "partition_size":
+		case "partition_free_space":
+		case "total_memory":
+		case "pagefile_initial_size":
+		case "pagefile_max_size":
+			return number_format($myrow[$field["name"]])." MB";
+		case "evt_log_file_size":
+		case "evt_log_max_file_size":
+			return number_format($myrow[$field["name"]])." KB";
+		case "video_current_number_colours":
+			return (strlen(decbin($myrow[$field["name"]]))+1)." Bit";
+		case "video_current_refresh_rate":
+			return $myrow[$field["name"]]." Hz";
+		case "firewall_enabled_domain":
+		case "firewall_enabled_standard":
+		case "firewall_disablenotifications_standard":
+		case "firewall_donotallowexceptions_standard":
+		case "firewall_disablenotifications_domain":
+		case "firewall_donotallowexceptions_domain":
+			if ($myrow[$field["name"]]=="1") return __("Yes");
+			if ($myrow[$field["name"]]=="0") return __("No");
+			return __("Profile Not Detected");
+		case "other_ip_address":
+			return ($myrow["other_ip_address"]=="" AND !isset($_REQUEST["edit"])) ? "Not-Networked" : $myrow[$field["name"]];
+		case "net_dhcp_server":
+			return ($myrow[$field["name"]]=="none") ? __("No") : __("Yes")." / ".$myrow[$field["name"]];
+		case "auth_enabled":
+		case "auth_admin":
+			if($myrow[$field["name"]]=="0") return __("No");
+			if($myrow[$field["name"]]=="1") return __("Yes");
+			return $myrow[$field["name"]];
+		case "auth_hash":
+			return "*****";
+		case "other_linked_pc":
+			if(!isset($_REQUEST["edit"]))
+			{
+				$result = mysql_query("SELECT system_name FROM system WHERE system_uuid='".$myrow[$field["name"]]."' AND system_uuid != '' ", $db);
+				return ($myrow3 = mysql_fetch_array($result)) ? $myrow3["system_name"] : $myrow[$field["name"]];
+			}
+		case "monitor_uuid":
+			if(!isset($_REQUEST["edit"]) OR (isset($_REQUEST["edit"]) AND isset($field["edit"]) AND $field["edit"]=="n"))
+			{
+				$result = mysql_query("SELECT system_name FROM system WHERE system_uuid = '".$myrow[$field["name"]]."' AND system_uuid != '' ", $db);
+				return ($myrow3 = mysql_fetch_array($result)) ? $myrow3["system_name"] : $myrow[$field["name"]];
+			}
+		default:
+			if(isset($myrow[$field["name"]])) return $myrow[$field["name"]];
+	}	
+	return "";
 }
 
 function determine_os($os) {
@@ -419,7 +396,7 @@ function determine_img($os,$system_type) {
 }
 
 function determine_dia_img($os,$system_type) {
-   
+
     if (is_file("images/o_".$system_type.".png")){
     $image="o_".$system_type.".png";
     $title=__("$system_type");
@@ -429,12 +406,12 @@ function determine_dia_img($os,$system_type) {
     $system_type= str_replace(" ","_",$system_type);
     $image="o_".$system_type.".png";
 //    $image="button_fail.png";
-    $title=__("Unknown");  
+    $title=__("Unknown");
     }
     if (!is_file("images/o_".$system_type.".png")){
     $image="button_fail.png";
     } else {}
- 
+
     if( ereg("Windows", $os) ){
         $image="desktop.png";
         $title=determine_os($os);
@@ -479,11 +456,11 @@ function determine_inkscape_img($os,$system_type) {
 
 // Assume we dont know what this is
     $image_folder="images";
-    
+
     $image="button_fail.png";
     $title=__("Unknown");
-   
-// Now we try to find out..   
+
+// Now we try to find out..
 
 // Does the system_type map to a local PNG
     if (is_file($image_folder."/o_".$system_type.".png")){
@@ -495,12 +472,12 @@ function determine_inkscape_img($os,$system_type) {
     $system_type= str_replace(" ","_",$system_type);
     $image="o_".$system_type.".png";
 //    $image="button_fail.png";
-    $title=__("Unknown ".$system_type);  
+    $title=__("Unknown ".$system_type);
     }
     if (!is_file($image_folder."/o_".$system_type.".png")){
     $image="button_fail.png";
     } else {}
-    
+
 // Does the os map to a local PNG
     if (is_file($image_folder."/o_".$os.".png")){
     $image="o_".$os.".png";
@@ -511,12 +488,12 @@ function determine_inkscape_img($os,$system_type) {
     $os= str_replace(" ","_",$os);
     $image="o_".$os.".png";
 //    $image="button_fail.png";
-    $title=__("Unknown ".$os);  
+    $title=__("Unknown ".$os);
     }
     if (!is_file($image_folder."/o_".$os.".png")){
     $image="button_fail.png";
-    } else {}    
-  
+    } else {}
+
 // Lets see if we can work it out from the OS
 //
     if( ereg("Windows", $os) ){
@@ -555,7 +532,7 @@ function determine_inkscape_img($os,$system_type) {
     }
 // If we got here, we must have a .png image, even if it is not what we want.
 // So now we will look to see if we can find a scaleable image to give is a better looking output
-// In other words, lets take the name of the .png, and replace it with a suitable Tango .svg if it exists. 
+// In other words, lets take the name of the .png, and replace it with a suitable Tango .svg if it exists.
 /*
 if (is_file($image_folder."\dell-ultrasharp.svg")){
     switch($image){
@@ -569,9 +546,9 @@ if (is_file($image_folder."\dell-ultrasharp.svg")){
         $image = "dell-ultrasharp.svg";
         break;
     }
-    
+
    }
-*/   
+*/
     $ret = $image;
     return $ret;
 
@@ -676,7 +653,7 @@ function sql_insert_search($sql_query, $filter){
 function isEmailAddress($value) {
 return
 eregi('^([a-z0-9])+([.a-z0-9_-])*@([a-z0-9_-])+(.[a-z0-9_-]+)*.([a-z]{2,6})$', $value);
-} 
+}
 
 function microtime_float()
 {
@@ -695,7 +672,7 @@ function WakeOnLan($hostname, $mac,$socket_number,$this_error)
 {
 
 $address_bytes = explode(':', $mac);
-//Convert mac address to string of six bytes. 
+//Convert mac address to string of six bytes.
 $full_hw_addr = '';
 for ($hw_address_bytes=0; $hw_address_bytes < 6; $hw_address_bytes++) $full_hw_addr .= chr(hexdec($address_bytes[$hw_address_bytes]));
 
@@ -707,11 +684,11 @@ $packet_header = $packet_header.CHR(255);
 }
 
 // Add 16 copies of mac address to magic header.
-for ($mac_copies = 0; $mac_copies <= 16; $mac_copies++){ 
+for ($mac_copies = 0; $mac_copies <= 16; $mac_copies++){
 $packet_header = $packet_header.$full_hw_addr ;
 }
 //echo " Packet length = ". strlen($packet_header);
-// Send it to the broadcast address using UDP 
+// Send it to the broadcast address using UDP
 
 $create_magic_socket = socket_create(AF_INET, SOCK_DGRAM, SOL_UDP);
 if ($create_magic_socket  == false)
@@ -734,9 +711,9 @@ $this_error = "Success: Wake on LAN sent ".$this_connection ." bytes to ".$broad
 }
 
 function isGUID($value) {
-return 
+return
 strlen($value) == '16';
-} 
+}
 
 /**********************************************************************************************************
 Function Name:
@@ -776,9 +753,9 @@ function formatGUID($ByteArray)
 }
 
 function isSID($value) {
-return 
+return
 strpos( $value, "sid") <> 0 ;
-} 
+}
 
 function formatSID($value) {
 $hex_string='S-';
@@ -813,23 +790,43 @@ function GetVolumeLabel($drive)
 
 /**********************************************************************************************************
 Function Name:
-	EventLog
+	LogEvent
 Description:
 	Logs Event to Logs table in DB
 Arguments:
-	$message		[IN]	[String]			Event log message
-	$severity		[IN]	[INTEGER]		Severity value (1=low, 5=high)
+	$calling_module	[IN]	[String]			name of the module calling this function	
+	$calling_function	[IN]	[String]			name of the function calling this function	
+	$message			[IN]	[String]			Event log message
+	$severity			[IN]	[INTEGER]		Severity value (1=low, 5=high)
 Returns:
 	None
 Change Log:
 	20/08/2008			New function	[Nick Brown]
+	20/09/2008			Added additional arguments to the function [Nick Brown]
+	13/10/2008			Renamed function [Nick Brown]
 **********************************************************************************************************/
-function EventLog($message,$severity=3)
+function LogEvent($calling_module, $calling_function, $message, $severity=3)
 {
-	global $db;
+	global $db, $max_log_entries;
 	$timestamp = date("YmdHis");
-	mysql_query("INSERT INTO `log` (`timestamp`,`message`,`severity`) VALUES ('".$timestamp."','".$message."','".$severity."')", $db);
-	$rows = mysql_affected_rows();
+	// Add new 	log entry
+	$sql  = "INSERT INTO `log` (`log_timestamp`,`log_module`,`log_function`,`log_message`,`log_severity`) ";
+	$sql .= "VALUES ('".$timestamp."','".$calling_module."','".$calling_function."','".$message."','".$severity."')";
+	mysql_query($sql, $db);
+
+	// Purge old entries
+	do
+	{
+		// Is log size greater than $max_log_entries?
+		$count = (int) mysql_result(mysql_query("SELECT COUNT(*) as cnt FROM `log`", $db),0);
+		if($count > $max_log_entries) 
+		{
+			// Get the oldest log entry
+			$log_id = mysql_result(mysql_query("SELECT log_id, log_timestamp FROM `log` ORDER BY log_timestamp ASC LIMIT 1", $db),0);
+			// Delete it
+			mysql_query("DELETE FROM `log` WHERE log_id=".$log_id , $db);
+		}
+	} while ($count > $max_log_entries);
 }
 
 /**********************************************************************************************************
@@ -866,7 +863,7 @@ function GetGETOrDefaultValue($var, $default)
 Function Name:
 	GetVarOrDefaultValue
 Description:
-	Checks whether $var is defined. If it is, returns it's value. If not, returns $default 
+	Checks whether $var is defined. If it is, returns it's value. If not, returns $default
 Arguments:
 	&$var		[IN] [string]	variable
 	$default		[IN] [String]	Default value to return if variable not set
@@ -876,4 +873,35 @@ Change Log:
 **********************************************************************************************************/
 function GetVarOrDefaultValue(&$var, $default)
 {if (isset($var)) return $var; else return $default;}
+
+/**********************************************************************************************************
+Function Name:
+	ConnectToLdapServer
+Description:
+	Connects and authenticates to LDAP server
+Arguments:
+	&$ldap_server			[IN]	[STRING]	ldap server host name
+	&$ldap_user			[IN]	[STRING]	user name for authentication
+	&$ldap_password		[IN]	[STRING]	user password for authentication
+Returns:
+	LDAP link				[RESOURCE]  if succesful, or...
+	LDAP error				[ARRAY]  if not.
+Change Log:
+	25/04/2008			New function	[Nick Brown]
+	02/09/2008			Added error detection [Nick Brown]
+	08/09/2008			Added anonymous bind support [Nick Brown]
+**********************************************************************************************************/
+function ConnectToLdapServer(&$ldap_server, $ldap_user, $ldap_password)
+{
+	$l = ldap_connect($ldap_server);
+	ldap_set_option($l,LDAP_OPT_PROTOCOL_VERSION,3);
+	ldap_set_option($l,LDAP_OPT_SIZELIMIT, 1000);
+	ldap_set_option($l, LDAP_OPT_REFERRALS, 0);
+
+	if ($ldap_user == NULL) ldap_bind($l); // Anonymous bind
+	else ldap_bind($l,$ldap_user,$ldap_password); // Auth bind
+
+	$errdata = array("number" => ldap_errno($l), "string" => ldap_error($l));
+	if ($errdata["number"] !=0 ) return $errdata; else return $l;
+}
 ?>

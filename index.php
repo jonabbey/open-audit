@@ -21,7 +21,7 @@ $extra = "";
 $software = "";
 $count = 0;
 $total_rows = 0;
-$latest_version = "08.08.29";
+$latest_version = "08.10.09";
 
 // Check for config, otherwise run setup
 //@(include_once "include_config.php") OR die(header("Location: setup.php"));  // Modified by Nick Brown - don't want to actually include the file yet
@@ -53,7 +53,7 @@ if ($show_detected_servers == "y" )
   echo "var DbServersXml=new HttpRequestor('DbServers');\n";
 }
 if ($show_detected_xp_av == "y")  echo "var DetectedXpAvXml=new HttpRequestor('DetectedXpAv');\n";
-if ($show_ad_changes == 'y') echo "var AdInfoXml=new HttpRequestor('AdInfo');\n";
+if ($show_ldap_changes == 'y') echo "var AdInfoXml=new HttpRequestor('AdInfo');\n";
 if ($show_systems_audited_graph == 'y') echo "var AuditedSystemsXml=new HttpRequestor('AuditedSystems');\n";
 ?>
 //]]></script>
@@ -110,9 +110,9 @@ if ($show_detected_servers == "y")
 	DisplaySection('f13',__('Database Servers'),'DbServers','Systems');
 }
 if ($show_detected_xp_av == "y") 
-	DisplaySection('f11',__("XP SP2 or SP3 without up to date AntiVirus"),'DetectedXpAv','Systems');
+	DisplaySection('f11',__("XP SP2 without up to date AntiVirus"),'DetectedXpAv','Systems');
 	
-if ($show_ad_changes == 'y') DisplaySection('f15',__("Active Directory changes in the last ".$ad_changes_days." days"),'AdInfo','Accounts');
+if ($show_ldap_changes == 'y') DisplaySection('f15',__("LDAP Directory changes in the last ".$ldap_changes_days." days"),'AdInfo','Accounts','rss_ldap_directory_changes.php');
 if ($show_systems_audited_graph == 'y') DisplayAuditGraph();
 
 
@@ -184,7 +184,7 @@ if ($show_detected_servers == "y" )
   echo "DbServersXml.send('index_data.php?sub=f13');\n";
 }
 if ($show_detected_xp_av == "y") echo "DetectedXpAvXml.send('index_data.php?sub=f11');\n";
-if ($show_ad_changes == 'y') echo "AdInfoXml.send('index_data.php?sub=f15');\n";
+if ($show_ldap_changes == 'y') echo "AdInfoXml.send('index_data.php?sub=f15');\n";
 if ($show_systems_audited_graph == 'y') echo "AuditedSystemsXml.send('index_data.php?sub=f14');\n";
 ?>
 //]]></script>

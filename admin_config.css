@@ -62,7 +62,7 @@ ul.npb_tab_nav li{
 	padding:	10px;
 }
 
-/* Padding for the general, security & homepage pages (DIVs) */
+/* Padding for the general, security & homepage "pages" (DIVs) */
 #npb_config_general_div, #npb_config_security_div, #npb_config_homepage_div {
 	padding: 10px;
 }
@@ -148,11 +148,11 @@ div.npb_config_col {
 }
 
 /* margin for form select control */
-#npb_config_general_div  select {
+#npb_config_general_div select {
 	margin:	4px 0 10px 10px;
 }
 
-/* Mainly for IE - the page DIVs "break out " of the form otherwise */
+/* Mainly for IE - the "page" DIVs "break out " of the form otherwise */
 div.npb_section_content form {
 	display: inline;
 }

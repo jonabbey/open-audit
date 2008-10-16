@@ -1,6 +1,7 @@
 <?php
 
 echo "<td style=\"width:170px;\" valign=\"top\" align=\"center\" id=\"rightnav\">\n";
+
 echo "<div id='right_col' class=\"main_each\">\n";
 
 

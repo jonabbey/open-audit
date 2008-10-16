@@ -56,8 +56,10 @@ $ldap_secret = 'password';
 $ldap_connect_string = 'LDAP://server.domain.local';
 $use_ldap_login = 'n';
 
-$show_ad_changes = 'y';
-$ad_changes_days = 7;
+$show_ldap_changes = 'y';
+$ldap_changes_days = 7;
 $show_systems_audited_graph = 'y';
 $systems_audited_days = 30;
+
+$max_log_entries = 90;
 ?>

@@ -9,58 +9,6 @@
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
-
-DROP TABLE IF EXISTS `ad_computers`;
-CREATE TABLE `ad_computers` (
-  `guid` varchar(45) NOT NULL,	# Computer object GUID from AD as a string
-  `cn` varchar(45) NOT NULL,		# Computer object CN value from AD
-  `audit_timestamp` varchar(45) NOT NULL,	# last audit timestamp
-  `usnchanged` int(10) unsigned NOT NULL,	# Computer object usnchanged value from AD
-  `first_audit_timestamp` varchar(45) NOT NULL, # First audit timestamp
-  `ou_id` varchar(45) NOT NULL,	# Reference to ad_ous.ou_id (the OU that owns this computer account)
-  `description` varchar(45) default NULL,	# Computer object description value from AD
-  `os` varchar(45) default NULL,	# Computer object operatingsystem value from AD
-  `service_pack` varchar(45) default NULL,	# Computer object operatingsystemservicepack value from AD
-  `dn` varchar(255) NOT NULL,	# Computer object distinguishedname value from AD
-  PRIMARY KEY  (`guid`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-
-DROP TABLE IF EXISTS `ad_domains`;
-CREATE TABLE  `ad_domains` (
-  `guid` varchar(45) NOT NULL,	# Unique ID for the domain (intend to use the domain AD GUID at some point)
-  `default_nc` varchar(45) NOT NULL,	# Domain defaultnamingcontext
-  `fqdn` varchar(45) NOT NULL,	# Domain FQDN
-  `ldap_server` varchar(45) NOT NULL,	# LDAP host server
-  `ldap_user` varchar(45) NOT NULL,	# LDAP login (AD Account)
-  `ldap_password` varchar(45) NOT NULL,	# LDAP password 
-  `netbios_name` varchar(45) NOT NULL,	# Domain NetBIOS name
-  PRIMARY KEY  (`guid`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-
-DROP TABLE IF EXISTS `ad_ous`;
-CREATE TABLE  `ad_ous` (
-  `ou_id` varchar(45) NOT NULL,	# Unique ID for the OU (intend to use the OU AD GUID at some point)
-  `ou_dn` varchar(255) default NULL,	# OU object distinguished name
-  `ou_domain_guid` varchar(45) default NULL,	# Reference to ad_domains.guid (the domain that owns this OU)
-  `ou_audit_timestamp` varchar(45) default NULL,	# Audit timestamp for this OU
-  `include_in_audit` tinyint(1) default NULL,	# Flag to include/exclude OU from audit
-  PRIMARY KEY  (`ou_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
-
-DROP TABLE IF EXISTS `ad_users`;
-CREATE TABLE  `ad_users` (
-  `guid` varchar(45) NOT NULL,
-  `cn` varchar(45) NOT NULL,
-  `audit_timestamp` varchar(45) NOT NULL,
-  `usnchanged` int(10) unsigned NOT NULL,
-  `first_audit_timestamp` varchar(45) NOT NULL,
-  `ou_id` varchar(45) NOT NULL,
-  `description` varchar(45) default NULL,
-  `department` varchar(45) default NULL,
-  `users_dn` varchar(255) NOT NULL,
-  PRIMARY KEY  (`guid`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
-
 DROP TABLE IF EXISTS `auth`;
 CREATE TABLE `auth` (
   `auth_id` INT( 10 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,
@@ -493,7 +441,6 @@ CREATE TABLE `memory` (
   `memory_detail` varchar(45) NOT NULL default '',
   `memory_capacity` int(11) NOT NULL,
   `memory_speed` varchar(45) NOT NULL default '',
-  `memory_tag` varchar(256) NOT NULL default '',
   `memory_timestamp` bigint(20) unsigned NOT NULL default '0',
   `memory_first_timestamp` bigint(20) unsigned NOT NULL default '0',
   PRIMARY KEY  (`memory_id`),
@@ -930,7 +877,9 @@ CREATE TABLE `software` (
   `software_first_timestamp` bigint(20) unsigned NOT NULL default '0',
   PRIMARY KEY  (`software_id`),
   KEY `id` (`software_uuid`),
-  KEY `id2` (`software_timestamp`)
+  KEY `id2` (`software_timestamp`),
+	KEY `Index3` (`software_first_timestamp`),
+	KEY `Index4` (`software_name`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 DROP TABLE IF EXISTS `software_group_members`;
@@ -1082,7 +1031,8 @@ CREATE TABLE `system` (
   `system_timestamp` bigint(20) unsigned NOT NULL default '0',
   `system_first_timestamp` bigint(20) unsigned NOT NULL default '0',
   PRIMARY KEY  (`system_uuid`),
-  KEY `id2` (`system_timestamp`)
+  KEY `id2` (`system_timestamp`),
+	KEY `Index3` (`system_first_timestamp`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 DROP TABLE IF EXISTS `system_audits`;
@@ -1247,7 +1197,68 @@ CREATE TABLE `video` (
   KEY `id2` (`video_timestamp`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
-INSERT INTO config (config_name, config_value) VALUES ('version','08.07.23');
+DROP TABLE IF EXISTS `ldap_computers`;
+CREATE TABLE  `ldap_computers` (
+  `ldap_computers_guid` varchar(45) NOT NULL,
+  `ldap_computers_cn` varchar(255) NOT NULL,
+  `ldap_computers_timestamp` varchar(45) NOT NULL,
+  `ldap_computers_first_timestamp` varchar(45) NOT NULL,
+  `ldap_computers_path_id` varchar(45) NOT NULL,
+  `ldap_computers_description` varchar(255) default NULL,
+  `ldap_computers_os` varchar(255) default NULL,
+  `ldap_computers_service_pack` varchar(255) default NULL,
+  `ldap_computers_dn` varchar(255) NOT NULL,
+  PRIMARY KEY  (`ldap_computers_guid`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+DROP TABLE IF EXISTS `ldap_connections`;
+CREATE TABLE  `ldap_connections` (
+  `ldap_connections_id` int(10) unsigned NOT NULL auto_increment,
+  `ldap_connections_nc` varchar(255) NOT NULL,
+  `ldap_connections_fqdn` varchar(255) NOT NULL,
+  `ldap_connections_server` varchar(255) NOT NULL,
+  `ldap_connections_user` varchar(45) NOT NULL,
+  `ldap_connections_password` varchar(45) NOT NULL,
+  `ldap_connections_name` varchar(45) NOT NULL,
+  `ldap_connections_schema` varchar(45) NOT NULL,
+  PRIMARY KEY  (`ldap_connections_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+DROP TABLE IF EXISTS `ldap_paths`;
+CREATE TABLE  `ldap_paths` (
+  `ldap_paths_id` int(10) unsigned NOT NULL auto_increment,
+  `ldap_paths_dn` varchar(255) default NULL,
+  `ldap_paths_connection_id` varchar(45) default NULL,
+  `ldap_paths_timestamp` varchar(45) default NULL,
+  `ldap_paths_audit` tinyint(1) default NULL,
+  PRIMARY KEY  (`ldap_paths_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+DROP TABLE IF EXISTS `ldap_users`;
+CREATE TABLE  `ldap_users` (
+  `ldap_users_guid` varchar(45) NOT NULL,
+  `ldap_users_cn` varchar(255) NOT NULL,
+  `ldap_users_timestamp` varchar(45) NOT NULL,
+  `ldap_users_first_timestamp` varchar(45) NOT NULL,
+  `ldap_users_path_id` varchar(45) NOT NULL,
+  `ldap_users_description` varchar(255) default NULL,
+  `ldap_users_department` varchar(255) default NULL,
+  `ldap_users_dn` varchar(255) NOT NULL,
+  PRIMARY KEY  (`ldap_users_guid`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+DROP TABLE IF EXISTS `openaudit`.`log`;
+CREATE TABLE  `openaudit`.`log` (
+	`log_id` int(10) unsigned NOT NULL auto_increment,
+	`log_timestamp` varchar(45) NOT NULL,
+	`log_message` varchar(1024) NOT NULL,
+	`log_severity` int(10) unsigned NOT NULL,
+	`log_module` varchar(128) NOT NULL,
+	`log_function` varchar(128) NOT NULL,
+	PRIMARY KEY  (`log_id`),
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+			
+INSERT INTO config (config_name, config_value) VALUES ('version','08.10.09');
 
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -1258,64 +1269,4 @@ INSERT INTO config (config_name, config_value) VALUES ('version','08.07.23');
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
-
-DROP TABLE IF EXISTS `openaudit`.`ldap_computers`;
-CREATE TABLE  `openaudit`.`ldap_computers` (
-  `guid` varchar(45) NOT NULL,
-  `cn` varchar(45) NOT NULL,
-  `audit_timestamp` varchar(45) NOT NULL,
-  `usnchanged` int(10) unsigned NOT NULL,
-  `first_audit_timestamp` varchar(45) NOT NULL,
-  `ou_id` varchar(45) NOT NULL,
-  `description` varchar(45) default NULL,
-  `os` varchar(45) default NULL,
-  `service_pack` varchar(45) default NULL,
-  `dn` varchar(255) NOT NULL,
-  PRIMARY KEY  (`guid`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-
-DROP TABLE IF EXISTS `openaudit`.`ldap_connections`;
-CREATE TABLE  `openaudit`.`ldap_connections` (
-  `guid` varchar(45) NOT NULL,
-  `default_nc` varchar(45) NOT NULL,
-  `fqdn` varchar(45) NOT NULL,
-  `ldap_server` varchar(45) NOT NULL,
-  `ldap_user` varchar(45) NOT NULL,
-  `ldap_password` varchar(45) NOT NULL,
-  `netbios_name` varchar(45) NOT NULL,
-  `schema` varchar(45) NOT NULL,
-  PRIMARY KEY  (`guid`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-
-DROP TABLE IF EXISTS `openaudit`.`ldap_paths`;
-CREATE TABLE  `openaudit`.`ldap_paths` (
-  `ou_id` int(10) unsigned NOT NULL auto_increment,
-  `ou_dn` varchar(255) default NULL,
-  `ou_domain_guid` varchar(45) default NULL,
-  `ou_audit_timestamp` varchar(45) default NULL,
-  `include_in_audit` tinyint(1) default NULL,
-  PRIMARY KEY  (`ou_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
-
-DROP TABLE IF EXISTS `openaudit`.`ldap_users`;
-CREATE TABLE  `openaudit`.`ldap_users` (
-  `guid` varchar(45) NOT NULL,
-  `cn` varchar(45) NOT NULL,
-  `audit_timestamp` varchar(45) NOT NULL,
-  `usnchanged` int(10) unsigned NOT NULL,
-  `first_audit_timestamp` varchar(45) NOT NULL,
-  `ou_id` varchar(45) NOT NULL,
-  `description` varchar(45) default NULL,
-  `department` varchar(45) default NULL,
-  `users_dn` varchar(255) NOT NULL,
-  PRIMARY KEY  (`guid`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
-
-DROP TABLE IF EXISTS `openaudit`.`log`;
-CREATE TABLE  `openaudit`.`log` (
-  `timestamp` varchar(45) NOT NULL,
-  `message` varchar(1024) NOT NULL,
-  `severity` int(10) unsigned NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
-
 

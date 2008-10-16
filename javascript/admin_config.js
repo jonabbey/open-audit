@@ -64,12 +64,12 @@ function SelectNavTab(e)
 **********************************************************************************************************/
 
 // Define connection menu & path menu HTML 
-connection_menu  = "<div id='uid' style='display:none'>guid</div>";
+connection_menu  = "<div id='popupmenu_id' style='display:none'>guid</div>";
 connection_menu += "<a href='javascript://' OnClick='EditLdapConnection();'>Edit Connection</a>";
 connection_menu += "<a href='javascript://' OnClick='DeleteLdapConnection();'>Delete Connection</a>";
 connection_menu += "<a href='javascript://' OnClick='NewLdapPath();'>Add New Path</a>";
 
-path_menu  = "<div id='uid' style='display:none'>guid</div>";
+path_menu  = "<div id='popupmenu_id' style='display:none'>guid</div>";
 path_menu += "<a href='javascript://' OnClick='EditLdapPath();'>Edit Path</a>";
 path_menu += "<a href='javascript://' OnClick='DeleteLdapPath();'>Delete Path</a>";
 
@@ -122,8 +122,8 @@ function DeleteLdapPath()
 {
 	document.getElementById("npb_ldap_path_config_div").style.display = 'none';	
 	document.getElementById("npb_ldap_connection_config_div").style.display = 'none';
-	ou_uid = document.getElementById("uid").innerHTML;
-	var pathxml = new XmlRequestor('admin_config_data.php?sub=f9&uid=' + ou_uid);
+	ldap_path_id = document.getElementById("popupmenu_id").innerHTML;
+	var pathxml = new XmlRequestor('admin_config_data.php?sub=f9&ldap_path_id=' + ldap_path_id);
 	RefreshLdapConnectionsList();
 }
 
@@ -145,10 +145,10 @@ function NewLdapPath()
 {
 	document.getElementById("npb_ldap_path_config_div").style.display = 'block';	
 	document.getElementById("npb_ldap_connection_config_div").style.display = 'none';	
-	domain_guid = document.getElementById("uid").innerHTML;
-	var domainxml = new XmlRequestor('admin_config_data.php?sub=f6&guid=' + domain_guid);
-	document.getElementById("ldap_path_domain_guid").value = domain_guid;
-	document.getElementById("ldap_path_path").value = domainxml.GetValue("domain_nc");
+	ldap_path_connection_id = document.getElementById("popupmenu_id").innerHTML;
+	var domainxml = new XmlRequestor('admin_config_data.php?sub=f6&ldap_connection_id=' + ldap_connection_id);
+	document.getElementById("ldap_path_connection_id").value = ldap_path_connection_id;
+	document.getElementById("ldap_path_dn").value = domainxml.GetValue("domain_nc");
 	document.getElementById("ldap_path_audit").checked = true;
 }
 
@@ -167,9 +167,9 @@ Change Log:
 **********************************************************************************************************/
 function SaveLdapPath()
 {
-	var ldap_params = '&ldap_path_domain_guid=' + document.getElementById("ldap_path_domain_guid").value;
-	ldap_params += '&ldap_path_uid='+ document.getElementById("ldap_path_uid").value;
-	ldap_params += '&ldap_path_path=' + escape(document.getElementById("ldap_path_path").value);
+	var ldap_params = '&ldap_path_connection_id=' + document.getElementById("ldap_path_connection_id").value;
+	ldap_params += '&ldap_path_id='+ document.getElementById("ldap_path_id").value;
+	ldap_params += '&ldap_path_dn=' + escape(document.getElementById("ldap_path_dn").value);
 	ldap_path_audit_value = document.getElementById("ldap_path_audit").checked ? "1" : "0";
 	ldap_params += '&ldap_path_audit=' + ldap_path_audit_value;
 	var xmlpath = new XmlRequestor('admin_config_data.php?sub=f7' + ldap_params);
@@ -194,10 +194,10 @@ function EditLdapPath()
 {
 	document.getElementById("npb_ldap_path_config_div").style.display = 'block';	
 	document.getElementById("npb_ldap_connection_config_div").style.display = 'none';
-	ou_uid = document.getElementById("uid").innerHTML;
-	var pathxml = new XmlRequestor('admin_config_data.php?sub=f8&uid=' + ou_uid);
-	document.getElementById("ldap_path_uid").value = ou_uid;
-	document.getElementById("ldap_path_path").value = pathxml.GetValue("ldap_path_path");
+	ldap_path_id = document.getElementById("popupmenu_id").innerHTML;
+	var pathxml = new XmlRequestor('admin_config_data.php?sub=f8&ldap_path_id=' + ldap_path_id);
+	document.getElementById("ldap_path_id").value = ldap_path_id;
+	document.getElementById("ldap_path_dn").value = pathxml.GetValue("ldap_path_dn");
 	document.getElementById("ldap_path_audit").checked = (pathxml.GetValue("ldap_path_audit") == "1") ? true : false;
 }
 
@@ -218,9 +218,9 @@ function DeleteLdapConnection()
 {
 	document.getElementById("npb_ldap_path_config_div").style.display = 'none';	
 	document.getElementById("npb_ldap_connection_config_div").style.display = 'none';
-	domain_guid = document.getElementById("uid").innerHTML;
+	ldap_connection_id = document.getElementById("popupmenu_id").innerHTML;
 	var LdapDelete=new HttpRequestor('ldap_connection_results');
-	LdapDelete.send('admin_config_data.php?sub=f4&guid=' + domain_guid);
+	LdapDelete.send('admin_config_data.php?sub=f4&ldap_connection_id=' + ldap_connection_id);
 	RefreshLdapConnectionsList();
 }
 
@@ -242,12 +242,13 @@ function EditLdapConnection()
 {
 	document.getElementById("npb_ldap_path_config_div").style.display = 'none';	
 	document.getElementById("npb_ldap_connection_config_div").style.display = 'block';
-	domain_guid = document.getElementById("uid").innerHTML;
-	var xmlconfig = new XmlRequestor('admin_config_data.php?sub=f5&guid=' + domain_guid);
+	ldap_connection_id = document.getElementById("popupmenu_id").innerHTML;
+	var xmlconfig = new XmlRequestor('admin_config_data.php?sub=f5&ldap_connection_id=' + ldap_connection_id);
 	document.getElementById("ldap_connection_results").innerHTML = '';
-	document.getElementById("ldap_server").value = xmlconfig.GetValue("server");
-	document.getElementById("ldap_user").value = xmlconfig.GetValue("user");
-	document.getElementById("ldap_password").value = xmlconfig.GetValue("password");
+	document.getElementById("ldap_connection_id").value = ldap_connection_id;
+	document.getElementById("ldap_connection_server").value = xmlconfig.GetValue("ldap_connection_server");
+	document.getElementById("ldap_connection_user").value = xmlconfig.GetValue("ldap_connection_user");
+	document.getElementById("ldap_connection_password").value = xmlconfig.GetValue("ldap_connection_password");
 }
 
 /**********************************************************************************************************
@@ -266,32 +267,47 @@ function NewLdapConnection()
 	document.getElementById("npb_ldap_path_config_div").style.display = 'none';	
 	document.getElementById("npb_ldap_connection_config_div").style.display = 'block';
 	document.getElementById("ldap_connection_results").innerHTML = '';
-	document.getElementById("ldap_server").value = 'LDAP Server FQDN';
-	document.getElementById("ldap_user").value = 'LDAP user account';
-	document.getElementById("ldap_password").value = 'LDAP password';	
+	document.getElementById("ldap_connection_server").value = 'LDAP Server FQDN';
+	document.getElementById("ldap_connection_user").value = 'LDAP user account';
+	document.getElementById("ldap_connection_password").value = 'LDAP password';	
 }
 
 /**********************************************************************************************************
 Function Name:
 	SaveLdapConnection
 Description:
-	Uses a HttpRequestor object to post the values from the'npb_ldap_connection_config_div' DIV form controls to the server. Then 
-	hides the 'npb_ldap_connection_config_div' DIV.
+	Uses a XmlRequestor object to post the values from the'npb_ldap_connection_config_div' DIV form controls to the server. 
+	The returned XML contains a <result> element and a <html> element
+	If result is "true" then hides the 'npb_ldap_connection_config_div' DIV.
+	Else the text from the <html> element is displayed in the results pane 
 	Called in response to the "Save" button on the 'npb_ldap_connection_config_div' DIV
 Arguments:	None
 Returns: 	None
 Change Log:
 	20/08/2008			New function	[Nick Brown]
+	10/09/2008			Now uses XmlRequestor instead of HttpRequestor	[Nick Brown]
 **********************************************************************************************************/
 function SaveLdapConnection()
 {
-	var LdapSave=new HttpRequestor('ldap_connection_results');
-	var ldap_params = '&ldap_server=' + document.getElementById("ldap_server").value;
-	ldap_params += '&ldap_user=' + document.getElementById("ldap_user").value;
-	ldap_params += '&ldap_password=' + document.getElementById("ldap_password").value;
-	LdapSave.send('admin_config_data.php?sub=f3' + ldap_params);
-	document.getElementById('npb_ldap_connection_config_div').style.display = 'none';
-	RefreshLdapConnectionsList();
+	var ldap_params = '&ldap_connection_server=' + document.getElementById("ldap_connection_server").value;
+	ldap_params += '&ldap_connection_user=' + document.getElementById("ldap_connection_user").value;
+	ldap_params += '&ldap_connection_password=' + document.getElementById("ldap_connection_password").value;
+	ldap_params += '&ldap_connection_id=' + document.getElementById("ldap_connection_id").value;
+	var LdapSave = new XmlRequestor('admin_config_data.php?sub=f3' + ldap_params);
+	// Check returned XML for result
+	if(LdapSave.GetValue("result")=="false")
+	{
+		// Failed - Get returned HTML from XML doc and display failure info
+		html = new String(LdapSave.SerializeXmlNode(LdapSave.GetNode("html")));
+		html = html.substring(6,html.length-7);
+		document.getElementById("ldap_connection_results").innerHTML = html;
+	}
+	else
+	{
+		// Success - hide connection config div and refresh list
+		document.getElementById('npb_ldap_connection_config_div').style.display = 'none';
+		RefreshLdapConnectionsList();
+	}
 }
 
 /**********************************************************************************************************
@@ -311,8 +327,8 @@ function TestLdapConnection()
 {
 	document.getElementById("ldap_connection_results").innerHTML = 'Testing connection ...';
 	var LdapTest=new HttpRequestor('ldap_connection_results');
-	var ldap_params = '&ldap_server=' + document.getElementById("ldap_server").value;
-	ldap_params += '&ldap_user=' + document.getElementById("ldap_user").value;
-	ldap_params += '&ldap_password=' + document.getElementById("ldap_password").value;
+	var ldap_params = '&ldap_connection_server=' + document.getElementById("ldap_connection_server").value;
+	ldap_params += '&ldap_connection_user=' + document.getElementById("ldap_connection_user").value;
+	ldap_params += '&ldap_connection_password=' + document.getElementById("ldap_connection_password").value;
 	LdapTest.send('admin_config_data.php?sub=f2' + ldap_params);
 }
