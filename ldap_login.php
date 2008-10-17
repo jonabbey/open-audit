@@ -178,7 +178,7 @@ if (isset($_POST['username'])) {
 	<img src="/images/key.png"/>
 	<h2 class='npb_ldap_login'>Please Login</h2>
 
-	<form action="<? echo $_SERVER['SCRIPT_NAME']; ?>" method="POST">
+	<form action="<?php $_SERVER['SCRIPT_NAME']; ?>" method="POST">
 
 	<label><?php echo "Login Name:";?></label>
 	<input TYPE="Text" name="username"><br />

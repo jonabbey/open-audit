@@ -227,7 +227,7 @@ foreach($systems_array as $system){
                     foreach($viewdef_array["fields"] as $field){
                         if( (!isset($field["show"]) OR $field["show"]!="n") AND (!isset($field["print"]) OR $field["print"]="n") ){
                             $col_count++;
-                            $show_value_2 = special_field_converting($myrow, $field, $db, "system");
+                            $show_value_2 = ConvertSpecialField($($myrow, $field, $db, "system");
                             //$show_value_2 = html_entity_decode ($show_value_2); /* >PHP 4.3 */
                             $show_value_1 = $field["head"];
 

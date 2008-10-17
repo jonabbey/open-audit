@@ -202,7 +202,7 @@ while (list ($viewname, $viewdef_array) = @each ($query_array["views"])) {
                         }
                     }
 
-                    $show_value = special_field_converting($myrow, $field, $db, "system");
+                    $show_value = ConvertSpecialField($myrow, $field, $db, "system");
 
                     //IF Horizontal Table-Layout
                     if(isset($viewdef_array["table_layout"]) AND $viewdef_array["table_layout"]=="horizontal"){

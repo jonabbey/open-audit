@@ -146,7 +146,7 @@ function NewLdapPath()
 	document.getElementById("npb_ldap_path_config_div").style.display = 'block';	
 	document.getElementById("npb_ldap_connection_config_div").style.display = 'none';	
 	ldap_path_connection_id = document.getElementById("popupmenu_id").innerHTML;
-	var domainxml = new XmlRequestor('admin_config_data.php?sub=f6&ldap_connection_id=' + ldap_connection_id);
+	var domainxml = new XmlRequestor('admin_config_data.php?sub=f6&ldap_connection_id=' + ldap_path_connection_id);
 	document.getElementById("ldap_path_connection_id").value = ldap_path_connection_id;
 	document.getElementById("ldap_path_dn").value = domainxml.GetValue("domain_nc");
 	document.getElementById("ldap_path_audit").checked = true;

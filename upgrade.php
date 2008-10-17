@@ -381,83 +381,88 @@ $sql = "ALTER TABLE `mapped` ADD COLUMN `mapped_username` varchar(100) NOT NULL 
 
         ALTER TABLE `groups` CHANGE `groups_members` `groups_members` VARCHAR( 255 ) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL;";
 
-upgrade ($version,"08.10.07", $sql);
+upgrade ($version,"08.06.06", $sql);
+
+$sql = "ALTER TABLE `memory` ADD COLUMN `memory_tag` varchar(256) NOT NULL default '' AFTER `memory_speed`";
+
+upgrade ($version,"08.07.23", $sql);
 
 $sql = "DROP TABLE IF EXISTS `ad_computers`;
         DROP TABLE IF EXISTS `ad_domains`;
-				DROP TABLE IF EXISTS `ad_ous`;
-			  DROP TABLE IF EXISTS `ad_users`;
+        DROP TABLE IF EXISTS `ad_ous`;
+        DROP TABLE IF EXISTS `ad_users`;
 
-			DROP TABLE IF EXISTS `ldap_computers`;
-			CREATE TABLE  `ldap_computers` (
-			  `ldap_computers_guid` varchar(45) NOT NULL,
-			  `ldap_computers_cn` varchar(255) NOT NULL,
-			  `ldap_computers_timestamp` varchar(45) NOT NULL,
-			  `ldap_computers_first_timestamp` varchar(45) NOT NULL,
-			  `ldap_computers_path_id` varchar(45) NOT NULL,
-			  `ldap_computers_description` varchar(255) default NULL,
-			  `ldap_computers_os` varchar(255) default NULL,
-			  `ldap_computers_service_pack` varchar(255) default NULL,
-			  `ldap_computers_dn` varchar(255) NOT NULL,
-			  PRIMARY KEY  (`ldap_computers_guid`)
-			) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+        DROP TABLE IF EXISTS `ldap_computers`;
+        CREATE TABLE  `ldap_computers` (
+          `ldap_computers_guid` varchar(45) NOT NULL,
+          `ldap_computers_cn` varchar(255) NOT NULL,
+          `ldap_computers_timestamp` varchar(45) NOT NULL,
+          `ldap_computers_first_timestamp` varchar(45) NOT NULL,
+          `ldap_computers_path_id` varchar(45) NOT NULL,
+          `ldap_computers_description` varchar(255) default NULL,
+          `ldap_computers_os` varchar(255) default NULL,
+          `ldap_computers_service_pack` varchar(255) default NULL,
+          `ldap_computers_dn` varchar(255) NOT NULL,
+          PRIMARY KEY  (`ldap_computers_guid`)
+        ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
-			DROP TABLE IF EXISTS `ldap_connections`;
-			CREATE TABLE  `ldap_connections` (
-			  `ldap_connections_id` int(10) unsigned NOT NULL auto_increment,
-			  `ldap_connections_nc` varchar(255) NOT NULL,
-			  `ldap_connections_fqdn` varchar(255) NOT NULL,
-			  `ldap_connections_server` varchar(255) NOT NULL,
-			  `ldap_connections_user` varchar(45) NOT NULL,
-			  `ldap_connections_password` varchar(45) NOT NULL,
-			  `ldap_connections_name` varchar(45) NOT NULL,
-			  `ldap_connections_schema` varchar(45) NOT NULL,
-			  PRIMARY KEY  (`ldap_connections_id`)
-			) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+        DROP TABLE IF EXISTS `ldap_connections`;
+        CREATE TABLE  `ldap_connections` (
+          `ldap_connections_id` int(10) unsigned NOT NULL auto_increment,
+          `ldap_connections_nc` varchar(255) NOT NULL,
+          `ldap_connections_fqdn` varchar(255) NOT NULL,
+          `ldap_connections_server` varchar(255) NOT NULL,
+          `ldap_connections_user` varchar(45) NOT NULL,
+          `ldap_connections_password` varchar(45) NOT NULL,
+          `ldap_connections_name` varchar(45) NOT NULL,
+          `ldap_connections_schema` varchar(45) NOT NULL,
+          PRIMARY KEY  (`ldap_connections_id`)
+        ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
-			DROP TABLE IF EXISTS `ldap_paths`;
-			CREATE TABLE  `ldap_paths` (
-			  `ldap_paths_id` int(10) unsigned NOT NULL auto_increment,
-			  `ldap_paths_dn` varchar(255) default NULL,
-			  `ldap_paths_connection_id` varchar(45) default NULL,
-			  `ldap_paths_timestamp` varchar(45) default NULL,
-			  `ldap_paths_audit` tinyint(1) default NULL,
-			  PRIMARY KEY  (`ldap_paths_id`)
-			) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+        DROP TABLE IF EXISTS `ldap_paths`;
+        CREATE TABLE  `ldap_paths` (
+          `ldap_paths_id` int(10) unsigned NOT NULL auto_increment,
+          `ldap_paths_dn` varchar(255) default NULL,
+          `ldap_paths_connection_id` varchar(45) default NULL,
+          `ldap_paths_timestamp` varchar(45) default NULL,
+          `ldap_paths_audit` tinyint(1) default NULL,
+          PRIMARY KEY  (`ldap_paths_id`)
+        ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
-			DROP TABLE IF EXISTS `ldap_users`;
-			CREATE TABLE  `ldap_users` (
-			  `ldap_users_guid` varchar(45) NOT NULL,
-			  `ldap_users_cn` varchar(255) NOT NULL,
-			  `ldap_users_timestamp` varchar(45) NOT NULL,
-			  `ldap_users_first_timestamp` varchar(45) NOT NULL,
-			  `ldap_users_path_id` varchar(45) NOT NULL,
-			  `ldap_users_description` varchar(255) default NULL,
-			  `ldap_users_department` varchar(255) default NULL,
-			  `ldap_users_dn` varchar(255) NOT NULL,
-			  PRIMARY KEY  (`ldap_users_guid`)
-			) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+        DROP TABLE IF EXISTS `ldap_users`;
+        CREATE TABLE  `ldap_users` (
+          `ldap_users_guid` varchar(45) NOT NULL,
+          `ldap_users_cn` varchar(255) NOT NULL,
+          `ldap_users_timestamp` varchar(45) NOT NULL,
+          `ldap_users_first_timestamp` varchar(45) NOT NULL,
+          `ldap_users_path_id` varchar(45) NOT NULL,
+          `ldap_users_description` varchar(255) default NULL,
+          `ldap_users_department` varchar(255) default NULL,
+          `ldap_users_dn` varchar(255) NOT NULL,
+          PRIMARY KEY  (`ldap_users_guid`)
+        ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
-			DROP TABLE IF EXISTS `openaudit`.`log`;
-			CREATE TABLE  `openaudit`.`log` (
-			  `log_id` int(10) unsigned NOT NULL auto_increment,
-			  `log_timestamp` varchar(45) NOT NULL,
-			  `log_message` varchar(1024) NOT NULL,
-			  `log_severity` int(10) unsigned NOT NULL,
-			  `log_module` varchar(128) NOT NULL,
-			  `log_function` varchar(128) NOT NULL,
-			  PRIMARY KEY  (`log_id`),
-			) ENGINE=MyISAM DEFAULT CHARSET=latin1;";
+        DROP TABLE IF EXISTS `log`;
+        CREATE TABLE  `log` (
+          `log_id` int(10) unsigned NOT NULL auto_increment,
+          `log_timestamp` varchar(45) NOT NULL,
+          `log_message` varchar(1024) NOT NULL,
+          `log_severity` int(10) unsigned NOT NULL,
+          `log_module` varchar(128) NOT NULL,
+          `log_function` varchar(128) NOT NULL,
+          PRIMARY KEY  (`log_id`)
+        ) ENGINE=MyISAM DEFAULT CHARSET=latin1;";
 
 upgrade ($version,"08.10.08", $sql);
 
 // Add indexes to improve performance of queries used by index.php - this can take longer than standard script timeout
 set_time_limit (300);
 $sql = "ALTER TABLE `software` ADD INDEX `Index3`(`software_first_timestamp`);
-				ALTER TABLE `software` ADD INDEX `Index4`(`software_name`);
-				ALTER TABLE `system` ADD INDEX `Index3`(`system_first_timestamp`);";
+        ALTER TABLE `software` ADD INDEX `Index4`(`software_name`);
+        ALTER TABLE `system` ADD INDEX `Index3`(`system_first_timestamp`);";
 
 upgrade ($version,"08.10.09", $sql);
+
 set_time_limit (30);
 
 ?>
