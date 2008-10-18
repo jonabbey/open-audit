@@ -122,7 +122,7 @@ function DeleteLdapPath()
 {
 	document.getElementById("npb_ldap_path_config_div").style.display = 'none';	
 	document.getElementById("npb_ldap_connection_config_div").style.display = 'none';
-	ldap_path_id = document.getElementById("popupmenu_id").innerHTML;
+	var ldap_path_id = document.getElementById("popupmenu_id").innerHTML;
 	var pathxml = new XmlRequestor('admin_config_data.php?sub=f9&ldap_path_id=' + ldap_path_id);
 	RefreshLdapConnectionsList();
 }
@@ -145,7 +145,7 @@ function NewLdapPath()
 {
 	document.getElementById("npb_ldap_path_config_div").style.display = 'block';	
 	document.getElementById("npb_ldap_connection_config_div").style.display = 'none';	
-	ldap_path_connection_id = document.getElementById("popupmenu_id").innerHTML;
+	var ldap_path_connection_id = document.getElementById("popupmenu_id").innerHTML;
 	var domainxml = new XmlRequestor('admin_config_data.php?sub=f6&ldap_connection_id=' + ldap_path_connection_id);
 	document.getElementById("ldap_path_connection_id").value = ldap_path_connection_id;
 	document.getElementById("ldap_path_dn").value = domainxml.GetValue("domain_nc");
@@ -170,7 +170,7 @@ function SaveLdapPath()
 	var ldap_params = '&ldap_path_connection_id=' + document.getElementById("ldap_path_connection_id").value;
 	ldap_params += '&ldap_path_id='+ document.getElementById("ldap_path_id").value;
 	ldap_params += '&ldap_path_dn=' + escape(document.getElementById("ldap_path_dn").value);
-	ldap_path_audit_value = document.getElementById("ldap_path_audit").checked ? "1" : "0";
+	var ldap_path_audit_value = document.getElementById("ldap_path_audit").checked ? "1" : "0";
 	ldap_params += '&ldap_path_audit=' + ldap_path_audit_value;
 	var xmlpath = new XmlRequestor('admin_config_data.php?sub=f7' + ldap_params);
 	document.getElementById('npb_ldap_path_config_div').style.display = 'none';
@@ -194,7 +194,7 @@ function EditLdapPath()
 {
 	document.getElementById("npb_ldap_path_config_div").style.display = 'block';	
 	document.getElementById("npb_ldap_connection_config_div").style.display = 'none';
-	ldap_path_id = document.getElementById("popupmenu_id").innerHTML;
+	var ldap_path_id = document.getElementById("popupmenu_id").innerHTML;
 	var pathxml = new XmlRequestor('admin_config_data.php?sub=f8&ldap_path_id=' + ldap_path_id);
 	document.getElementById("ldap_path_id").value = ldap_path_id;
 	document.getElementById("ldap_path_dn").value = pathxml.GetValue("ldap_path_dn");
@@ -218,7 +218,7 @@ function DeleteLdapConnection()
 {
 	document.getElementById("npb_ldap_path_config_div").style.display = 'none';	
 	document.getElementById("npb_ldap_connection_config_div").style.display = 'none';
-	ldap_connection_id = document.getElementById("popupmenu_id").innerHTML;
+	var ldap_connection_id = document.getElementById("popupmenu_id").innerHTML;
 	var LdapDelete=new HttpRequestor('ldap_connection_results');
 	LdapDelete.send('admin_config_data.php?sub=f4&ldap_connection_id=' + ldap_connection_id);
 	RefreshLdapConnectionsList();
@@ -242,7 +242,7 @@ function EditLdapConnection()
 {
 	document.getElementById("npb_ldap_path_config_div").style.display = 'none';	
 	document.getElementById("npb_ldap_connection_config_div").style.display = 'block';
-	ldap_connection_id = document.getElementById("popupmenu_id").innerHTML;
+	var ldap_connection_id = document.getElementById("popupmenu_id").innerHTML;
 	var xmlconfig = new XmlRequestor('admin_config_data.php?sub=f5&ldap_connection_id=' + ldap_connection_id);
 	document.getElementById("ldap_connection_results").innerHTML = '';
 	document.getElementById("ldap_connection_id").value = ldap_connection_id;
