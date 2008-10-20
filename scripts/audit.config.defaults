@@ -28,6 +28,7 @@ email_user_id = "user@domain"     ' A valid Email account in user@domain format
 email_user_pwd = "abc123"         ' The SMTP email password
 email_use_ssl = "false"           ' True/False
 email_timeout = "60"              ' In seconds
+send_email = "false"              ' True/False - Enable/Disable email sending 
 
 audit_local_domain = "y" 
 '
