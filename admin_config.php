@@ -187,7 +187,7 @@ include "include_config.php";
 ?>
 <link media="screen" rel="stylesheet" type="text/css" href="admin_config.css" />
 <script type='text/javascript' src="javascript/ajax.js"></script>
-<script type='text/javascript' src="javascript/popupmenu.js"></script>
+<script type='text/javascript' src="javascript/PopupMenu.js"></script>
 <script type='text/javascript' src="javascript/admin_config.js"></script>
 
 <div id="npb_popupmenu_div" onMouseover="ClearHideMenu(event);" onMouseout="DynamicHide(event);"></div>

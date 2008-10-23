@@ -196,7 +196,7 @@ function ConvertSpecialField($myrow, $field, $db, $page)
 		case "monitor_timestamp":
 		case "system_audits_timestamp":
 		case "system_last_boot":
-		case "timestamp";
+		case "log_timestamp";
 			return return_date_time($myrow[$field["name"]]);
 		case "system_system_type":
 			if($page=="list") return determine_img($myrow["system_os_name"],$myrow[$field["name"]]);
