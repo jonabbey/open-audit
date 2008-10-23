@@ -1943,13 +1943,15 @@ For Each subkey In arrSubKeys
                  MapUserName = ""
                  MapUserDomain = ""
                  ConnectAs = ""
-                 Set colItems = objWMIService.ExecQuery("Select Name, Domain from Win32_UserAccount where SID = '" & subkey & "'",,48)
-                 If colItems <> "" Then 
+                 'Set colItems = objWMIService.ExecQuery("Select Name, Domain from Win32_UserAccount where SID = '" & subkey & "'",,48)
+                 'If colItems <> "" Then 
                    ' Found local user
-                   For Each objItem in colItems
-                     MapUserName = objItem.Domain & "\" & objItem.Name
-                   Next
-                 End If
+                   'For Each objItem in colItems
+                     'MapUserName = objItem.Domain & "\" & objItem.Name
+                   'Next
+                 'End If
+                 Set objItem = objWMIService.Get("Win32_SID.SID='" & subkey &  "'")
+                 MapUserName = objItem.ReferencedDomainName & "\" & objItem.AccountName
                  If MapUserName = "" Then
                    'Searching the registry for domain user info
                    strKeyPath3 = subkey & "\Software\Microsoft\Windows\CurrentVersion\Explorer" 
