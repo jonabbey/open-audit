@@ -199,10 +199,11 @@ function ConvertSpecialField($myrow, $field, $db, $page)
 		case "log_timestamp";
 			return return_date_time($myrow[$field["name"]]);
 		case "system_system_type":
-			if($page=="list") return determine_img($myrow["system_os_name"],$myrow[$field["name"]]);
-			break;
+			if($page=="list") {return determine_img($myrow["system_os_name"],$myrow[$field["name"]]);
+			} else {return $myrow[$field["name"]];}
 		case "other_type":
-			if($page=="list") return "<img src=\"images/o_".str_replace(" ","_",$myrow[$field["name"]]).".png\" alt=\"\" border=\"0\" width=\"16\" height=\"16\"/>";
+			if($page=="list") {return "<img src=\"images/o_".str_replace(" ","_",$myrow[$field["name"]]).".png\" alt=\"\" border=\"0\" width=\"16\" height=\"16\"/>";
+			} else {return $myrow[$field["name"]];}
 		case "other_ip_address":
 			return ip_trans($myrow[$field["name"]]);
 		case "delete":
