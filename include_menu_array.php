@@ -204,8 +204,11 @@ $menue_array = array(
                                     "70"=>array("name"=>"Backup Database", "link"=>"database_backup_form.php", "image"=>"images/tape.png", "title"=>"",),
                                     "80"=>array("name"=>"Restore Database", "link"=>"database_restore_form.php", "image"=>"images/tape.png", "title"=>"",),
                                     "90"=>array("name"=>"View Event Log", "link"=>"./list.php?view=event_log", "image"=>"images/notes.png", "title"=>"",),
-                              ),
+//                                  Placekeeper for the ldap audit link if it is needed (AJH)
+                                    "100"=>array("name"=>"", "link"=>"","image"=>"","title"=>"",),  
+                            ),
               ),
+
 
       "70" => array("name"=>"Help",
                     "link"=>"#",
@@ -219,5 +222,9 @@ $menue_array = array(
   ),
 );
 
+// Add in the following entry for Auditing the LDAP if necessary.
+if ((isset($use_ldap_integration))and($use_ldap_integration == 'y')) {
+ $menue_array['misc']['60']['childs']['100']=array("name"=>"Audit LDAP Dirctory", "link"=>"ldap_audit_script.php", "image"=>"images/o_PDA.png", "title"=>"Audit the LDAP Directory.",);
+};
 
 ?>
