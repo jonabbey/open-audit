@@ -65,7 +65,8 @@
                                                                                              AND (software_name LIKE '%Avast%'
                                                                                                   OR software_name LIKE '%Antivir%'
                                                                                                   OR software_name LIKE '%Internet Security%'
-                                                                                                  OR software_name LIKE '%Virus%')",
+                                                                                                  OR software_name LIKE '%Virus%'
+                                                                                                  OR software_name LIKE '%Client Security%')",
                                                         "table_layout"=>"horizontal",
                                                         "image"=>"./images/firewall_l.png",
                                                         "fields"=>array("10"=>array("name"=>"software_name", "head"=>__("Name"),),

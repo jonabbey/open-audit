@@ -549,7 +549,8 @@ $query_array=array("name"=>array("name"=>__("Report"),
                                                                                          AND (software_name LIKE '%Avast%'
                                                                                               OR software_name LIKE '%Antivir%'
                                                                                               OR software_name LIKE '%Internet Security%'
-                                                                                              OR software_name LIKE '%Virus%')",
+                                                                                              OR software_name LIKE '%Virus%'
+                                                                                              OR software_name LIKE '%Client Security%')",
 //                                                    "table_layout"=>"horizontal",
                                                     "fields"=>array("10"=>array("name"=>"software_name", "head"=>__("Name"),),
                                                                     "20"=>array("name"=>"software_version", "head"=>__("Version"),),

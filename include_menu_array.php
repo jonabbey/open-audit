@@ -224,7 +224,7 @@ $menue_array = array(
 
 // Add in the following entry for Auditing the LDAP if necessary.
 if ((isset($use_ldap_integration))and($use_ldap_integration == 'y')) {
- $menue_array['misc']['60']['childs']['100']=array("name"=>"Audit LDAP Dirctory", "link"=>"ldap_audit_script.php", "image"=>"images/o_PDA.png", "title"=>"Audit the LDAP Directory.",);
+ $menue_array['misc']['60']['childs']['100']=array("name"=>"Audit LDAP Directory", "link"=>"ldap_audit_script.php", "image"=>"images/o_PDA.png", "title"=>"Audit the LDAP Directory.",);
 };
 
 ?>
