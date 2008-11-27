@@ -171,6 +171,25 @@ if ($myrow = mysql_fetch_array($result)){
     $result_set[] = array($myrow["system_name"], $myrow["system_uuid"], ip_trans($myrow["net_ip_address"]), $search_field, $search_result);
   } while ($myrow = mysql_fetch_array($result));
 } else {}
+// Services 
+
+$sql  = "SELECT DISTINCT system_name, system_uuid, net_ip_address, service_timestamp, service_uuid, service_name, service_display_name FROM system, service WHERE ";
+$sql .= "service_uuid = system_uuid AND ";
+$sql .= "service_timestamp = system_timestamp AND (";
+$sql .= "service_name LIKE '%$search%' OR ";
+//$sql .= "sd_description LIKE '%$search%' OR ";
+$sql .= "service_display_name LIKE '%$search%')";
+$result = mysql_query($sql, $db);
+if ($myrow = mysql_fetch_array($result)){
+  do {
+    if (strpos(strtoupper($myrow["service_name"]), $search) !== false){$search_field = "Service Name"; $search_result = $myrow["service_name"];}
+    if (strpos(strtoupper($myrow["service_display_name"]), $search) !== false){$search_field = "Service Full Name"; $search_result = $myrow["service_display_name"];}
+    $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
+    $result_set[] = array($myrow["system_name"], $myrow["system_uuid"], ip_trans($myrow["net_ip_address"]),  $search_field, $search_result);
+  } while ($myrow = mysql_fetch_array($result));
+} else {}
+//
+
 
 $sql  = "SELECT DISTINCT system_name, system_uuid, net_ip_address, system_man_description, system_man_location, system_man_value, system_man_serial_number FROM system, system_man WHERE ";
 $sql .= "system_man_uuid = system_uuid AND (";
