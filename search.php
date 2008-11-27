@@ -173,7 +173,7 @@ if ($myrow = mysql_fetch_array($result)){
 } else {}
 // Services 
 
-$sql  = "SELECT DISTINCT system_name, system_uuid, net_ip_address, service_timestamp, service_uuid, service_name, service_display_name, sd_description, sd_display_name  FROM system, service, service_details WHERE ";
+$sql  = "SELECT DISTINCT system_name, system_uuid, net_ip_address, service_timestamp, service_uuid, service_name, service_display_name, service_started, sd_description, sd_display_name  FROM system, service, service_details WHERE ";
 $sql .= "service_uuid = system_uuid AND ";
 $sql .= "service_display_name = sd_display_name AND ";
 
@@ -186,7 +186,7 @@ if ($myrow = mysql_fetch_array($result)){
   do {
     if (strpos(strtoupper($myrow["service_name"]), $search) !== false){$search_field = "Service Name"; $search_result = $myrow["service_name"];}
     if (strpos(strtoupper($myrow["service_display_name"]), $search) !== false){$search_field = "Service Full Name"; $search_result = $myrow["service_display_name"];}
-    if (strpos(strtoupper($myrow["sd_description"]), $search) !== false){$search_field = "Service Description"; $search_result = $myrow["sd_description"];}
+    if (strpos(strtoupper($myrow["sd_description"]), $search) !== false){$search_field = "Service Description"; $search_result = $myrow["sd_description"]." [".__("Service Started")."=".$myrow["service_started"]."]";}
     $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
     $result_set[] = array($myrow["system_name"], $myrow["system_uuid"], ip_trans($myrow["net_ip_address"]),  $search_field, $search_result);
   } while ($myrow = mysql_fetch_array($result));
