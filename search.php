@@ -210,18 +210,24 @@ $result = mysql_query($sql, $db);
    } while ($myrow = mysql_fetch_array($result));
 }
 
-$sql  = "SELECT DISTINCT other_network_name, other_id, other_ip_address, other_mac_address, other_description FROM other WHERE ";
-$sql .= "other_mac_address LIKE '%$search%'";
+// Search for MAC address, description or manufacturer into "Other" table
+$sql  = "SELECT DISTINCT other_network_name, other_id, other_ip_address, other_mac_address, other_description, other_manufacturer FROM other WHERE ";
+$sql .= "other_mac_address LIKE '%$search%' OR ";
+$sql .= "other_description LIKE '%$search%' OR ";
+$sql .= "other_manufacturer LIKE '%$search%'";
 
 $result = mysql_query($sql, $db);
 if ($myrow = mysql_fetch_array($result)){
   do {
     if (strpos(strtoupper($myrow["other_mac_address"]), $search) !== false){$search_field = "Device MAC Address"; $search_result = $myrow["other_mac_address"];}
+    if (strpos(strtoupper($myrow["other_description"]), $search) !== false){$search_field = "Device Description"; $search_result = $myrow["other_description"];}
+    if (strpos(strtoupper($myrow["other_manufacturer"]), $search) !== false){$search_field = "Device Manufacturer"; $search_result = $myrow["other_manufacturer"];}
     $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
     $result_set[] = array($myrow["other_network_name"], $myrow["other_id"], ip_trans($myrow["other_ip_address"]), $search_field, $search_result);
   } while ($myrow = mysql_fetch_array($result));
 
 } else {}
+
 // Search for IP address into "system"  table
 
 $search_padded = ip_trans_to($search);
