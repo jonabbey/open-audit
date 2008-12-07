@@ -502,6 +502,7 @@ CREATE TABLE `memory` (
   `memory_detail` varchar(45) NOT NULL default '',
   `memory_capacity` int(11) NOT NULL,
   `memory_speed` varchar(45) NOT NULL default '',
+  `memory_tag` varchar(255) NOT NULL default '',
   `memory_timestamp` bigint(20) unsigned NOT NULL default '0',
   `memory_first_timestamp` bigint(20) unsigned NOT NULL default '0',
   PRIMARY KEY  (`memory_id`),
@@ -923,7 +924,7 @@ DROP TABLE IF EXISTS `software`;
 CREATE TABLE `software` (
   `software_id` int(10) unsigned NOT NULL auto_increment,
   `software_uuid` varchar(100) NOT NULL default '',
-  `software_name` varchar(256) NOT NULL default '',
+  `software_name` varchar(255) NOT NULL default '',
   `software_version` varchar(50) NOT NULL default '',
   `software_location` varchar(200) NOT NULL default '',
   `software_uninstall` MEDIUMTEXT NOT NULL default '',

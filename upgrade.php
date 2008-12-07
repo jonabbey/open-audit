@@ -63,7 +63,7 @@ $sql = "ALTER TABLE `network_card` ADD COLUMN `net_gateway` varchar(100)  NOT NU
 
 upgrade ($version,"06.09.31", $sql);
 
-$sql = "ALTER TABLE `software` CHANGE `software_name` `software_name` VARCHAR( 256 ) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL";
+$sql = "ALTER TABLE `software` CHANGE `software_name` `software_name` VARCHAR(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL";
 
 upgrade ($version,"07.08.01", $sql);
 
@@ -383,7 +383,7 @@ $sql = "ALTER TABLE `mapped` ADD COLUMN `mapped_username` varchar(100) NOT NULL 
 
 upgrade ($version,"08.06.06", $sql);
 
-$sql = "ALTER TABLE `memory` ADD COLUMN `memory_tag` varchar(256) NOT NULL default '' AFTER `memory_speed`";
+$sql = "ALTER TABLE `memory` ADD COLUMN `memory_tag` varchar(255) NOT NULL default '' AFTER `memory_speed`";
 
 upgrade ($version,"08.07.23", $sql);
 
