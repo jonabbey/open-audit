@@ -184,7 +184,7 @@ if ($record_type == 'computer'){
         $bgcolor == "#FFFFFF";	
 //      if ($bgcolor == "#F1F1F1") { $bgcolor = "#FFFFFF"; } else { $bgcolor = "#F1F1F1"; }
       echo "<tr bgcolor=\"" . $bgcolor . "\"><td><h3>" . $entries[$user_record_number]["displayname"][0] . "</h3></td><td></td></tr>";
-	  $bgcolor = change_row_color($bgcolor,$bg1,$bg2); 
+      $bgcolor = change_row_color($bgcolor,$bg1,$bg2); 
       echo "<tr bgcolor=\"" . $bgcolor . "\"><td><b>Telephone:</td><td>" . $entries[$user_record_number]["telephonenumber"][0] . "</a></b></td></tr>";	
       $bgcolor = change_row_color($bgcolor,$bg1,$bg2); 
       echo "<tr bgcolor=\"" . $bgcolor . "\"><td>" .__("Full LDAP Account Details"). "</td><td></td></tr>";      
