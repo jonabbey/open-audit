@@ -167,12 +167,20 @@ if ($record_type == 'computer'){
         echo "<td><img src='images/o_terminal_server.png' width='64' height='64' alt='' />";
         }
         if ($record_type == 'user'){
-        echo "<td><img src='images/users_l.png' width='64' height='64' alt='' />";
+//        echo "<td><img src='images/users_l.png' width='64' height='64' alt='' />";
+        
+        
+        $filename = 'images/people/'.$entries[$user_record_number]["displayname"][0] .'.jpg';
+
+        if (file_exists($filename)) {
+                                            echo "<td><img src='".$filename."' width='128' height='164' alt='' />";
+                                     } else {
+                                            echo "<td><img src='images/users_l.png' width='64' height='64' alt='' />";
+        
+//        echo "<td><img src='images/AllStaff/". $entries[$user_record_number]["displayname"][0] .".jpg' width='128' height='164' alt='' />";
+                                    }
         }
-        
-   
-        
-        
+                
         $bgcolor == "#FFFFFF";	
 //      if ($bgcolor == "#F1F1F1") { $bgcolor = "#FFFFFF"; } else { $bgcolor = "#F1F1F1"; }
       echo "<tr bgcolor=\"" . $bgcolor . "\"><td><h3>" . $entries[$user_record_number]["displayname"][0] . "</h3></td><td></td></tr>";
@@ -187,6 +195,7 @@ if ($record_type == 'computer'){
     
   
     for ($user_record_field_number_data=0; $user_record_field_number_data<$entries[$user_record_number][$data]["count"]; $user_record_field_number_data++) {
+
 
 if ($inject == "y"){
 // SQL inject code.
