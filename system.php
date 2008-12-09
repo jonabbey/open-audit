@@ -306,7 +306,7 @@ while (list ($viewname, $viewdef_array) = @each ($query_array["views"])) {
                  echo "</td>\n";
                  echo "<td>\n";
 
-                     if ($myrow["system_vendor"] == "Dell Inc." || $myrow["system_vendor"] == "Dell Computer Corporation") {
+                     if ($myrow["system_vendor"] == "Dell Inc." || $myrow["system_vendor"] == "Dell Computer Corporation" || $myrow["system_vendor"] == "Dell Inc") {
                        if(isset($myrow["system_id_number"]) AND $myrow["system_id_number"]!=""){
                            echo " <a href='http://support.dell.com/support/topics/global.aspx/support/my_systems_info/en/details?c=us&amp;cs=usbsdt1&amp;servicetag=" . $myrow["system_id_number"] . "' onclick=\"this.target='_blank';\">".__("Warranty Information")."</a>";
                            echo " / ";
