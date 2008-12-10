@@ -402,4 +402,26 @@ if ((isset($use_ldap_integration))and($use_ldap_integration == 'y')) {
                                                                               );                                  
                                 }
                             }
+ 
+ // Look for a suitable picture in the images/equipment folder.
+ // If present, show the correct image in place of the default picture.
+   $db = mysql_connect($mysql_server,$mysql_user,$mysql_password) or die('Could not connect: ' . mysql_error());
+  mysql_select_db($mysql_database,$db);
+     $sql="SELECT system_model, system_uuid FROM `system` WHERE `system_uuid` = '".$_REQUEST["pc"]."'; ";
+  $result = mysql_query($sql, $db);
+  $myrow = mysql_fetch_array($result);
+  $result_model = $myrow["system_model"];
+  
+        $filename = 'images/equipment/'.$result_model.'.jpg';
+        $filename = strtolower($filename);
+        if (file_exists($filename)) {
+        // FIXME: OK We got a good image,but we need to make it a bit bigger than the default of 16 x 16 . 
+        $query_array['views']['management']['image'] = $filename ;
+        // These dont do anything
+        //     $query_array['views']['management']['image_width']="64";
+        //     $query_array['views']['management']['image_height']="64";
+             
+     }
+//echo $filename;
+//echo $query_array['views']['management']['image'] ;
 ?>

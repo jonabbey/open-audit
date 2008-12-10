@@ -121,7 +121,8 @@ function AuditSingleLdapPath(&$ldap_path_details)
 	// Perform user object search and get results
 	echo "Auditing user accounts in: ".$ldap_path_details["ldap_base_dn"]."<br>\n";
 	$ldap_filter=LDAP_USER_FILTER;
-	$ldap_attributes=array("distinguisedname","cn","usnchanged","objectguid","description","department");
+//	$ldap_attributes=array("distinguisedname","cn","usnchanged","objectguid","description","department");
+	$ldap_attributes=array("cn,sn,c,l,st,title,postalcode,physicaldeliveryofficename,telephonenumber,givenname,distinguishedname,instancetype,whencreated,whenchanged,displayname,usncreated,usnchanged,co,department,company,streetaddress,name,objectguid,useraccountcontrol,badpwdcount,codepage,countrycode,badpasswordtime,lastlogoff,lastlogon,scriptpath,pwdlastset,primarygroupid,objectsid,accountexpires,logoncount,samaccountname,samaccounttype,userprincipalname,lockouttime,objectcategory,dscorepropagationdata,dscorepropagationdata,dscorepropagationdata,lastlogontimestamp,mail,manager");    
 	$ldap_results=SearchLdap($ldap,$ldap_path_details["ldap_base_dn"],$ldap_filter,$ldap_attributes);
 	// Update db, ldap_users table
 	echo "Updating Users table ...<br>\n";
@@ -131,8 +132,9 @@ function AuditSingleLdapPath(&$ldap_path_details)
 	// Perform computer object search and get results
 	echo "Auditing computer accounts in: ".$ldap_path_details["ldap_base_dn"]."<br>\n";
 	$ldap_filter=LDAP_COMPUTER_FILTER;
-	$ldap_attributes=array("distinguisedname","cn","usnchanged","objectguid","description","operatingSystem","operatingSystemServicePack");
-	$ldap_results=SearchLdap($ldap,$ldap_path_details["ldap_base_dn"],$ldap_filter,$ldap_attributes);
+	//$ldap_attributes=array("distinguisedname","cn","usnchanged","objectguid","description","operatingSystem","operatingSystemServicePack");
+    $ldap_attributes=array("    cn,distinguishedname,instancetype,whencreated,whenchanged,displayname,usncreated,usnchanged,name,objectguid,useraccountcontrol,badpwdcount,codepage,countrycode,badpasswordtime,lastlogoff,lastlogon,localpolicyflags,pwdlastset,primarygroupid,objectsid,accountexpires,logoncount,samaccountname,samaccounttype,operatingsystem,operatingsystemversion,operatingsystemservicepack,dnshostname,serviceprincipalname,serviceprincipalname,objectcategory,iscriticalsystemobject,lastlogontimestamp");
+ 	$ldap_results=SearchLdap($ldap,$ldap_path_details["ldap_base_dn"],$ldap_filter,$ldap_attributes);
 	// Update db, ldap_computers table
 	echo "Updating Computers table ...<br>\n";
 	Updateldap_computersTable($ldap_results, $ldap_path_details["ldap_path_id"], $audit_timestamp);

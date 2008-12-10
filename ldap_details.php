@@ -66,7 +66,9 @@ $secret = $ldap_secret;
 
 if ($record_type=="user"){
 //$attributes = array("displayname","description","userprincipalname","homedirectory","homedrive","profilepath","scriptpath","mail","samaccountname","telephonenumber","location","department","sn","badpwdcount");
-$attributes = array("displayname","mail","telephonenumber","location","department","sn");
+//$attributes = array("displayname","title","mail","telephonenumber","location","department","company","streetaddress");
+$attributes = array("displayname","title","mail","location","department","company","streetaddress");
+
 
 $filter = "(&(objectClass=user)(objectCategory=person)(|(samaccountname=".$name.chr(42).")(name=".$name.chr(42).")(displayname=".$name.chr(42).")(cn=".$name.chr(42).")))";
 
@@ -164,7 +166,19 @@ $record_number = $user_record_number+1;
 
 // Show the correct image
 if ($record_type == 'computer'){
-        echo "<td><img src='images/o_terminal_server.png' width='64' height='64' alt='' />";
+
+        $filename = 'images/equipment/'.$entries[$user_record_number]["name"][0] .'.jpg';
+
+        if (file_exists($filename)) {
+                                            echo "<td><img src='".$filename."' width='96' height='96' alt='' />";
+                                     } else {
+                                            echo "<td><img src='images/o_terminal_server.png' width='64' height='64' alt='' />";
+        echo $filename;
+//        echo "<td><img src='images/AllStaff/". $entries[$user_record_number]["displayname"][0] .".jpg' width='128' height='164' alt='' />";
+                                    }
+        
+  
+//        echo "<td><img src='images/o_terminal_server.png' width='64' height='64' alt='' />";
         }
         if ($record_type == 'user'){
 //        echo "<td><img src='images/users_l.png' width='64' height='64' alt='' />";
