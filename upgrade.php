@@ -465,7 +465,31 @@ upgrade ($version,"08.10.09", $sql);
 
 //Added more ldap fields (most of the active directory ;¬)
 set_time_limit (3000);
-$sql= "ALTER TABLE `ldap_users` ADD COLUMN `ldap_users_countrycode` varchar(255) NOT NULL default '' AFTER `ldap_users_codepage`;
+$sql= "ALTER TABLE `ldap_users` ADD COLUMN `ldap_users_sn` varchar(255) NOT NULL default '' AFTER `ldap_users_dn`;
+ALTER TABLE `ldap_users` ADD COLUMN `ldap_users_c` varchar(255) NOT NULL default '' AFTER `ldap_users_sn`;
+ALTER TABLE `ldap_users` ADD COLUMN `ldap_users_l` varchar(255) NOT NULL default '' AFTER `ldap_users_c`;
+ALTER TABLE `ldap_users` ADD COLUMN `ldap_users_st` varchar(255) NOT NULL default '' AFTER `ldap_users_l`;
+ALTER TABLE `ldap_users` ADD COLUMN `ldap_users_title` varchar(255) NOT NULL default '' AFTER `ldap_users_st`;
+ALTER TABLE `ldap_users` ADD COLUMN `ldap_users_postalcode` varchar(255) NOT NULL default '' AFTER `ldap_users_title`;
+ALTER TABLE `ldap_users` ADD COLUMN `ldap_users_physicaldeliveryofficename` varchar(255) NOT NULL default '' AFTER `ldap_users_postalcode`;
+ALTER TABLE `ldap_users` ADD COLUMN `ldap_users_telephonenumber` varchar(255) NOT NULL default '' AFTER `ldap_users_physicaldeliveryofficename`;
+ALTER TABLE `ldap_users` ADD COLUMN `ldap_users_givenname` varchar(255) NOT NULL default '' AFTER `ldap_users_telephonenumber`;
+ALTER TABLE `ldap_users` ADD COLUMN `ldap_users_distinguishedname` varchar(255) NOT NULL default '' AFTER `ldap_users_givenname`;
+ALTER TABLE `ldap_users` ADD COLUMN `ldap_users_instancetype` varchar(255) NOT NULL default '' AFTER `ldap_users_distinguishedname`;
+ALTER TABLE `ldap_users` ADD COLUMN `ldap_users_whencreated` varchar(255) NOT NULL default '' AFTER `ldap_users_instancetype`;
+ALTER TABLE `ldap_users` ADD COLUMN `ldap_users_whenchanged` varchar(255) NOT NULL default '' AFTER `ldap_users_whencreated`;
+ALTER TABLE `ldap_users` ADD COLUMN `ldap_users_displayname` varchar(255) NOT NULL default '' AFTER `ldap_users_whenchanged`;
+ALTER TABLE `ldap_users` ADD COLUMN `ldap_users_usncreated` varchar(255) NOT NULL default '' AFTER `ldap_users_displayname`;
+ALTER TABLE `ldap_users` ADD COLUMN `ldap_users_usnchanged` varchar(255) NOT NULL default '' AFTER `ldap_users_usncreated`;
+ALTER TABLE `ldap_users` ADD COLUMN `ldap_users_co` varchar(255) NOT NULL default '' AFTER `ldap_users_usnchanged`;
+ALTER TABLE `ldap_users` ADD COLUMN `ldap_users_company` varchar(255) NOT NULL default '' AFTER `ldap_users_co`;
+ALTER TABLE `ldap_users` ADD COLUMN `ldap_users_streetaddress` varchar(255) NOT NULL default '' AFTER `ldap_users_company`;
+ALTER TABLE `ldap_users` ADD COLUMN `ldap_users_name` varchar(255) NOT NULL default '' AFTER `ldap_users_streetaddress`;
+ALTER TABLE `ldap_users` ADD COLUMN `ldap_users_objectguid` varchar(255) NOT NULL default '' AFTER `ldap_users_name`;
+ALTER TABLE `ldap_users` ADD COLUMN `ldap_users_useraccountcontrol` varchar(255) NOT NULL default '' AFTER `ldap_users_objectguid`;
+ALTER TABLE `ldap_users` ADD COLUMN `ldap_users_badpwdcount` varchar(255) NOT NULL default '' AFTER `ldap_users_useraccountcontrol`;
+ALTER TABLE `ldap_users` ADD COLUMN `ldap_users_codepage` varchar(255) NOT NULL default '' AFTER `ldap_users_badpwdcount`;
+ALTER TABLE `ldap_users` ADD COLUMN `ldap_users_countrycode` varchar(255) NOT NULL default '' AFTER `ldap_users_codepage`;
 ALTER TABLE `ldap_users` ADD COLUMN `ldap_users_badpasswordtime` varchar(255) NOT NULL default '' AFTER `ldap_users_countrycode`;
 ALTER TABLE `ldap_users` ADD COLUMN `ldap_users_lastlogoff` varchar(255) NOT NULL default '' AFTER `ldap_users_badpasswordtime`;
 ALTER TABLE `ldap_users` ADD COLUMN `ldap_users_lastlogon` varchar(255) NOT NULL default '' AFTER `ldap_users_lastlogoff`;
@@ -484,7 +508,6 @@ ALTER TABLE `ldap_users` ADD COLUMN `ldap_users_dscorepropagationdata` varchar(2
 ALTER TABLE `ldap_users` ADD COLUMN `ldap_users_lastlogontimestamp` varchar(255) NOT NULL default '' AFTER `ldap_users_dscorepropagationdata`;
 ALTER TABLE `ldap_users` ADD COLUMN `ldap_users_mail` varchar(255) NOT NULL default '' AFTER `ldap_users_lastlogontimestamp`;
 ALTER TABLE `ldap_users` ADD COLUMN `ldap_users_manager` varchar(255) NOT NULL default '' AFTER `ldap_users_mail`;
-ALTER TABLE `ldap_computers` ADD COLUMN `ldap_computers_cn` varchar(255) NOT NULL default '' AFTER `ldap_computers_dn`;
 ALTER TABLE `ldap_computers` ADD COLUMN `ldap_computers_distinguishedname` varchar(255) NOT NULL default '' AFTER `ldap_computers_cn`;
 ALTER TABLE `ldap_computers` ADD COLUMN `ldap_computers_instancetype` varchar(255) NOT NULL default '' AFTER `ldap_computers_distinguishedname`;
 ALTER TABLE `ldap_computers` ADD COLUMN `ldap_computers_whencreated` varchar(255) NOT NULL default '' AFTER `ldap_computers_instancetype`;
@@ -492,8 +515,8 @@ ALTER TABLE `ldap_computers` ADD COLUMN `ldap_computers_whenchanged` varchar(255
 ALTER TABLE `ldap_computers` ADD COLUMN `ldap_computers_displayname` varchar(255) NOT NULL default '' AFTER `ldap_computers_whenchanged`;
 ALTER TABLE `ldap_computers` ADD COLUMN `ldap_computers_usncreated` varchar(255) NOT NULL default '' AFTER `ldap_computers_displayname`;
 ALTER TABLE `ldap_computers` ADD COLUMN `ldap_computers_usnchanged` varchar(255) NOT NULL default '' AFTER `ldap_computers_usncreated`;
-ALTER TABLE `ldap_computers` ADD COLUMN `ldap_computers_name` varchar(255) NOT NULL default '' AFTER `ldap_computers_usnchanged``;
-ALTER TABLE `ldap_computers` ADD COLUMN `ldap_computers_objectguid` varchar(255) NOT NULL default '' AFTER `ldap_computers_name``;
+ALTER TABLE `ldap_computers` ADD COLUMN `ldap_computers_name` varchar(255) NOT NULL default '' AFTER `ldap_computers_usnchanged`;
+ALTER TABLE `ldap_computers` ADD COLUMN `ldap_computers_objectguid` varchar(255) NOT NULL default '' AFTER `ldap_computers_name`;
 ALTER TABLE `ldap_computers` ADD COLUMN `ldap_computers_useraccountcontrol` varchar(255) NOT NULL default '' AFTER `ldap_computers_objectguid`;
 ALTER TABLE `ldap_computers` ADD COLUMN `ldap_computers_badpwdcount` varchar(255) NOT NULL default '' AFTER `ldap_computers_useraccountcontrol`;
 ALTER TABLE `ldap_computers` ADD COLUMN `ldap_computers_codepage` varchar(255) NOT NULL default '' AFTER `ldap_computers_badpwdcount`;
@@ -515,8 +538,9 @@ ALTER TABLE `ldap_computers` ADD COLUMN `ldap_computers_operatingsystemservicepa
 ALTER TABLE `ldap_computers` ADD COLUMN `ldap_computers_dnshostname` varchar(255) NOT NULL default '' AFTER `ldap_computers_operatingsystemservicepack`;
 ALTER TABLE `ldap_computers` ADD COLUMN `ldap_computers_serviceprincipalname` varchar(255) NOT NULL default '' AFTER `ldap_computers_dnshostname`;
 ALTER TABLE `ldap_computers` ADD COLUMN `ldap_computers_objectcategory` varchar(255) NOT NULL default '' AFTER `ldap_computers_serviceprincipalname`;
-ALTER TABLE `ldap_computers` ADD COLUMN `ldap_computers_iscriticalsystemobject` varchar(255) NOT NULL default '' AFTER ``ldap_computers_objectcategory`;
-ALTER TABLE `ldap_computers` ADD COLUMN `ldap_computers_lastlogontimestamp` varchar(255) NOT NULL default '' AFTER `ldap_computers_iscriticalsystemobject`;";
+ALTER TABLE `ldap_computers` ADD COLUMN `ldap_computers_iscriticalsystemobject` varchar(255) NOT NULL default '' AFTER `ldap_computers_objectcategory`;
+ALTER TABLE `ldap_computers` ADD COLUMN `ldap_computers_lastlogontimestamp` varchar(255) NOT NULL default '' AFTER `ldap_computers_iscriticalsystemobject`;
+";
 
 
 upgrade ($version,"08.12.10", $sql);
