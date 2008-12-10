@@ -614,14 +614,14 @@ if online = "p" then
   oIE.document.WriteLn "<h1>Open Audit</h1><br />"
 end if
 
-''''''''''''''''''''''''''''''''
-' Double check WMI is working  '
-''''''''''''''''''''''''''''''''
-if ((UCase(strComputer) <> system_name) AND (strComputer <> ".") AND (strComputer <> full_system_name) AND (strComputer <> ns_ip) AND (strComputer <> system_ip)) then
-  email_failed = email_failed & strComputer & ", " & VBcrlf
-  ie = nothing
-  exit function
-end if
+'''''''''''''''''''''''''''''''''
+'' Double check WMI is working  '
+'''''''''''''''''''''''''''''''''
+'if ((UCase(strComputer) <> system_name) AND (strComputer <> ".") AND (strComputer <> full_system_name) AND (strComputer <> ns_ip) AND (strComputer <> system_ip)) then
+' email_failed = email_failed & strComputer & ", " & VBcrlf
+'  ie = nothing
+'  exit function
+' end if
 
 '''''''''''''''''''''''''''''''''''''''
 '   Setup for Offline file creation   '
