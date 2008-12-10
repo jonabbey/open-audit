@@ -539,8 +539,7 @@ ALTER TABLE `ldap_computers` ADD COLUMN `ldap_computers_dnshostname` varchar(255
 ALTER TABLE `ldap_computers` ADD COLUMN `ldap_computers_serviceprincipalname` varchar(255) NOT NULL default '' AFTER `ldap_computers_dnshostname`;
 ALTER TABLE `ldap_computers` ADD COLUMN `ldap_computers_objectcategory` varchar(255) NOT NULL default '' AFTER `ldap_computers_serviceprincipalname`;
 ALTER TABLE `ldap_computers` ADD COLUMN `ldap_computers_iscriticalsystemobject` varchar(255) NOT NULL default '' AFTER `ldap_computers_objectcategory`;
-ALTER TABLE `ldap_computers` ADD COLUMN `ldap_computers_lastlogontimestamp` varchar(255) NOT NULL default '' AFTER `ldap_computers_iscriticalsystemobject`;
-";
+ALTER TABLE `ldap_computers` ADD COLUMN `ldap_computers_lastlogontimestamp` varchar(255) NOT NULL default '' AFTER `ldap_computers_iscriticalsystemobject`;";
 
 
 upgrade ($version,"08.12.10", $sql);
