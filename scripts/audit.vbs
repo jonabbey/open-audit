@@ -3894,6 +3894,40 @@ Else
   ' End of iis = True
 End If
 
+'
+'''''''''''''''''''''''''''
+'ODBC Connections '
+'''''''''''''''''''''''''''
+if ((ServicePack = "2" AND SystemBuildNumber = "2600") OR (SystemBuildNumber = "3790" AND ServicePack = "1" OR ServicePack = "2") OR (SystemBuildNumber = "6000")) then
+  comment = "ODBC Connections"
+  if verbose = "y" then
+    wscript.echo comment
+  end if
+  On Error Resume Next
+
+  strKeyPath = "SOFTWARE\ODBC\ODBC.INI\ODBC Data Sources"
+  oReg.EnumValues HKEY_LOCAL_MACHINE,strKeyPath,arrSubKeys
+
+  For Each subkey In arrSubKeys
+    comment = subkey
+    wscript.echo "Name: " & comment
+    odbc_name = subkey
+    strKeyPath1 = "SOFTWARE\ODBC\ODBC.INI\" & subkey
+    'comment = strKeyPath1
+    'wscript.echo comment
+    oReg.EnumValues HKEY_LOCAL_MACHINE, strKeyPath1, arrValueNames, arrValueTypes
+
+    For i=0 To UBound(arrValueNames)
+        oReg.GetStringValue HKEY_LOCAL_MACHINE,strKeyPath1,_
+        arrValueNames(i),strValue
+        wscript.echo arrValueNames(i) & ": " & strValue     
+    Next
+  Next
+
+end if
+'
+
+
 '''''''''''''''''''''''''''
 'Automatic Updating Settings '
 '''''''''''''''''''''''''''
