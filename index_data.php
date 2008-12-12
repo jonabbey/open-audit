@@ -43,7 +43,7 @@ function GetLdapInfo($id)
 	$sql ="
 	SELECT * FROM (
 
-	(SELECT ldap_connections_name, ldap_users_cn as cn, ldap_users_dn as dn, 'deleted' as img, 'User' as objtype
+	(SELECT ldap_connections_name, ldap_users_cn as cn, ldap_users_dn as dn, 'deleted' as img, 'user' as objtype
 	FROM ldap_users
 	LEFT JOIN ldap_paths ON ldap_users.ldap_users_path_id=ldap_paths.ldap_paths_id
 	LEFT JOIN ldap_connections ON ldap_paths.ldap_paths_connection_id=ldap_connections.ldap_connections_id
@@ -52,7 +52,7 @@ function GetLdapInfo($id)
 
 	UNION
 
-	(SELECT ldap_connections_name, ldap_users_cn as cn, ldap_users_dn as dn, 'active' as img, 'User' as objtype
+	(SELECT ldap_connections_name, ldap_users_cn as cn, ldap_users_dn as dn, 'active' as img, 'user' as objtype
 	FROM ldap_users
 	LEFT JOIN ldap_paths ON ldap_users.ldap_users_path_id=ldap_paths.ldap_paths_id
 	LEFT JOIN ldap_connections ON ldap_paths.ldap_paths_connection_id=ldap_connections.ldap_connections_id
@@ -61,7 +61,7 @@ function GetLdapInfo($id)
 
 	UNION
 
-	(SELECT ldap_connections_name, ldap_computers_cn as cn, ldap_computers_dn as dn, 'deleted' as img, 'Computer' as objtype
+	(SELECT ldap_connections_name, ldap_computers_cn as cn, ldap_computers_dn as dn, 'deleted' as img, 'computer' as objtype
 	FROM ldap_computers
 	LEFT JOIN ldap_paths ON ldap_computers.ldap_computers_path_id=ldap_paths.ldap_paths_id
 	LEFT JOIN ldap_connections ON ldap_paths.ldap_paths_connection_id=ldap_connections.ldap_connections_id
@@ -70,7 +70,7 @@ function GetLdapInfo($id)
 
 	UNION
 
-	(SELECT ldap_connections_name, ldap_computers_cn as cn, ldap_computers_dn as dn, 'active' as img, 'Computer' as objtype 
+	(SELECT ldap_connections_name, ldap_computers_cn as cn, ldap_computers_dn as dn, 'active' as img, 'computer' as objtype 
 	FROM ldap_computers
 	LEFT JOIN ldap_paths ON ldap_computers.ldap_computers_path_id=ldap_paths.ldap_paths_id
 	LEFT JOIN ldap_connections ON ldap_paths.ldap_paths_connection_id=ldap_connections.ldap_connections_id
