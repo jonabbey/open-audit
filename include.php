@@ -187,7 +187,13 @@ if ((isset($use_ldap_login) and ($use_ldap_login == 'y'))) {
 
 <?php
 if ($pc > "0") {
-  $sql = "SELECT system_uuid, system_timestamp, system_name, system.net_ip_address, net_domain FROM system, network_card WHERE system_uuid = '$pc' OR system_name = '$pc' OR (net_mac_address = '$pc' AND net_uuid = system_uuid)";
+	$sql = "SELECT * FROM
+	((SELECT system_uuid, system_timestamp, system_name, system.net_ip_address, net_domain
+	FROM system	WHERE system_uuid = '$pc' OR system_name = '$pc')
+	UNION
+	(SELECT system_uuid, system_timestamp, system_name, system.net_ip_address, net_domain
+	FROM system, network_card	WHERE net_mac_address ='$pc' AND net_uuid = system_uuid))
+	AS U LIMIT 1";
   $result = mysql_query($sql, $db);
   $myrow = mysql_fetch_array($result);
   $timestamp = $myrow["system_timestamp"];
