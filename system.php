@@ -340,6 +340,19 @@ while (list ($viewname, $viewdef_array) = @each ($query_array["views"])) {
                      }
 
                  echo "</td>\n";
+                        //
+                $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
+                echo "<tr style=\"background-color:" . $bgcolor . ";\" >\n";
+                 echo "<td>\n";
+                  echo __("What does it look like");
+                  echo ": &nbsp;";
+                  //echo "<a href=\"#\" onclick=\"alert('".__("Google image search for ").$myrow["system_model"]."');\">?</a>";
+                 echo "</td>\n";
+                 echo "<td>\n";
+                //
+                 echo " <a href='http://images.google.com/images?q=" . $myrow["system_vendor"]." ".$myrow["system_model"] . "' onclick=\"this.target='_blank';\">".__("Show me some pictures of the "). $myrow["system_model"] ."</a>";
+                 echo "<td>\n";
+                //
                 echo "</tr>\n";
             }
             //IF Horizontal Table-Layout
