@@ -350,7 +350,7 @@ while (list ($viewname, $viewdef_array) = @each ($query_array["views"])) {
                  echo "</td>\n";
                  echo "<td>\n";
                 //
-                 echo " <a href='http://images.google.com/images?q=" . $myrow["system_vendor"]." ".$myrow["system_model"] . "' onclick=\"this.target='_blank';\">".__("Show me some pictures of the "). $myrow["system_model"] ."</a>";
+                 echo " <a href='http://images.google.com/images?q=" . $myrow["system_vendor"]." ".$myrow["system_model"] . "&safe=active&imgtype=photo&as_st=y' onclick=\"this.target='_blank';\">".__("Show me some pictures of the "). $myrow["system_model"] ."</a>";
                  echo "<td>\n";
                 //
                 echo "</tr>\n";
