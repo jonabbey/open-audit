@@ -27,9 +27,11 @@ echo "</form>\n";
 // Copyright and License info
 //
 
-// Little trick to keep the copyright link up to date. 
+// Little trick to keep the copyright link up to date :¬) 
+//
 $this_year = date("Y");
-
+//
+//Have used <small> tags to keep with the current style only ... smaller
 echo "<small><small><small>".__("Version") . " ";
 if(isset($version) AND $version!="") echo $version;
 echo "<br />\n";
