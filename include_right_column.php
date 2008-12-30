@@ -23,6 +23,7 @@ echo "<input name=\"submit\" value=\"Go\" type=\"submit\" />\n";
 echo "</p>\n";
 echo "</form>\n";
 #echo "</center>";
+
 // Copyright and License info
 //
 
@@ -33,7 +34,7 @@ echo "<small><small><small>".__("Version") . " ";
 if(isset($version) AND $version!="") echo $version;
 echo "<br />\n";
 echo "<small>(c) 2006 - ".$this_year.".";
-echo "<a href=\"./gpl.txt\">".__("License")."</a></small></small></small></small><br />\n";
+echo "<a href=\"./show_license.php\">".__("License")."</a></small></small></small></small><br />\n";
 
 //
 // Show the Right hand menu, if we have a PC selected. 
@@ -87,11 +88,31 @@ echo "<a href=\"./gpl.txt\">".__("License")."</a></small></small></small></small
             echo "</tr>\n";
 
         }
+
         echo "</table>\n";
     }
 
 echo "</div>\n";
+
+        
+// Tips box
+if ($show_tips == "y") {
+echo "<div id='right_col2' class=\"main_each\">\n";
+//echo "ShowTipsXml.send(\"index_data.php?sub=f1\");\n";
+echo "<form action=\"show_tips.php\" method=\"post\">\n";
+/*
+echo "<p>" . __("Tips") . "<br />\n";
+echo "<input size=\"15\" name=\"tips_field\" />\n";
+//
+*/
+echo "<input name=\"submit\" value=\"".__("Tips")."\" type=\"submit\" />\n";
+echo "</p>\n";
+echo "</form>\n";
+#echo "</center>";
+// End of Help box
+}
 echo "</td></tr>\n";
 echo "</table>\n";
+
 
 ?>
