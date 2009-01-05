@@ -49,7 +49,7 @@ if ($search != "") {
 //    $sql .= "bios_manufacturer LIKE '%$search%' OR ";
 //    $sql .= "bios_serial_number LIKE '%$search%')";
 	
-    $sql  = "SELECT DISTINCT system_name, system_uuid, net_ip_address, bios_asset_tag, bios_description, bios_manufacturer, bios_serial_number FROM system LEFT JOIN bios ON bios_uuid = system_uuid AND bios_timestamp = system_timestamp WHERE ";
+    $sql  = "SELECT DISTINCT system_name, system_uuid, net_ip_address, bios_asset_tag, bios_description, bios_manufacturer, bios_serial_number FROM bios LEFT JOIN system ON bios_uuid = system_uuid AND bios_timestamp = system_timestamp WHERE ";
     $sql .= "bios_asset_tag LIKE '%$search%' OR ";
     $sql .= "bios_description LIKE '%$search%' OR ";
     $sql .= "bios_manufacturer LIKE '%$search%' OR ";
@@ -132,7 +132,7 @@ $search_result = "";
 //$sql .= "monitor_serial LIKE '%$search%')";
 
 
-$sql  = "SELECT DISTINCT system_name, system_uuid, net_ip_address, monitor_manufacturer, monitor_model, monitor_serial FROM system LEFT JOIN monitor ON monitor_uuid = system_uuid AND monitor_timestamp = system_timestamp WHERE ";
+$sql  = "SELECT DISTINCT system_name, system_uuid, net_ip_address, monitor_manufacturer, monitor_model, monitor_serial FROM monitor LEFT JOIN system ON monitor_uuid = system_uuid AND monitor_timestamp = system_timestamp WHERE ";
 $sql .= "monitor_manufacturer LIKE '%$search%' OR ";
 $sql .= "monitor_model LIKE '%$search%' OR ";
 $sql .= "monitor_serial LIKE '%$search%'";
@@ -159,7 +159,7 @@ if ($myrow = mysql_fetch_array($result)){
 //$sql .= "software_name LIKE '%$search%' OR ";
 //$sql .= "software_publisher LIKE '%$search%' OR ";
 //$sql .= "software_version LIKE '%$search%')";
-$sql  = "SELECT DISTINCT system_name, system_uuid, net_ip_address, software_name, software_publisher, software_version FROM system LEFT JOIN software ON software_uuid = system_uuid AND software_timestamp = system_timestamp WHERE ";
+$sql  = "SELECT DISTINCT system_name, system_uuid, net_ip_address, software_name, software_publisher, software_version FROM software LEFT JOIN system ON software_uuid = system_uuid AND software_timestamp = system_timestamp WHERE ";
 
 
 $sql .= "software_name LIKE '%$search%' OR ";
@@ -188,7 +188,7 @@ if ($myrow = mysql_fetch_array($result)){
 //$sql .= "usb_timestamp = system_timestamp AND (";
 //$sql .= "usb_description LIKE '%$search%')";
 
-$sql  = "SELECT DISTINCT system_name, system_uuid, net_ip_address, usb_description FROM system LEFT JOIN usb ON usb_uuid = system_uuid AND usb_timestamp = system_timestamp WHERE ";
+$sql  = "SELECT DISTINCT system_name, system_uuid, net_ip_address, usb_description FROM usb LEFT JOIN system ON usb_uuid = system_uuid AND usb_timestamp = system_timestamp WHERE ";
 $sql .= "usb_description LIKE '%$search%'";
 //jbsclm end
 
@@ -212,7 +212,7 @@ if ($myrow = mysql_fetch_array($result)){
 //$sql .= "video_description LIKE '%$search%')";
 
 
-$sql  = "SELECT DISTINCT system_name, system_uuid, net_ip_address, video_description FROM system LEFT JOIN video ON video_uuid = system_uuid AND video_timestamp = system_timestamp WHERE ";
+$sql  = "SELECT DISTINCT system_name, system_uuid, net_ip_address, video_description FROM video LEFT JOIN system ON video_uuid = system_uuid AND video_timestamp = system_timestamp WHERE ";
 $sql .= "video_description LIKE '%$search%'";
 //jbsclm end
 
@@ -237,7 +237,7 @@ if ($myrow = mysql_fetch_array($result)){
 //$sql .= "system_man_location LIKE '%$search%' OR ";
 //$sql .= "system_man_serial_number LIKE '%$search%')";
 
-$sql  = "SELECT DISTINCT system_name, system_uuid, net_ip_address, system_man_description, system_man_location, system_man_value, system_man_serial_number FROM system LEFT JOIN system_man ON system_man_uuid = system_uuid WHERE ";
+$sql  = "SELECT DISTINCT system_name, system_uuid, net_ip_address, system_man_description, system_man_location, system_man_value, system_man_serial_number FROM system_man LEFT JOIN system ON system_man_uuid = system_uuid WHERE ";
 $sql .= "system_man_description LIKE '%$search%' OR ";
 $sql .= "system_man_location LIKE '%$search%' OR ";
 $sql .= "system_man_serial_number LIKE '%$search%'";
@@ -326,7 +326,7 @@ if ($myrow = mysql_fetch_array($result)){
 //$sql .= "net_driver_version LIKE '%$search%' OR ";
 //$sql .= "net_driver_date LIKE '%$search%')";
 
-$sql  = "SELECT DISTINCT system_name, system_uuid, system.net_ip_address, net_mac_address, net_driver_provider, net_driver_version, net_driver_date FROM system LEFT JOIN network_card ON net_uuid = system_uuid AND net_timestamp = system_timestamp WHERE ";
+$sql  = "SELECT DISTINCT system_name, system_uuid, system.net_ip_address, net_mac_address, net_driver_provider, net_driver_version, net_driver_date FROM network_card LEFT JOIN system ON net_uuid = system_uuid AND net_timestamp = system_timestamp WHERE ";
 
 
 $sql .= "net_mac_address LIKE '%$search%' OR ";
