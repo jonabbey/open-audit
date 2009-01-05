@@ -9,7 +9,8 @@ function return_unknown($something)
 
 function ip_trans($ip)
 {
-  if (($ip <> "") AND (!(is_null($ip)))){
+// check that the string is valid for an IP, it must have at least one . in it
+  if (($ip <> "") AND (!(is_null($ip))) AND (Substr_Count($ip,".")>0)){
    $myip = explode(".",$ip);
    $myip[0] = ltrim($myip[0], "0");
    if ($myip[0] == "") { $myip[0] = "0"; }
