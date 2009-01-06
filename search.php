@@ -160,8 +160,6 @@ if ($myrow = mysql_fetch_array($result)){
 //$sql .= "software_publisher LIKE '%$search%' OR ";
 //$sql .= "software_version LIKE '%$search%')";
 $sql  = "SELECT DISTINCT system_name, system_uuid, net_ip_address, software_name, software_publisher, software_version FROM software LEFT JOIN system ON software_uuid = system_uuid AND software_timestamp = system_timestamp WHERE ";
-
-
 $sql .= "software_name LIKE '%$search%' OR ";
 $sql .= "software_publisher LIKE '%$search%' OR ";
 $sql .= "software_version LIKE '%$search%'";
@@ -229,6 +227,26 @@ if ($myrow = mysql_fetch_array($result)){
   } while ($myrow = mysql_fetch_array($result));
 } else {}
 
+// Search for Services 
+$sql  = "SELECT DISTINCT system_name, system_uuid, net_ip_address, service_timestamp, service_uuid, service_name, service_display_name, service_started, sd_description, sd_display_name  FROM system, service, service_details WHERE ";
+$sql .= "service_uuid = system_uuid AND ";
+$sql .= "service_display_name = sd_display_name AND ";
+$sql .= "service_timestamp = system_timestamp AND (";
+$sql .= "service_name LIKE '%$search%' OR ";
+$sql .= "sd_description LIKE '%$search%' OR ";
+$sql .= "service_display_name LIKE '%$search%')";
+$result = mysql_query($sql, $db);
+if ($myrow = mysql_fetch_array($result)){
+  do {
+    if (strpos(strtoupper($myrow["service_name"]), $search) !== false){$search_field = "Service Name"; $search_result = $myrow["service_name"];}
+    if (strpos(strtoupper($myrow["service_display_name"]), $search) !== false){$search_field = "Service Full Name"; $search_result = $myrow["service_display_name"];}
+    if (strpos(strtoupper($myrow["sd_description"]), $search) !== false){$search_field = "Service Description"; $search_result = $myrow["sd_description"]." [".__("Service Started")."=".$myrow["service_started"]."]";}
+    $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
+    $result_set[] = array($myrow["system_name"], $myrow["system_uuid"], ip_trans($myrow["net_ip_address"]),  $search_field, $search_result);
+  } while ($myrow = mysql_fetch_array($result));
+} else {}
+//
+
 
 //jbsclm
 //$sql  = "SELECT DISTINCT system_name, system_uuid, net_ip_address, system_man_description, //system_man_location, system_man_value, system_man_serial_number FROM system, system_man WHERE ";
@@ -255,18 +273,24 @@ $result = mysql_query($sql, $db);
    } while ($myrow = mysql_fetch_array($result));
 }
 
-$sql  = "SELECT DISTINCT other_network_name, other_id, other_ip_address, other_mac_address, other_description FROM other WHERE ";
-$sql .= "other_mac_address LIKE '%$search%'";
+// Search for MAC address, description or manufacturer into "Other" table
+$sql  = "SELECT DISTINCT other_network_name, other_id, other_ip_address, other_mac_address, other_description, other_manufacturer FROM other WHERE ";
+$sql .= "other_mac_address LIKE '%$search%' OR ";
+$sql .= "other_description LIKE '%$search%' OR ";
+$sql .= "other_manufacturer LIKE '%$search%'";
 
 $result = mysql_query($sql, $db);
 if ($myrow = mysql_fetch_array($result)){
   do {
     if (strpos(strtoupper($myrow["other_mac_address"]), $search) !== false){$search_field = "Device MAC Address"; $search_result = $myrow["other_mac_address"];}
+    if (strpos(strtoupper($myrow["other_description"]), $search) !== false){$search_field = "Device Description"; $search_result = $myrow["other_description"];}
+    if (strpos(strtoupper($myrow["other_manufacturer"]), $search) !== false){$search_field = "Device Manufacturer"; $search_result = $myrow["other_manufacturer"];}
     $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
     $result_set[] = array($myrow["other_network_name"], $myrow["other_id"], ip_trans($myrow["other_ip_address"]), $search_field, $search_result);
   } while ($myrow = mysql_fetch_array($result));
 
 } else {}
+
 // Search for IP address into "system"  table
 
 $search_padded = ip_trans_to($search);
@@ -327,8 +351,6 @@ if ($myrow = mysql_fetch_array($result)){
 //$sql .= "net_driver_date LIKE '%$search%')";
 
 $sql  = "SELECT DISTINCT system_name, system_uuid, system.net_ip_address, net_mac_address, net_driver_provider, net_driver_version, net_driver_date FROM network_card LEFT JOIN system ON net_uuid = system_uuid AND net_timestamp = system_timestamp WHERE ";
-
-
 $sql .= "net_mac_address LIKE '%$search%' OR ";
 $sql .= "net_driver_provider LIKE '%$search%' OR ";
 $sql .= "net_driver_version LIKE '%$search%' OR ";
