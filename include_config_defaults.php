@@ -47,6 +47,7 @@ $count_system = '30';
 $round_to_decimal_places = '2';
 
 $language = 'en';
+$show_tips = 'n';
 
 $domain_suffix = 'local' ;
 $ldap_base_db = 'dc=mydomain,dc=local';
