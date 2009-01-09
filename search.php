@@ -228,13 +228,26 @@ if ($myrow = mysql_fetch_array($result)){
 } else {}
 
 // Search for Services 
-$sql  = "SELECT DISTINCT system_name, system_uuid, net_ip_address, service_timestamp, service_uuid, service_name, service_display_name, service_started, sd_description, sd_display_name  FROM system, service, service_details WHERE ";
-$sql .= "service_uuid = system_uuid AND ";
-$sql .= "service_display_name = sd_display_name AND ";
-$sql .= "service_timestamp = system_timestamp AND (";
+//$sql  = "SELECT DISTINCT system_name, system_uuid, net_ip_address, service_timestamp, service_uuid, service_name, service_display_name, service_started, sd_description, sd_display_name  FROM system, service, service_details WHERE ";
+//$sql .= "service_uuid = system_uuid AND ";
+//$sql .= "service_display_name = sd_display_name AND ";
+//$sql .= "service_timestamp = system_timestamp AND (";
+//$sql .= "service_name LIKE '%$search%' OR ";
+//$sql .= "sd_description LIKE '%$search%' OR ";
+//$sql .= "service_display_name LIKE '%$search%')";
+
+
+//jbsclm
+
+$sql = "SELECT DISTINCT system_name, system_uuid, net_ip_address, service_timestamp, service_uuid, service_name, service_display_name, service_started, sd_description, sd_display_name  FROM service LEFT JOIN service_details on service_display_name = sd_display_name  left join system on service_uuid = system_uuid AND service_timestamp = system_timestamp  WHERE ";
 $sql .= "service_name LIKE '%$search%' OR ";
-$sql .= "sd_description LIKE '%$search%' OR ";
-$sql .= "service_display_name LIKE '%$search%')";
+$sql .= "service_display_name LIKE '%$search%' ";
+$sql .= "UNION ";
+$sql .= "SELECT DISTINCT system_name, system_uuid, net_ip_address, service_timestamp, service_uuid, service_name, service_display_name, service_started, sd_description, sd_display_name  FROM service_details LEFT JOIN service on service_display_name = sd_display_name  left join system on service_uuid = system_uuid AND service_timestamp = system_timestamp  WHERE ";
+$sql .= "sd_description LIKE '%$search%'";
+
+//jbsclm
+
 $result = mysql_query($sql, $db);
 if ($myrow = mysql_fetch_array($result)){
   do {
