@@ -59,6 +59,8 @@ $query_array=array("name"=>array("name"=>__("Summary"),
                                                         "headline"=>__("Remote Management"),
                                                         "sql"=>"SELECT system_name, net_domain FROM system WHERE system_uuid = '" . $_GET["pc"] . "' AND  system_timestamp = '".$GLOBAL["system_timestamp"]."'",
                                                         "image"=>"./images/display_l.png",
+                                                        "image_width" => "48",
+                                                        "image_height" => "48",
                                                         "print"=>"n",
                                                         "fields"=>array("10"=>array("name"=>"Explore share",
                                                                                     "head"=>__("Explore share"),
@@ -417,10 +419,12 @@ if ((isset($use_ldap_integration))and($use_ldap_integration == 'y')) {
         if (file_exists($filename)) {
         // FIXME: OK We got a good image,but we need to make it a bit bigger than the default of 16 x 16 . 
         $query_array['views']['management']['image'] = $filename ;
-        // These dont do anything
-        //     $query_array['views']['management']['image_width']="64";
-        //     $query_array['views']['management']['image_height']="64";
-             
+
+        // Replace the default "image_width"=>"16",
+        // and "image_height"=>"16", Adjust to suit the size of your images
+        $query_array['views']['management']['image_width'] = $query_array['views']['management']['image_width'] *4 ;  //      
+        $query_array['views']['management']['image_height'] =  $query_array['views']['management']['image_height'] *4;
+
      }
 //echo $filename;
 //echo $query_array['views']['management']['image'] ;

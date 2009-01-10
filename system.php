@@ -111,7 +111,17 @@ while (list ($viewname, $viewdef_array) = @each ($query_array["views"])) {
           //Image
           if(isset($viewdef_array["image"]) AND $viewdef_array["image"]!=""){
               echo "<td class=\"contentsubtitle\" style=\"width: 60px;\">\n";
-               echo "<img src=\"" .$viewdef_array["image"]. "\" alt=\"\" style=\"border:0px;\" width=\"48\" height=\"48\"  />\n";
+              if(isset($viewdef_array["image_width"]) AND $viewdef_array["image_width"]!=""){
+              $this_width = $viewdef_array["image_width"];
+              } else {
+              $this_width = "48";
+              }
+             if(isset($viewdef_array["image_height"]) AND $viewdef_array["image_height"]!=""){
+              $this_height = $viewdef_array["image_height"];
+              } else {
+              $this_height = "48";
+              }
+               echo "<img src=\"" .$viewdef_array["image"]. "\" alt=\"\" style=\"border:0px;\" width=\"".$this_width."\" height=\"".$this_height."\"  />\n";
               echo "</td>\n";
           }
           //Headline
