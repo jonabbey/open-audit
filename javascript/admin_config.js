@@ -8,6 +8,7 @@ Module Comments:
 	- Functions that are called in response to GUI actions (popup menu, buttons etc)
 	
 **********************************************************************************************************/
+//debugger; 
 
 /**********************************************************************************************************
 Function Name:
@@ -26,9 +27,9 @@ function SelectNavTab(e)
 	if(document.getElementById)
 	{
 		// Determine which tab has been selected
-		var Id=new String(e.id); // e.id example npb_config_general_tab
-		var aId=Id.split("_");
-		var id='npb_config_' + aId[aId.length-2] + '_div'; // id of the DIV page to display e.g. config_general
+		var Id = new String(e.id); // e.id example npb_config_general_tab
+		var aId = Id.split("_");
+		var id = 'npb_config_' + aId[aId.length-2] + '_div'; // id of the DIV page to display e.g. config_general
 		
 		// Clear current tabs state
 		// Get npb_tab_nav <UL> - get all ULs and loup thru
@@ -294,19 +295,26 @@ function SaveLdapConnection()
 	ldap_params += '&ldap_connection_password=' + document.getElementById("ldap_connection_password").value;
 	ldap_params += '&ldap_connection_id=' + document.getElementById("ldap_connection_id").value;
 	var LdapSave = new XmlRequestor('admin_config_data.php?sub=f3' + ldap_params);
-	// Check returned XML for result
-	if(LdapSave.GetValue("result")=="false")
+	if(LdapSave.ParseError != '')
 	{
-		// Failed - Get returned HTML from XML doc and display failure info
-		html = new String(LdapSave.SerializeXmlNode(LdapSave.GetNode("html")));
-		html = html.substring(6,html.length-7);
-		document.getElementById("ldap_connection_results").innerHTML = html;
+		document.getElementById("ldap_connection_results").innerHTML = LdapSave.ParseError.replace(/</g, "&lt;");
 	}
 	else
 	{
-		// Success - hide connection config div and refresh list
-		document.getElementById('npb_ldap_connection_config_div').style.display = 'none';
-		RefreshLdapConnectionsList();
+		// Check returned XML for result
+		if(LdapSave.GetValue("result")=="false")
+		{
+			// Failed - Get returned HTML from XML doc and display failure info
+			html = new String(LdapSave.SerializeXmlNode(LdapSave.GetNode("html")));
+			html = html.substring(6,html.length-7);
+			document.getElementById("ldap_connection_results").innerHTML = html;
+		}
+		else
+		{
+			// Success - hide connection config div and refresh list
+			document.getElementById('npb_ldap_connection_config_div').style.display = 'none';
+			RefreshLdapConnectionsList();
+		}
 	}
 }
 

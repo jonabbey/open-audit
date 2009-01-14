@@ -8,6 +8,22 @@ Module Comments:
 	
 **********************************************************************************************************/
 
+// SERVERXMLHTTP options
+var SXH_OPTION_URL_CODEPAGE = 0;
+var SXH_OPTION_ESCAPE_PERCENT_IN_URL = 1;
+var SXH_OPTION_IGNORE_SERVER_SSL_CERT_ERROR_FLAGS = 2;
+var SXH_OPTION_SELECT_CLIENT_SSL_CERT = 3;
+
+//SXH_SERVER_CERT_OPTION
+var SXH_SERVER_CERT_IGNORE_UNKNOWN_CA = 256;
+var SXH_SERVER_CERT_IGNORE_WRONG_USAGE = 512;
+var SXH_SERVER_CERT_IGNORE_CERT_CN_INVALID = 4096;
+var SXH_SERVER_CERT_IGNORE_CERT_DATE_INVALID = 8192;
+var SXH_SERVER_CERT_IGNORE_ALL_SERVER_ERRORS = 13056;
+
+// AJAX timeout 5000 milliseconds
+var AJAX_TIMEOUT = 5000;
+
 /**********************************************************************************************************
 Function Name:
 	HttpRequestor
@@ -95,6 +111,7 @@ function GetXmlHttpObject()
       try
       {
 				obj = new ActiveXObject(progids[i]);
+				//if(i == 0) {obj.setOption(2, SXH_SERVER_CERT_IGNORE_ALL_SERVER_ERRORS);}
         return obj;
 			}
 	    catch (e){}
@@ -116,7 +133,8 @@ Change Log:
 function XmlRequestor(url)
 {
 	this.XmlString = '';
-	this.XmlDomObject = undefined;
+	this.ParseError = '';
+	this.XmlDomObject = GetXmlDomObject();
 
 	this.IE = (window.ActiveXObject) ? true : false;
 	if (!this.IE)
@@ -126,24 +144,26 @@ function XmlRequestor(url)
 	}
 
 	/******************************************************************************************************
-	Function Name:	GetXMLDocFromUrl
+	Function Name:	CheckForParseError
 	Description:
-		Loads an XML file from supplied URL into XML DOM and stores XML string in this.XmlString
-	Arguments:
-		url	[IN] [string]	url from which XML DOM is returned
-	Returns:	XML DOM object
+		Checks this.XmlDomObject for parse errors and poplulates this.ParseError with error description
+	Arguments:	None
+	Returns:	None
 	Change Log:
-		20/08/2008			New function	[Nick Brown]
+		08/01/2009			New function	[Nick Brown]
 	******************************************************************************************************/
-	this.GetXMLDocFromUrl = function(url)
+	this.CheckForParseError = function ()
 	{
-		this.XmlString = '';
-	  this.XmlDomObject = GetXmlDomObject();
-		this.XmlDomObject.load(url);
-		this.XmlString = (this.IE == true) ? this.XmlDomObject.xml : this.XmlSerial.serializeToString(this.XmlDomObject);
-		return this.XmlDomObject;
+		if (this.IE)
+		{
+			this.ParseError = (this.XmlDomObject.parseError.errorCode != 0) ? this.XmlDomObject.parseError.reason : '';
+		}
+		else
+		{
+			this.ParseError = (this.XmlDomObject.documentElement.nodeName == "parsererror") ? this.XmlDomObject.documentElement.childNodes[0].nodeValue : '' ;
+		}
 	}
-
+	
 	/******************************************************************************************************
 	Function Name:	SerializeXmlNode
 	Description:
@@ -172,21 +192,17 @@ function XmlRequestor(url)
 	******************************************************************************************************/
 	this.GetXMLDocFromString = function(XmlString)
 	{
-		this.XmlString = str;
+		this.XmlString = XmlString;
 		if (this.IE) 
 		{
-			this.XmlDomObject = GetXmlDomObject();
 			this.XmlDomObject.loadXML(XmlString);
 		}
 		else 
     {
-			this.XmlDomObject = parser.parseFromString(XmlString,"text/xml");
+			this.XmlDomObject = this.XmlParser.parseFromString(XmlString,"text/xml");
 		}
     return(this.XmlDomObject);
 	}
-	
-	// If constructor was passed a URL, invoke GetXMLDocFromUrl to load XML file immediately
-	if (url != undefined) {this.GetXMLDocFromUrl(url);}
 	
 	/******************************************************************************************************
 	Function Name:	GetNode
@@ -219,9 +235,30 @@ function XmlRequestor(url)
 	******************************************************************************************************/
 	this.GetValue = function(TagName)
 	{
-		//if(nodes.length == 0){return "";}
 		return this.GetNode(TagName).firstChild.nodeValue;
 	}
+
+	/******************************************************************************************************
+	Function Name:	GetXMLDocFromUrl
+	Description:
+		Loads an XML file from supplied URL into XML DOM and stores XML string in this.XmlString
+	Arguments:
+		url	[IN] [string]	url from which XML DOM is returned
+	Returns:	XML DOM object
+	Change Log:
+		20/08/2008			New function	[Nick Brown]
+		07/01/2009			Added ParseError functionality [Nick Brown]
+		08/01/2009			Replaced XmlDomObject .Load() with GetXMLResponseFromUrl() [Nick Brown]
+									Moved parse error checking to new function CheckForParseError() [Nick Brown]
+	******************************************************************************************************/
+	this.GetXMLDocFromUrl = function(url)
+	{
+		var xml = GetXMLResponseFromUrl(url);
+		this.GetXMLDocFromString(xml);
+	}
+	
+	// If constructor was passed a URL, invoke GetXMLDocFromUrl to load XML file immediately
+	if (url != undefined) {this.GetXMLDocFromUrl(url);}
 }
 
 /**********************************************************************************************************
@@ -247,7 +284,13 @@ function GetXmlDomObject()
       try
       {
 				oXmlDoc = new ActiveXObject(progids[i]);
-				oXmlDoc.setProperty("SelectionLanguage", "XPath");
+				try
+				{
+					oXmlDoc.setProperty("SelectionLanguage", "XPath");
+					//oXmlDoc.async = false;
+				}
+				catch (e){}
+				return oXmlDoc;
 			}
 	    catch (e){}
 		}
@@ -262,3 +305,31 @@ function GetXmlDomObject()
 	return oXmlDoc;
 }
 
+/**********************************************************************************
+	Used by XmlRequestor.GetXMLDocFromUrl()
+**********************************************************************************/
+function GetXMLResponseFromUrl(url)
+{
+  var XmlHttpObject = GetXmlHttpObject();
+	XmlHttpObject.open("GET", url, false);
+	XmlHttpObject.send(null);
+	var start = new Date();
+	while(XmlHttpObject.readyState != 4) {if(IsTimedOut(start)) break;}
+	return XmlHttpObject.responseText;          
+}
+
+/**********************************************************************************************************
+Function Name:
+	IsTimedOut
+Description: Checks if AJAX request is timed-out
+Arguments:
+		start	[IN] [Date]	time that AJAX request was initiated
+Returns:	True/False
+Change Log:
+	12/01/2009			New function	[Nick Brown]
+**********************************************************************************************************/
+function IsTimedOut(start)
+{
+	if((new Date().getTime() - start.getTime()) > AJAX_TIMEOUT) {return true;}
+	else {return false;}
+}
