@@ -1,7 +1,7 @@
 <?php
 
 $query_array=array("headline"=>__("List all Laptops"),
-                   "sql"=>"SELECT * FROM `system` WHERE (system_system_type = 'Laptop' OR system_system_type = 'Expansion Chassis' OR system_system_type = 'Notebook' or system_system_type = 'Sub Notebook' OR system_system_type = 'Portable' OR system_system_type = 'Docking Station')",
+                   "sql"=>"SELECT * FROM `system` WHERE (system_system_type = 'Laptop' OR system_system_type = 'Expansion Chassis' OR system_system_type = 'Notebook' or system_system_type = 'Sub Notebook' OR system_system_type = 'Portable' OR system_system_type = 'Docking Station' OR system_system_type = 'Peripheral Chassis')",
                    "table"=>"system",
                    "sort"=>"system_name",
                    "dir"=>"ASC",
