@@ -1,5 +1,6 @@
 <?php
 include "include_config.php";
+include_once "include_functions.php";
 $query_array=array("name"=>array("name"=>__("Summary"),
                                  "sql"=>"SELECT `system_name` FROM `system` WHERE `system_uuid` = '" . $_GET["pc"] . "'",
                                 ),
@@ -412,20 +413,25 @@ if ((isset($use_ldap_integration))and($use_ldap_integration == 'y')) {
      $sql="SELECT system_model, system_uuid FROM `system` WHERE `system_uuid` = '".$_REQUEST["pc"]."'; ";
   $result = mysql_query($sql, $db);
   $myrow = mysql_fetch_array($result);
-  $result_model = $myrow["system_model"];
-  
+
+       $result_model = str_replace('/', '', $myrow["system_model"]);
         $filename = 'images/equipment/'.$result_model.'.jpg';
+        
         $filename = strtolower($filename);
+
         if (file_exists($filename)) {
         // FIXME: OK We got a good image,but we need to make it a bit bigger than the default of 16 x 16 . 
+        $scale_image_by = "3.5";
         $query_array['views']['management']['image'] = $filename ;
 
         // Replace the default "image_width"=>"16",
         // and "image_height"=>"16", Adjust to suit the size of your images
-        $query_array['views']['management']['image_width'] = $query_array['views']['management']['image_width'] *4 ;  //      
-        $query_array['views']['management']['image_height'] =  $query_array['views']['management']['image_height'] *4;
+        $query_array['views']['management']['image_width'] = $query_array['views']['management']['image_width'] *$scale_image_by  ;  //      
+        $query_array['views']['management']['image_height'] =  $query_array['views']['management']['image_height'] * $scale_image_by ;
 
-     }
+     } else {
+         echo $filename;
+         }
 //echo $filename;
 //echo $query_array['views']['management']['image'] ;
 ?>

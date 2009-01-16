@@ -9,8 +9,8 @@ function microtime_float()
 
 include_once("include.php");
 $time_start = microtime_float();
-// set an initial 2 min extra timeout
-set_time_limit(120000);
+// set an initial 4 min extra timeout
+set_time_limit(240000);
 
 $count_system_max="10000";
 
@@ -325,7 +325,7 @@ if ($myrow = mysql_fetch_array($result)){
                }
 
                 //Generating the link
-                //Does the field has an own link? Otherwise take the standard-link of the view
+                //Does the field have its own link? Otherwise take the standard-link of the view
                 if(isset($field["get"]["file"]) AND $field["get"]["file"]!=""){
                     $get_array=$field["get"];
                 }else{
@@ -400,8 +400,23 @@ if ($myrow = mysql_fetch_array($result)){
                 }
 
                 //Special field-converting
+				if(isset($field["calculate"]) AND $field["calculate"]=="y"){
+				// Special field calculations here, for example warranty days. 
+				//
+				if(isset($field["dell_warranty"]) AND $field["dell_warranty"]=="y"){
+				// allow another 10 seconds for this bit to complete
+				set_time_limit(240);
+				$show_value = $myrow["system_id_number"];
+				//
+				$this_dell_warranty_remaining = get_dell_warranty_days( $show_value);
+				// echo "..".$show_value."--" ;
+				$myrow ["dell_warranty"] = $this_dell_warranty_remaining ;
+				$show_value = $this_dell_warranty_remaining; 
+					}
+				}else{
+				// If this is not a calculated value, just show it
                 $show_value = ConvertSpecialField($myrow, $field, $db, "list");
-
+				}
                 if(isset($field["link"]) AND $field["link"]=="y"){
                     if(!isset($get_array["title"])) $get_array["title"]=$show_value;
                     echo "<a href=\"".$link_uri."\" title=\"".$get_array["title"]."\" onclick=\"".$get_array["onclick"]." ; this.target='".$get_array["target"]."';\" $a_misc>";

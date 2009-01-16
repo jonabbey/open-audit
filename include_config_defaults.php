@@ -34,19 +34,21 @@ $number_patches_not_detected = '5';
 $show_detected_servers = 'y';
 $show_detected_xp_av = 'y';
 $show_detected_rdp = 'y';
-
 $show_os = 'y';
 $show_date_audited = 'y';
 $show_type = 'y';
 $show_description = 'n';
 $show_domain = 'n';
 $show_service_pack = 'n';
+//Other options
 
 $count_system = '30';
 
 $round_to_decimal_places = '2';
 
 $language = 'en';
+$timezone = 'Europe/London';
+$show_dell_warranty = 'y';
 $show_tips = 'n';
 
 $domain_suffix = 'local' ;

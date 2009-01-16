@@ -3,6 +3,7 @@ include_once "include_config_defaults.php"; // Added by Nick Brown - ensures tha
 include_once "include_config.php";
 include_once "include_lang.php";
 include_once "include_functions.php";
+include "include_dell_warranty_functions.php"; // Added by Andrew Hull to allow us to grab Dell Warranty details from the Dell website
 include_once "include_col_scheme.php";
 
 /* Commented by Nick Brown - this functionality doesn't appear to be implemented anywhere?

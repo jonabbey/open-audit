@@ -226,5 +226,9 @@ $menue_array = array(
 if ((isset($use_ldap_integration))and($use_ldap_integration == 'y')) {
  $menue_array['misc']['60']['childs']['100']=array("name"=>"Audit LDAP Directory", "link"=>"ldap_audit_script.php", "image"=>"images/o_PDA.png", "title"=>"Audit the LDAP Directory.",);
 };
+if ((isset($show_dell_warranty ))and($show_dell_warranty  == 'y')) {
+ $menue_array['misc']['10']['childs']['180']=array("name"=>"All Dell Warranty", "link"=>"./list.php?view=all_dell_warranty", "image"=>"images/notes_l.png", "title"=>"Audit the LDAP Directory.",);
+};
+
 
 ?>
