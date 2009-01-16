@@ -45,6 +45,7 @@ $show_service_pack = 'n';
 $count_system = '30';
 
 $round_to_decimal_places = '2';
+$enable_remote_management = 'y';
 
 $language = 'en';
 $timezone = 'Europe/London';
