@@ -447,7 +447,7 @@ if ((isset($use_ldap_integration))and($use_ldap_integration == 'y')) {
         $query_array['views']['management']['image_height'] =  $query_array['views']['management']['image_height'] * $scale_image_by ;
 
      } else {
-         echo $filename;
+        // echo $filename;
          }
 //echo $filename;
 //echo $query_array['views']['management']['image'] ;
