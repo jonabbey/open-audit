@@ -175,7 +175,7 @@ if (isset($_POST['username'])) {
 	</div>
 
 	<div class='npb_ldap_login'>
-	<img src="/images/Key.png"/>
+	<img src="images/Key.png"/>
 	<h2 class='npb_ldap_login'>Please Login</h2>
 
 	<form action="<?php $_SERVER['SCRIPT_NAME']; ?>" method="POST">
