@@ -387,6 +387,24 @@ if ($myrow = mysql_fetch_array($result)){
   } while ($myrow = mysql_fetch_array($result));
  } else {} 
 
+// Search for motherboard
+$sql  = "SELECT DISTINCT system_name, system_uuid, net_ip_address, motherboard_manufacturer, motherboard_product ";
+$sql .= "FROM system, motherboard WHERE ";
+$sql .= "motherboard_uuid = system_uuid AND motherboard_timestamp = system_timestamp AND (";
+$sql .= "motherboard_manufacturer LIKE '%$search%' OR ";
+$sql .= "motherboard_product LIKE '%$search%') ";
+
+$result = mysql_query($sql, $db);
+if ($myrow = mysql_fetch_array($result)){
+  do {
+    if (strpos(strtoupper($myrow["motherboard_manufacturer"]), $search) !== false){$search_field = "Motherboard manufacturer"; $search_result = $myrow["motherboard_manufacturer"];}
+    if (strpos(strtoupper($myrow["motherboard_product"]), $search) !== false){$search_field = "Motherboard Product"; $search_result = $myrow["motherboard_product"];}
+    $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
+    $result_set[] = array($myrow["system_name"], $myrow["system_uuid"], ip_trans($myrow["net_ip_address"]), $search_field, $search_result);
+  } while ($myrow = mysql_fetch_array($result));
+} else {}
+// End search for motherboard
+ 
 } else {} // end if search != ""
 
 if(isset($result_set) AND $result_set) {
