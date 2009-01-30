@@ -63,7 +63,7 @@ $use_ldap_login = 'n';
 $show_ldap_changes = 'y';
 $ldap_changes_days = 7;
 $show_systems_audited_graph = 'y';
-$systems_audited_days = 30;
+$systems_audited_days='30';
 
 $max_log_entries = 90;
 ?>
