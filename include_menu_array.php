@@ -175,6 +175,7 @@ $menue_array = array(
                     "childs"=>array("10"=>array("name"=>"OS Type", "link"=>"./list.php?view=statistic_os", "image"=>"images/os.png", "title"=>"OS Type",),
                                     "20"=>array("name"=>"IE Versions", "link"=>"./list.php?view=statistic_ie", "image"=>"images/browser.png", "title"=>"Internet Explorer Versions",),
                                     "25"=>array("name"=>"Firefox Versions", "link"=>"./list.php?view=statistic_firefox", "image"=>"images/browser_ff.png", "title"=>"Mozilla Firefox Versions",),
+                                    "27"=>array("name"=>"Thunderbird Versions", "link"=>"./list.php?view=statistic_thunderbird", "image"=>"images/mail_tb.png", "title"=>"Mozilla Thunderbird Versions",),
                                     "30"=>array("name"=>"Memory Size", "link"=>"./list.php?view=statistic_memory", "image"=>"images/memory.png", "title"=>"Memory Size",),
                                     "40"=>array("name"=>"Processor Types", "link"=>"./list.php?view=statistic_processor", "image"=>"images/processor.png", "title"=>"Processor Types",),
                                     "45"=>array("name"=>"Partition Space", "link"=>"./list.php?view=all_partition_space", "image"=>"images/harddisk_l.png", "title"=>"Partition Size",),
