@@ -216,6 +216,7 @@ function ConvertSpecialField($myrow, $field, $db, $page)
 		case "startup_location":
 			if(substr($myrow[$field["name"]],0,2) == "HK") return __("Registry");
 		case "percentage":
+		case "disk_percent":
 			return $myrow[$field["name"]]." %";
 		case "system_memory":
 		case "video_adapter_ram":
