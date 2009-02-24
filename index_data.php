@@ -43,7 +43,7 @@ function GetLdapInfo($id)
 	$sql ="
 	SELECT * FROM (
 
-	(SELECT ldap_connections_name, ldap_users_cn as cn, ldap_users_dn as dn, 'deleted' as img, 'user' as objtype
+	(SELECT ldap_connections_name, ldap_users_cn as cn, ldap_users_dn as dn, 'deleted' as img, 'user' as objtype, ldap_users_timestamp as date
 	FROM ldap_users
 	LEFT JOIN ldap_paths ON ldap_users.ldap_users_path_id=ldap_paths.ldap_paths_id
 	LEFT JOIN ldap_connections ON ldap_paths.ldap_paths_connection_id=ldap_connections.ldap_connections_id
@@ -52,7 +52,7 @@ function GetLdapInfo($id)
 
 	UNION
 
-	(SELECT ldap_connections_name, ldap_users_cn as cn, ldap_users_dn as dn, 'active' as img, 'user' as objtype
+	(SELECT ldap_connections_name, ldap_users_cn as cn, ldap_users_dn as dn, 'active' as img, 'user' as objtype, ldap_users_first_timestamp as date
 	FROM ldap_users
 	LEFT JOIN ldap_paths ON ldap_users.ldap_users_path_id=ldap_paths.ldap_paths_id
 	LEFT JOIN ldap_connections ON ldap_paths.ldap_paths_connection_id=ldap_connections.ldap_connections_id
@@ -61,7 +61,7 @@ function GetLdapInfo($id)
 
 	UNION
 
-	(SELECT ldap_connections_name, ldap_computers_cn as cn, ldap_computers_dn as dn, 'deleted' as img, 'computer' as objtype
+	(SELECT ldap_connections_name, ldap_computers_cn as cn, ldap_computers_dn as dn, 'deleted' as img, 'computer' as objtype, ldap_computers_timestamp as date
 	FROM ldap_computers
 	LEFT JOIN ldap_paths ON ldap_computers.ldap_computers_path_id=ldap_paths.ldap_paths_id
 	LEFT JOIN ldap_connections ON ldap_paths.ldap_paths_connection_id=ldap_connections.ldap_connections_id
@@ -70,7 +70,7 @@ function GetLdapInfo($id)
 
 	UNION
 
-	(SELECT ldap_connections_name, ldap_computers_cn as cn, ldap_computers_dn as dn, 'active' as img, 'computer' as objtype 
+	(SELECT ldap_connections_name, ldap_computers_cn as cn, ldap_computers_dn as dn, 'active' as img, 'computer' as objtype, ldap_computers_first_timestamp as date 
 	FROM ldap_computers
 	LEFT JOIN ldap_paths ON ldap_computers.ldap_computers_path_id=ldap_paths.ldap_paths_id
 	LEFT JOIN ldap_connections ON ldap_paths.ldap_paths_connection_id=ldap_connections.ldap_connections_id
@@ -78,7 +78,7 @@ function GetLdapInfo($id)
 	AND ldap_computers_first_timestamp>'".adjustdate(0,0,-$ldap_changes_days)."000000')
 
 	)
-	AS U ORDER BY ldap_connections_name, cn";
+	AS U ORDER BY ldap_connections_name, date, cn";
 	
 	$result = mysql_query($sql, $db);
 
@@ -91,16 +91,21 @@ function GetLdapInfo($id)
 		echo "<tr>";
 		echo "<th>&nbsp</th>";
 		echo "<th>Account</th>";
+		echo "<th>Change</th>";
 		echo "<th>LDAP Connection</th>";
 		echo "<th>Parent OU</th>";
+		echo "<th>Date audited</th>";
 		echo "</tr>";
 		do
 		{
 			echo "<tr class='".alternate_tr_class($tr_class)."'>";
 			echo "<td><img src='../images/".$myrow['objtype']."_".$myrow['img'].".gif'></td>";
 			echo "<td>".$myrow['cn']."</td>";
+			$status = ($myrow["img"] == 'active') ? "Added" : "Deleted";
+			echo "<td>".$status."</td>";
 			echo "<td>".$myrow['ldap_connections_name']."</td>";
 			echo "<td>".GetParentOuCn($myrow['dn'])."</td>";
+			echo "<td>".return_date($myrow['date'])."</td>";
 			echo "</tr>";
 		}	while ($myrow = mysql_fetch_array($result));
 	}
