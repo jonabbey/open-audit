@@ -2454,7 +2454,7 @@ For Each objItem in colItems
   entry form_input,comment,objTextFile,oAdd,oComment
   form_input = ""
   ' Searching for IIS services
-  Select Case objItem.Name
+  Select Case UCase(objItem.Name)
     Case "IISADMIN"   iis = "True"
     Case "W3SVC"      iis_w3svc = "True"
     Case "MSFTPSVC"   iis_ftpsvc = "True"
