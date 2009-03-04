@@ -80,7 +80,7 @@ $query_array=array("name"=>array("name"=>__("Report"),
                                                     ),
                                    "partition"=>array(
                                                     "headline"=>__("Partitions"),
-                                                    "sql"=>"SELECT * FROM partition WHERE (partition_uuid = '" . $pc . "' && partition_timestamp = '".$GLOBAL["system_timestamp"]."') ORDER BY partition_device_id",
+                                                    "sql"=>"SELECT * FROM partition WHERE (partition_uuid = '" . $pc . "' AND partition_timestamp = '".$GLOBAL["system_timestamp"]."') ORDER BY partition_device_id, partition_caption ",
                                                     "fields"=>array("10"=>array("name"=>"partition_device_id", "head"=>__("Index"),),
                                                                     "20"=>array("name"=>"partition_caption", "head"=>__("Drive Letter"),),
                                                                     "30"=>array("name"=>"partition_volume_name", "head"=>__("Description"),),

@@ -56,7 +56,7 @@ $query_array=array("name"=>array("name"=>__("Hardware"),
                                                     ),
                                    "partition"=>array(
                                                     "headline"=>__("Partitions"),
-                                                    "sql"=>"SELECT * FROM partition WHERE (partition_uuid = '" . $_GET["pc"] . "' && partition_timestamp = '".$GLOBAL["system_timestamp"]."') ",
+                                                    "sql"=>"SELECT * FROM partition WHERE (partition_uuid = '" . $_GET["pc"] . "' AND partition_timestamp = '".$GLOBAL["system_timestamp"]."') ORDER BY partition_device_id, partition_caption ",
                                                     "image"=>"images/partition_l.png",
                                                     "fields"=>array("10"=>array("name"=>"partition_device_id", "head"=>__("Index"),),
                                                                     "20"=>array("name"=>"partition_caption", "head"=>__("Drive Letter"),),
