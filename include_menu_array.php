@@ -138,6 +138,8 @@ $menue_array = array(
                                     "190"=>array("name"=>"All LDAP Systems", "link"=>"./list.php?view=ldap_computers", "image"=>"images/computer.png", "title"=>"All LDAP Audited Systems",),
                                     "200"=>array("name"=>"All LDAP Users", "link"=>"./list.php?view=ldap_users", "image"=>"images/users.png", "title"=>"All LDAP Audited Users",),
                                     "210"=>array("name"=>"All Partitions", "link"=>"./list.php?view=all_partition_space", "image"=>"images/harddisk_l.png", "title"=>"All Partitions",),
+//                                                                                            Placekeeper for the All Dell Warranty link if it is needed 
+                                    "220"=>array("name"=>"", "link"=>"","image"=>"","title"=>"",),  
                               ),
               ),
       "20" => array("name"=>"Other Items",
@@ -228,7 +230,7 @@ if ((isset($use_ldap_integration))and($use_ldap_integration == 'y')) {
  $menue_array['misc']['60']['childs']['100']=array("name"=>"Audit LDAP Directory", "link"=>"ldap_audit_script.php", "image"=>"images/o_PDA.png", "title"=>"Audit the LDAP Directory.",);
 };
 if ((isset($show_dell_warranty ))and($show_dell_warranty  == 'y')) {
- $menue_array['misc']['10']['childs']['180']=array("name"=>"All Dell Warranty", "link"=>"./list.php?view=all_dell_warranty", "image"=>"images/notes_l.png", "title"=>"Audit the LDAP Directory.",);
+ $menue_array['misc']['10']['childs']['220']=array("name"=>"All Dell Warranty", "link"=>"./list.php?view=all_dell_warranty", "image"=>"images/notes_l.png", "title"=>"Audit the LDAP Directory.",);
 };
 
 
