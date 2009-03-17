@@ -1,6 +1,6 @@
 <?php
 $query_array=array("headline"=>__("Open Audit Event Log"),
-                   "sql"=>"SELECT * FROM Log",
+                   "sql"=>"SELECT * FROM log",
                    "sort"=>"log_timestamp",
                    "dir"=>"ASC",
 										"fields"=>array(
