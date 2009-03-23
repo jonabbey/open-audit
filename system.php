@@ -337,7 +337,9 @@ while (list ($viewname, $viewdef_array) = @each ($query_array["views"])) {
                            $links_to_manu=1;
                        }
                        if(isset($myrow["system_model"]) AND $myrow["system_model"]!= "" AND isset($myrow["system_id_number"]) AND $myrow["system_id_number"]!=""){
-                           echo " <a href='http://www-307.ibm.com/pc/support/site.wss/warrantyLookup.do?type=".substr($myrow["system_model"],0,4)."&amp;serial=".$myrow["system_id_number"]."&amp;country=897&amp;iws=off&amp;sitestyle=lenovo' onclick=\"this.target='_blank';\">".__("Warranty Information")."</a>";
+                           echo " <a href='http://www-307.ibm.com/pc/support/site.wss/warrantyLookup.do?type=".substr($myrow["system_model"],0,4)."&amp;serial=".$myrow["system_id_number"]."&amp;country=897&amp;iws=off&amp;sitestyle=lenovo' onclick=\"this.target='_blank';\">".__("Warranty Information 1")."</a>";
+                           echo " / ";
+                           echo " <a href='http://www-307.ibm.com/pc/support/site.wss/warrantyLookup.do?type=".substr($myrow["system_model"],-9,-5)."&amp;serial=".$myrow["system_id_number"]."&amp;country=897&amp;iws=off&amp;sitestyle=lenovo' onclick=\"this.target='_blank';\">".__("Warranty Information 2")."</a>";   
                            $links_to_manu=1;
                        }                  } elseif ($myrow["system_vendor"] == "Gateway") {
                        if(isset($myrow["system_id_number"]) AND $myrow["system_id_number"]!=""){
