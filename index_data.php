@@ -381,7 +381,7 @@ function GetDetectedSoftwareData($id)
 	$sql .= "FROM software sw, system sys ";
 	$sql .= "WHERE sw.software_first_timestamp >= '" . adjustdate(0,0,-$days_software_detected) . "000000' ";
 	$sql .= "AND sys.system_first_timestamp < '" . adjustdate(0,0,-$days_software_detected) . "000000' ";
-	$sql .= "AND sw.software_name NOT LIKE '%Hotfix%' AND sw.software_name NOT LIKE '%Update%' AND sw.software_name NOT LIKE '%Service Pack%' AND sw.software_name NOT REGEXP '[KB|Q][0-9]{6,}' ";
+	$sql .= "AND sw.software_name NOT LIKE '%Hotfix%' AND sw.software_name NOT LIKE '%Service Pack%' AND sw.software_name NOT REGEXP '[KB|Q][0-9]{6,}' ";
 	$sql .= "AND sw.software_timestamp = sys.system_timestamp ";
 	$sql .= "AND sw.software_uuid = sys.system_uuid ";
 	$sql .= "ORDER BY sw.software_name";

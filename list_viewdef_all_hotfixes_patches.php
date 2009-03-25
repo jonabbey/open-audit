@@ -1,7 +1,7 @@
 <?php
 
 $query_array=array("headline"=>__("List all Hotfixes & Patches"),
-                   "sql"=>"SELECT count(software_name) AS software_count, software_name, software_version, software_publisher, software_url FROM software, system where (software_name LIKE '%hotfix%' OR software_name LIKE '%update%' OR software_name LIKE '%Service Pack%' OR software_name REGEXP '[KB|Q][0-9]{6,}') AND software_uuid = system_uuid AND software_timestamp = system_timestamp GROUP BY software_name, software_version ",
+                   "sql"=>"SELECT count(software_name) AS software_count, software_name, software_version, software_publisher, software_url FROM software, system where (software_name LIKE '%hotfix%' OR software_name LIKE '%Service Pack%' OR software_name REGEXP '[KB|Q][0-9]{6,}') AND software_uuid = system_uuid AND software_timestamp = system_timestamp GROUP BY software_name, software_version ",
                    "sort"=>"software_name",
                    "dir"=>"ASC",
                    "get"=>array("file"=>"list.php",

@@ -34,7 +34,7 @@ $db = mysql_connect($mysql_server,$mysql_user,$mysql_password) or die('Could not
       $sql  = "SELECT sw.software_id, sw.software_name, sw.software_first_timestamp, sys.system_name, sys.system_uuid, sys.net_ip_address, sys.net_user_name FROM software sw, system sys ";
       $sql .= "WHERE sw.software_first_timestamp >= '" . adjustdate(0,0,-$days_software_detected) . "000000' ";
       $sql .= "AND sys.system_first_timestamp < '" . adjustdate(0,0,-$days_software_detected) . "000000' ";
-      $sql .= "AND sw.software_name NOT LIKE '%Hotfix%' AND sw.software_name NOT LIKE '%Update%' AND sw.software_name NOT LIKE '%Service Pack%' AND sw.software_name NOT REGEXP '[KB|Q][0-9]{6,}' ";
+      $sql .= "AND sw.software_name NOT LIKE '%Hotfix%' AND sw.software_name NOT LIKE '%Service Pack%' AND sw.software_name NOT REGEXP '[KB|Q][0-9]{6,}' ";
       $sql .= "AND sw.software_timestamp = sys.system_timestamp ";
       $sql .= "AND sw.software_uuid = sys.system_uuid ";
       $result = mysql_query($sql, $db);
