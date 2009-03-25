@@ -1,7 +1,7 @@
 <?php
 
 $query_array=array("headline"=>__("List all Windows Administrators by Hosts"),
-                   "sql"=>"SELECT * FROM groups, system WHERE groups_name = 'Administrators' AND groups_uuid = system_uuid AND groups_timestamp = system_timestamp ",
+                   "sql"=>"SELECT * FROM groups, system WHERE groups_SID = 'S-1-5-32-544' AND groups_uuid = system_uuid AND groups_timestamp = system_timestamp ",
                    "sort"=>"system_name",
                    "dir"=>"ASC",
                    "get"=>array("file"=>"system.php",
