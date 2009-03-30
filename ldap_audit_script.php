@@ -39,7 +39,7 @@ ini_set("memory_limit","24M");
 
 define("LDAP_USER_FILTER","(samaccounttype=805306368)");
 define("LDAP_COMPUTER_FILTER","(samaccounttype=805306369)");
-$debugging=TRUE;
+$debugging=FALSE;
 $err=FALSE;
 error_reporting(0);
 
