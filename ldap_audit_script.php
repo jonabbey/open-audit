@@ -1,7 +1,12 @@
 <?php
 /**********************************************************************************************************
-Module Comments:
+Module:	ad_audit_script.php
 	
+Description:
+	Script to perform audit of LDAP sources - It is the *directory* being audited, not the computers
+
+Change Control:
+
 	[Nick Brown]	25/04/2008
 	The PHP LDAP extension doesn't appear to support the LDAP pagedResultsControl control 
 	(see RFC 2696 http://www.ietf.org/rfc/rfc2696) 
@@ -17,8 +22,10 @@ Module Comments:
 	ldap_ber_printf() 
 	ldap_ber_scanf
 
+	[Nick Brown]	17/03/2009
+	AuditLdapPaths() modified to use GetAesKey() 
+
 **********************************************************************************************************/
-include_once "include_config_defaults.php"; // Ensures that all variables have a default value 
 include "include_config.php";
 include "include_lang.php";
 include "include_functions.php";
@@ -32,13 +39,24 @@ ini_set("memory_limit","24M");
 
 define("LDAP_USER_FILTER","(samaccounttype=805306368)");
 define("LDAP_COMPUTER_FILTER","(samaccounttype=805306369)");
-$debugging=FALSE;
+$debugging=TRUE;
 $err=FALSE;
 error_reporting(0);
 
 // Set up SQL connection 
 $db = mysql_connect($mysql_server,$mysql_user,$mysql_password);
+DebugEcho($db);
+if ($db == FALSE)
+{
+	echo "Error: " . mysql_errno() . ": " . mysql_error();
+	exit("MySQL login failed");
+}
 mysql_select_db($mysql_database,$db);
+if ($db == FALSE)
+{
+	echo "Error: " . mysql_errno($db) . ": " . mysql_error($db);
+	exit("Failed to connect to Open Audit database, $mysql_database");
+}
 
 AuditLdapPaths();
 
@@ -54,11 +72,12 @@ Arguments: 	None
 Returns:	None
 Change Log:
 	28/04/2008			New function	[Nick Brown]
+	17/03/2009			Using GetAesKey() instead of GetVolumeLabel()	[Nick Brown]
 **********************************************************************************************************/
 function AuditLdapPaths()
 {
 	global $db;
-	$aes_key = GetVolumeLabel('c');
+	$aes_key = GetAesKey();
 	$ldap_details=array();
 	
 	// Get paths info from db
@@ -131,8 +150,8 @@ function AuditSingleLdapPath(&$ldap_path_details)
 	
 	// Perform computer object search and get results
 	echo "Auditing computer accounts in: ".$ldap_path_details["ldap_base_dn"]."<br>\n";
-	$ldap_filter=LDAP_COMPUTER_FILTER;
-	$ldap_attributes=array("distinguisedname","cn","usnchanged","objectguid","description","operatingSystem","operatingSystemServicePack");
+	$ldap_filter = LDAP_COMPUTER_FILTER;
+	$ldap_attributes = array("distinguisedname","cn","usnchanged","objectguid","description","operatingSystem","operatingSystemServicePack");
 //    $ldap_attributes=array("cn,distinguishedname,instancetype,whencreated,whenchanged,displayname,usncreated,usnchanged,name,objectguid,useraccountcontrol,badpwdcount,codepage,countrycode,badpasswordtime,lastlogoff,lastlogon,localpolicyflags,pwdlastset,primarygroupid,objectsid,accountexpires,logoncount,samaccountname,samaccounttype,operatingsystem,operatingsystemversion,operatingsystemservicepack,dnshostname,serviceprincipalname,serviceprincipalname,objectcategory,iscriticalsystemobject,lastlogontimestamp");
  	$ldap_results=SearchLdap($ldap,$ldap_path_details["ldap_base_dn"],$ldap_filter,$ldap_attributes);
 	// Update db, ldap_computers table
@@ -197,6 +216,7 @@ function Updateldap_usersTable(&$ldap_results, &$ldap_path_id, &$audit_timestamp
 			
 			$mysqlresult = mysql_query($sql, $db);
 			DebugEcho($mysqlresult);
+			if ($mysqlresult == FALSE) {echo "Error: " . mysql_errno($db) . ": " . mysql_error($db). "\n";}
 			DebugEcho("*******************************************************************************");
 		}
 	}
@@ -254,6 +274,7 @@ function Updateldap_computersTable(&$ldap_results, &$ldap_path_id, &$audit_times
 			
 			$mysqlresult = mysql_query($sql, $db);
 			DebugEcho($mysqlresult);
+			if ($mysqlresult == FALSE) {echo "Error: " . mysql_errno($db) . ": " . mysql_error($db). "\n";}
 			DebugEcho("*******************************************************************************");
 		}
 	}

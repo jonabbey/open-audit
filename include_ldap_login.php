@@ -1,17 +1,41 @@
 <?php
+/**********************************************************************************************************
+Module:	include_ldap_login.php
+
+Description:
+	This module is included by "include.php" if $use_ldap_login = 'y'. Determines if user is authenticated by checking 
+	the value of $_SESSION["role"]. If user is not authenticated, browser is redirected to "ldap_login.php" to login.
+	If user is authenticated with a role of "user" then access to the pages defined in $user_deny_pages (which should 
+	really be in "include_config.php"?) is not permitted.
+		
+Change Control:
+	
+	[Nick Brown]	02/03/2009
+	Minor change - removed check for value of $use_ldap_login - not needed as this has been done in "include.php" which is
+	why we are here.
+	
+**********************************************************************************************************/
 session_start();
+
 //put pages here that you wish to deny regular users access
 $user_deny_pages = array("admin_config.php", "database_backup_form.php", "database_restore_form.php");
-if(!isset($_SESSION["role"]) and isset($use_ldap_login) and ($use_ldap_login == "y")) {
+
+if(!isset($_SESSION["role"]))
+{
     header('Location: ldap_login.php');
     exit;
-} else {
-    if ($_SESSION["role"]=="user") {
-        if (array_search(basename($_SERVER['SCRIPT_NAME']), $user_deny_pages)!== False) {
-            echo "Access Denied!";
-            exit;
-        }
-    }  
+}
+else
+{
+	if ($_SESSION["role"]=="user")
+	{
+		if (array_search(basename($_SERVER['SCRIPT_NAME']), $user_deny_pages)!== False)
+		{
+			echo "Access Denied!";
+			exit;
+		}
+	}
+  
 //    //This section sets a session timout in seconds   
 //    if (!isset($_SESSION["session_count"])) {
 //        $_SESSION["session_count"]=0;

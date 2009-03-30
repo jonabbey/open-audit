@@ -1,4 +1,15 @@
 <?php
+/**********************************************************************************************************
+Module:	index_data.php
+
+Description:
+	Provides functions that return HTML in repsonse to AJAX requests in "index.php"
+		
+Change Control:
+	
+	[Nick Brown]	02/03/2009	Minor change in GetSystemsAuditedGraph()
+	
+**********************************************************************************************************/
 set_time_limit(60);
 
 include "include_config.php";
@@ -70,7 +81,7 @@ function GetLdapInfo($id)
 
 	UNION
 
-	(SELECT ldap_connections_name, ldap_computers_cn as cn, ldap_computers_dn as dn, 'active' as img, 'computer' as objtype, ldap_computers_first_timestamp as date 
+	(SELECT ldap_connections_name, ldap_computers_cn as cn, ldap_computers_dn as dn, 'active' as img, 'computer' as objtype, ldap_computers_timestamp as date
 	FROM ldap_computers
 	LEFT JOIN ldap_paths ON ldap_computers.ldap_computers_path_id=ldap_paths.ldap_paths_id
 	LEFT JOIN ldap_connections ON ldap_paths.ldap_paths_connection_id=ldap_connections.ldap_connections_id
@@ -78,7 +89,7 @@ function GetLdapInfo($id)
 	AND ldap_computers_first_timestamp>'".adjustdate(0,0,-$ldap_changes_days)."000000')
 
 	)
-	AS U ORDER BY ldap_connections_name, date, cn";
+	AS U ORDER BY ldap_connections_name, cn";
 	
 	$result = mysql_query($sql, $db);
 
@@ -149,12 +160,15 @@ function GetParentOuCn($parent)
 }
 
 
-// ****** Get graph of number of systems audited in last $systems_audited_days days **************************************************
+/******* Get graph of number of systems audited in last $systems_audited_days days **************************************************
+Change Log:
+	24/02/2009			Increased $img_width value to 600	[Nick Brown]
+**********************************************************************************************************/
 function GetSystemsAuditedGraph()
 {	
 	//global $systems_audited;	
 	global $db, $systems_audited_days;
-	$img_width=400;
+	$img_width=600;
 	$img_height=120;
 	$max=0;
 	
@@ -284,10 +298,32 @@ function GetSystemsNotAuditedData($id)
   global $db, $days_systems_not_audited;
 	$tr_class='npb_highlight_row';
 
-  $sql  = "SELECT system_name, net_ip_address, system_uuid, system_timestamp FROM system ";
-  $sql .= "WHERE system_timestamp < '" . adjustdate(0,0,-$days_systems_not_audited) . "000000' ";
-  $sql .= "ORDER BY system_name";
+	$sql = 
+	"SELECT system_name, net_ip_address, net_domain, system_uuid, system_timestamp,
+	IFNULL(ldap_computer_status, 'deleted') as ldap_status, ldap_connections_name
+	FROM system
+	LEFT JOIN (
+		(SELECT ldap_computers_cn, 'active' as ldap_computer_status, ldap_connections_name, ldap_connections_fqdn
+		FROM ldap_computers
+		LEFT JOIN ldap_paths ON ldap_computers.ldap_computers_path_id=ldap_paths.ldap_paths_id
+		LEFT JOIN ldap_connections ON ldap_paths.ldap_paths_connection_id=ldap_connections.ldap_connections_id
+		WHERE ldap_computers_timestamp=ldap_paths_timestamp)
 
+		UNION
+
+		(SELECT ldap_computers_cn, 'deleted' as ldap_computer_status, ldap_connections_name, ldap_connections_fqdn
+		FROM ldap_computers
+		LEFT JOIN ldap_paths ON ldap_computers.ldap_computers_path_id=ldap_paths.ldap_paths_id
+		LEFT JOIN ldap_connections ON ldap_paths.ldap_paths_connection_id=ldap_connections.ldap_connections_id
+		WHERE ldap_computers_timestamp<>ldap_paths_timestamp)
+	) AS U
+	ON system.system_name = U.ldap_computers_cn
+	WHERE system_timestamp < '" . adjustdate(0,0,-$days_systems_not_audited) . "000000'
+	AND (ldap_connections_fqdn=net_domain OR ldap_connections_name=net_domain OR net_domain IS NULL
+	OR ldap_connections_name IS NULL OR ldap_connections_fqdn IS NULL) ORDER BY system_name";
+		
+	//echo $sql;
+	
 	$result = mysql_query($sql, $db);
 	$count=mysql_numrows($result);
 
@@ -300,6 +336,7 @@ function GetSystemsNotAuditedData($id)
 		echo "		<th>".__("IP Address")."</td>";
 		echo "  	<th>".__("Hostname")."</td>";
 		echo "  	<th>".__("Date Audited")."</td>";
+		echo "  	<th>".__("LDAP Status")."</td>";
 	  echo "	</tr>";
 		do
 		{
@@ -307,6 +344,7 @@ function GetSystemsNotAuditedData($id)
 			echo "	<td>".ip_trans($myrow["net_ip_address"])."</td>";
 			echo "	<td><a href=\"system.php?pc=".$myrow["system_uuid"]."&amp;view=summary\">".$myrow["system_name"]."</a></td>";
 			echo "	<td>".return_date_time($myrow["system_timestamp"])."</td>";
+			echo "	<td><img src='../images/computer_".$myrow['ldap_status'].".gif'></td>";
 			echo "</tr>";
 		} while ($myrow = mysql_fetch_array($result));
 		}
@@ -381,7 +419,7 @@ function GetDetectedSoftwareData($id)
 	$sql .= "FROM software sw, system sys ";
 	$sql .= "WHERE sw.software_first_timestamp >= '" . adjustdate(0,0,-$days_software_detected) . "000000' ";
 	$sql .= "AND sys.system_first_timestamp < '" . adjustdate(0,0,-$days_software_detected) . "000000' ";
-	$sql .= "AND sw.software_name NOT LIKE '%Hotfix%' AND sw.software_name NOT LIKE '%Service Pack%' AND sw.software_name NOT REGEXP '[KB|Q][0-9]{6,}' ";
+  $sql .= "AND sw.software_name NOT LIKE '%Hotfix%' AND sw.software_name NOT LIKE '%Service Pack%' AND sw.software_name NOT REGEXP '[KB|Q][0-9]{6,}' ";
 	$sql .= "AND sw.software_timestamp = sys.system_timestamp ";
 	$sql .= "AND sw.software_uuid = sys.system_uuid ";
 	$sql .= "ORDER BY sw.software_name";

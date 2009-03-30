@@ -1,8 +1,20 @@
 <?php
+/**********************************************************************************************************
+Module:	list_viewdef_evet_log.php
+
+Description:
+	Viewdef for system event log
+		
+Change Control:
+	
+	[Nick Brown]	02/03/2009
+	SQL query now sorted by "DESC" rather than "ASC"
+	
+**********************************************************************************************************/
 $query_array=array("headline"=>__("Open Audit Event Log"),
                    "sql"=>"SELECT * FROM log",
                    "sort"=>"log_timestamp",
-                   "dir"=>"ASC",
+                   "dir"=>"DESC",
 										"fields"=>array(
 																	"5"=>array("name"=>"log_timestamp",
                                                "head"=>__("Time Stamp"),

@@ -1,35 +1,39 @@
 <?php
-include_once "include_config_defaults.php"; // Added by Nick Brown - ensures that all variables have a default value 
+/**********************************************************************************************************
+Module:	include.php
+
+Description:
+	This module is included by "index.php". Verifies authentication to the system and HTML to display the application header 
+	and menu.
+
+Change Control:
+
+	[Nick Brown]	02/03/2009
+	Only a minor change - the "logout" link in the top right of the page now displays the user's role (admin/user) as well as their
+	name.
+	
+**********************************************************************************************************/
 include_once "include_config.php";
 include_once "include_lang.php";
 include_once "include_functions.php";
 include "include_dell_warranty_functions.php"; // Added by Andrew Hull to allow us to grab Dell Warranty details from the Dell website
 include_once "include_col_scheme.php";
 
-/* Commented by Nick Brown - this functionality doesn't appear to be implemented anywhere?
-$is_refreshable = false ;
-$refresh_period = 10;
-$jscript_count = 0;
-if ($show_other_discovered == 'y'){ $jscript_count = $jscript_count + 1; }
-if ($show_system_discovered == 'y'){ $jscript_count = $jscript_count + 1; }
-if ($show_systems_not_audited == 'y'){ $jscript_count = $jscript_count + 1; }
-if ($show_partition_usage == 'y'){ $jscript_count = $jscript_count + 1; }
-if ($show_software_detected == 'y'){ $jscript_count = $jscript_count + 1; }
-if ($show_patches_not_detected == 'y'){ $jscript_count = $jscript_count + 1; }
-if ($show_detected_servers == 'y'){ $jscript_count = $jscript_count + 5; }
-*/
+$page = GetVarOrDefaultValue($page);
 
-$page = GetVarOrDefaultValue($page,"");
-
-if ($page == "add_pc"){
-    $use_pass = "n";
-} else {
-    if (isset($use_https) AND $use_https == "y") {
-       if ($_SERVER["SERVER_PORT"]!=443){ header("Location: https://".$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF']); exit(); }
-    }
-    if ((isset($use_ldap_login) and ($use_ldap_login == 'y'))) {
-        include "include_ldap_login.php";
-    }else {}
+if ($page == "add_pc")
+{
+	$use_pass = "n";
+	$_SESSION["username"] = "Anonymous";
+	$_SESSION["role"] = "none";
+}
+else
+{
+	if (GetVarOrDefaultValue($use_https) == "y")
+	{
+		if ($_SERVER["SERVER_PORT"]!=443){RedirectToUrl("https://".$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF']);}
+	}
+  if (GetVarOrDefaultValue($use_ldap_login) == 'y') {include "include_ldap_login.php";}
 }
 
 if ($use_pass != "n") {
@@ -53,29 +57,11 @@ if ($use_pass != "n") {
     exit('Unauthorized!');
   }
 } else {}
-
-// ob_start();
 ?>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-<?php
-/* Commented by Nick Brown - this functionality doesn't appear to be implemented
-if ($is_refreshable) {
-
-    #gets the URI of the script
-    $our_url =  $_SERVER['SCRIPT_URI'];
-
-    #chops URI into bits 
-    $chopped = parse_url($our_url);
-
-    #HOST and PATH portions of your final destination
-    $destination = $chopped[scheme]."://".$chopped[host].$chopped[path];
-    echo " <META HTTP-EQUIV=REFRESH CONTENT=".$refresh_period.";URL=".$destination.">";
-        }
-*/
-?>        
     <title>Open-AudIT</title>
     <link rel="icon" href="favicon.ico" type="image/x-icon">
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon"> 
@@ -130,43 +116,6 @@ if ($page <> "setup"){
 } else {
   $version = "0.1.00";
 }
-/*
-?>
-<table width="100%">
-<td colspan="3" class="main_each">
-<?php
-*/
-//    $page_type="standard";
-//    if (strpos($_SERVER['REQUEST_URI'],"admin")){
-//    $page_type="admin";
-//    } 
-//    if (strpos($_SERVER['REQUEST_URI'],"input") or strpos($_SERVER['REQUEST_URI'],"pc_add")){
-//    $page_type="input";
-//    } 
-//    if (strpos($_SERVER['REQUEST_URI'],"system")){
-//   $page_type="system";
-//    } 
-//    if (strpos($_SERVER['REQUEST_URI'],"list")){
-//    $page_type="list";
-//    } 
-
-/* 
-if ((isset($use_ldap_login) and ($use_ldap_login == 'y'))) {
-    echo "<table width=\"100%\">\n";
-    echo "<td colspan=\"3\" class=\"main_each\">\n";
-    echo "<a href=\"ldap_logout.php\">".__("Logout ").$_SESSION["username"]."</a>\n";
-//  Uncomment the following to see what tyoe of page this is
-//    echo "<a href=\"index.php\">"."    We are in a ".$page_type." type of page"."</a>\n";
-    echo "</td>\n";
-    echo "</table>\n";
-} else {}
-*/
-/*
-?>
-/
-</td>
-</table>
-*/
 ?>
 <table width="100%">
   <tr>
@@ -176,7 +125,7 @@ if ((isset($use_ldap_login) and ($use_ldap_login == 'y'))) {
 
 <?php
 	if (isset($use_ldap_login) and ($use_ldap_login == 'y')) 
-	{echo "<a class='npb_ldap_logout' href=\"ldap_logout.php\">".__("Logout ").$_SESSION["username"]."</a>";}
+	{echo "<a class='npb_ldap_logout' href=\"ldap_logout.php\">".__("Logout ").$_SESSION["username"]." [".$_SESSION["role"]."]</a>";}
 ?>		
   </tr>
 
@@ -305,10 +254,7 @@ if ($pc > "0") {
         echo "</li>\n";
     unset($topic_item["title"]);
     }
-    if ((isset($use_ldap_login) and ($use_ldap_login == 'y'))) {
-//    echo "<li><a href=\"include_ldap_logout.php\">".__("Logout ").$_SESSION["username"]."</a></li>\n";
-} else {}
-//     
+
 // Add a Strict Test button if $validate is set.     
 if ((isset($validate)) and ($validate =="y")){
 echo "<p>";

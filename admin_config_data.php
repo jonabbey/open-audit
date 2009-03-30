@@ -9,6 +9,9 @@ Module Comments:
 	[Nick Brown]	19/09/2008
 	Re-wrote main routine  to using a switch statement
 	Made each separate function return a value rather than echoing a response directly
+
+	[Nick Brown]	17/03/2009
+	SaveLdapConnectionXml() & GetLdapConnectionXml now use GetAesKey()
 	
 **********************************************************************************************************/
 set_time_limit(60);
@@ -204,6 +207,7 @@ Returns:
 Change Log:
 	25/04/2008			New function	[Nick Brown]
 	19/09/2008			Removed echo  statments and replaced with response string	[Nick Brown]
+	17/03/2009			Using GetAesKey() instead of GetVolumeLabel()
 **********************************************************************************************************/
 function SaveLdapConnectionXml($db)
 {
@@ -227,7 +231,7 @@ function SaveLdapConnectionXml($db)
 	$ldap_connection_name = GetDomainNetbios($l,"CN=Partitions,".$config_nc,$domain_nc);
 	ldap_unbind($l);
 	
-	$aes_key = GetVolumeLabel('c');
+	$aes_key = GetAesKey();
 	if (isset($_GET["ldap_connection_id"]) and strlen($_GET["ldap_connection_id"]) > 0)
 	{
 		// UPDATE query - connection already exists so modify
@@ -380,11 +384,12 @@ Returns:
 Change Log:
 	25/04/2008			New function	[Nick Brown]
 	19/09/2008			Removed echo  statments and replaced with response string	[Nick Brown]
+	17/03/2009			Using GetAesKey() instead of GetVolumeLabel()	[Nick Brown]
 **********************************************************************************************************/
 function GetLdapConnectionXml($db)
 {
 	header("Content-type: text/xml");
-	$aes_key = GetVolumeLabel('c');
+	$aes_key = GetAesKey();
 
 	$sql = "SELECT ldap_connections_server, AES_DECRYPT(ldap_connections_user,'".$aes_key."') 
 	AS ldap_user, AES_DECRYPT(ldap_connections_password,'".$aes_key."') AS ldap_password FROM ldap_connections 

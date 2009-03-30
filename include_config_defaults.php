@@ -1,4 +1,19 @@
 <?php
+/**********************************************************************************************************
+Module:	include_config_defaults.php
+
+Description:
+	This module is included by "include_config.php".  Provides a default set of values for the system. These default values 
+	are overridden by the values in "include_config.php".
+		
+Change Control:
+	
+	[Nick Brown]	02/03/2009
+	Increased $max_log_entries value to 1000. Increased $systems_audited_days value to 45. Added $admin_list and 
+	$user_list.
+	
+**********************************************************************************************************/
+
 $mysql_server = 'localhost';
 $mysql_database = 'openaudit';
 $mysql_user = 'root';
@@ -63,7 +78,11 @@ $use_ldap_login = 'n';
 $show_ldap_changes = 'y';
 $ldap_changes_days = 7;
 $show_systems_audited_graph = 'y';
-$systems_audited_days='30';
+$systems_audited_days='45';
 
-$max_log_entries = 90;
+$max_log_entries = 1000;
+$utf8 = 'y';
+
+$admin_list = Array('Domain Admins');
+$user_list = Array('Domain Admins');
 ?>

@@ -1,4 +1,24 @@
 <?php
+/**********************************************************************************************************
+Module:	include_functions.php
+
+Description:
+		General purpose functions used throughout the application.
+
+Change Control:
+
+	[Nick Brown]	02/03/2009
+	Added GetLdapConnectionsFromDb() , GetOpenAuditDbConnection() and RedirectToUrl().
+	LogEvent() modified to use GetOpenAuditDbConnection()
+	
+	[Nick Brown]	11/03/2009
+	Change to GetLdapConnectionsFromDb()
+
+	[Nick Brown]	23/03/2009
+	Change to GetAesKey()
+
+**********************************************************************************************************/
+require_once "include_config.php";
 
 function return_unknown($something)
 {
@@ -773,6 +793,59 @@ $hex_string = $hex_string."-";
 
 /**********************************************************************************************************
 Function Name:
+	GetAesKey
+Description:
+	Creates a string to be used as an AES encryption key
+	For Windows systems we get the serial number of the C: volume
+	For Linux we get the UUID of the "first" disk
+	If you're rubbish at regular expressions like me, these sites may help
+	http://regexlib.com/RETester.aspx
+	http://www.regular-expressions.info/tutorial.html/
+Arguments:	None
+Returns:
+	[String]	Key
+Change Log:
+	16/03/2009			New function	[Nick Brown]
+	23/03/2009			Added additional testing for OS type		[Nick Brown]
+**********************************************************************************************************/
+function GetAesKey()
+{
+	$aeskey = 'openaudit';
+	$err_level = error_reporting(0);
+
+	// Try various methods to determine OS  - See http://www.compdigitec.com/labs/2008/07/16/determine-the-os-and-version-of-php/
+	$os = php_uname("s");  
+	$os .= phpversion();
+	$os .= $_SERVER["SERVER_SOFTWARE"];
+	$os .= $_ENV['OS'];
+	$os .= $_SERVER['OS'];
+
+	// If preferred methods fail - use this string as AES key
+	$aeskey = $os.PHP_OS;
+	
+	// Linux - get the UUID of the "first" disk (based on sort)
+	if (preg_match("/(ubuntu|suse)/i", $os))
+	{
+		$shellout = shell_exec("ls /dev/disk/by-uuid");
+		{
+			$list = preg_split("/[\s,]+/", trim($shellout));
+			sort($list);
+			$aeskey = $list[0];
+		}
+	}
+	
+	// Windows - get the serial number of the C: volume
+	elseif (preg_match("/(win32|winnt|Windows)/i", $os))
+	{
+		if (preg_match("/Volume Serial Number[a-zA-Z]* is (.*)\n/i", shell_exec('vol c:'), $m)) {$aeskey = $m[1];}	
+	}
+
+	error_reporting($err_level); 
+	return $aeskey;
+}
+
+/**********************************************************************************************************
+Function Name:
 	GetVolumeLabel
 Description:
 	Gets the volume label of the requested drive (Don't have linux solution for this yet)
@@ -785,9 +858,11 @@ Change Log:
 **********************************************************************************************************/
 function GetVolumeLabel($drive)
 {
-  // Try to grab the volume name
+  // Try to grab the volume name - error is expected at the moment on Linux systems - supress error reporting
+	$err_level = error_reporting(0); 
   if (preg_match('#Volume Serial Number[a-zA-Z]* is (.*)\n#i', shell_exec('vol '.$drive.':'), $m))
 	{$volname = $m[1];}	else {$volname = 'openaudit';}
+	error_reporting($err_level); 
 	return $volname;
 }
 
@@ -807,10 +882,15 @@ Change Log:
 	20/08/2008			New function	[Nick Brown]
 	20/09/2008			Added additional arguments to the function [Nick Brown]
 	13/10/2008			Renamed function [Nick Brown]
+	02/03/2009			Now using GetOpenAuditDbConnection() to get DB conenction rather than global $db
 **********************************************************************************************************/
 function LogEvent($calling_module, $calling_function, $message, $severity=3)
 {
-	global $db, $max_log_entries;
+	global $max_log_entries;
+	
+	// Set up SQL connection 
+	$db = GetOpenAuditDbConnection();
+
 	$timestamp = date("YmdHis");
 	// Add new 	log entry
 	$sql  = "INSERT INTO `log` (`log_timestamp`,`log_module`,`log_function`,`log_message`,`log_severity`) ";
@@ -830,6 +910,29 @@ function LogEvent($calling_module, $calling_function, $message, $severity=3)
 			mysql_query("DELETE FROM `log` WHERE log_id=".$log_id , $db);
 		}
 	} while ($count > $max_log_entries);
+	
+	mysql_close($db);
+}
+
+/**********************************************************************************************************
+Function Name:
+	GetOpenAuditDbConnection
+Description:
+	Authenticates and connects to the Open Audit database
+Arguments: None
+Returns: 		[resource]	MySQL link identifier 
+Change Log:
+	02/03/2009			New function	[Nick Brown]
+	09/03/2009			Passing  value of TRUE for mysql_connect "new_link"  argument
+**********************************************************************************************************/
+function GetOpenAuditDbConnection()
+{
+	global $mysql_server, $mysql_user, $mysql_password, $mysql_database;
+
+	$sql_link = mysql_connect($mysql_server,$mysql_user,$mysql_password, TRUE);
+	mysql_select_db($mysql_database,$sql_link);
+	
+	return $sql_link;
 }
 
 /**********************************************************************************************************
@@ -874,7 +977,7 @@ Returns:	[String]	$var value or $default value
 Change Log:
 	26/08/2008			New function	[Nick Brown]
 **********************************************************************************************************/
-function GetVarOrDefaultValue(&$var, $default)
+function GetVarOrDefaultValue(&$var, $default="")
 {if (isset($var)) return $var; else return $default;}
 
 /**********************************************************************************************************
@@ -906,5 +1009,70 @@ function ConnectToLdapServer(&$ldap_server, $ldap_user, $ldap_password)
 
 	$errdata = array("number" => ldap_errno($l), "string" => ldap_error($l));
 	if ($errdata["number"] !=0 ) return $errdata; else return $l;
+}
+
+/**********************************************************************************************************
+Function Name:
+	GetLdapConnectionsFromDb
+Description:
+	Get list of LDAP connections (domains)  from db and return in array
+Arguments:
+Returns:
+	LDAP Connections				[ARRAY]  
+Change Log:
+	24/02/2009			New function	[Nick Brown]
+	11/03/2009			Connection username and password now included in returned array	[Nick Brown]
+	17/03/2009			Using GetAesKey() instead of GetVolumeLabel()
+**********************************************************************************************************/
+function GetLdapConnectionsFromDb()
+{
+	global $mysql_server,$mysql_user,$mysql_password,$mysql_database;
+	
+	$db = mysql_connect($mysql_server,$mysql_user,$mysql_password);
+	mysql_select_db($mysql_database,$db);
+	
+	$aes_key = GetAesKey();
+	
+	$sql =
+  "SELECT ldap_connections_id,AES_DECRYPT(ldap_connections_user,'".$aes_key."') AS ldap_user, 
+	AES_DECRYPT(ldap_connections_password,'".$aes_key."') AS ldap_password, ldap_connections_server, 
+	ldap_connections_fqdn, ldap_connections_name, ldap_connections_nc FROM ldap_connections ";
+	
+	$result = mysql_query($sql, $db);
+	if ($myrow = mysql_fetch_array($result))
+	{
+		$ldap_connections = array();
+		do
+		{
+			$id = $myrow["ldap_connections_id"];
+			$ldap_connections[$id] = Array() ;
+			$ldap_connections[$id]["server"] = $myrow["ldap_connections_server"];
+			$ldap_connections[$id]["user"] = $myrow["ldap_user"];
+			$ldap_connections[$id]["password"] = $myrow["ldap_password"];
+			$ldap_connections[$id]["name"] = $myrow["ldap_connections_name"];
+			$ldap_connections[$id]["fqdn"] = $myrow["ldap_connections_fqdn"];
+			$ldap_connections[$id]["nc"] = $myrow["ldap_connections_nc"];
+		}
+		while ($myrow = mysql_fetch_array($result));
+	}
+	mysql_close();
+	return $ldap_connections;
+}
+
+/**********************************************************************************************************
+Function Name:
+	RedirectToUrl
+Description:
+	Sends a header back to the browser to redirect to the supplied URL
+Arguments:
+	$url		[STRING]	Redirect URL
+Returns:	None
+Change Log:
+	24/02/2009			New function	[Nick Brown]
+**********************************************************************************************************/
+function RedirectToUrl($url)
+{
+	header('Location: '.$url);
+	exit;
 }
 ?>

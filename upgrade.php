@@ -1,4 +1,16 @@
 <?php
+/**********************************************************************************************************
+Module:	upgrade.php
+
+Description:
+	Code to ensure PHP installation is brought up to the latest version
+
+Change Control:
+
+	[Nick Brown]	17/03/2009
+	Added code to upgrade to Version 09.03.17 
+
+**********************************************************************************************************/
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -544,7 +556,33 @@ ALTER TABLE `ldap_computers` ADD COLUMN `ldap_computers_lastlogontimestamp` varc
 
 upgrade ($version,"08.12.10", $sql);
 
+// *************  Version 09.03.17 *******************************************************************
 
+// Update include_config.php - preserving existing values
+$current_content = file_get_contents("include_config.php");
+$content = "<?php\ninclude_once \"include_config_defaults.php\"; // Ensures that all variables have a default value\n";
+$content .= substr($current_content, 6); 
+
+if (is_writable("include_config.php")) 
+{
+	if (!$handle = fopen("include_config.php", 'w')){exit("Cannot open file ($filename)");}
+	if (fwrite($handle, $content) === FALSE){exit("Cannot write to file ($filename)");}
+	echo __("The Open-AudIT config has been updated");
+  fclose($handle);
+}
+else {echo __("The file") . "include_config.php" . __("is not writable");}
+
+// Update encrypted  LDAP data using new AES key function (GetAesKey)
+$old_aes_key = GetVolumeLabel('c');
+$aes_key = GetAesKey();
+$sql = "UPDATE `ldap_connections` SET
+				`ldap_connections_user` = AES_ENCRYPT(AES_DECRYPT(`ldap_connections_user`,'".$old_aes_key."'),'".$aes_key."'),
+				`ldap_connections_password` = AES_ENCRYPT(AES_DECRYPT(`ldap_connections_password`,'".$old_aes_key."'),'".$aes_key."')";
+$result = mysql_query($sql);
+				
+modify_config("version", "09.03.17");
+
+// *********************************************************************************************
 
 set_time_limit (30);
 

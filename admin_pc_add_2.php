@@ -3,7 +3,7 @@ $page = "add_pc";
 // Increase the script timeout value
 set_time_limit(200);
 
-$systemname = "";
+$system_name = "";
 $timestamp = "";
 $uuid = "";
 $user_name = "";

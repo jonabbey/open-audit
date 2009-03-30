@@ -1,15 +1,24 @@
 <?php
 /**********************************************************************************************************
-Module Comments:
-	
-	[Nick Brown]	20/08/2008
-	This page is comprised of three sections:
+Module:	admin_config.php
+
+Description:
+	This page prvides the GUI and code to change the system configuration settings. It is comprised of three sections:
 	1. Validation of $_POST values
 	2. Creation of a new 'include_config.php' file based on the validated $_POST Settings
 	3. HTML page content (mostly a FORM)
 
 	Steps 1. and 2 are only executed when the HTML FORM has been POSTed to the page 
 	(i.e. $_POST['submit_button'] is defined)
+		
+Change Control:
+	
+	[Nick Brown]	20/08/2008
+	Original GUI and code redesigned.
+
+	[Nick Brown]	02/03/2009
+	Added $admin_list_post and $user_list support in "include_config.php" - there is no GUI for modifying these values yet
+	Added an include for "include_config_defaults.php" in "include_config.php"
 	
 **********************************************************************************************************/
 
@@ -96,6 +105,9 @@ if(isset($_POST['submit_button']))
 	$show_systems_audited_graph_post = GetPOSTOrDefaultValue('show_systems_audited_graph_post','n');
 	$systems_audited_days_post = GetPOSTOrDefaultValue('systems_audited_days_post','n');
 
+	$admin_list_post = GetVarOrDefaultValue($admin_list, Array('Domain Admins')); 
+	$user_list_post = GetVarOrDefaultValue($user_list, Array('Domain Users')); 
+	
 	if (!$break) // Check for error with database definition - continue if no error
 	{
 		/**********************************************************************************************************
@@ -103,6 +115,7 @@ if(isset($_POST['submit_button']))
 		**********************************************************************************************************/
 	  $filename = 'include_config.php';
 	  $content = "<?php\n";
+	  $content .= "include_once \"include_config_defaults.php\"; // Ensures that all variables have a default value\n"; 
 	  $content .= "\$mysql_server = '" . $_POST['mysql_server_post'] . "';\n";
 	  $content .= "\$mysql_database = '" . $_POST['mysql_database_post'] . "';\n";
 	  $content .= "\$mysql_user = '" . $_POST['mysql_user_post'] . "';\n";
@@ -157,7 +170,13 @@ if(isset($_POST['submit_button']))
 	  $content .= "\$show_ldap_changes = '".$show_ldap_changes_post."';\n";	// Added by Nick Brown	
 	  $content .= "\$ldap_changes_days = ".$ldap_changes_days_post.";\n";	// Added by Nick Brown	
 	  $content .= "\$show_systems_audited_graph = '".$show_systems_audited_graph_post."';\n";	// Added by Nick Brown	
-	  $content .= "\$systems_audited_days = ".$systems_audited_days_post.";\n"; // Added by Nick brown
+	  $content .= "\$systems_audited_days = ".$systems_audited_days_post.";\n\n"; // Added by Nick Brown
+
+		$admin_list_array = (count($admin_list_post) > 0) ? "'".implode("','",$admin_list_post)."'" : ""; // Added by Nick Brown
+		$user_list_array = (count($user_list_post) > 0) ? "'".implode("','",$user_list_post)."'" : ""; // Added by Nick Brown
+	  $content .= "\$admin_list = Array(".$admin_list_array.");\n"; // Added by Nick Brown
+	  $content .= "\$user_list = Array(".$user_list_array.");\n"; // Added by Nick Brown
+
 	  $content .= "?>";
 
 		// Write $content to $filename
