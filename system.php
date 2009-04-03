@@ -74,7 +74,7 @@ echo "<td valign=\"top\">\n";
              $result_headline=mysql_query($query_array["name"]["sql"], $db);
              if ($myrow = mysql_fetch_array($result_headline)){
                  echo $myrow[0];
-                 echo "</td><td>";
+                 echo "</td></tr>";
                  if(isset($show_summary_barcode) AND ($show_summary_barcode === TRUE)){
                   //
                 include_once('lib\barcode\code128.class.php');
@@ -99,7 +99,7 @@ echo "<td valign=\"top\">\n";
 //                $barcode->setEanStyle(false);
 //                $barcode->setShowText(true);
                 $barcode->saveBarcode($thisimagename);
-                echo "<img src='".$thisimagename."'>";
+                echo "<img src='".$thisimagename."'><tr>";
                 
                //
                }
