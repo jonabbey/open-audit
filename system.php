@@ -62,6 +62,10 @@ echo "<td valign=\"top\">\n";
   echo "<div class=\"main_each\">";
 
   if(isset($query_array["name"]) AND $query_array["name"]!=""){
+
+ 
+          
+
       echo "<table width=\"100%\" border=\"0\" style=\"height: 70px\"><tr><td class=\"contenthead\">\n";
          //Is the headline a sql-query?
          if(isset($query_array["name"]) AND is_array($query_array["name"])){
@@ -70,6 +74,28 @@ echo "<td valign=\"top\">\n";
              $result_headline=mysql_query($query_array["name"]["sql"], $db);
              if ($myrow = mysql_fetch_array($result_headline)){
                  echo $myrow[0];
+                 echo "</td><td>";
+                 if(isset($show_summary_barcode) AND ($show_summary_barcode === TRUE)){
+                  //
+                include_once('lib\barcode\code128.class.php');
+                
+                
+                  $thistext = htmlspecialchars($myrow[0]);
+                // 
+                // FIXME: (AJH) The font could be an issue, as we have no idea where the fonts reside.
+                // If windows, the above should work, if Linux, anything might happen. 
+                // I should fix this by standardising this and the disk usage font, or including a local font.
+                // 
+                $thisfont = 'c:\windows\fonts\verdana.ttf';
+                $thisimagename = 'barcode.png';
+                $barcode = new phpCode128($thistext, 100, $thisfont, 18);
+                $barcode->setEanStyle(false);
+                $barcode->setShowText(true);
+                $barcode->saveBarcode($thisimagename);
+                echo "<img src='".$thisimagename."'>";
+                
+               //
+               }
              }
          }else{
               echo htmlspecialchars($query_array["name"]);

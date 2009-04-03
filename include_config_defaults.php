@@ -82,7 +82,8 @@ $systems_audited_days='45';
 
 $max_log_entries = 1000;
 $utf8 = 'y';
-
+$show_summary_barcode = FALSE ;
+$summary_barcode = "name";
 $admin_list = Array('Domain Admins');
 $user_list = Array('Domain Admins');
 ?>
