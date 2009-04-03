@@ -88,9 +88,16 @@ echo "<td valign=\"top\">\n";
                 // 
                 $thisfont = 'c:\windows\fonts\verdana.ttf';
                 $thisimagename = 'barcode.png';
-                $barcode = new phpCode128($thistext, 100, $thisfont, 18);
-                $barcode->setEanStyle(false);
+                $barcode = new phpCode128($thistext, 120, $thisfont, 18);
+                $barcode->setBorderWidth(1);
+                $barcode->setBorderSpacing(10);
+                $barcode->setPixelWidth(1);
+                $barcode->setEanStyle(true);
                 $barcode->setShowText(true);
+                $barcode->setAutoAdjustFontSize(true);
+                $barcode->setTextSpacing(5);
+//                $barcode->setEanStyle(false);
+//                $barcode->setShowText(true);
                 $barcode->saveBarcode($thisimagename);
                 echo "<img src='".$thisimagename."'>";
                 
