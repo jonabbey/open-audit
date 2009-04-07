@@ -1,4 +1,16 @@
 <?php
+/**********************************************************************************************************
+Module:	system_viewdef_summary.php
+
+Description:
+	Menu and SQL query definition for computer system summary page
+	
+Change Control:
+
+	[Nick Brown]	03/04/2009
+	Added "uuid" parameter to the user and computer ldap links
+	
+**********************************************************************************************************/
 include "include_config.php";
 include_once "include_functions.php";
 $query_array=array("name"=>array("name"=>__("Summary"),
@@ -369,6 +381,7 @@ if ((isset($use_ldap_integration))and($use_ldap_integration == 'y')) {
                                                                                              "var"=>array("name"=>"%system_name",
                                                                                                           "full_details"=> "y",
                                                                                                           "record_type" => "computer",
+																																																					"uuid" => "%system_uuid"
                                                                                                          ),
                                                                                             ),
                                                                               );
@@ -385,6 +398,7 @@ if ((isset($use_ldap_integration))and($use_ldap_integration == 'y')) {
                                                                                              "var"=>array("name"=>"%net_user_name",
                                                                                                           "full_details"=> "y",
                                                                                                           "record_type" => "user",
+																																																					"uuid" => "%system_uuid"
                                                                                                          ),
                                                                                             ),
                                                                               );                                                                          
@@ -402,6 +416,7 @@ if ((isset($use_ldap_integration))and($use_ldap_integration == 'y')) {
                                                                                              "var"=>array("name"=>"%system_name",
                                                                                                           "full_details"=> "n",
                                                                                                           "record_type" => "computer",
+																																																					"uuid" => "%system_uuid"
                                                                                                          ),
                                                                                             ),
                                                                               );                                      
@@ -417,6 +432,7 @@ if ((isset($use_ldap_integration))and($use_ldap_integration == 'y')) {
                                                                                              "var"=>array("name"=>"%net_user_name",
                                                                                                          "full_details"=> "n",
                                                                                                           "record_type" => "user",
+																																																					"uuid" => "%system_uuid"
                                                                                                          ),
                                                                                             ),
                                                                               );                                  

@@ -1,298 +1,194 @@
-<?php 
-$page = "";
-$extra = "";
-$software = "";
-$count = 0;
-$total_rows = 0;
+<?php
+/**********************************************************************************************************
+Module:	ldap_details.php
 
-$page = "";
-include "include.php"; 
+Description:
+	This module displays the user or computer LDAP details - linked to from the system summary page. The following form 
+	variables are expected to be supplied to the page:
+	$_GET("record_type") - user or computer
+	$_GET("full_details") - Y or N whether full or partial LDAP details are returned
+	$_GET("uuid") - Open Audit ID of the system
+	
+Change Control:
 
-$title = "ldap_datails.php";
-if (isset($_GET["show_all"])){ $count_system = '10000'; } else {}
-if (isset($_GET["page_count"])){ $page_count = $_GET["page_count"]; } else { $page_count = 0;}
-$page_prev = $page_count - 1;
-if ($page_prev < 0){ $page_prev = 0; } else {}
-$page_next = $page_count + 1;
-$page_current = $page_count;
-$page_count = $page_count * $count_system;
+	[Nick Brown]	03/04/2009
+	Re-wrote module from scratch
+	
+**********************************************************************************************************/
+require_once "include.php";
 
-echo "<td>\n";
+$ldap_info = GetLdapConnection();
 
-
-$user_name = "";
-// Set name from URL
-if (isset($_GET['name'])) {$name = $_GET['name'];} else {$name= "none";}
-// Set record type, supports comupter or user accepts anything !FIXME this is so we can select DNS entries or whatever as yet uncoded.
-if (isset ($_GET['record_type'])) {$record_type = $_GET['record_type'];} else {$record_type="user";}
-// Sets detail level
-if (isset($_GET['full_details'])) {$full_details = $_GET['full_details'];} else {$full_details= "n";}
-// Sets inject into database (if supported  for record type). 
-if (isset($_GET['inject'])) {$inject = $_GET['inject'];} else {$inject= "n";}
-// Sets the sort field. 
-if (isset($_GET['$sort_column'])) {$sort_column = $_GET['$sort_column'];} else {$sort_column= "none";}
-
-
-
-// Check setup included ldap integration
-if ($use_ldap_integration == "y") {
-
-// Find name from domain\name
-if ($record_type=="user"){
-$slash_char = chr(92);
-
-$pos = strrpos($name, $slash_char);
-
-if ($pos === false ) {
-    // Dont need to do anything if we didn't find a slash in the username.
-    } else {
-    // We pick up the right half of the string  if we found the slash
-    $pos=$pos+1;
-    $name = substr($name,($pos));
-//   echo $name;
-    }
- }   
-// $ldap vars are set in config
-//
-//Note that this LDAP string specifies the OU that contains the User Accounts
-//All OUs under it are also retrieved
-
-$dn = $ldap_base_dn;
-
-//domain user fullname and password
-
-$user = $ldap_user;
-$secret = $ldap_secret;
-
-if ($record_type=="user"){
-//$attributes = array("displayname","description","userprincipalname","homedirectory","homedrive","profilepath","scriptpath","mail","samaccountname","telephonenumber","location","department","sn","badpwdcount");
-//$attributes = array("displayname","title","mail","telephonenumber","location","department","company","streetaddress");
-$attributes = array("displayname","title","mail","telephonenumber","location","department","company","streetaddress");
-
-
-$filter = "(&(objectClass=user)(objectCategory=person)(|(samaccountname=".$name.chr(42).")(name=".$name.chr(42).")(displayname=".$name.chr(42).")(cn=".$name.chr(42).")))";
-
-if ($full_details == 'dump') {$filter = "(&(objectCategory=person)(objectClass=user)(telephonenumber=*))";}
-} 
-if ($record_type=="computer"){
-$attributes = array("name","description","operatingsystem","operatingsystemservicepack","operatingsystemversion","location");
-$filter = "(&(objectClass=computer)(objectCategory=computer)(|(samaccountname=".$name.chr(42).")(name=".$name.chr(42).")(displayname=".$name.chr(42).")(cn=".$name.chr(42).")))";
+// Didn't get LDAP connection -  alert user
+if ($ldap_info === False)
+{
+	echo "<td><div class='ldap_details'>";
+	echo "<img src='images/emblem_important.png'/>";
+	echo __("Cannot retrieve LDAP details as you have no LDAP connection defined for this domain.");
+	echo "</div></td>";
+	include "include_right_column.php";
+	die;
 }
 
+// Connect (authenticate) to LDAP
+$upn = isEmailAddress($ldap_info['user']) ? $ldap_info['user'] : $ldap_info['user']."@".$ldap_info['fqdn'];
+$ldap = ConnectToLdapServer($ldap_info['server'],$upn,$ldap_info['password']);
 
-// This throws away some spurious Active Direcrory error related nonsense if you have no phone number or whatever
-// should really catch this gracefully
-error_reporting(0);
+// Get LDAP info
+if($_GET["record_type"] == "computer")
+{
+	$sam_account_name = $ldap_info['system_name']."$";
+	$attributes = ($_GET["full_details"] == "y") ? Array() : $computer_ldap_attributes;
+}
+else
+{
+	// Get user account name - user name *may* be in DOMAIN\ACCOUNT format or may not :-)
+	$sam_account_name =(stripos($ldap_info["net_user_name"],"\\") !== FALSE) ? array_pop(explode("\\",$ldap_info["net_user_name"])) : $ldap_info["net_user_name"];;
+	$attributes = ($_GET["full_details"] == "y") ? Array() : $user_ldap_attributes;
+}
+$filter = "(&(objectClass=".$_GET["record_type"].")(sAMAccountName=".$sam_account_name."))";
+$sr = ldap_search($ldap, $ldap_info['nc'], $filter, $attributes);
+$info = ldap_get_entries($ldap, $sr);
 
-if (function_exists('ldap_connect')){
-$ad = ldap_connect($ldap_server) or die(__("Couldn't connect to LDAP Dirctory"));
-ldap_set_option($ad, LDAP_OPT_PROTOCOL_VERSION, 3);
-ldap_set_option($ad, LDAP_OPT_REFERRALS, 0);
-$bd = ldap_bind($ad,$user,$secret);
-
-if ($bd){
-  //echo "Admin - Authenticated<br>";
-} else {
-  echo "<b>".__("Problem - Not a valid username/password.")."</b>";
+// Couldn't retrieve user or computer object from LDAP - alert user
+if ($info == NULL)
+{
+	echo "<td><div class='ldap_details'>";
+	echo "<img src='images/emblem_important.png'/>";
+	echo __("Cannot retrieve LDAP details. The ").$_GET["record_type"].__(" object cannot be found in the LDAP source - ").$ldap_info["name"];
+	echo "</div></td>";
+	include "include_right_column.php";
+	die;
 }
 
-
-ldap_set_option($ad, LDAP_OPT_PROTOCOL_VERSION, 3);
-ldap_set_option($ad, LDAP_OPT_REFERRALS, 0);
-$bd = ldap_bind($ad,$user,$secret);
-if ($bd){
-// Could display a connected message here, but that messes up the formatting. 
-} else {
-  echo "<b>".__("Problem - Not a valid username/password.")."</b>";
+// ObjectSid is binary - need to use ldap_get_values_len() to ensure that it's correctly retrieved - only needed if retrieving full attributes
+if ($_GET["full_details"] == "y")
+{
+	$entry = ldap_first_entry($ldap, $sr);
+	$objectsid = ldap_get_values_len($ldap, $entry, "objectsid");
+	$info[0]["objectsid"][0] = $objectsid[0];
 }
-} else {
+// Sort by keys
+ksort($info[0]);
+?>
 
-        echo "<b>".__("LDAP connectivity is not available, please check php.ini ")."</b>";
+<!-- LDAP details header -->
+<td>
+<div class='ldap_details'>
+<div>
+	<img src='images/<?echo GetImage($sam_account_name);?>' alt='<?echo $sam_account_name;?>'/>
+<?echo ($_GET["full_details"] == "y" ? "Full" : "Partial") ;?>
+ LDAP details for 
+<?echo $info[0]["name"][0]." [".$ldap_info["name"]."]";?>
+	<hr />
+</div>
+<!-- LDAP details table -->
+<table>
+<tr><th><?echo __("Attribute");?></th><th><?echo __("Value");?></th></tr>
+
+<?
+// Dump LDAP data into table
+foreach ($info[0] as $key => $value)
+{
+	if(!is_numeric($key) && ($key != "count") && ($key != "dn")) 
+	{
+		array_shift($value);
+		$val = FormatLdapValue($key, $value);
+		echo "<tr class='".alternate_tr_class($tr_class)."'>";
+		echo "<td>$key</td><td>$val</td></tr>";
+	}
 }
-
-if ($full_details == "n"){$result = ldap_search($ad, $dn, $filter, $attributes);}
-    else
-    {$result = ldap_search($ad, $dn, $filter);}
-
-if  ((isset($sort_column)) and ($sort_column !="none")){
-ldap_sort($ad,$result,"displayname");
-}
-
-$entries = ldap_get_entries($ad, $result);
-
-echo "<div class=\"main_each\">\n";
-echo "<form action=\"search.php?sub=no\" method=\"post\">";
-echo "<table border=\"0\" cellpadding=\"2\" cellspacing=\"0\" width=\"100%\" class=\"content\">";
-
-$num_found = $entries["count"];
-
-if ($num_found == 0 ){
-        echo "<div class=\"main_each\">\n";
-        echo "<form action=\"search.php?sub=no\" method=\"post\">";
-        echo "<table border=\"0\" cellpadding=\"2\" cellspacing=\"0\" width=\"100%\" class=\"content\">";
-        if ($bgcolor == "#F1F1F1") { $bgcolor = "#FFFFFF"; } else { $bgcolor = "#F1F1F1"; }
-        echo "<p>"; 
-        echo "<tr bgcolor=\"" . $bgcolor . "\"><td><b>".__("Not found in ".$ldap_base_dn.".")."</b></td></tr>";
-
-} else {
-
-if ($inject == "y"){
-//sql inject create table    $table_name = "ldap_users_details";
-    $column_names = "";
-    $column_values = "";
-    $table_name = "ldap_users_details";
-    
-//$sql ="DROP TABLE IF EXISTS `".$table_name ."`;";
-//$result = mysql_query($sql) ;
-
-  $time_now = time(); 
-  $sql = "CREATE TABLE IF NOT EXISTS `" . $table_name . "` (
-  `ldap_users_details_id` int(11) NOT NULL auto_increment,
-    `ldap_users_details_first_timestamp` bigint(20) unsigned NOT NULL default '".$time_now."',
-    `ldap_users_details_update_timestamp` bigint(20) unsigned NOT NULL default '0',
-    `samaccountname` varchar(100) NOT NULL default '',
-   PRIMARY KEY  (`samaccountname`),
-   KEY (`ldap_users_details_id`)
-   ) ENGINE=MyISAM DEFAULT CHARSET=latin1;";
-//      $result = mysql_query($sql);
-        $result = mysql_query($sql) or die ('CREATE Failed: ' . mysql_error() . '<br />' . $sql);
-//end
-} 
-
-for ($user_record_number = 0; $user_record_number<$num_found; $user_record_number++) {
-//echo "Next User:<br>";
-
-$record_number = $user_record_number+1;
-
-// Show the correct image
-if ($record_type == 'computer'){
-
-        $filename = 'images/equipment/'.$entries[$user_record_number]["name"][0] .'.jpg';
-
-        if (file_exists($filename)) {
-                                            echo "<td><img src='".$filename."' width='96' height='96' alt='' />";
-                                     } else {
-                                            echo "<td><img src='images/o_terminal_server.png' width='64' height='64' alt='' />";
-//        echo $filename;
-//        echo "<td><img src='images/AllStaff/". $entries[$user_record_number]["displayname"][0] .".jpg' width='128' height='164' alt='' />";
-                                    }
-        
-  
-//        echo "<td><img src='images/o_terminal_server.png' width='64' height='64' alt='' />";
-        }
-        if ($record_type == 'user'){
-//        echo "<td><img src='images/users_l.png' width='64' height='64' alt='' />";
-        
-        
-        $filename = 'images/people/'.$entries[$user_record_number]["displayname"][0] .'.jpg';
-
-        if (file_exists($filename)) {
-                                            echo "<td><img src='".$filename."' width='128' height='164' alt='' />";
-                                     } else {
-                                            echo "<td><img src='images/users_l.png' width='64' height='64' alt='' />";
-        
-//        echo "<td><img src='images/AllStaff/". $entries[$user_record_number]["displayname"][0] .".jpg' width='128' height='164' alt='' />";
-                                    }
-        }
-                
-        $bgcolor == "#FFFFFF";	
-//      if ($bgcolor == "#F1F1F1") { $bgcolor = "#FFFFFF"; } else { $bgcolor = "#F1F1F1"; }
-      echo "<tr bgcolor=\"" . $bgcolor . "\"><td><h3>" . $entries[$user_record_number]["displayname"][0] . "</h3></td><td></td></tr>";
-      $bgcolor = change_row_color($bgcolor,$bg1,$bg2); 
-      echo "<tr bgcolor=\"" . $bgcolor . "\"><td><b>Telephone:</td><td>" . $entries[$user_record_number]["telephonenumber"][0] . "</a></b></td></tr>";	
-      $bgcolor = change_row_color($bgcolor,$bg1,$bg2); 
-      echo "<tr bgcolor=\"" . $bgcolor . "\"><td>" .__("Full LDAP Account Details"). "</td><td></td></tr>";      
-      for ($user_record_field_number=0; $user_record_field_number<$entries[$user_record_number]["count"]; $user_record_field_number++){
-      $data =$entries[$user_record_number][$user_record_field_number];
-
-
-    
-  
-    for ($user_record_field_number_data=0; $user_record_field_number_data<$entries[$user_record_number][$data]["count"]; $user_record_field_number_data++) {
-
-
-if ($inject == "y"){
-// SQL inject code.
-
-//        $sql="ALTER TABLE 'ldap_users_details' ADD COLUMN IF NOT EXISTS '$data' varchar(255) ;";
-        $sql2="ALTER TABLE ".$table_name ." ADD COLUMN ".$data." varchar(255) NOT NULL default '' ;";
-
-        $result = mysql_query($sql2) ;
-        //or die ('ALTER Failed: ' . mysql_error() . '<br />' . $sql);
-        
-         $column_names = $column_names.$data.",";
-         
-         $this_value =  ereg_replace("/","-", $entries[$user_record_number][$data][$user_record_field_number_data]);
-         $this_value = ereg_replace("'","-",$this_value);
-        $last_value = $this_value ;
-        
-        $column_values = $column_values."'".$this_value."',";
-}
-// End SQL inject        
-        if  (isEmailAddress($entries[$user_record_number][$data][$user_record_field_number_data])){
-          // If its a valid email address, highlight it, and add a URL mailto:
-      $bgcolor = change_row_color($bgcolor,$bg1,$bg2); 	
-     echo "<tr bgcolor=\"" . $bgcolor . "\"><td><b>".__($data).":</b></td><td><a href='mailto:" . $entries[$user_record_number][$data][$user_record_field_number_data] . "'>" . $entries[$user_record_number][$data][$user_record_field_number_data] . "</a></td></tr>";
-     }
-     else 
-     {
-        if  (isGUID($entries[$user_record_number][$data][$user_record_field_number_data])){
-           $guid_text= strtoupper(formatGUID($entries[$user_record_number][$data][$user_record_field_number_data]));
-           echo "<tr bgcolor=\"" . $bgcolor . "\"><td>".__($data).":</td><td>{".$guid_text."}</td></tr>";
-         }
-         else
-         {
-         if  (isSID($data)){
-           $sid_text= strtoupper(formatSID($entries[$user_record_number][$data][$user_record_field_number_data]));
-           echo "<tr bgcolor=\"" . $bgcolor . "\"><td>".__($data).":</td><td>{".$sid_text."}</td></tr>";
-            }
-         else
-         {
-            // Else just show it. 
-          $bgcolor = change_row_color($bgcolor,$bg1,$bg2); 
-           echo "<tr bgcolor=\"" . $bgcolor . "\"><td>".__($data).":</td><td>" .$entries[$user_record_number][$data][$user_record_field_number_data]. "</td></tr>";
-         }
-        }         
-    }
-     
-  }
- 
-}
-  if ($inject == "y"){
-  // SQL inject code
-            $column_names = rtrim( $column_names,",");
-            $column_values = rtrim( $column_values,",");
-            $time_now = time();
-           $sql="INSERT INTO ".$table_name. " (".$column_names.") VALUES (".$column_values.") ON DUPLICATE KEY UPDATE ldap_users_details_update_timestamp = ".$time_now." ;";
-
-        //
-        $result = mysql_query($sql) or die ('Insert Failed: ' . mysql_error() . '<br />' . $sql); 
-               $column_names = "";
-               $column_values = "";
-  // End SQL inject
-} 
-               
-  echo "<p>"; // separate entries
-  echo "<tr><td colspan=\"2\"><hr /></td></tr>\n";
- }
-}
-} else {
-
-        echo "<div class=\"main_each\">\n";
-        echo "<form action=\"search.php?sub=no\" method=\"post\">";
-        echo "<table border=\"0\" cellpadding=\"2\" cellspacing=\"0\" width=\"100%\" class=\"content\">";
-       $bgcolor = change_row_color($bgcolor,$bg1,$bg2); 
-        echo "<p>"; 
-        echo "<tr bgcolor=\"" . $bgcolor . "\"><td><b>".__("LDAP Not configured. Please set this up in Admin> Config")."</b></td></tr>";
-}
-echo "</table>";
-
-echo "</td>\n";
-// Unbind LDAP again to avoid flooding it with connections. 
-ldap_unbind($ad);
+echo "</table></div></td>";
 include "include_right_column.php";
 
-echo "</body>\n</html>\n";
+/**********************************************************************************************************
+Function Name:
+	GetImage
+Description:
+	Returns image file name - image to be displayed with the LDAP details. If image file exists that matches user account name,
+	then this filname is returned else default user or computer account image filenames are used. 
+Arguments:
+	$name	[IN]	[STRING]	user or computer samaccountname value
+Returns:
+	Image file name/path	[STRING]
+Change Log:
+	06/04/2009			New function	[Nick Brown]
+**********************************************************************************************************/
+function GetImage($name)
+{
+	if ($_GET["record_type"] == "computer")
+	{
+		$file = "equipment/$name.jpg";
+    if (file_exists("images/$file")) {return $file;} 
+		else {return "o_terminal_server.png";}
+  }
+  else
+	{
+		$file = "people/$name.jpg";
+    if (file_exists("images/$file")) {return $file;}
+		else {return "groups_l.png";}
+	}
+}
 
+/**********************************************************************************************************
+Function Name:
+	FormatLdapValue
+Description:
+	Applies formatting to specific LDAP values (or types of values)
+Arguments:
+	$name	[IN]	[STRING]		LDAP attribute name
+	$value	[IN]	[VARIANT]		LDAP attribute value	
+Returns:
+	Formatted LDAP value string	[STRING]
+Change Log:
+	03/04/2009			New function	[Nick Brown]
+**********************************************************************************************************/
+function FormatLdapValue(&$name, &$value)
+{
+	if (preg_match("/guid$/i", $name)) {return formatGUID($value[0]);}
+	if (preg_match("/sid$/i", $name)) {return ConvertBinarySidToSddl($value[0]);}
+	if (count($value)>1) {return "<ul><li>".implode("</li><li>",$value)."</li></ul>";}
+	return $value[0];
+}
 
+/**********************************************************************************************************
+Function Name:
+	GetLdapConnection
+Description:
+	Determine if we have an LDAP connection defined for the user or computer domain and return connection details
+Arguments: None
+Returns:
+	LDAP connection details		[ARRAY]
+Change Log:
+	03/04/2009			New function	[Nick Brown]
+**********************************************************************************************************/
+function GetLdapConnection()
+{
+	$db = ConnectToOpenAuditDb();
+
+	// Get domain that we need to connect to - user and computer may be different domains
+	$sql = "SELECT system_name, net_domain, net_user_name FROM system WHERE system_uuid = '".$_GET["uuid"]."'";
+	$result = mysql_query($sql, $db);
+	$system = mysql_fetch_array($result);
+	// Get user domain - user name *may* be in DOMAIN\ACCOUNT format or may not :-)
+	if ($_GET["record_type"] == "user")
+	{
+		$domain =(stripos($system["net_user_name"],"\\") !== FALSE) ? array_shift(explode("\\",$system["net_user_name"])) : $system["net_domain"];;
+	}
+	else {$domain = $system["net_domain"];}
+	
+	// Now get ldap connection info for that domain, if any ...
+	$aeskey = GetAesKey();	
+	$sql = "SELECT ldap_connections_server as server, ldap_connections_nc as nc, 
+					ldap_connections_fqdn  as fqdn, ldap_connections_name as name, 
+					AES_DECRYPT(`ldap_connections_user`,'".$aeskey."') as user, 
+					AES_DECRYPT(`ldap_connections_password`,'".$aeskey."') as password 
+					FROM ldap_connections
+					WHERE ldap_connections_fqdn = '$domain' OR ldap_connections_name = '$domain'";			
+	$result = mysql_query($sql, $db);
+	$ldap_info = (($ldap = mysql_fetch_array($result)) === FALSE) ? FALSE : array_merge($system, $ldap);
+	mysql_close($db);
+	
+	return $ldap_info;
+}
 ?>

@@ -23,6 +23,10 @@ Change Control:
 	
 	[Nick Brown]	24/03/2009
 	Added detection and handling for UPN format username to login
+	
+	[Nick Brown]	07/04/2009
+	Username text field now has focus on page load:
+	(http://www.open-audit.org/phpBB3/viewtopic.php?f=9&t=3157&start=0&st=0&sk=t&sd=a)
 
 **********************************************************************************************************/
 
@@ -100,6 +104,8 @@ if (isset($_POST['username']))
 </script>
 -->
 
+<body onload='document.getElementById("username").focus()'>
+
 	<div class='npb_ldap_login_header'>
 		<a href="index.php"><img src="images/logo.png"/></a>
 	</div>
@@ -111,7 +117,7 @@ if (isset($_POST['username']))
 	<form action="<?php $_SERVER['SCRIPT_NAME']; ?>" method="POST">
 
 	<label><?php echo __("Login Name:");?></label>
-	<input TYPE="Text" name="username"><br />
+	<input TYPE="Text" id="username" name="username"><br />
 	<label><?php echo __("Password:");?></label>
 	<input TYPE="Password" name="password"><br />
 	<label><?php echo __("Account Database:");?></label>

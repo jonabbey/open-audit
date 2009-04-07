@@ -20,7 +20,12 @@ Change Control:
 
 	[Nick Brown]	23/03/2009
 	Change to GetUserInfo()
+
+	[Nick Brown]	03/04/2009
+	Moved  ConvertBinarySidToSddl() to "include_functions.php"
+	
 **********************************************************************************************************/
+include_once "include_functions.php";
 include_once "include_config.php";
 
 /**********************************************************************************************************
@@ -122,7 +127,7 @@ Change Log:
 **********************************************************************************************************/
 function GetUserPrimaryGroupName(&$ldap, &$user, &$ldap_connection)
 {
-	$user_sddl = ConvertBinarySidToSddl(bin2hex($user[0]["objectsid"][0]));
+	$user_sddl = ConvertBinarySidToSddl($user[0]["objectsid"][0]);
 	$sddl_array = explode("-",$user_sddl);
 	array_pop($sddl_array);
 	$domain_sddl = implode("-",$sddl_array);
@@ -191,42 +196,6 @@ function IsUserInRoleArray(&$ldap, &$arr, &$user, &$primary_group, &$ldap_connec
 		}		
 	}
 	return FALSE;
-}
-
-/**********************************************************************************************************
-Function Name:
-	ConvertBinarySidToSddl
-Description:
-	Takes a SID as returned from LDAP - binary SID stored as a string - and converts to a SDDL string
-	See http://blogs.msdn.com/oldnewthing/archive/2004/03/15/89753.aspx
-Arguments:
-	$binary_sid		[STRING] 	Binary SID (as a string)
-Returns:
-	SDDL				[STRING]  
-Change Log:
-	24/02/2009			New function	[Nick Brown]
-**********************************************************************************************************/
-function ConvertBinarySidToSddl(&$binary_sid)
-{
-	// Convert string to an array
-	$sid = array();
-	for ($i = 0; $i < strlen($binary_sid); $i = $i + 2) {$sid[] = $binary_sid[$i].$binary_sid[$i+1];}
-
-	$sid_revision = hexdec($sid[0]);
-	$num_authorities = hexdec($sid[1]);
-	$nt_authority = hexdec($sid[2].$sid[3].$sid[4].$sid[5].$sid[6].$sid[7]);
-	$delegate_auths = array();
-	
-	// Get delegate authorities
-	for($i=0; $i<$num_authorities; $i++)
-	{
-		$j = ($i * 4) + 7;
-		$delegate_auths[$i] = strval(hexdec($sid[$j+4].$sid[$j+3].$sid[$j+2].$sid[$j+1]));
-	}
-	$delegate_auths_string = implode("-", $delegate_auths);
-	$sddl = "S-".$sid_revision."-".$nt_authority."-".$delegate_auths_string;
-	
-	return $sddl;
 }
 
 /**********************************************************************************************************

@@ -82,8 +82,14 @@ $systems_audited_days='45';
 
 $max_log_entries = 1000;
 $utf8 = 'y';
-$show_summary_barcode = FALSE ;
-$summary_barcode = "name";
+
 $admin_list = Array('Domain Admins');
 $user_list = Array('Domain Admins');
+
+$show_summary_barcode = FALSE ;
+$summary_barcode = "name";
+
+$user_ldap_attributes = Array("company","department","description","displayname",
+	"mail","manager","msexchhomeservername","name","physicaldeliveryofficename","samaccountname","telephonenumber");
+$computer_ldap_attributes = Array("description","name","operatingsystem","operatingsystemversion","operatingsystemservicepack");
 ?>

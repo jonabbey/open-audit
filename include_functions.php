@@ -17,6 +17,9 @@ Change Control:
 	[Nick Brown]	23/03/2009
 	Change to GetAesKey()
 
+	[Nick Brown]	03/04/2009	
+	Added ConnectToOpenAuditDb() and ConvertBinarySidToSddl()
+	
 **********************************************************************************************************/
 require_once "include_config.php";
 
@@ -1075,4 +1078,62 @@ function RedirectToUrl($url)
 	header('Location: '.$url);
 	exit;
 }
+
+/**********************************************************************************************************
+Function Name:
+	ConnectToOpenAuditDb
+Description:
+	Opens connection to Open Audit MySql database
+Arguments:	None
+Returns:
+	MySql link id	[RESOURCE]
+Change Log:
+	03/04/2009			New function	[Nick Brown]
+**********************************************************************************************************/
+function ConnectToOpenAuditDb()
+{
+	global $mysql_server, $mysql_user, $mysql_password, $mysql_database;
+	$db = mysql_connect($mysql_server,$mysql_user,$mysql_password);
+	mysql_select_db($mysql_database,$db);
+	return $db;
+}
+
+/**********************************************************************************************************
+Function Name:
+	ConvertBinarySidToSddl
+Description:
+	Takes a SID as returned from LDAP - binary SID stored as a string - and converts to a SDDL string
+	See http://blogs.msdn.com/oldnewthing/archive/2004/03/15/89753.aspx
+Arguments:
+	$binary_sid		[STRING] 	Binary SID (as a string)
+Returns:
+	SDDL				[STRING]  
+Change Log:
+	24/02/2009			New function	[Nick Brown]
+	03/04/2009			Moved from "include_ldap_login_functions.php" to "include_functions.php"
+**********************************************************************************************************/
+function ConvertBinarySidToSddl(&$binary_sid)
+{
+	// Convert string to an array
+	$sid = array();
+	$binary_sid = bin2hex($binary_sid);
+	for ($i = 0; $i < strlen($binary_sid); $i = $i + 2) {$sid[] = $binary_sid[$i].$binary_sid[$i+1];}
+
+	$sid_revision = hexdec($sid[0]);
+	$num_authorities = hexdec($sid[1]);
+	$nt_authority = hexdec($sid[2].$sid[3].$sid[4].$sid[5].$sid[6].$sid[7]);
+	$delegate_auths = array();
+	
+	// Get delegate authorities
+	for($i=0; $i<$num_authorities; $i++)
+	{
+		$j = ($i * 4) + 7;
+		$delegate_auths[$i] = strval(hexdec($sid[$j+4].$sid[$j+3].$sid[$j+2].$sid[$j+1]));
+	}
+	$delegate_auths_string = implode("-", $delegate_auths);
+	$sddl = "S-".$sid_revision."-".$nt_authority."-".$delegate_auths_string;
+	
+	return $sddl;
+}
+
 ?>

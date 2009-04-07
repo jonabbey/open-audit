@@ -267,6 +267,38 @@ a.npb_ldap_logout{
 #right_col{	background: url(images/Shading3.png) repeat-x top left;}
 
 #CenterColumn{
-	display: block;
-	width: 95%;
+/*	display: block;*/
+/*	width: 95%;*/
+}
+
+/* Format LDAP details page - Nick Brown */
+.ldap_details {
+  margin: 5px;
+  padding: 20px;
+  border: 1px solid #ccc;
+}
+
+.ldap_details table {
+  width: 100%;
+}
+
+.ldap_details th {
+	text-align: left;
+  color: #666;
+}
+
+.ldap_details hr {
+	text-align: left;
+  border: 2px solid #FFF3E5;
+}
+
+.ldap_details img {
+	vertical-align: middle;
+	margin: 10px;
+}
+
+div.ldap_details div {
+  font: bold 120% verdana, tahoma, arial, Sans ;
+  text-decoration: none;
+  color: #444;
 }
