@@ -76,17 +76,17 @@ ksort($info[0]);
 <td>
 <div class='ldap_details'>
 <div>
-	<img src='images/<?echo GetImage($sam_account_name);?>' alt='<?echo $sam_account_name;?>'/>
-<?echo ($_GET["full_details"] == "y" ? "Full" : "Partial") ;?>
+	<img src='images/<?php echo GetImage($sam_account_name);?>' alt='<?php echo $sam_account_name;?>'/>
+<?php echo ($_GET["full_details"] == "y" ? "Full" : "Partial") ;?>
  LDAP details for 
-<?echo $info[0]["name"][0]." [".$ldap_info["name"]."]";?>
+<?php echo $info[0]["name"][0]." [".$ldap_info["name"]."]";?>
 	<hr />
 </div>
 <!-- LDAP details table -->
 <table>
-<tr><th><?echo __("Attribute");?></th><th><?echo __("Value");?></th></tr>
+<tr><th><?php echo __("Attribute");?></th><th><?php echo __("Value");?></th></tr>
 
-<?
+<?php
 // Dump LDAP data into table
 foreach ($info[0] as $key => $value)
 {
