@@ -91,7 +91,7 @@ function GetLdapInfo($id)
 	)
 	AS U ORDER BY ldap_connections_name, cn";
 	
-	$result = mysql_query($sql, $db);
+	$result = mysql_query($sql, $db) or die (mysql_error());
 
 	$total = mysql_numrows($result);
 	if($total==0) return;
@@ -179,7 +179,7 @@ function GetSystemsAuditedGraph()
 	// SQL query to get number of systems audited each day
 	$sql = "SELECT left(system_audits_timestamp,8) as dt, count(DISTINCT system_audits_uuid) as cnt FROM system_audits ";	$sql.= "WHERE system_audits_timestamp>='".adjustdate(0,0,-($systems_audited_days-1))."000000' ";
 	$sql.= "GROUP BY left(system_audits_timestamp,8)";
-	$result = mysql_query($sql, $db);
+	$result = mysql_query($sql, $db) or die (mysql_error());
 	
 	// Populate $dates with results of query
 	if ($myrow = mysql_fetch_array($result))
@@ -220,7 +220,7 @@ function GetDiscoveredSystemsData($id)
   $sql .= "WHERE system_first_timestamp > '" . adjustdate(0,0,-$system_detected) . "000000' ";
   $sql .= "ORDER BY system_name";
 	
-	$result = mysql_query($sql, $db); 	
+	$result = mysql_query($sql, $db) or die (mysql_error()); 	
 	$count=mysql_numrows($result);
 
 	echo "<div class='npb_content_data' id='".$id."' style='display: none;'>";	
@@ -260,7 +260,7 @@ function GetOtherDiscoveredData($id)
   $sql .= "WHERE (other_ip_address <> '' AND other_first_timestamp > '" . adjustdate(0,0,-$other_detected) . "000000') ";
   $sql .= "ORDER BY other_ip_address";
 	
-	$result = mysql_query($sql, $db);
+	$result = mysql_query($sql, $db) or die (mysql_error());
 	$count=mysql_numrows($result);
 
 	echo "<div class='npb_content_data' id='".$id."' style='display: none;'>";	
@@ -324,7 +324,7 @@ function GetSystemsNotAuditedData($id)
 		
 	//echo $sql;
 	
-	$result = mysql_query($sql, $db);
+	$result = mysql_query($sql, $db) or die (mysql_error());
 	$count=mysql_numrows($result);
 
 	echo "<div class='npb_content_data' id='".$id."' style='display: none;'>";	
@@ -367,7 +367,7 @@ function GetPartitionUsageData($id)
   $sql .= "WHERE par.partition_free_space < '$partition_free_space' AND sys.system_uuid = par.partition_uuid AND par.partition_timestamp = sys.system_timestamp ";
   $sql .= "ORDER BY sys.system_name, par.partition_caption";
   
-	$result = mysql_query($sql, $db);
+	$result = mysql_query($sql, $db) or die (mysql_error());
 	$count=mysql_numrows($result);
 
 	echo "<div class='npb_content_data' id='".$id."' style='display: none;'>";	
@@ -424,7 +424,7 @@ function GetDetectedSoftwareData($id)
 	$sql .= "AND sw.software_uuid = sys.system_uuid ";
 	$sql .= "ORDER BY sw.software_name";
   
-	$result = mysql_query($sql, $db);
+	$result = mysql_query($sql, $db) or die (mysql_error());
 	$count=mysql_numrows($result);
 
 	echo "<div class='npb_content_data' id='".$id."' style='display: none;'>";	
@@ -484,7 +484,7 @@ function GetWebServersAsService(&$total, &$tr_class)
 	$sql .= "AND ser.service_uuid = sys.system_uuid AND ser.service_timestamp = sys.system_timestamp ";
 	$sql .= "ORDER BY system_name";
 	
-	$result = mysql_query($sql, $db);
+	$result = mysql_query($sql, $db) or die (mysql_error());
 	$total += mysql_numrows($result);
 	
 	if ($myrow = mysql_fetch_array($result))
@@ -521,7 +521,7 @@ function GetWebServersNmapAsAuditedSystem(&$total,&$tr_class)
   $sql .= "WHERE (port.nmap_port_number = '80' OR port.nmap_port_number = '443') AND port.nmap_port_proto = 'tcp' AND port.nmap_other_id = sys.system_uuid ";
   $sql .= "ORDER BY sys.system_name";
   
-	$result = mysql_query($sql, $db);
+	$result = mysql_query($sql, $db) or die (mysql_error());
   $total += mysql_numrows($result);
 
   if ($myrow = mysql_fetch_array($result))
@@ -562,7 +562,7 @@ function GetWebServersNmapAsOtherSystem(&$total,&$tr_class)
   $sql .= "WHERE (port.nmap_port_number = '80' OR port.nmap_port_number = '443') AND port.nmap_port_proto = 'tcp' AND (port.nmap_other_id = oth.other_mac_address OR port.nmap_other_id = oth.other_id) ";
   $sql .= "ORDER BY oth.other_network_name";
   
-	$result = mysql_query($sql, $db);
+	$result = mysql_query($sql, $db)  or die (mysql_error());
   $total += mysql_numrows($result);
   
 	if ($myrow = mysql_fetch_array($result))
@@ -620,7 +620,7 @@ function GetFtpServersAsService(&$total, &$tr_class)
   $sql .= "WHERE ser.service_display_name LIKE 'FTP%' AND ser.service_uuid = sys.system_uuid AND ser.service_timestamp = sys.system_timestamp ";
   $sql .= "ORDER BY sys.system_name";
 	
-	$result = mysql_query($sql, $db);
+	$result = mysql_query($sql, $db) or die (mysql_error());
 	$total += mysql_numrows($result);
 	
 	if ($myrow = mysql_fetch_array($result))
@@ -656,7 +656,7 @@ function GetFtpServersNmapAsAuditedSystem(&$total,&$tr_class)
   $sql .= "WHERE port.nmap_port_number = '21' AND port.nmap_port_proto = 'tcp' AND port.nmap_other_id = sys.system_uuid ";
   $sql .= "ORDER BY sys.system_name";
   
-	$result = mysql_query($sql, $db);
+	$result = mysql_query($sql, $db)  or die (mysql_error());
   $total += mysql_numrows($result);
 
   if ($myrow = mysql_fetch_array($result))
@@ -695,7 +695,7 @@ function GetFtpServersNmapAsOtherSystem(&$total, &$tr_class)
   $sql .= "WHERE port.nmap_port_number = '21' AND port.nmap_port_proto = 'tcp' AND (port.nmap_other_id = oth.other_mac_address OR port.nmap_other_id = oth.other_id) ";
   $sql .= "ORDER BY oth.other_network_name";
   
-	$result = mysql_query($sql, $db);
+	$result = mysql_query($sql, $db) or die (mysql_error());
   $total += mysql_numrows($result);
   
 	if ($myrow = mysql_fetch_array($result))
@@ -751,7 +751,7 @@ function GetTelnetServersAsService(&$total,&$tr_class)
   $sql .= "WHERE ser.service_display_name = 'Telnet' AND ser.service_started = 'True' AND ser.service_timestamp = sys.system_timestamp AND ser.service_uuid = sys.system_uuid ";
   $sql .= "ORDER BY sys.system_name";
   
-	$result = mysql_query($sql, $db);
+	$result = mysql_query($sql, $db) or die (mysql_error());
 	$total += mysql_numrows($result);
 	
 	if ($myrow = mysql_fetch_array($result))
@@ -787,7 +787,7 @@ function GetTelnetServersNmapAsAuditedSystem(&$total,&$tr_class)
   $sql .= "WHERE port.nmap_port_number = '23' AND port.nmap_port_proto = 'tcp' AND port.nmap_other_id = sys.system_uuid ";
   $sql .= "ORDER BY sys.system_name";
   
-	$result = mysql_query($sql, $db);
+	$result = mysql_query($sql, $db) or die (mysql_error());
   $total += mysql_numrows($result);
 
   if ($myrow = mysql_fetch_array($result))
@@ -825,7 +825,7 @@ function GetTelnetServersNmapAsOtherSystem(&$total,&$tr_class)
   $sql .= "WHERE port.nmap_port_number = '23' AND port.nmap_port_proto = 'tcp' AND (port.nmap_other_id = oth.other_mac_address OR port.nmap_other_id = oth.other_id) ";
   $sql .= "ORDER BY oth.other_network_name";
   
-	$result = mysql_query($sql, $db);
+	$result = mysql_query($sql, $db) or die (mysql_error());
   $total += mysql_numrows($result);
   
 	if ($myrow = mysql_fetch_array($result))
@@ -881,7 +881,7 @@ function GetEmailServersAsService(&$total,&$tr_class)
   $sql .= "AND ser.service_timestamp = sys.system_timestamp AND ser.service_uuid = sys.system_uuid ";
   $sql .= "ORDER BY sys.system_name";
   
-	$result = mysql_query($sql, $db);
+	$result = mysql_query($sql, $db) or die (mysql_error());
 	$total += mysql_numrows($result);
 	
 	if ($myrow = mysql_fetch_array($result))
@@ -917,7 +917,7 @@ function GetEmailServersNmapAsAuditedSystem(&$total,&$tr_class)
   $sql .= "WHERE port.nmap_port_number = '25' AND port.nmap_port_proto = 'tcp' AND port.nmap_other_id = sys.system_uuid ";
   $sql .= "ORDER BY sys.system_name";
   
-	$result = mysql_query($sql, $db);
+	$result = mysql_query($sql, $db) or die (mysql_error());
   $total += mysql_numrows($result);
 
   if ($myrow = mysql_fetch_array($result))
@@ -955,7 +955,7 @@ function GetEmailServersNmapAsOtherSystem(&$total,&$tr_class)
   $sql .= "WHERE port.nmap_port_number = '25' AND port.nmap_port_proto = 'tcp' AND (port.nmap_other_id = oth.other_mac_address OR port.nmap_other_id = oth.other_id) ";
   $sql .= "ORDER BY oth.other_network_name";
   
-	$result = mysql_query($sql, $db);
+	$result = mysql_query($sql, $db) or die (mysql_error());
   $total += mysql_numrows($result);
   
 	if ($myrow = mysql_fetch_array($result))
@@ -1010,7 +1010,7 @@ function GetVncServersAsService(&$total,&$tr_class)
   $sql .= "WHERE ser.service_name LIKE '%VNC%' AND ser.service_timestamp = sys.system_timestamp AND ser.service_uuid = sys.system_uuid ";
   $sql .= "ORDER BY sys.system_name";
 
-	$result = mysql_query($sql, $db);
+	$result = mysql_query($sql, $db) or die (mysql_error());
 	$total += mysql_numrows($result);
 	
 	if ($myrow = mysql_fetch_array($result))
@@ -1047,7 +1047,7 @@ function GetVncServersNmapAsAuditedSystem(&$total,&$tr_class)
   $sql .= "WHERE port.nmap_port_number = '5900' AND port.nmap_port_proto = 'tcp' AND port.nmap_other_id = sys.system_uuid ";
   $sql .= "ORDER BY sys.system_name";
   
-	$result = mysql_query($sql, $db);
+	$result = mysql_query($sql, $db) or die (mysql_error());
   $total += mysql_numrows($result);
 
   if ($myrow = mysql_fetch_array($result))
@@ -1086,7 +1086,7 @@ function GetVncServersNmapAsOtherSystem(&$total,&$tr_class)
   $sql .= "WHERE port.nmap_port_number = '5900' AND port.nmap_port_proto = 'tcp' AND (port.nmap_other_id = oth.other_mac_address OR port.nmap_other_id = oth.other_id) ";
   $sql .= "ORDER BY oth.other_network_name";
   
-	$result = mysql_query($sql, $db);
+	$result = mysql_query($sql, $db) or die (mysql_error());
   $total += mysql_numrows($result);
   
 	if ($myrow = mysql_fetch_array($result))
@@ -1141,7 +1141,7 @@ function GetRdpServersAsService(&$total,&$tr_class)
   $sql .= "WHERE ser.service_name LIKE '%TermService%' AND ser.service_timestamp = sys.system_timestamp AND ser.service_uuid = sys.system_uuid ";
   $sql .= "ORDER BY sys.system_name";
 
-	$result = mysql_query($sql, $db);
+	$result = mysql_query($sql, $db) or die (mysql_error());
 	$total += mysql_numrows($result);
 	
 	if ($myrow = mysql_fetch_array($result))
@@ -1177,7 +1177,7 @@ function GetRdpServersNmapAsAuditedSystem(&$total,&$tr_class)
   $sql .= "WHERE port.nmap_port_number = '3389' AND port.nmap_port_proto = 'tcp' AND port.nmap_other_id = sys.system_uuid ";
   $sql .= "ORDER BY sys.system_name";
   
-	$result = mysql_query($sql, $db);
+	$result = mysql_query($sql, $db) or die (mysql_error());
   $total += mysql_numrows($result);
 
   if ($myrow = mysql_fetch_array($result))
@@ -1215,7 +1215,7 @@ function GetRdpServersNmapAsOtherSystem(&$total,&$tr_class)
   $sql .= "WHERE port.nmap_port_number = '3389' AND port.nmap_port_proto = 'tcp' AND (port.nmap_other_id = oth.other_mac_address OR port.nmap_other_id = oth.other_id) ";
   $sql .= "ORDER BY oth.other_network_name";
   
-	$result = mysql_query($sql, $db);
+	$result = mysql_query($sql, $db) or die (mysql_error());
   $total += mysql_numrows($result);
   
 	if ($myrow = mysql_fetch_array($result))
@@ -1271,7 +1271,7 @@ function GetDbServersAsService(&$total,&$tr_class)
   $sql .= "WHERE (ser.service_name LIKE '%MySql%' OR ser.service_name = 'MSSQLSERVER' OR ser.service_name LIKE 'MSSQL$%' OR ser.service_name LIKE 'Oracle%TNSListener' OR ser.service_name = 'DB2') AND ser.service_timestamp = sys.system_timestamp AND ser.service_uuid = sys.system_uuid ";
   $sql .= "ORDER BY sys.system_name";
 
-	$result = mysql_query($sql, $db);
+	$result = mysql_query($sql, $db) or die (mysql_error());
 	$total += mysql_numrows($result);
 	
 	if ($myrow = mysql_fetch_array($result))
@@ -1307,7 +1307,7 @@ function GetDbServersNmapAsAuditedSystem(&$total,&$tr_class)
   $sql .= "WHERE (port.nmap_port_number = '3306' OR port.nmap_port_number = '1433' OR port.nmap_port_number = '1521' OR port.nmap_port_number = '523') AND port.nmap_port_proto = 'tcp' AND port.nmap_other_id = sys.system_uuid ";
   $sql .= "ORDER BY sys.system_name";
   
-	$result = mysql_query($sql, $db);
+	$result = mysql_query($sql, $db) or die (mysql_error());
   $total += mysql_numrows($result);
 
   if ($myrow = mysql_fetch_array($result))
@@ -1345,7 +1345,7 @@ function GetDbServersNmapAsOtherSystem(&$total,&$tr_class)
   $sql .= "WHERE (port.nmap_port_number = '3306' OR port.nmap_port_number = '1433' OR port.nmap_port_number = '1521' OR port.nmap_port_number = '523') AND port.nmap_port_proto = 'tcp' AND (port.nmap_other_id = oth.other_mac_address OR port.nmap_other_id = oth.other_id) ";
   $sql .= "ORDER BY oth.other_network_name";
   
-	$result = mysql_query($sql, $db);
+	$result = mysql_query($sql, $db) or die (mysql_error());
   $total += mysql_numrows($result);
   
 	if ($myrow = mysql_fetch_array($result))
@@ -1384,7 +1384,7 @@ function GetDetectedXpAvData($id)
   $sql .= "WHERE (virus_name = '' OR virus_uptodate = 'False') AND system_service_pack = '2.0' AND system_os_name LIKE 'Microsoft Windows XP%' ";
   $sql .= "ORDER BY system_name";
 	
-	$result = mysql_query($sql, $db);
+	$result = mysql_query($sql, $db) or die (mysql_error());
 	$count=mysql_numrows($result);
 
 	echo "<div class='npb_content_data' id='".$id."' style='display: none;'>";	
