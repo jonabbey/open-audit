@@ -356,7 +356,8 @@ while (list ($viewname, $viewdef_array) = @each ($query_array["views"])) {
                            echo " <a href='http://support.dell.com/support/downloads/index.aspx?c=us&amp;l=en&amp;s=gen&amp;servicetag=" . $myrow["system_id_number"] . "' onclick=\"this.target='_blank';\">".__("Drivers &amp; Software")."</a>";
                            $links_to_manu=1;
                        }
-                     } elseif ($myrow["system_vendor"] == "Compaq" || $myrow["system_vendor"] == "HP"){
+                       // Added Hewlett-Packard (AJH 14th April 2009)
+                     } elseif ($myrow["system_vendor"] == "Compaq" || $myrow["system_vendor"] == "HP" || $myrow["system_vendor"] == "Hewlett-Packard"){
                        if(isset($myrow["system_id_number"]) AND $myrow["system_id_number"]!=""){
                            echo " <a href='http://www4.itrc.hp.com/service/ewarranty/warrantyResults.do?BODServiceID=NA&amp;RegisteredPurchaseDate=&amp;country=GB&amp;productNumber=&amp;serialNumber1=" . $myrow["system_id_number"] . "' onclick=\"this.target='_blank';\">".__("Warranty Information")."</a>";
                            echo " / ";
