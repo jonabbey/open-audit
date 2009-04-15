@@ -535,5 +535,9 @@ $GLOBALS["lang"]["usncreated"]="Update Sequence Number Created";
 $GLOBALS["lang"]["whenchanged"]="When Changed";	
 $GLOBALS["lang"]["whencreated"]="When Created ";	
 $GLOBALS["lang"]["memberof"]="Member of Group";
-
+$GLOBALS["lang"]["title"]="Title";
+$GLOBALS["lang"]["lockouttime"]="Lockout Time";
+$GLOBALS["lang"]["company"]="Company";
+$GLOBALS["lang"]["manager"]="Manager";
+$GLOBALS["lang"]["mobile"]="Mobile";
 ?>

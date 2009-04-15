@@ -76,10 +76,21 @@ ksort($info[0]);
 <td>
 <div class='ldap_details'>
 <div>
-	<img src='images/<?php echo GetImage($sam_account_name);?>' alt='<?php echo $sam_account_name;?>'/>
-<?php echo ($_GET["full_details"] == "y" ? "Full" : "Partial") ;?>
- LDAP details for 
-<?php echo $info[0]["name"][0]." [".$ldap_info["name"]."]";?>
+<?php
+if ($_GET["record_type"] == "computer")
+            {
+                $this_image_link = '<img src="'.GetImage($info[0]["name"][0]).'" alt="'.$info[0]["name"][0].'"/>';
+                echo $this_image_link ;
+            } else if ($_GET["record_type"] == "user")
+            {
+                $this_image_link = '<img src="'.GetImage($info[0]["name"][0]).'" alt="'.$info[0]["name"][0].'"/>';
+                echo $this_image_link ;
+            }
+            // FIXME: Note, currently if record_type is neither computer, nor user, we fail with no link. 
+            // We should defend against this with a default unknown link [AJH]
+            echo ($_GET["full_details"] == "y" ? "Full" : "Partial") ;
+            echo ' LDAP details for '. $info[0]["name"][0]." [".$ldap_info["name"]."]";
+?>
 	<hr />
 </div>
 <!-- LDAP details table -->
@@ -95,7 +106,7 @@ foreach ($info[0] as $key => $value)
 		array_shift($value);
 		$val = FormatLdapValue($key, $value);
 		echo "<tr class='".alternate_tr_class($tr_class)."'>";
-		echo "<td>$key</td><td>$val</td></tr>";
+		echo "<td>".__($key)."</td><td>$val</td></tr>";
 	}
 }
 echo "</table></div></td>";
@@ -108,26 +119,48 @@ Description:
 	Returns image file name - image to be displayed with the LDAP details. If image file exists that matches user account name,
 	then this filname is returned else default user or computer account image filenames are used. 
 Arguments:
-	$name	[IN]	[STRING]	user or computer samaccountname value
+	$name	[IN]	[STRING]	user or computer samaccountname value (or user full name [AJH]) 
 Returns:
 	Image file name/path	[STRING]
 Change Log:
 	06/04/2009			New function	[Nick Brown]
+    15/04/2009          Updated. Made things a bit more defensive, added a default_file$ image.
+                        Fixed up a PHP bug which could claim the image file existed even if it didn't.
+                        Also defined exactly what the "record_type" was from $_GET as it assumed we
+                        were assuming if not user, must be computer, however I managed to break this ;¬) 
+                        Image for user is now back to "Full Name.jpg" was "firstame.jpg" but wont work for 
+                        most users.  [AJH]
 **********************************************************************************************************/
 function GetImage($name)
 {
+// First, assume we dont know what ldap object we have
+$default_file= 'images/o_unknown.png';
 	if ($_GET["record_type"] == "computer")
 	{
-		$file = "equipment/$name.jpg";
-    if (file_exists("images/$file")) {return $file;} 
-		else {return "o_terminal_server.png";}
+    // We have established it is a computer, so set the defaults for computers
+    $this_folder = './images/equipment/';
+    $default_file= 'images/o_terminal_server.png';
+		$this_file = $this_folder.$name.'.jpg';
+    // Check for existing computer image.   
+    if (is_file($this_file))
+    { return $this_file;
+    } 
+		else {return $default_file;}
   }
-  else
-	{
-		$file = "people/$name.jpg";
-    if (file_exists("images/$file")) {return $file;}
-		else {return "groups_l.png";}
-	}
+  else if ($_GET["record_type"] == "user")
+  {
+// We have established object is a user, so set the defaults for user
+    $default_file= 'images/groups_l.png';
+    $this_folder = './images/people/';
+		$this_file = $this_folder.$name.'.jpg';
+     // Check for existing user image.    
+    if (is_file($this_file))
+    { return $this_file;
+    } 
+		else {return $default_file;}
+  }
+  // If we got this far, we dont know what the object is, so throw back the unknown default set at the start.
+  return $default_file;
 }
 
 /**********************************************************************************************************
