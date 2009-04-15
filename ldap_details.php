@@ -106,7 +106,7 @@ foreach ($info[0] as $key => $value)
 		array_shift($value);
 		$val = FormatLdapValue($key, $value);
 		echo "<tr class='".alternate_tr_class($tr_class)."'>";
-		echo "<td>".__($key)."</td><td>$val</td></tr>";
+		echo "<td>".$key."</td><td>$val</td></tr>";
 	}
 }
 echo "</table></div></td>";
@@ -178,6 +178,9 @@ Change Log:
 **********************************************************************************************************/
 function FormatLdapValue(&$name, &$value)
 {
+	$known_binary_fields = Array("ciscoecsbuumlocationobjectid","msexchmailboxsecuritydescriptor","msexchrecordedname",
+		"sidhistory","userparameters","logonhours","replicationsignature");
+	if (preg_match("/(".implode("|",$known_binary_fields).")/i", $name)) {return "[Binary Data]";}
 	if (preg_match("/guid$/i", $name)) {return formatGUID($value[0]);}
 	if (preg_match("/sid$/i", $name)) {return ConvertBinarySidToSddl($value[0]);}
 	if (count($value)>1) {return "<ul><li>".implode("</li><li>",$value)."</li></ul>";}
