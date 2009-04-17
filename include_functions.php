@@ -20,6 +20,9 @@ Change Control:
 	[Nick Brown]	03/04/2009	
 	Added ConnectToOpenAuditDb() and ConvertBinarySidToSddl()
 	
+	[Nick Brown]	17/04/2009	
+	Minor change to ConvertSpecialField()
+
 **********************************************************************************************************/
 require_once "include_config.php";
 
@@ -193,6 +196,7 @@ Arguments:
 Returns:	[String]	Formatted string
 Change Log:
 	10/09/2008		Function re-written based on original "special_field_converting" function	[Nick Brown]
+	17/04/2009		Return "system_timestamp" as date-time rather than date	[Nick Brown]
 **********************************************************************************************************/
 function ConvertSpecialField($myrow, $field, $db, $page)
 {
@@ -202,7 +206,6 @@ function ConvertSpecialField($myrow, $field, $db, $page)
 	{
 		case "system_os_name":
 			return determine_os($myrow[$field["name"]]);
-		case "system_timestamp":
 		case "net_dhcp_lease_obtained":
 		case "net_dhcp_lease_expires":
 		case "net_driver_date":
@@ -214,6 +217,7 @@ function ConvertSpecialField($myrow, $field, $db, $page)
 		case "software_first_timestamp":
 		case "software_timestamp":
 		case "system_first_timestamp":
+		case "system_timestamp":
 		case "other_first_timestamp":
 		case "other_timestamp":
 		case "monitor_first_timestamp":
@@ -1134,6 +1138,27 @@ function ConvertBinarySidToSddl(&$binary_sid)
 	$sddl = "S-".$sid_revision."-".$nt_authority."-".$delegate_auths_string;
 	
 	return $sddl;
+}
+
+/**********************************************************************************************************
+Function Name:
+	DisplayError
+Description:
+	Displays an error message, includes right column code code to complete HTML output and quits
+Arguments:
+	$error_msg		[STRING] 	Error message to be displayed
+Returns:	None
+Change Log:
+	17/04/2009			New function	[Nick Brown]
+**********************************************************************************************************/
+function DisplayError($error_msg)
+{
+	global $show_tips;
+	
+	echo "<td><div class='error'><img src='images/emblem_important.png'/>";
+	echo $error_msg."</div></td>";
+	include "include_right_column.php";
+	die;
 }
 
 ?>

@@ -302,3 +302,14 @@ div.ldap_details div {
   text-decoration: none;
   color: #444;
 }
+
+div.error {
+  margin: 5px;
+  padding: 20px;
+  border: 1px solid #ccc;
+}
+
+div.error img {
+	vertical-align: middle;
+	margin: 10px;
+}

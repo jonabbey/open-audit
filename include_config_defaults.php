@@ -92,4 +92,7 @@ $summary_barcode = "name";
 $user_ldap_attributes = Array("company","department","description","displayname",
 	"mail","manager","msexchhomeservername","name","physicaldeliveryofficename","samaccountname","telephonenumber");
 $computer_ldap_attributes = Array("description","name","operatingsystem","operatingsystemversion","operatingsystemservicepack");
+
+$human_readable_ldap_fields = TRUE;
+$image_link_ldap_attribute = "name";
 ?>

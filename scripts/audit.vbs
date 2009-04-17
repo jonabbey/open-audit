@@ -1,11 +1,15 @@
-'''''''''''''''''''''''''''''''''''
-' Open Audit                   '
-' Software and Hardware Inventory '
-' Outputs into MySQL              '
-' (c) Open-Audit.org 2003-2007    '
-' Licensed under the GPL          '
-'''''''''''''''''''''''''''''''''''
-'
+'***********************************************************************************************
+' Open Audit                   
+' Software and Hardware Inventory 
+' Outputs into MySQL              
+' (c) Open-Audit.org 2003-2007    
+' Licensed under the GPL          
+
+' Change Control:
+'	[Nick Brown]	17/04/2009	 Changes to system user detection - line 893
+
+'***********************************************************************************************
+
 this_config_url = "%host_url%"
 if (left(this_config_url,1) = "%") then
 this_config_url = "http://openaudit/openaudit/list_export_config.php"
@@ -883,16 +887,26 @@ Next
 
 
 
-if isnull(net_ip_address) then net_ip_address = "" end if
+If isnull(net_ip_address) Then net_ip_address = "" End If
 
-if isnull(net_domain) then
-  oReg.GetStringValue HKEY_LOCAL_MACHINE, "SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon", "DefaultDomainName", net_domain
-  if isnull(net_domain) then net_domain = "" end if
-end if
-if isnull(net_user_name) then
-  oReg.GetStringValue HKEY_LOCAL_MACHINE, "SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon", "DefaultUserName", net_user_name
-  if isnull(net_user_name) then net_user_name = "" end if
-end if
+' Changes to system user detection - ensures domain is prepended to username and additional support for Vista - 17/04/2009	[Nick Brown]
+If isnull(net_domain) Then
+	oReg.GetStringValue HKEY_LOCAL_MACHINE, "SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon", "DefaultDomainName", net_domain
+	If isnull(net_domain) Then net_domain = "" End If
+End If
+
+If isnull(net_user_name) Then
+	oReg.GetStringValue HKEY_LOCAL_MACHINE, "SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon", "DefaultUserName", net_user_name
+  If isnull(net_user_name) Then
+		oReg.GetStringValue HKEY_LOCAL_MACHINE, "SOFTWARE\Microsoft\Windows\CurrentVersion\Authentication\LogonUI", "LastLoggedOnUser", net_user_name
+		If isnull(net_user_name) Then
+			oReg.GetStringValue HKEY_LOCAL_MACHINE, "SOFTWARE\Microsoft\Windows\CurrentVersion\Authentication\LogonUI", "LastLoggedOnSAMUser", net_user_name
+			If isnull(net_user_name) Then	net_user_name = ""
+		End if
+	Else
+		If len(net_domain) > 0 Then net_user_name = net_domain & "\" & net_user_name
+	End If
+End If
 
 if isnull(net_client_site_name) then net_client_site_name = "" end if
 if isnull(net_domain_controller_address) then net_domain_controller_address = "" end if

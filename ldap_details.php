@@ -13,22 +13,19 @@ Change Control:
 
 	[Nick Brown]	03/04/2009
 	Re-wrote module from scratch
+
+	[Nick Brown]	17/04/2009
+	Minor change to GetImage(). Added support for $image_link_ldap_attribute and $human_readable_ldap_fields config
+	options. Now using DisplayError() from "include_functions.php".
 	
 **********************************************************************************************************/
 require_once "include.php";
 
 $ldap_info = GetLdapConnection();
 
-// Didn't get LDAP connection -  alert user
+// Didn't get LDAP connection -  alert user & done
 if ($ldap_info === False)
-{
-	echo "<td><div class='ldap_details'>";
-	echo "<img src='images/emblem_important.png'/>";
-	echo __("Cannot retrieve LDAP details as you have no LDAP connection defined for this domain.");
-	echo "</div></td>";
-	include "include_right_column.php";
-	die;
-}
+	{DisplayError(__("Cannot retrieve LDAP details as you have no LDAP connection defined for this domain."));}
 
 // Connect (authenticate) to LDAP
 $upn = isEmailAddress($ldap_info['user']) ? $ldap_info['user'] : $ldap_info['user']."@".$ldap_info['fqdn'];
@@ -50,16 +47,9 @@ $filter = "(&(objectClass=".$_GET["record_type"].")(sAMAccountName=".$sam_accoun
 $sr = ldap_search($ldap, $ldap_info['nc'], $filter, $attributes);
 $info = ldap_get_entries($ldap, $sr);
 
-// Couldn't retrieve user or computer object from LDAP - alert user
+// Couldn't retrieve user or computer object from LDAP - alert user & done
 if ($info == NULL)
-{
-	echo "<td><div class='ldap_details'>";
-	echo "<img src='images/emblem_important.png'/>";
-	echo __("Cannot retrieve LDAP details. The ").$_GET["record_type"].__(" object cannot be found in the LDAP source - ").$ldap_info["name"];
-	echo "</div></td>";
-	include "include_right_column.php";
-	die;
-}
+	{DisplayError(__("Cannot retrieve LDAP details. The ").$_GET["record_type"].__(" object cannot be found in the LDAP source - ").$ldap_info["name"]);}
 
 // ObjectSid is binary - need to use ldap_get_values_len() to ensure that it's correctly retrieved - only needed if retrieving full attributes
 if ($_GET["full_details"] == "y")
@@ -76,20 +66,11 @@ ksort($info[0]);
 <td>
 <div class='ldap_details'>
 <div>
-<?php
-if ($_GET["record_type"] == "computer")
-            {
-                $this_image_link = '<img src="'.GetImage($info[0]["name"][0]).'" alt="'.$info[0]["name"][0].'"/>';
-                echo $this_image_link ;
-            } else if ($_GET["record_type"] == "user")
-            {
-                $this_image_link = '<img src="'.GetImage($info[0]["name"][0]).'" alt="'.$info[0]["name"][0].'"/>';
-                echo $this_image_link ;
-            }
-            // FIXME: Note, currently if record_type is neither computer, nor user, we fail with no link. 
-            // We should defend against this with a default unknown link [AJH]
-            echo ($_GET["full_details"] == "y" ? "Full" : "Partial") ;
-            echo ' LDAP details for '. $info[0]["name"][0]." [".$ldap_info["name"]."]";
+<img src='<?php echo GetImage($info[0][$image_link_ldap_attribute][0]);?>' 
+alt='<?php echo $info[0][$image_link_ldap_attribute][0];?>'/>
+<?php 
+echo ($_GET["full_details"] == "y" ? __("Full") : __("Partial")) ;
+echo __(' LDAP details for '). $info[0][$image_link_ldap_attribute][0]." [".$ldap_info["name"]."]";
 ?>
 	<hr />
 </div>
@@ -106,6 +87,7 @@ foreach ($info[0] as $key => $value)
 		array_shift($value);
 		$val = FormatLdapValue($key, $value);
 		echo "<tr class='".alternate_tr_class($tr_class)."'>";
+		$key = $human_readable_ldap_fields ? __($key) : $key;
 		echo "<td>".$key."</td><td>$val</td></tr>";
 	}
 }
@@ -130,37 +112,28 @@ Change Log:
                         were assuming if not user, must be computer, however I managed to break this ;¬) 
                         Image for user is now back to "Full Name.jpg" was "firstame.jpg" but wont work for 
                         most users.  [AJH]
+	17/04/2009			Minor change. Removed a few lines of redundant code.	[Nick Brown]
 **********************************************************************************************************/
 function GetImage($name)
 {
-// First, assume we dont know what ldap object we have
-$default_file= 'images/o_unknown.png';
+	// First, assume we dont know what ldap object we have
+	$default_file= 'images/o_unknown.png';
 	if ($_GET["record_type"] == "computer")
 	{
     // We have established it is a computer, so set the defaults for computers
-    $this_folder = './images/equipment/';
     $default_file= 'images/o_terminal_server.png';
-		$this_file = $this_folder.$name.'.jpg';
-    // Check for existing computer image.   
-    if (is_file($this_file))
-    { return $this_file;
-    } 
-		else {return $default_file;}
+		$this_file = './images/equipment/'.$name.'.jpg';
+		if (is_file($this_file)) {return $this_file;} 
   }
   else if ($_GET["record_type"] == "user")
   {
-// We have established object is a user, so set the defaults for user
+		// We have established object is a user, so set the defaults for user
     $default_file= 'images/groups_l.png';
-    $this_folder = './images/people/';
-		$this_file = $this_folder.$name.'.jpg';
-     // Check for existing user image.    
-    if (is_file($this_file))
-    { return $this_file;
-    } 
-		else {return $default_file;}
+		$this_file = './images/people/'.$name.'.jpg';
+		if (is_file($this_file)) {return $this_file;} 
   }
-  // If we got this far, we dont know what the object is, so throw back the unknown default set at the start.
-  return $default_file;
+  // Return default. 
+	return $default_file;
 }
 
 /**********************************************************************************************************

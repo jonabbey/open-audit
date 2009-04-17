@@ -12,6 +12,9 @@ Change Control:
 	Only a minor change - the "logout" link in the top right of the page now displays the user's role (admin/user) as well as their
 	name.
 	
+	[Nick Brown]	17/04/2009
+	Minor improvement to SQL query that retrieves audited system from DB
+	
 **********************************************************************************************************/
 include_once "include_config.php";
 include_once "include_lang.php";
@@ -137,13 +140,17 @@ if ($page <> "setup"){
 
 <?php
 if ($pc > "0") {
-	$sql = "SELECT * FROM
-	((SELECT system_uuid, system_timestamp, system_name, system.net_ip_address, net_domain
-	FROM system	WHERE system_uuid = '$pc' OR system_name = '$pc')
-	UNION
-	(SELECT system_uuid, system_timestamp, system_name, system.net_ip_address, net_domain
-	FROM system, network_card	WHERE net_mac_address ='$pc' AND net_uuid = system_uuid))
-	AS U LIMIT 1";
+	// This query has less joins and is syntactically simpler than previous - 17/04/2009	[Nick Brown]
+	$sql = "SELECT system_uuid, system_timestamp, system_name, system.net_ip_address, net_domain
+					FROM system 
+					JOIN network_card ON net_uuid = system_uuid
+					WHERE (
+					net_mac_address ='$pc'
+					OR system_uuid = '$pc'
+					OR system_name = '$pc'
+					)
+					LIMIT 1";
+					
   $result = mysql_query($sql, $db);
   $myrow = mysql_fetch_array($result);
   $timestamp = $myrow["system_timestamp"];
