@@ -7,6 +7,7 @@
 
 ' Change Control:
 '	[Nick Brown]	17/04/2009	 Changes to system user detection - line 893
+'	[Nick Brown]	23/04/2009	 [Bug] ODBC section not using Echo() - around line 3926 - Fixed
 
 '***********************************************************************************************
 
@@ -3914,9 +3915,7 @@ End If
 '''''''''''''''''''''''''''
 if ((ServicePack = "2" AND SystemBuildNumber = "2600") OR (SystemBuildNumber = "3790" AND ServicePack = "1" OR ServicePack = "2") OR (SystemBuildNumber = "6000")) then
   comment = "ODBC Connections"
-  if verbose = "y" then
-    wscript.echo comment
-  end if
+  Echo(comment)
   On Error Resume Next
 
   strKeyPath = "SOFTWARE\ODBC\ODBC.INI\ODBC Data Sources"
@@ -3924,7 +3923,7 @@ if ((ServicePack = "2" AND SystemBuildNumber = "2600") OR (SystemBuildNumber = "
 
   For Each subkey In arrSubKeys
     comment = subkey
-    wscript.echo "Name: " & comment
+    Echo("Name: " & comment)
     odbc_name = subkey
     strKeyPath1 = "SOFTWARE\ODBC\ODBC.INI\" & subkey
     'comment = strKeyPath1
@@ -3934,7 +3933,7 @@ if ((ServicePack = "2" AND SystemBuildNumber = "2600") OR (SystemBuildNumber = "
     For i=0 To UBound(arrValueNames)
         oReg.GetStringValue HKEY_LOCAL_MACHINE,strKeyPath1,_
         arrValueNames(i),strValue
-        wscript.echo arrValueNames(i) & ": " & strValue     
+        Echo(arrValueNames(i) & ": " & strValue)
     Next
   Next
 

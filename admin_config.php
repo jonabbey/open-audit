@@ -20,6 +20,10 @@ Change Control:
 	Added $admin_list_post and $user_list support in "include_config.php" - there is no GUI for modifying these values yet
 	Added an include for "include_config_defaults.php" in "include_config.php"
 	
+	[Nick Brown]	23/04/2009
+	Added $human_readable_ldap_fields and  $image_link_ldap_attribute options to the GUI. Tidied up code to get closer to
+	completely valid XHTML markup and make markup more readable.
+
 **********************************************************************************************************/
 
 $page = "admin";
@@ -75,6 +79,8 @@ if(isset($_POST['submit_button']))
 	$ldap_secret_post = GetPOSTOrDefaultValue('ldap_secret_post','');
 	$full_details_post = GetPOSTOrDefaultValue('full_details_post','');
 	$use_ldap_login_post = GetPOSTOrDefaultValue('use_ldap_login_post','');
+	$human_readable_ldap_fields_post = GetPOSTOrDefaultValue('human_readable_ldap_fields_post','n');
+	$image_link_ldap_attribute_post = GetPOSTOrDefaultValue('image_link_ldap_attribute_post','name');
 
 	// *************** Check Homepage settings ************************************************
   $show_other_discovered_post = GetPOSTOrDefaultValue('show_other_discovered_post','n');
@@ -119,63 +125,72 @@ if(isset($_POST['submit_button']))
 		**********************************************************************************************************/
 	  $filename = 'include_config.php';
 	  $content = "<?php\n";
-	  $content .= "include_once \"include_config_defaults.php\"; // Ensures that all variables have a default value\n"; 
-	  $content .= "\$mysql_server = '" . $_POST['mysql_server_post'] . "';\n";
-	  $content .= "\$mysql_database = '" . $_POST['mysql_database_post'] . "';\n";
-	  $content .= "\$mysql_user = '" . $_POST['mysql_user_post'] . "';\n";
-	  $content .= "\$mysql_password = '" . $_POST['mysql_password_post'] . "';\n\n";
-	  $content .= "\$use_https = '" . $use_https_post . "';\n";
-	  $content .= "// An array of allowed users and their passwords\n";
-	  $content .= "// Make sure to set use_pass = \"n\" if you do not wish to use passwords\n";
-	  $content .= "\$use_pass = '" . $iis_passwords_post . "';\n";
+		$content .= "// Ensures that all variables have a default value\n";
+		$content .= "include_once \"include_config_defaults.php\";\n\n"; 
+
+	  // ****************  General Settings *******************************************
+	  $content .= "// ****************  General Settings *******************************************\n";
+	  $content .= "\$language = '".$language_post."';\n";
+		$content .= "\$mysql_server = '".$_POST['mysql_server_post']."';\n";
+	  $content .= "\$mysql_user = '".$_POST['mysql_user_post']."';\n";
+	  $content .= "\$mysql_password = '".$_POST['mysql_password_post']."';\n";
+	  $content .= "\$mysql_database = '".$_POST['mysql_database_post']."';\n\n";
+
+	  // ****************  Security Settings *******************************************
+	  $content .= "// ****************  Security Settings *******************************************\n";
+	  $content .= "\$use_https = '".$use_https_post."';\n";
+	  $content .= "\$use_pass = '".$iis_passwords_post."';\n";
+	  $content .= "// An array of allowed users and their passwords (set use_pass = \"n\" if you do not wish to use passwords)\n";
 	  $content .= "\$users = array(\n";
 	  if ($username0 != "") $content .= " '$username0' => '".(($password0 == "") ? $users[$username0] : md5($password0))."'";
 	  if ($username1 != "") $content .= ",\n '$username1' => '".(($password1 == "") ? $users[$username1] : md5($password1))."'";
 	  if ($username2 != "") $content .= ",\n '$username2' => '".(($password2 == "") ? $users[$username2] : md5($password2))."'";
 	  if ($username3 != "") $content .= ",\n '$username3' => '".(($password3 == "") ? $users[$username3] : md5($password3))."'";
-	  $content .= "\n);\n\n";
-	  $content .= "// Config options for index.php\n";
+	  $content .= "\n);\n";
+	  $content .= "\$use_ldap_integration= '".$use_ldap_integration_post. "';\n";
+	  $content .= "\$ldap_base_dn= '".$ldap_base_dn_post."';\n";
+	  $content .= "\$ldap_server = '".$ldap_server_post."';\n";
+	  $content .= "\$ldap_user = '".$ldap_user_post."';\n";
+	  $content .= "\$ldap_secret = '".$ldap_secret_post."';\n";
+	  $content .= "\$use_ldap_login = '".$use_ldap_login_post."';\n";
+	  $content .= "\$full_details = '".$full_details_post."';\n";
+	  $content .= "\$human_readable_ldap_fields = '".$human_readable_ldap_fields_post."';\n";	// Added by Nick Brown	
+	  $content .= "\$image_link_ldap_attribute = '".$image_link_ldap_attribute_post."';\n\n";	// Added by Nick Brown	
+
+	  // ****************  Homepage Settings *******************************************
+	  $content .= "// ****************  Homepage Settings *******************************************\n";
 	  $content .= "\$show_other_discovered = '" . $show_other_discovered_post . "';\n";
-	  $content .= "\$other_detected = '" . $other_detected_post . "';\n\n";
+	  $content .= "\$other_detected = '" . $other_detected_post . "';\n";
 	  $content .= "\$show_system_discovered = '" . $show_system_discovered_post . "';\n";
-	  $content .= "\$system_detected = '" . $system_detected_post . "';\n\n";
+	  $content .= "\$system_detected = '" . $system_detected_post . "';\n";
 	  $content .= "\$show_systems_not_audited = '" . $show_systems_not_audited_post . "';\n";
-	  $content .= "\$days_systems_not_audited = '" . $days_systems_not_audited_post . "';\n\n";
+	  $content .= "\$days_systems_not_audited = '" . $days_systems_not_audited_post . "';\n";
 	  $content .= "\$show_partition_usage = '" . $show_partition_usage_post . "';\n";
-	  $content .= "\$partition_free_space = '" . $partition_free_space_post . "';\n\n";
+	  $content .= "\$partition_free_space = '" . $partition_free_space_post . "';\n";
 	  $content .= "\$show_software_detected = '" . $show_software_detected_post . "';\n";
-	  $content .= "\$days_software_detected = '" . $days_software_detected_post . "';\n\n";
+	  $content .= "\$days_software_detected = '" . $days_software_detected_post . "';\n";
 	  $content .= "\$show_patches_not_detected = '" . $show_patches_not_detected_post . "';\n";
-	  $content .= "\$number_patches_not_detected = '" . $number_patches_not_detected_post . "';\n\n";
+	  $content .= "\$number_patches_not_detected = '" . $number_patches_not_detected_post . "';\n";
 	  $content .= "\$show_detected_servers = '" . $show_detected_servers_post . "';\n";
-	  // Added show_detected_xp_av AJH
 	  $content .= "\$show_detected_xp_av = '" . $show_detected_xp_av . "';\n";
-    // Added show_detected_rdp AJH
-	  $content .= "\$show_detected_rdp = '" . $show_detected_rdp . "';\n\n";
+	  $content .= "\$show_detected_rdp = '" . $show_detected_rdp . "';\n";
 	  $content .= "\$show_os = '" . $show_os_post . "';\n";
 	  $content .= "\$show_date_audited = '" . $show_date_audited_post . "';\n";
 	  $content .= "\$show_type = '" . $show_type_post . "';\n";
 	  $content .= "\$show_description = '" . $show_description_post . "';\n";
 	  $content .= "\$show_domain = '" . $show_domain_post . "';\n";
-	  $content .= "\$show_service_pack = '" . $show_service_pack_post . "';\n\n";
-	  $content .= "\$count_system = '" . $count_system_post . "';\n\n";
-	  $content .= "\$vnc_type = '" . $vnc_type_post . "';\n\n";
-	  $content .= "\$round_to_decimal_places = '" . $decimalplaces_post . "';\n\n";
-	  $content .= "\$management_domain_suffix = '" . $management_domain_suffix_post . "';\n\n";
-	  $content .= "\$use_ldap_integration= '" . $use_ldap_integration_post. "';\n\n";
-	  $content .= "\$ldap_base_dn= '" . $ldap_base_dn_post. "';\n\n";
-	  $content .= "\$ldap_server = '" . $ldap_server_post . "';\n\n";
-	  $content .= "\$ldap_user = '" . $ldap_user_post . "';\n\n";
- 
-	  $content .= "\$ldap_secret = '" . $ldap_secret_post. "';\n\n";
-	  $content .= "\$full_details = '" . $full_details_post. "';\n\n";
-	  $content .= "\$use_ldap_login = '" . $use_ldap_login_post. "';\n\n";
-	  $content .= "\$language = '" . $language_post . "';\n\n";
-	  $content .= "\$show_ldap_changes = '".$show_ldap_changes_post."';\n";	// Added by Nick Brown	
-	  $content .= "\$ldap_changes_days = ".$ldap_changes_days_post.";\n";	// Added by Nick Brown	
+	  $content .= "\$show_service_pack = '" . $show_service_pack_post . "';\n";
+	  $content .= "\$count_system = '" . $count_system_post . "';\n";
+	  $content .= "\$vnc_type = '" . $vnc_type_post . "';\n";
+	  $content .= "\$round_to_decimal_places = '" . $decimalplaces_post . "';\n";
+	  $content .= "\$management_domain_suffix = '" . $management_domain_suffix_post . "';\n";
 	  $content .= "\$show_systems_audited_graph = '".$show_systems_audited_graph_post."';\n";	// Added by Nick Brown	
-	  $content .= "\$systems_audited_days = ".$systems_audited_days_post.";\n\n"; // Added by Nick Brown
+	  $content .= "\$systems_audited_days = ".$systems_audited_days_post.";\n"; // Added by Nick Brown
+	  $content .= "\$show_ldap_changes = '".$show_ldap_changes_post."';\n";	// Added by Nick Brown	
+	  $content .= "\$ldap_changes_days = ".$ldap_changes_days_post.";\n\n";	// Added by Nick Brown	
 
+	  // ****************  Settings that have no associated GUI *******************************************
+	  $content .= "// ****************  Settings that have no associated GUI *******************************************\n";
 		$admin_list_array = (count($admin_list_post) > 0) ? "'".implode("','",$admin_list_post)."'" : ""; // Added by Nick Brown
 		$user_list_array = (count($user_list_post) > 0) ? "'".implode("','",$user_list_post)."'" : ""; // Added by Nick Brown
 	  $content .= "\$admin_list = Array(".$admin_list_array.");\n"; // Added by Nick Brown
@@ -208,12 +223,12 @@ include "include_config.php";
 **********************************************************************************************************/
 
 ?>
-<link media="screen" rel="stylesheet" type="text/css" href="admin_config.css" >
+<link media="screen" rel="stylesheet" type="text/css" href="admin_config.css" />
 <script type='text/javascript' src="javascript/ajax.js"></script>
 <script type='text/javascript' src="javascript/PopupMenu.js"></script>
 <script type='text/javascript' src="javascript/admin_config.js"></script>
 
-<div id="npb_popupmenu_div" onMouseover="ClearHideMenu(event);" onMouseout="DynamicHide(event);"></div>
+<div id="npb_popupmenu_div" onmouseover="ClearHideMenu(event);" onmouseout="DynamicHide(event);"></div>
 
 <td class='CenterColumn'>
 	<div class='npb_section_shadow'>
@@ -221,20 +236,20 @@ include "include_config.php";
 			<div class='npb_section_heading'>
 <!-- Navigation Tab  -->
 			<ul class='npb_tab_nav'>
-					<li><a id='npb_config_general_tab' href='javascript://' OnClick='SelectNavTab(this);'>General</a></li>
-					<li><a id='npb_config_security_tab' href='javascript://' OnClick='SelectNavTab(this);'>Security</a></li>
-					<li><a id='npb_config_homepage_tab' href='javascript://' OnClick='SelectNavTab(this);'>Homepage</a></li>
-					<li><a id='npb_config_ldap_tab' href='javascript://' OnClick='SelectNavTab(this);ListLdapConnections();'>LDAP</a></li>
+					<li><a id='npb_config_general_tab' href='javascript://' onclick='SelectNavTab(this);'>General</a></li>
+					<li><a id='npb_config_security_tab' href='javascript://' onclick='SelectNavTab(this);'>Security</a></li>
+					<li><a id='npb_config_homepage_tab' href='javascript://' onclick='SelectNavTab(this);'>Homepage</a></li>
+					<li><a id='npb_config_ldap_tab' href='javascript://' onclick='SelectNavTab(this);ListLdapConnections();'>LDAP</a></li>
 				</ul>
 			</div>
 			
 <?php
 
-echo "<form method='post' action='" . $_SERVER["PHP_SELF"] . "' name='admin_config'>";
+echo "<form method='post' action='" . $_SERVER["PHP_SELF"] . "' id='admin_config'>\n";
 
 // ****************  Create DIV - General *******************************************
-echo "<div id='npb_config_general_div' class='npb_section_data'>";
-echo "<label>".__("Language").":</label><select size='1' name='language_post'>";
+echo "<div id='npb_config_general_div' class='npb_section_data'>\n";
+echo "<label>".__("Language").":</label><select size='1' name='language_post'>\n";
 
 // Get available languages - under "lang" directory - and populate dropdown
 $handle=opendir('./lang/');
@@ -244,123 +259,126 @@ while ($file = readdir ($handle))
 	{
 		if(substr($file,strlen($file)-4)==".inc")
 		{
-			if($language == substr($file,0,strlen($file)-4)) $selected="selected"; else $selected="";
-      echo "<option $selected>".substr($file,0,strlen($file)-4)."</option>";
+			if($language == substr($file,0,strlen($file)-4)) $selected="selected='selected'"; else $selected="";
+      echo "<option $selected>".substr($file,0,strlen($file)-4)."</option>\n";
 		}
 	}
 }
 closedir($handle);
 
-echo "</select><br >";
-echo "<label>MySQL ".__("Server").":</label><input type='text' name='mysql_server_post' size='12' value='".$mysql_server."'><br >";
-echo "<label>MySQL ".__("User").":</label><input type='text' name='mysql_user_post' size='12' value='".$mysql_user."'><br >";
-echo "<label>MySQL ".__("Password").":</label><input type='PASSWORD' name=mysql_password_post size=12 value=".$mysql_password."><br >";
-echo "<label>MySQL ".__("Database").":</label><input type='text' name='mysql_database_post' size='12' value='".$mysql_database."'><br >";
+echo "</select><br />\n";
+echo "<label>MySQL ".__("Server").":</label><input type='text' name='mysql_server_post' size='12' value='".$mysql_server."'/><br />\n";
+echo "<label>MySQL ".__("User").":</label><input type='text' name='mysql_user_post' size='12' value='".$mysql_user."'/><br />\n";
+echo "<label>MySQL ".__("Password").":</label><input type='password' name='mysql_password_post' size='12' value='".$mysql_password."'/><br />\n";
+echo "<label>MySQL ".__("Database").":</label><input type='text' name='mysql_database_post' size='12' value='".$mysql_database."'/><br />\n";
 
-echo "</div>";
+echo "</div>\n";
 
 
 // ****************  Create DIV - Security *******************************************
-echo "<div id='npb_config_security_div' class='npb_section_data'>";
-echo "<fieldset><legend>Authentication</legend>";
-echo "<label>".__("Use https://").":</label><input type='checkbox' name='use_https_post' value='y'".CheckedIfYes($use_https);
-echo "<br >";
+echo "<div id='npb_config_security_div' class='npb_section_data'>\n";
+echo "<fieldset><legend>Authentication</legend>\n";
+echo "<label>".__("Use https://").":</label>\n<input type='checkbox' name='use_https_post' value='y'".CheckedIfYes($use_https);
+echo "<br />\n";
 
-echo "<label>".__("Use Passwords").":</label><input type='checkbox' name='iis_passwords_post'value='y'".CheckedIfYes($use_pass);
-echo "<br >";
+echo "<label>".__("Use Passwords").":</label>\n<input type='checkbox' name='iis_passwords_post' value='y'".CheckedIfYes($use_pass);
+echo "<br />\n";
 
 $count = 0;
 while (list($key, $val) = each($users))
 {
-  echo "<label>".__("Username").":</label>";
-  echo "<input type='text' name='username$count' size='12' value='$key'><br >";
-  echo "<label>".__("Password").":</label>";
-  echo "<input type='password' name='password$count' size='12' value=''><br >";
+  echo "<label>".__("Username").":</label>\n";
+  echo "<input type='text' name='username$count' size='12' value='$key'/><br />\n";
+  echo "<label>".__("Password").":</label>\n";
+  echo "<input type='password' name='password$count' size='12' value=''/><br />\n";
   $count = $count + 1;
 }
-echo "</fieldset>";
+echo "</fieldset>\n";
 
-echo "<fieldset><legend>LDAP</legend>";
-echo "<label>".__("Use LDAP Integration").":</label><input type='checkbox' name='use_ldap_integration_post' value='y'".CheckedIfYes($use_ldap_integration);
-echo "&nbsp(to display user details)<br >";
+echo "<fieldset><legend>LDAP</legend>\n";
+echo "<label>".__("Use LDAP Integration").":</label>\n<input type='checkbox' name='use_ldap_integration_post' value='y'".CheckedIfYes($use_ldap_integration);
+echo "&nbsp;(to display user details)<br />\n";
 
-echo "<label>".__("LDAP Base DN").":</label><input type=text name=ldap_base_dn_post size=24 value=\"$ldap_base_dn\"><br >";
-echo "<label>".__("LDAP Connection Server").":</label><input type=text name=ldap_server_post size=24 value=\"$ldap_server\"><br >";
-echo "<label>".__("LDAP Connection User").":</label><input type=text name=ldap_user_post size=24 value=\"$ldap_user\"><br >";
-echo "<label>".__("LDAP Connection Secret").":</label><input type=password name=ldap_secret_post size=24 value=\"$ldap_secret\"><br >";
+echo "<label>".__("LDAP Base DN").":</label>\n<input type='text' name='ldap_base_dn_post' size='24' value=\"$ldap_base_dn\"/><br />\n";
+echo "<label>".__("LDAP Connection Server").":</label>\n<input type='text' name='ldap_server_post' size='24' value=\"$ldap_server\"/><br />\n";
+echo "<label>".__("LDAP Connection User").":</label>\n<input type='text' name='ldap_user_post' size='24' value=\"$ldap_user\"/><br />\n";
+echo "<label>".__("LDAP Connection Secret").":</label>\n<input type='password' name='ldap_secret_post' size='24' value=\"$ldap_secret\"/><br />\n";
 
-echo "<label>".__("Use LDAP for Login").":</label><input type=checkbox name=use_ldap_login_post value='y'".CheckedIfYes($use_ldap_login);
-echo "<br >";
+echo "<label>".__("Use LDAP for Login").":</label>\n<input type='checkbox' name='use_ldap_login_post' value='y'".CheckedIfYes($use_ldap_login);
+echo "<br />\n";
+echo "<label>".__("Show Full LDAP details").":</label>\n<input type='checkbox' name='full_details_post' value='y'".CheckedIfYes($full_details);
+echo "<br />\n";
+echo "<label>".__("Show Friendly Field Names").":</label>\n<input type='checkbox' name='human_readable_ldap_fields_post' value='y'".CheckedIfYes($human_readable_ldap_fields);
+echo "<br />\n";
+echo "<label>".__("Attribute for Image Linking").":</label>\n<input type='text' name='image_link_ldap_attribute_post' size='24' value=\"$image_link_ldap_attribute\"/>";
+echo "<br />\n";
 
-echo "<label>".__("Show Full LDAP details").":</label><input type=checkbox name=full_details_post value='y'".CheckedIfYes($full_details);
-echo "<br >";
-
-echo "</fieldset></div>";
+echo "</fieldset></div>\n";
 
 
 // ****************  Create DIV - Homepage *******************************************
-echo "<div id='npb_config_homepage_div' class='npb_section_data'>";
+echo "<div id='npb_config_homepage_div' class='npb_section_data'>\n";
 
-echo "<label>".__("Display 'Other Items Discovered in the last' on homepage").":</label>";
+echo "<label>".__("Display 'Other Items Discovered in the last' on homepage").":</label>\n";
 echo "<input type='checkbox' name='show_other_discovered_post' value='y'".CheckedIfYes($show_other_discovered);
-echo "<div class=\"npb_config_col\">".__("Days").":<input type='text' name='other_detected_post' size='4' value='$other_detected'></div><br >";
+echo "<div class=\"npb_config_col\">".__("Days").":<input type='text' name='other_detected_post' size='4' value='$other_detected'/></div><br />\n";
 
-echo "<label>".__("Display 'Systems discovered in the last' on homepage").":</label>";
+echo "<label>".__("Display 'Systems discovered in the last' on homepage").":</label>\n";
 echo "<input type='checkbox' name='show_system_discovered_post'  value='y'".CheckedIfYes($show_system_discovered);
-echo "<div class=\"npb_config_col\">".__("Days").":<input type='text' name='system_detected_post' size='4' value='$system_detected'></div><br >";
+echo "<div class=\"npb_config_col\">".__("Days").":<input type='text' name='system_detected_post' size='4' value='$system_detected'/></div><br />\n";
 
-echo "<label>".__("Display 'Systems Not Audited' on homepage").":</label>";
+echo "<label>".__("Display 'Systems Not Audited' on homepage").":</label>\n";
 echo "<input type='checkbox' name='show_systems_not_audited_post' value='y'".CheckedIfYes($show_systems_not_audited);
-echo "<div class=\"npb_config_col\">".__("Days").":</label><input type='text' name='days_systems_not_audited_post' size='4' value='$days_systems_not_audited'></div><br >";
+echo "<div class=\"npb_config_col\">".__("Days").":<input type='text' name='days_systems_not_audited_post' size='4' value='$days_systems_not_audited'/></div><br />\n";
 
-echo "<label>".__("Display 'Partition Usage' on homepage").":</label><input type='checkbox' name='show_partition_usage_post' value='y'".CheckedIfYes($show_partition_usage);
-echo "<div class=\"npb_config_col\">".__("MB").":<input type='text' name='partition_free_space_post' size='4' value='$partition_free_space'></div><br >";
+echo "<label>".__("Display 'Partition Usage' on homepage").":</label>\n<input type='checkbox' name='show_partition_usage_post' value='y'".CheckedIfYes($show_partition_usage);
+echo "<div class=\"npb_config_col\">".__("MB").":<input type='text' name='partition_free_space_post' size='4' value='$partition_free_space'/></div><br />\n";
 
-echo "<label>".__("Display 'New Software' on homepage").":</label><input type='checkbox' name='show_software_detected_post' value='y'".CheckedIfYes($show_software_detected);
-echo "<div class=\"npb_config_col\">".__("Days").":<input type='text' name='days_software_detected_post' size='4' value='$days_software_detected'></div><br >";
+echo "<label>".__("Display 'New Software' on homepage").":</label>\n<input type='checkbox' name='show_software_detected_post' value='y'".CheckedIfYes($show_software_detected);
+echo "<div class=\"npb_config_col\">".__("Days").":<input type='text' name='days_software_detected_post' size='4' value='$days_software_detected'/></div><br />\n";
 
-echo "<label>".__("Display 'Missing Patches' on homepage").":</label><input type='checkbox' name='show_patches_not_detected_post' value='y'".CheckedIfYes($show_patches_not_detected);
-echo "<div class=\"npb_config_col\">".__("# of Patches").":<input type='text' name='number_patches_not_detected_post' size='4' value='$number_patches_not_detected'></div><br >";
+echo "<label>".__("Display 'Missing Patches' on homepage").":</label>\n<input type='checkbox' name='show_patches_not_detected_post' value='y'".CheckedIfYes($show_patches_not_detected);
+echo "<div class=\"npb_config_col\">".__("# of Patches").":<input type='text' name='number_patches_not_detected_post' size='4' value='$number_patches_not_detected'/></div><br />\n";
 
-echo "<label>".__("Show Detected Servers on homepage").":</label><input type='checkbox' name='show_detected_servers_post' value='y'".CheckedIfYes($show_detected_servers);
-echo "<br >";
+echo "<label>".__("Show Detected Servers on homepage").":</label>\n<input type='checkbox' name='show_detected_servers_post' value='y'".CheckedIfYes($show_detected_servers);
+echo "<br />\n";
 
 //Added Show Terminal Servers and RDP Machines AJH
-echo "<label>".__("Show Terminal Servers and Remote Desktops on homepage").":</label><input type='checkbox' name='show_detected_rdp' value='y'".CheckedIfYes($show_detected_rdp);
-echo "<br >";
+echo "<label>".__("Show Terminal Servers and Remote Desktops on homepage").":</label>\n<input type='checkbox' name='show_detected_rdp' value='y'".CheckedIfYes($show_detected_rdp);
+echo "<br />\n";
 
 //Added Show XP  Missing AntiVirus AJH
-echo "<label>".__("Show XP Missing AntiVirus on homepage").":</label><input type='checkbox' name='show_detected_xp_av' value='y'".CheckedIfYes($show_detected_xp_av);
-echo "<br >";
-echo "<label>".__("Display 'OS' column in system list").":</label><input type='checkbox' name='show_os_post' value='y'".CheckedIfYes($show_os);
-echo "<br >";
-echo "<label>".__("Display 'Date Audited' column in system list").":</label><input type='checkbox' name='show_date_audited_post'  value='y'".CheckedIfYes($show_date_audited);
-echo "<br >";
-echo "<label>".__("Display 'Type' column in system list").":</label><input type='checkbox' name='show_type_post' value='y'".CheckedIfYes($show_type);
-echo "<br >";
-echo "<label>".__("Display 'Description' column in system list").":</label><input type='checkbox' name='show_description_post' value='y'".CheckedIfYes($show_description);
-echo "<br >";
-echo "<label>".__("Display 'Domain' column in system list").":</label><input type='checkbox' name='show_domain_post' value='y'".CheckedIfYes($show_domain);
-echo "<br >";
-echo "<label>".__("Display 'Service Pack' column in system list").":</label><input type='checkbox' name='show_service_pack_post' value='y'".CheckedIfYes($show_service_pack);
-echo "<br >";
-echo "<label>".__("Number of Systems to display").":</label><input type='text' name='count_system_post' size='12' value='$count_system'><br >";
-echo "<label>".__("VNC Type 'real' or 'ultra' ").":</label><input type='text' name='vnc_type_post' size='12' value='$vnc_type'><br >";
-echo "<label>".__("Number of decimal places to display").":</label><input type='text' name='decimalplaces_post' size='12' value='$round_to_decimal_places'><br >";
-echo "<label>".__("FQDN Domain Suffix for Management Utilities").":</label><input type='text' name='management_domain_suffix_post' size='10' value='$management_domain_suffix'><br >";
+echo "<label>".__("Show XP Missing AntiVirus on homepage").":</label>\n<input type='checkbox' name='show_detected_xp_av' value='y'".CheckedIfYes($show_detected_xp_av);
+echo "<br />\n";
+echo "<label>".__("Display 'OS' column in system list").":</label>\n<input type='checkbox' name='show_os_post' value='y'".CheckedIfYes($show_os);
+echo "<br />\n";
+echo "<label>".__("Display 'Date Audited' column in system list").":</label>\n<input type='checkbox' name='show_date_audited_post' value='y'".CheckedIfYes($show_date_audited);
+echo "<br />\n";
+echo "<label>".__("Display 'Type' column in system list").":</label>\n<input type='checkbox' name='show_type_post' value='y'".CheckedIfYes($show_type);
+echo "<br />\n";
+echo "<label>".__("Display 'Description' column in system list").":</label>\n<input type='checkbox' name='show_description_post' value='y'".CheckedIfYes($show_description);
+echo "<br />\n";
+echo "<label>".__("Display 'Domain' column in system list").":</label>\n<input type='checkbox' name='show_domain_post' value='y'".CheckedIfYes($show_domain);
+echo "<br />\n";
+echo "<label>".__("Display 'Service Pack' column in system list").":</label>\n<input type='checkbox' name='show_service_pack_post' value='y'".CheckedIfYes($show_service_pack);
+echo "<br />\n";
+echo "<label>".__("Number of Systems to display").":</label>\n<input type='text' name='count_system_post' size='12' value='$count_system'/><br />\n";
+echo "<label>".__("VNC Type 'real' or 'ultra' ").":</label>\n<input type='text' name='vnc_type_post' size='12' value='$vnc_type'/><br />\n";
+echo "<label>".__("Number of decimal places to display").":</label>\n<input type='text' name='decimalplaces_post' size='12' value='$round_to_decimal_places'/><br />\n";
+echo "<label>".__("FQDN Domain Suffix for Management Utilities").":</label>\n<input type='text' name='management_domain_suffix_post' size='24' value='$management_domain_suffix'/><br />\n";
 
-echo "<label>".__("Display 'LDAP Directory changes' on homepage").":</label>";
+echo "<label>".__("Display 'LDAP Directory changes' on homepage").":</label>\n";
 echo "<input type='checkbox' name='show_ldap_changes_post' value='y'".CheckedIfYes($show_ldap_changes);
 
-echo "<div class=\"npb_config_col\">".__("Days").":<input type='text' name='ldap_changes_days_post' size='4' value='$ldap_changes_days'></div><br >";
+echo "<div class=\"npb_config_col\">".__("Days").":<input type='text' name='ldap_changes_days_post' size='4' value='$ldap_changes_days'/></div><br />\n";
 
-echo "<label>".__("Display 'Systems Audited' graph on homepage").":</label>";
+echo "<label>".__("Display 'Systems Audited' graph on homepage").":</label>\n";
 echo "<input type='checkbox' name='show_systems_audited_graph_post' value='y'".CheckedIfYes($show_systems_audited_graph);
-echo "<div class=\"npb_config_col\">".__("Days").":<input type='text' name='systems_audited_days_post' size='4' value='$systems_audited_days'></div><br >";
+echo "<div class=\"npb_config_col\">".__("Days").":<input type='text' name='systems_audited_days_post' size='4' value='$systems_audited_days'/></div><br />\n";
 
-echo "</div>";
-echo "<div id=\"npb_config_save_div\"><input type=\"submit\" value=\"".__("Save")."\" name=\"submit_button\" ></div>";
-echo "</form>";
+echo "</div>\n";
+echo "<div id='npb_config_save_div'>\n<input type='submit' value='".__("Save")."' name='submit_button'/>\n</div>\n";
+echo "</form>\n";
 
 /**********************************************************************************************************
 Function Name:
@@ -375,7 +393,7 @@ Change Log:
 	20/08/2008			New function	[Nick Brown]
 **********************************************************************************************************/
 function CheckedIfYes(&$var)
-{if (isset($var) && $var == "y" ) return " checked='checked'>"; else return ">";}
+{if (isset($var) && $var == "y" ) return " checked='checked'/>"; else return "/>\n";}
 
 ?>
 
@@ -383,21 +401,21 @@ function CheckedIfYes(&$var)
 <div id='npb_config_ldap_div' class='npb_section_data'>
 	<div id='npb_ldap_connections_div'>
 	</div>
-	<button OnClick="NewLdapConnection()">New Connection</button>
+	<button onclick="NewLdapConnection()">New Connection</button>
 	
 	<!-- LDAP Connection Config -->
 	<div id='npb_ldap_connection_config_div'>
 		<fieldset><legend>LDAP Connection Details</legend>
-			<input type="hidden" id="ldap_connection_id" >
+			<input type="hidden" id="ldap_connection_id" />
 			<label for="ldap_connection_server">LDAP Server Name:</label>
-			<input type='text' id='ldap_connection_server' size='50'><br >
+			<input type='text' id='ldap_connection_server' size='50'/><br />
 			<label for="ldap_connection_user">LDAP User Name:</label>
-			<input type='text' id='ldap_connection_user' size='20'><br >
+			<input type='text' id='ldap_connection_user' size='20'/><br />
 			<label for="ldap_connection_password">LDAP Password:</label>
-			<input type='password' id='ldap_connection_password' size='20'><br >
-			<button type="button" OnClick="TestLdapConnection();">Test Connection</button>
-			<button type="button" OnClick="SaveLdapConnection();">Save</button>
-			<button type="button" OnClick="document.getElementById('npb_ldap_connection_config_div').style.display = 'none';">Cancel</button>
+			<input type='password' id='ldap_connection_password' size='20'/><br />
+			<button type="button" onclick="TestLdapConnection();">Test Connection</button>
+			<button type="button" onclick="SaveLdapConnection();">Save</button>
+			<button type="button" onclick="document.getElementById('npb_ldap_connection_config_div').style.display = 'none';">Cancel</button>
 		</fieldset>	
 		<fieldset><legend>Connection Results</legend><p id="ldap_connection_results"></p></fieldset>
 	</div>
@@ -405,14 +423,14 @@ function CheckedIfYes(&$var)
 	<!-- LDAP Path Config -->
 	<div id='npb_ldap_path_config_div'>
 		<fieldset><legend>LDAP Path</legend>
-			<input type="hidden" id="ldap_path_connection_id" >
-			<input type="hidden" id="ldap_path_id" >
-			<label for="ldap_path">LDAP Path:</label>
-			<input type="text" id='ldap_path_dn' size='50'><br >
+			<input type="hidden" id="ldap_path_connection_id"/>
+			<input type="hidden" id="ldap_path_id"/>
+			<label for="ldap_path_dn">LDAP Path:</label>
+			<input type="text" id='ldap_path_dn' size='50'/><br />
 			<label for="ldap_path_audit">Include in audit:</label>
-			<input type="checkbox" id='ldap_path_audit'><br >
-			<button type="button" OnClick="SaveLdapPath();">Save</button>
-			<button type="button" OnClick="document.getElementById('npb_ldap_path_config_div').style.display = 'none';">Cancel</button>
+			<input type="checkbox" id='ldap_path_audit'/><br />
+			<button type="button" onclick="SaveLdapPath();">Save</button>
+			<button type="button" onclick="document.getElementById('npb_ldap_path_config_div').style.display = 'none';">Cancel</button>
 		</fieldset>	
 	</div>
 </div>
