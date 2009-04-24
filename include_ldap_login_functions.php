@@ -24,6 +24,9 @@ Change Control:
 	[Nick Brown]	03/04/2009
 	Moved  ConvertBinarySidToSddl() to "include_functions.php"
 	
+	[Nick Brown]	24/04/2009
+	Added utf8_encode() to LDAP search filter strings
+	
 **********************************************************************************************************/
 include_once "include_functions.php";
 include_once "include_config.php";
@@ -94,11 +97,12 @@ Returns:
 Change Log:
 	24/02/2009			New function	[Nick Brown]
 	23/03/2009			Added ldap_get_values_len() code to get objectsid as binary data	[Nick Brown]
+	24/04/2009			Added utf8_encode() to LDAP search filter	[Nick Brown]
 **********************************************************************************************************/
 function GetUserInfo(&$ldap, &$ldap_connection)
 {
 	$ldap_search_query = "(&(objectClass=user)(objectCategory=person)(|(sAMAccountName=".$_SESSION['username'].")))";
-	$sr = ldap_search($ldap, $ldap_connection['nc'], $ldap_search_query);
+	$sr = ldap_search($ldap, $ldap_connection['nc'], utf8_encode($ldap_search_query));
 	$info = ldap_get_entries($ldap, $sr);
 	
 	// ObjectSid is binary - need to use ldap_get_values_len() to ensure that it's correctly retrieved
@@ -173,6 +177,7 @@ Returns:
 	[BOOLEAN]	TRUE if user account is in the role array or user is a member of any group in the array
 Change Log:
 	24/02/2009			New function	[Nick Brown]
+	24/04/2009			Added utf8_encode() to LDAP search filter	[Nick Brown]
 **********************************************************************************************************/
 function IsUserInRoleArray(&$ldap, &$arr, &$user, &$primary_group, &$ldap_connection)
 {
@@ -186,7 +191,7 @@ function IsUserInRoleArray(&$ldap, &$arr, &$user, &$primary_group, &$ldap_connec
 		if (strtolower($primary_group) == strtolower($arr[$j])) return TRUE;
 		
 		// Now see if item from list is a group and user is a member of that group
-		$sr = ldap_search($ldap, $ldap_connection['nc'], "(&(objectClass=group)(sAMAccountName=".$arr[$j]."))");
+		$sr = ldap_search($ldap, $ldap_connection['nc'], utf8_encode("(&(objectClass=group)(sAMAccountName=".$arr[$j]."))"));
 		$info = ldap_get_entries($ldap, $sr);
 
 		for ($i=0; $i<$info["count"]; $i++)

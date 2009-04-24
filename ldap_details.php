@@ -18,6 +18,9 @@ Change Control:
 	Minor change to GetImage(). Added support for $image_link_ldap_attribute and $human_readable_ldap_fields config
 	options. Now using DisplayError() from "include_functions.php".
 	
+	[Nick Brown]	24/04/2009
+	Added utf8_encode() to LDAP search filter strings
+	
 **********************************************************************************************************/
 require_once "include.php";
 
@@ -44,7 +47,7 @@ else
 	$attributes = ($_GET["full_details"] == "y") ? Array() : $user_ldap_attributes;
 }
 $filter = "(&(objectClass=".$_GET["record_type"].")(sAMAccountName=".$sam_account_name."))";
-$sr = ldap_search($ldap, $ldap_info['nc'], $filter, $attributes);
+$sr = ldap_search($ldap, $ldap_info['nc'], utf8_encode($filter), $attributes);
 $info = ldap_get_entries($ldap, $sr);
 
 // Couldn't retrieve user or computer object from LDAP - alert user & done
