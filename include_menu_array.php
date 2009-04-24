@@ -184,6 +184,8 @@ $menue_array = array(
                                     "50"=>array("name"=>"Hard Drive", "link"=>"./list.php?view=statistic_harddrive", "image"=>"images/harddisk.png", "title"=>"Hard Drive",),
                                     "60"=>array("name"=>"Keys", "link"=>"./list.php?view=statistic_keys", "image"=>"images/key_2.png", "title"=>"Keys",),
                                     "70"=>array("name"=>"Gateway", "link"=>"list.php?view=statistic_gateway", "image"=>"images/network_device.png", "title"=>"",), 
+                                    "80"=>array("name"=>"Model", "link"=>"list.php?view=statistic_model", "image"=>"images/computer.png", "title"=>"",), 
+                                    "90"=>array("name"=>"Manufacturer", "link"=>"list.php?view=statistic_manufacturer", "image"=>"images/computer.png", "title"=>"",), 
 /*                                  This next bit wont work, we need a Parameter for each choice FIXME
                                     "70"=>array("name"=>"AllByOSType", "link"=>"statistics.php?sub=s12", "image"=>"images/o_specialized.png", "title"=>"",),
                                     "80"=>array("name"=>"AllByIeVersions", "link"=>"statistics.php?sub=s13", "image"=>"images/browser_l.png", "title"=>"",),
