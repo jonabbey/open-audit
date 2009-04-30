@@ -11,7 +11,7 @@ Description:
 	Steps 1. and 2 are only executed when the HTML FORM has been POSTed to the page 
 	(i.e. $_POST['submit_button'] is defined)
 		
-Change Control:
+Recent Changes:
 	
 	[Nick Brown]	20/08/2008
 	Original GUI and code redesigned.
@@ -23,6 +23,10 @@ Change Control:
 	[Nick Brown]	23/04/2009
 	Added $human_readable_ldap_fields and  $image_link_ldap_attribute options to the GUI. Tidied up code to get closer to
 	completely valid XHTML markup and make markup more readable.
+
+	[Nick Brown]	29/04/2009
+	Moved <link>s and <script>s into "include.php" <head>. XHTML markup is now valid. Added handling of cases where LDAP
+	extension is not available.
 
 **********************************************************************************************************/
 
@@ -223,13 +227,7 @@ include "include_config.php";
 **********************************************************************************************************/
 
 ?>
-<link media="screen" rel="stylesheet" type="text/css" href="admin_config.css" />
-<script type='text/javascript' src="javascript/ajax.js"></script>
-<script type='text/javascript' src="javascript/PopupMenu.js"></script>
-<script type='text/javascript' src="javascript/admin_config.js"></script>
-
 <div id="npb_popupmenu_div" onmouseover="ClearHideMenu(event);" onmouseout="DynamicHide(event);"></div>
-
 <td class='CenterColumn'>
 	<div class='npb_section_shadow'>
 		<div class='npb_section_content'>
@@ -239,7 +237,8 @@ include "include_config.php";
 					<li><a id='npb_config_general_tab' href='javascript://' onclick='SelectNavTab(this);'>General</a></li>
 					<li><a id='npb_config_security_tab' href='javascript://' onclick='SelectNavTab(this);'>Security</a></li>
 					<li><a id='npb_config_homepage_tab' href='javascript://' onclick='SelectNavTab(this);'>Homepage</a></li>
-					<li><a id='npb_config_ldap_tab' href='javascript://' onclick='SelectNavTab(this);ListLdapConnections();'>LDAP</a></li>
+					<li><a id='npb_config_ldap_tab' href='javascript://' onclick='SelectNavTab(this);
+					<?php	if (function_exists("ldap_search")) {echo "ListLdapConnections();";}?>'>LDAP</a></li>
 				</ul>
 			</div>
 			
@@ -398,51 +397,55 @@ function CheckedIfYes(&$var)
 ?>
 
 <!--   DIV - LDAP -->
-<div id='npb_config_ldap_div' class='npb_section_data'>
-	<div id='npb_ldap_connections_div'>
-	</div>
-	<button onclick="NewLdapConnection()">New Connection</button>
-	
-	<!-- LDAP Connection Config -->
-	<div id='npb_ldap_connection_config_div'>
-		<fieldset><legend>LDAP Connection Details</legend>
-			<input type="hidden" id="ldap_connection_id" />
-			<label for="ldap_connection_server">LDAP Server Name:</label>
-			<input type='text' id='ldap_connection_server' size='50'/><br />
-			<label for="ldap_connection_user">LDAP User Name:</label>
-			<input type='text' id='ldap_connection_user' size='20'/><br />
-			<label for="ldap_connection_password">LDAP Password:</label>
-			<input type='password' id='ldap_connection_password' size='20'/><br />
-			<button type="button" onclick="TestLdapConnection();">Test Connection</button>
-			<button type="button" onclick="SaveLdapConnection();">Save</button>
-			<button type="button" onclick="document.getElementById('npb_ldap_connection_config_div').style.display = 'none';">Cancel</button>
-		</fieldset>	
-		<fieldset><legend>Connection Results</legend><p id="ldap_connection_results"></p></fieldset>
-	</div>
 
-	<!-- LDAP Path Config -->
-	<div id='npb_ldap_path_config_div'>
-		<fieldset><legend>LDAP Path</legend>
-			<input type="hidden" id="ldap_path_connection_id"/>
-			<input type="hidden" id="ldap_path_id"/>
-			<label for="ldap_path_dn">LDAP Path:</label>
-			<input type="text" id='ldap_path_dn' size='50'/><br />
-			<label for="ldap_path_audit">Include in audit:</label>
-			<input type="checkbox" id='ldap_path_audit'/><br />
-			<button type="button" onclick="SaveLdapPath();">Save</button>
-			<button type="button" onclick="document.getElementById('npb_ldap_path_config_div').style.display = 'none';">Cancel</button>
-		</fieldset>	
-	</div>
-</div>
+			<div id='npb_config_ldap_div' class='npb_section_data'>
+				<div id='npb_ldap_connections_div'>
+<?php	
+if (function_exists("ldap_search")) {echo "</div><button onclick=\"NewLdapConnection()\">New Connection</button>";}
+else {echo "<p>You do not have the LDAP extension enabled in your PHP configuration. Please refer to your PHP documentation.<p></div>";}  
+?>				
+				<!-- LDAP Connection Config -->
+				<div id='npb_ldap_connection_config_div'>
+					<fieldset><legend>LDAP Connection Details</legend>
+						<input type="hidden" id="ldap_connection_id" />
+						<label for="ldap_connection_server">LDAP Server Name:</label>
+						<input type='text' id='ldap_connection_server' size='50'/><br />
+						<label for="ldap_connection_user">LDAP User Name:</label>
+						<input type='text' id='ldap_connection_user' size='20'/><br />
+						<label for="ldap_connection_password">LDAP Password:</label>
+						<input type='password' id='ldap_connection_password' size='20'/><br />
+						<!--<label for="ldap_connection_use_ssl">Use secure connection:</label>
+						<input type='checkbox' id='ldap_connection_use_ssl'/>&nbsp;&nbsp;(requires independent configuration of OpenLDAP/OpenSSL)<br />-->
+						<button type="button" onclick="TestLdapConnection();">Test Connection</button>
+						<button type="button" onclick="SaveLdapConnection();">Save</button>
+						<button type="button" onclick="document.getElementById('npb_ldap_connection_config_div').style.display = 'none';">Cancel</button>
+					</fieldset>	
+					<fieldset><legend>Connection Results</legend><p id="ldap_connection_results"></p></fieldset>
+				</div>
 
+				<!-- LDAP Path Config -->
+				<div id='npb_ldap_path_config_div'>
+					<fieldset><legend>LDAP Path</legend>
+						<input type="hidden" id="ldap_path_connection_id"/>
+						<input type="hidden" id="ldap_path_id"/>
+						<label for="ldap_path_dn">LDAP Path:</label>
+						<input type="text" id='ldap_path_dn' size='50'/><br />
+						<label for="ldap_path_audit">Include in audit:</label>
+						<input type="checkbox" id='ldap_path_audit'/><br />
+						<button type="button" onclick="SaveLdapPath();">Save</button>
+						<button type="button" onclick="document.getElementById('npb_ldap_path_config_div').style.display = 'none';">Cancel</button>
+					</fieldset>	
+				</div>
+				
+			</div>
+		
 		</div>
-	</div>	
+	</div>
 </td>
 
 <?php
 include "include_right_column.php";
 ?>
-
 </body>
 </html>
 

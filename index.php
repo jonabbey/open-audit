@@ -1,20 +1,30 @@
 <?php
-/**
-*
-* @version $Id: index.php  24th May 2007
-*
-* @author The Open Audit Developer Team
-* @objective Index Page for Open Audit.
-* @package open-audit (www.open-audit.org)
-* @copyright Copyright (C) open-audit.org All rights reserved.
-* @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see ../gpl.txt
-* Open-Audit is free software. This version may have been modified pursuant
-* to the GNU General Public License, and as distributed it includes or
-* is derivative of works licensed under the GNU General Public License or
-* other free or open source software licenses.
-* See www.open-audit.org for further copyright notices and details.
-*
-*/ 
+/**********************************************************************************************************
+Version $Id: index.php  24th May 2007
+Author:		The Open Audit Developer Team
+Objective:	Index Page for Open Audit.
+Package:		Open-audit (www.open-audit.org)
+Copyright:	Copyright (C) open-audit.org All rights reserved.
+
+License:
+	license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see ../gpl.txt
+	Open-Audit is free software. This version may have been modified pursuant
+	to the GNU General Public License, and as distributed it includes or
+	is derivative of works licensed under the GNU General Public License or
+	other free or open source software licenses.
+	See www.open-audit.org for further copyright notices and details.
+
+Module:	index.php
+
+Description:
+	Home page for Open Audit application.
+
+Recent Changes:
+
+	[Nick Brown]	29/04/2009
+	Removed reference to $validate - doesn't appear to be used anywhere in the application.
+
+**********************************************************************************************************/
 
 $page = "";
 $extra = "";
@@ -24,16 +34,13 @@ $total_rows = 0;
 $latest_version = "09.03.17";
 
 // Check for config, otherwise run setup
-//@(include_once "include_config.php") OR die(header("Location: setup.php"));  // Modified by Nick Brown - don't want to actually include the file yet
-if(!file_exists("include_config.php"))exit(header("Location: setup.php")); // Nick Brown - alternative method
+if(!file_exists("include_config.php"))exit(header("Location: setup.php"));
 include "include.php";
 
 $software = GetGETOrDefaultValue("software","");
 $sort = GetGETOrDefaultValue("sort","system_name");
-$validate = GetGETOrDefaultValue("validate","n");
 ?>
 
-<script type='text/javascript' src="javascript/ajax.js"></script>
 <!-- Create HttpRequestors -->
 <script type='text/javascript'>//<![CDATA[
 <?php
@@ -68,9 +75,7 @@ $page_next = $page_count + 1;
 $page_current = $page_count;
 $page_count = $page_count * $count_system;
 
-
-echo "<td id='CenterColumn' style='display:block'>\n";
-
+echo "<td id='CenterColumn'>\n";
 
 // Check to see if there is an update
 if (versionCheck(get_config("version"), $latest_version)) {
@@ -127,7 +132,7 @@ function DisplayAuditGraph()
 	echo "			<a>Systems Audited in the last ".$systems_audited_days." Days</a>";
 	echo "		</div>";
 	echo "		<div class='npb_section_data' id='AuditedSystems'>";
-	echo "			<img class='npb_auditedsystems_hourglass' alt=' Retrieving...' src='images/hourglass-busy.gif'>";
+	echo "			<img class='npb_auditedsystems_hourglass' alt=' Retrieving...' src='images/hourglass-busy.gif'/>";
 	echo "		</div>";
 	echo "	</div>";
 	echo "</div>";
@@ -155,7 +160,7 @@ function DisplaySection($SwitchID, $Display, $DivID, $TotalString, $RssUrl='')
 	echo "			<img class='npb_down' src=\"images/down.png\" alt=\"\" onclick=\"switchUl('$SwitchID');\"/>";
 	echo "		</div>";
 	echo "		<div class='npb_section_data' id='$DivID'>";
-	echo "			<p class='npb_section_summary'>".__($TotalString).": <img class='npb_hourglass' alt='Retrieving...' src='images/hourglass-busy.gif'></p>";
+	echo "			<p class='npb_section_summary'>".__($TotalString).": <img class='npb_hourglass' alt='Retrieving...' src='images/hourglass-busy.gif'/></p>";
 	echo "		</div>";
 	echo "	</div>";
 	echo "</div>";

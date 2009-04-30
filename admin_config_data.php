@@ -1,6 +1,11 @@
 <?php
 /**********************************************************************************************************
-Module Comments:
+Module:	admin_config_data.php
+
+Description:
+	Provides functions that return HTML or XML in repsonse to AJAX requests in "admin_config.php"
+		
+Recent Changes:
 	
 	[Nick Brown]	10/09/2008
 	Functions in this module are called by the AJAX objects (XMLRequestor & HTMLRequestor)  and return XML or HTML
@@ -12,6 +17,9 @@ Module Comments:
 
 	[Nick Brown]	17/03/2009
 	SaveLdapConnectionXml() & GetLdapConnectionXml now use GetAesKey()
+	
+	[Nick Brown]	29/04/2009
+	Minor changes to TestLdapConnectionHtml() , SaveLdapConnectionXml(),  GetLdapConnectionXml() and GetDefaultNC()
 	
 **********************************************************************************************************/
 set_time_limit(60);
@@ -136,11 +144,13 @@ Change Log:
 	01/09/2008			New function	[Nick Brown]
 	19/09/2008			Removed echo  statments and replaced with response string	[Nick Brown]
 	22/09/2008			Function renamed	[Nick Brown]
+	29/04/2009			Added checking for valid Default Naming Context returned from GetDefaultNC()	[Nick Brown]	
 **********************************************************************************************************/
 function TestLdapConnectionHtml($db)
 {	
-	// Connect anonymously to get default domain NC & config NC
-	$l = ConnectToLdapServer($_GET["ldap_connection_server"]);
+	// Connect anonymously (to get default domain NC from rootDSE)
+	$server = ($_GET['ldap_connection_use_ssl'] == 1) ? "ldaps://".$_GET["ldap_connection_server"] : $_GET["ldap_connection_server"];
+	$l = ConnectToLdapServer($server);
 	if (is_array($l))
 	{
 		$response .=  "!! Unable to bind to server !!<br />";
@@ -150,13 +160,24 @@ function TestLdapConnectionHtml($db)
 		return $response;
 	}	
 	$response .=  "Server connection successful<br />";
+
+	// Get default domain NC
 	$domain_nc = GetDefaultNC($l);
+	if (is_array($domain_nc))
+	{
+		$response .=  "!! Unable to obtain Default Naming Context !!<br />";
+		$response .=  "Err Number: ".$l["number"]."<br />";
+		$response .=  "Err String: ".$l["string"]."<br />";
+		return $response;
+	}	
 	$response .=  "Default Naming Context: ".$domain_nc."<br />";
+
+	// Convert default domain NC to DNS suffix string
 	$user_dns_suffix = implode(".",explode(",DC=",substr($domain_nc,3)));
 	$response .=  "User DNS Suffix: ".$user_dns_suffix."<br />";
 	ldap_unbind($l);
 	
-	// Try to bind using supplied credentials
+	// Now try to bind using supplied credentials
 	$ldap_user = isEmailAddress($_GET["ldap_connection_user"]) ? $_GET["ldap_connection_user"] : $_GET["ldap_connection_user"]."@".$user_dns_suffix;
 	$l = ConnectToLdapServer($_GET["ldap_connection_server"],$ldap_user,$_GET["ldap_connection_password"]);
 	if (is_array($l))
@@ -184,13 +205,15 @@ Returns:
 	[String]	defaultnamingcontext attribute value
 Change Log:
 	25/04/2008			New function	[Nick Brown]
+	29/04/2009			Now returns error array if LDAP query fails	[Nick Brown]	
 **********************************************************************************************************/
 function GetDefaultNC(&$ldap)
 {
 	$sr = ldap_read($ldap,null,"(defaultnamingcontext=*)",array("defaultnamingcontext"));
 	$entries = ldap_get_entries($ldap, $sr);
 	$DefaultNC = $entries[0]["defaultnamingcontext"][0];
-	return $DefaultNC;
+	$errdata = array("number" => ldap_errno($l), "string" => ldap_error($l));
+	if ($errdata["number"] !=0 ) return $errdata; else return $DefaultNC;
 }
 
 /**********************************************************************************************************
@@ -236,19 +259,34 @@ function SaveLdapConnectionXml($db)
 	{
 		// UPDATE query - connection already exists so modify
 		LogEvent("admin_config_data.php","SaveLdapConnectionXml","Edit Connection: ".$ldap_connection_name);
-		$sql  = "UPDATE `ldap_connections` SET `ldap_connections_nc`='".$domain_nc."',`ldap_connections_fqdn`='".$fqdn."',";
-		$sql .= "`ldap_connections_server`='".$_GET["ldap_connection_server"]."',`ldap_connections_user`=AES_ENCRYPT('".$_GET["ldap_connection_user"]."','".$aes_key."'),";
-		$sql .= "`ldap_connections_password`=AES_ENCRYPT('".$_GET["ldap_connection_password"]."','".$aes_key."'),`ldap_connections_name`='".$ldap_connection_name."' ";	
-		$sql .= "WHERE ldap_connections_id='".$_GET["ldap_connection_id"]."'";	
+		$sql  = "UPDATE `ldap_connections` SET 
+						`ldap_connections_nc`='".$domain_nc."',
+						`ldap_connections_fqdn`='".$fqdn."',
+						`ldap_connections_server`='".$_GET["ldap_connection_server"]."',
+						`ldap_connections_user`=AES_ENCRYPT('".$_GET["ldap_connection_user"]."','".$aes_key."'),
+						`ldap_connections_password`=AES_ENCRYPT('".$_GET["ldap_connection_password"]."','".$aes_key."'),
+						`ldap_connections_name`='".$ldap_connection_name."' 	
+						WHERE ldap_connections_id='".$_GET["ldap_connection_id"]."'";	
 	}
 	else
 	{
 		// INSERT query - new connection
 		LogEvent("admin_config_data.php","SaveLdapConnectionXml","New Connection: ".$ldap_connection_name);
-		$sql  = "INSERT INTO `ldap_connections` (`ldap_connections_nc`,`ldap_connections_fqdn`,`ldap_connections_server`,`ldap_connections_user`,`ldap_connections_password`,`ldap_connections_name`,`ldap_connections_schema`) ";	
-		$sql .= "VALUES ('".$domain_nc."','".$fqdn."','".$_GET["ldap_connection_server"]."',";
-		$sql .= "AES_ENCRYPT('".$_GET["ldap_connection_user"]."','".$aes_key."'),";
-		$sql .= "AES_ENCRYPT('".$_GET["ldap_connection_password"]."','".$aes_key."'),'".$ldap_connection_name."','AD')";
+		$sql  = "INSERT INTO `ldap_connections` (
+						`ldap_connections_nc`,
+						`ldap_connections_fqdn`,
+						`ldap_connections_server`,
+						`ldap_connections_user`,
+						`ldap_connections_password`,
+						`ldap_connections_name`,
+						`ldap_connections_schema`) 	
+						VALUES (
+						'".$domain_nc."',
+						'".$fqdn."',
+						'".$_GET["ldap_connection_server"]."', 
+						AES_ENCRYPT('".$_GET["ldap_connection_user"]."','".$aes_key."'),
+						AES_ENCRYPT('".$_GET["ldap_connection_password"]."','".$aes_key."'),
+						'".$ldap_connection_name."','AD')";
 	}
 	
 	mysql_query($sql, $db);
@@ -391,9 +429,11 @@ function GetLdapConnectionXml($db)
 	header("Content-type: text/xml");
 	$aes_key = GetAesKey();
 
-	$sql = "SELECT ldap_connections_server, AES_DECRYPT(ldap_connections_user,'".$aes_key."') 
-	AS ldap_user, AES_DECRYPT(ldap_connections_password,'".$aes_key."') AS ldap_password FROM ldap_connections 
-	WHERE ldap_connections_id='".$_GET["ldap_connection_id"]."'";
+	$sql = "SELECT ldap_connections_server, 
+					AES_DECRYPT(ldap_connections_user,'".$aes_key."') AS ldap_user, 
+					AES_DECRYPT(ldap_connections_password,'".$aes_key."') AS ldap_password, 
+					FROM ldap_connections 
+					WHERE ldap_connections_id='".$_GET["ldap_connection_id"]."'";
 	$result = mysql_query($sql, $db);
 	
 	// Return results  as xml

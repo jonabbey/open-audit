@@ -6,6 +6,12 @@ body {
   margin: 5px;
 }
 
+img.logo {
+	width: 300px;
+	height: 48px;
+	border: 0px; 
+}
+
 /* Apply orange line throught the header (& logo) */
 div.npb_ldap_login_header{
 	background-image: url(images/grad.png); 
@@ -21,7 +27,7 @@ div.npb_ldap_login_header img{
 div.npb_ldap_login
 {
 	border: 1px solid #8BA3B7;
-	width: 320px;
+	width: 350px;
 	margin: 20px auto 20px auto;
 	padding:	15px;
 	background: url(images/Shading3.png) repeat-x top left;
@@ -74,6 +80,18 @@ div.npb_ldap_login p {
 div.npb_ldap_login_disclaimer {
 	text-align: center;
   font-size: 80%;
+}
+
+/* table settings used by "include_ldap_config_err.php" */
+table {
+	border-collapse: collapse;
+	margin: 5px 0 10px 0;
+}
+
+td, th {
+	text-align: left;
+	border: 2px solid #eee;
+	padding: 5px;
 }
 
 #submit

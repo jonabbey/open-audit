@@ -5,7 +5,7 @@ Module:	include_ldap_login.php
 Description:
 	Displays logon page for user to supply credentials and authenticates user against LDAP Source.
 		
-Change Control:
+Recent Changes:
 	
 	[Nick Brown]	02/03/2009
 	The main functional change is that LDAP authentication now uses the LDAP connections defined in Admin->Config-LDAP,
@@ -28,6 +28,9 @@ Change Control:
 	Username text field now has focus on page load:
 	(http://www.open-audit.org/phpBB3/viewtopic.php?f=9&t=3157&start=0&st=0&sk=t&sd=a)
 
+	[Nick Brown]	29/04/2009
+	Checks for availability of LDAP functions  - redirects to "include_ldap_config_err.php" if not available
+	
 **********************************************************************************************************/
 
 session_start();
@@ -41,7 +44,7 @@ if (($_SERVER["SERVER_PORT"]!=443) && ($use_https == "y")){ header("Location: ht
 
 $ldap_connections = GetLdapConnectionsFromDb();
 // Show error if no LDAP connections defined
-if (count($ldap_connections) == 0) 
+if ((count($ldap_connections) == 0) or !function_exists("ldap_search")) 
 {
 	include "include_ldap_config_err.php";
 	exit;
@@ -93,16 +96,6 @@ if (isset($_POST['username']))
 	<meta http-equiv="pragma" content="no-cache">
 	<link rel="stylesheet" type="text/css" href="ldap_login.css" />
 </head>
-
-<!-- Commented by Nick Brown - why are we disabling right-click? This code only works on IE anyway?
-<script LANGUAGE="JavaScript">
-//<![CDATA[
-	document.onmousedown = click;
-  function click()
-	{if (event.button == 2) {alert(<?php echo __("'Right-clicking has been disabled by the administrator.'");?>);}}
-//]]>
-</script>
--->
 
 <body onload='document.getElementById("username").focus()'>
 

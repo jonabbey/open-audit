@@ -6,6 +6,12 @@ body {
   padding: 0;
   padding-left: 0px; }
 
+img.logo {
+	width: 300px;
+	height: 48px;
+	border: 0px; 
+}
+	
 .for_forms {
   font: normal 100% verdana, tahoma, arial, Sans ;
   text-decoration: none;

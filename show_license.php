@@ -1,20 +1,16 @@
 <?php
-/**
-*
-* @version $Id: show_license.php  30th Dec 2008
-*
-* @author The Open Audit Developer Team
-* @objective Show License Page for Open Audit.
-* @package open-audit (www.open-audit.org)
-* @copyright Copyright (C) open-audit.org All rights reserved.
-* @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see ../gpl.txt
-* Open-Audit is free software. This version may have been modified pursuant
-* to the GNU General Public License, and as distributed it includes or
-* is derivative of works licensed under the GNU General Public License or
-* other free or open source software licenses.
-* See www.open-audit.org for further copyright notices and details.
-*
-*/ 
+/**********************************************************************************************************
+Module:	show_license.php
+
+Description:
+	Displays the GPL license from GPL.TXT
+
+Recent Changes:
+
+	[Nick Brown]	29/04/2009
+	Removed reference to $validate - doesn't appear to be used anywhere in the application.
+	
+**********************************************************************************************************/
 
 $page = "";
 $extra = "";
@@ -32,13 +28,11 @@ include "include.php";
 
 $software = GetGETOrDefaultValue("software","");
 $sort = GetGETOrDefaultValue("sort","system_name");
-$validate = GetGETOrDefaultValue("validate","n");
 
 
-echo "<td id='CenterColumn' style='display:block'>\n";
+echo "<td id='CenterColumn'>\n";
 
 // Now show the specified License in an iframe.
-
 if(isset($license_text) AND $license_text!="") {
 // We can alter things here if the file doesn't exist or whatever
 // currently do nothing
@@ -63,12 +57,9 @@ echo "<img src=\"images/gplv3-88x31.png\" alt=\"\" style=\"border:0px;\" width=\
  //
 }
 
-
-
-
 //gplv3-88x31.png
 echo "</td>\n";
-//
+
 // Now put in the RH menu.
 include "include_right_column.php";
 ?>

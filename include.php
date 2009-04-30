@@ -6,7 +6,7 @@ Description:
 	This module is included by "index.php". Verifies authentication to the system and HTML to display the application header 
 	and menu.
 
-Change Control:
+Recent Changes:
 
 	[Nick Brown]	02/03/2009
 	Only a minor change - the "logout" link in the top right of the page now displays the user's role (admin/user) as well as their
@@ -15,6 +15,10 @@ Change Control:
 	[Nick Brown]	17/04/2009
 	Minor improvement to SQL query that retrieves audited system from DB
 	
+	[Nick Brown]	29/04/2009
+	Moved <link>s and <script>s into <head> from "admin_config.php". Minor changes to ensure valid XHTML markup. Moved 
+	javascript functions into external file "include.js"
+
 **********************************************************************************************************/
 include_once "include_config.php";
 include_once "include_lang.php";
@@ -66,40 +70,22 @@ if ($use_pass != "n") {
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <title>Open-AudIT</title>
-    <link rel="icon" href="favicon.ico" type="image/x-icon">
-    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon"> 
+    <link rel="icon" href="favicon.ico" type="image/x-icon"/>
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon"/> 
     <!--<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />-->
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 		<link media="screen" rel="stylesheet" type="text/css" href="default.css" />
     <link media="print" rel="stylesheet" type="text/css" href="defaultprint.css" />
+		<link media="screen" rel="stylesheet" type="text/css" href="admin_config.css" />
 		<!--[if lt IE 7]><link media="screen" rel="stylesheet" type="text/css" href="iefix.css" /><![endif]-->
 		<!--[if lt IE 7]><link media="print" rel="stylesheet" type="text/css" href="iefix.css" /><![endif]-->
 		
-    <script type="text/javascript">
-     /*<![CDATA[*/
-      function IEHoverPseudo() {
-        var navItems = document.getElementById("primary-nav").getElementsByTagName("li");
-        for (var i=0; i<navItems.length; i++) {
-          if(navItems[i].className == "menuparent") {
-            navItems[i].onmouseover=function() { this.className += " over"; }
-            navItems[i].onmouseout=function() {window.status=this.className; this.className = "menuparent";}
-          }
-        }
-      }
-
-      window.onload = IEHoverPseudo;
-
-			function switchUl(id){
-        if(document.getElementById){
-          a=document.getElementById(id);
-          a.style.display=(a.style.display!="none")?"none":"block";
-        }
-      }
-      /*]]>*/
-    </script>
-
+		<script type='text/javascript' src="javascript/ajax.js"></script>
+		<script type='text/javascript' src="javascript/PopupMenu.js"></script>
+		<script type='text/javascript' src="javascript/admin_config.js"></script>
+		<script type='text/javascript' src="javascript/include.js"></script>
   </head>
-  <body>
+  <body onload="IEHoverPseudo();">
 <?php
 
 $pc = GetGETOrDefaultValue("pc", "");
@@ -122,14 +108,12 @@ if ($page <> "setup"){
 ?>
 <table width="100%">
   <tr>
-    <td colspan="3" class="main_each"><a href="index.php"><img src="images/logo.png" width="300" height="48" alt="" style="border:0px;" /></a>
-		</td>
-
-
+    <td colspan="3" class="main_each"><a href="index.php"><img class="logo" src="images/logo.png" alt=""/></a>
 <?php
 	if (isset($use_ldap_login) and ($use_ldap_login == 'y')) 
 	{echo "<a class='npb_ldap_logout' href=\"ldap_logout.php\">".__("Logout ").$_SESSION["username"]." [".$_SESSION["role"]."]</a>";}
 ?>		
+		</td>
   </tr>
 
   <tr>
@@ -261,21 +245,7 @@ if ($pc > "0") {
         echo "</li>\n";
     unset($topic_item["title"]);
     }
-
-// Add a Strict Test button if $validate is set.     
-if ((isset($validate)) and ($validate =="y")){
-echo "<p>";
-echo "<a href=\"http://validator.w3.org/check/referer\"><img src=\"http://www.w3.org/Icons/valid-xhtml10\" alt=\"Valid XHTML 1.0!\" height=\"31\" width=\"88\" /></a>";
-//echo "<script type=\"text/javascript\" language=\"JavaScript1.2\" src=\"http://www.altavista.com/help/free/inc_translate\"></script>";
-echo "<noscript><a href=\"http://www.altavista.com/babelfish/tr\"></noscript>";
-//echo "<script language=\"JavaScript1.2\" src=\"http://www.altavista.com/static/scripts/translate_engl.js\"></script>\"";
-echo "</p>";
-//
-
-echo "</body>\n</html>";
-}
  echo "</ul>\n";
   echo "</td>\n";
-
 ?>
      
