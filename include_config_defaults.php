@@ -80,7 +80,7 @@ $utf8 = 'y';
 $show_dell_warranty = 'y';
 $show_tips = 'n';
 $admin_list = Array('Domain Admins');
-$user_list = Array('Domain Admins');
+$user_list = Array('Domain Users');
 $user_ldap_attributes = Array("company","department","description","displayname",
 	"mail","manager","msexchhomeservername","name","physicaldeliveryofficename","samaccountname","telephonenumber");
 $computer_ldap_attributes = Array("description","name","operatingsystem","operatingsystemversion","operatingsystemservicepack");
