@@ -18,23 +18,19 @@ Recent Changes:
 	Most of the detailed functionality has been moved into "incldue_ldap_login_functions.php". This makes the logic on this 
 	page more easy to follow IMO.
 
-	[Nick Brown]	11/03/2009
-	$_SESSION["username"] now set in this module, not in the call to AuthenticateUsingLdap()
-	
-	[Nick Brown]	24/03/2009
-	Added detection and handling for UPN format username to login
-	
-	[Nick Brown]	07/04/2009
-	Username text field now has focus on page load:
+	[Nick Brown]	11/03/2009	$_SESSION["username"] now set in this module, not in the call to AuthenticateUsingLdap()
+	[Nick Brown]	24/03/2009	Added detection and handling for UPN format username to login
+	[Nick Brown]	07/04/2009	Username text field now has focus on page load:
 	(http://www.open-audit.org/phpBB3/viewtopic.php?f=9&t=3157&start=0&st=0&sk=t&sd=a)
+	[Nick Brown]	29/04/2009	Checks for availability of LDAP functions  - redirects to "include_ldap_config_err.php" 
+	if not available
+	[Nick Brown]	01/05/2009	Included "application_class.php" to provide access to the global $TheApp object. 
 
-	[Nick Brown]	29/04/2009
-	Checks for availability of LDAP functions  - redirects to "include_ldap_config_err.php" if not available
-	
 **********************************************************************************************************/
 
 session_start();
 
+include "application_class.php";
 include "include_config.php";
 include "include_lang.php";
 include "include_functions.php";
@@ -44,7 +40,7 @@ if (($_SERVER["SERVER_PORT"]!=443) && ($use_https == "y")){ header("Location: ht
 
 $ldap_connections = GetLdapConnectionsFromDb();
 // Show error if no LDAP connections defined
-if ((count($ldap_connections) == 0) or !function_exists("ldap_search")) 
+if ((count($ldap_connections) == 0) or !$TheApp->LdapEnabled) 
 {
 	include "include_ldap_config_err.php";
 	exit;

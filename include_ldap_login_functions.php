@@ -6,27 +6,19 @@ Description:
 		This module is included by "ldap_login.php" and "ldap_logout.php". The functions are primarily concerned with 
 		authenticating the user against LDAP and determining the user's "role" (admin/user)
 		
-Change Control:
+Recent Changes:
 	
-	[Nick Brown]	02/03/2009
-	Added AuthenticateUsingLdap(), GetUserRole(), GetUserInfo(), GetUserPrimaryGroupName(), GetDomainSidAsSddl(), 
-	GetGroupNameFromSddl(),  IsUserInRoleArray(), ConvertBinarySidToSddl() and DestroySession()
-	
-	[Nick Brown]	11/03/2009
-	Changes to AuthenticateUsingLdap(), GetUserPrimaryGroupName(), GetDomainSidAsSddl()
-	
-	[Nick Brown]	17/03/2009
-	Changes to GetUserPrimaryGroupName() . Removed GetDomainSidAsSddl()
+	[Nick Brown]	02/03/2009	Added AuthenticateUsingLdap(), GetUserRole(), GetUserInfo(), 
+	GetUserPrimaryGroupName(), GetDomainSidAsSddl(), GetGroupNameFromSddl(),  IsUserInRoleArray(), 
+	ConvertBinarySidToSddl() and DestroySession()
+	[Nick Brown]	11/03/2009	Changes to AuthenticateUsingLdap(), GetUserPrimaryGroupName(), 
+	GetDomainSidAsSddl()
+	[Nick Brown]	17/03/2009	Changes to GetUserPrimaryGroupName() . Removed GetDomainSidAsSddl()
+	[Nick Brown]	23/03/2009	Change to GetUserInfo()
+	[Nick Brown]	03/04/2009	Moved  ConvertBinarySidToSddl() to "include_functions.php"
+	[Nick Brown]	24/04/2009	Added utf8_encode() to LDAP search filter strings
+	[Nick Brown]	01/05/2009	AuthenticateUsingLdap() - added SSL support	
 
-	[Nick Brown]	23/03/2009
-	Change to GetUserInfo()
-
-	[Nick Brown]	03/04/2009
-	Moved  ConvertBinarySidToSddl() to "include_functions.php"
-	
-	[Nick Brown]	24/04/2009
-	Added utf8_encode() to LDAP search filter strings
-	
 **********************************************************************************************************/
 include_once "include_functions.php";
 include_once "include_config.php";
@@ -46,14 +38,28 @@ Returns:
 Change Log:
 	24/02/2009			New function	[Nick Brown]
 	11/03/2009			$_SESSION["username"] no longer set in this function[Nick Brown]
+	01/05/2009			Added SSL support	
 **********************************************************************************************************/
 function AuthenticateUsingLdap($username, $password, &$ldap_connection)
 {
+	
+	/*
+	global $TheApp;
+	
+	// If this connection is configured for SSL, but SSL isn't enabled, throw error
+	if ($ldap_connection['use_ssl'] == 1 && !$TheApp->OpenSslEnabled)
+	{
+		$errmsg = "This LDAP connection is configured to use SSL, but your Open Audit server doesn't appear to have OpenSSL enabled.";
+		DisplayError($errmsg);
+	}
+	*/
+	
 	$upn = isEmailAddress($username) ? $username : $username."@".$ldap_connection['fqdn'];
 		
 	// Authenticate
   error_reporting(E_ERROR | E_PARSE);
-	$connect = ConnectToLdapServer($ldap_connection['server'], $upn, $password);
+	$server = ($ldap_connection['use_ssl'] == 1) ? "ldaps://".$ldap_connection['server'] : $ldap_connection['server'];
+	$connect = ConnectToLdapServer($server, $upn, $password);
 	return $connect;
 }
 

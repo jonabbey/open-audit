@@ -3,30 +3,25 @@
 Module:	admin_config_data.php
 
 Description:
-	Provides functions that return HTML or XML in repsonse to AJAX requests in "admin_config.php"
+	Functions in this module are called by the AJAX objects (XMLRequestor & HTMLRequestor)  and return XML or HTML
+	content back to the calling page ("admin_config.php")
 		
 Recent Changes:
 	
-	[Nick Brown]	10/09/2008
-	Functions in this module are called by the AJAX objects (XMLRequestor & HTMLRequestor)  and return XML or HTML
-	content back to the calling page.
+	[Nick Brown]	17/03/2009	SaveLdapConnectionXml() & GetLdapConnectionXml now use GetAesKey()
+	[Nick Brown]	29/04/2009	Minor changes to TestLdapConnectionHtml() , SaveLdapConnectionXml(),  
+	GetLdapConnectionXml() and GetDefaultNC()
+	[Nick Brown]	01/05/2009	New function GetOpenSslEnabled() ."application_class.php" now included to provide 
+	access to the global $TheApp object
 
-	[Nick Brown]	19/09/2008
-	Re-wrote main routine  to using a switch statement
-	Made each separate function return a value rather than echoing a response directly
-
-	[Nick Brown]	17/03/2009
-	SaveLdapConnectionXml() & GetLdapConnectionXml now use GetAesKey()
-	
-	[Nick Brown]	29/04/2009
-	Minor changes to TestLdapConnectionHtml() , SaveLdapConnectionXml(),  GetLdapConnectionXml() and GetDefaultNC()
-	
 **********************************************************************************************************/
 set_time_limit(60);
 header( "Expires: Mon, 20 Dec 1998 01:00:00 GMT" );
 header( "Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT" );
 header( "Cache-Control: no-cache, must-revalidate" );
 header( "Pragma: no-cache" );
+
+include "application_class.php";
 include "include_config.php";
 include "include_lang.php";
 include "include_functions.php";
@@ -49,6 +44,7 @@ switch($_GET["sub"])
 	case "f7": exit(SaveLdapPathXml($db));
 	case "f8": exit(GetLdapPathXml($db));
 	case "f9": exit(DeleteLdapPathXml($db));
+	case "f10": exit(GetOpenSslEnabled());
 }
 
 /**********************************************************************************************************
@@ -265,6 +261,7 @@ function SaveLdapConnectionXml($db)
 						`ldap_connections_server`='".$_GET["ldap_connection_server"]."',
 						`ldap_connections_user`=AES_ENCRYPT('".$_GET["ldap_connection_user"]."','".$aes_key."'),
 						`ldap_connections_password`=AES_ENCRYPT('".$_GET["ldap_connection_password"]."','".$aes_key."'),
+						`ldap_connections_use_ssl`='".$_GET["ldap_connection_use_ssl"]."',
 						`ldap_connections_name`='".$ldap_connection_name."' 	
 						WHERE ldap_connections_id='".$_GET["ldap_connection_id"]."'";	
 	}
@@ -278,6 +275,7 @@ function SaveLdapConnectionXml($db)
 						`ldap_connections_server`,
 						`ldap_connections_user`,
 						`ldap_connections_password`,
+						`ldap_connections_use_ssl`,
 						`ldap_connections_name`,
 						`ldap_connections_schema`) 	
 						VALUES (
@@ -286,6 +284,7 @@ function SaveLdapConnectionXml($db)
 						'".$_GET["ldap_connection_server"]."', 
 						AES_ENCRYPT('".$_GET["ldap_connection_user"]."','".$aes_key."'),
 						AES_ENCRYPT('".$_GET["ldap_connection_password"]."','".$aes_key."'),
+						'".$_GET["ldap_connection_use_ssl"]."',
 						'".$ldap_connection_name."','AD')";
 	}
 	
@@ -432,6 +431,7 @@ function GetLdapConnectionXml($db)
 	$sql = "SELECT ldap_connections_server, 
 					AES_DECRYPT(ldap_connections_user,'".$aes_key."') AS ldap_user, 
 					AES_DECRYPT(ldap_connections_password,'".$aes_key."') AS ldap_password, 
+					ldap_connections_use_ssl 
 					FROM ldap_connections 
 					WHERE ldap_connections_id='".$_GET["ldap_connection_id"]."'";
 	$result = mysql_query($sql, $db);
@@ -446,6 +446,7 @@ function GetLdapConnectionXml($db)
 			$response .= "<ldap_connection_server>".$myrow['ldap_connections_server']."</ldap_connection_server>";
 			$response .= "<ldap_connection_user>".$myrow['ldap_user']."</ldap_connection_user>";
 			$response .= "<ldap_connection_password>".$myrow['ldap_password']."</ldap_connection_password>";
+			$response .= "<ldap_connection_use_ssl>".$myrow['ldap_connections_use_ssl']."</ldap_connection_use_ssl>";
 			$response .= "</connection>";
 		}	while ($myrow = mysql_fetch_array($result));
 	}
@@ -593,4 +594,26 @@ function DeleteLdapPathXml($db)
 	return $response;
 }
 
+/**********************************************************************************************************
+Function Name:
+	GetOpenSslEnabled
+Description:
+Arguments:	None
+Returns:		
+	[String]	XML response
+Change Log:
+	01/05/2009			New function	[Nick Brown]
+**********************************************************************************************************/
+function GetOpenSslEnabled()
+{
+	global $TheApp;
+	
+	header("Content-type: text/xml");
+	
+	$response  = "<GetOpenSslEnabled><result>";
+	$response .= $TheApp->OpenSslEnabled ? "Y" : "N";
+	$response .= "</result></GetOpenSslEnabled>";
+
+	return $response;
+}
 ?>

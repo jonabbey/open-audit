@@ -13,20 +13,13 @@ Description:
 		
 Recent Changes:
 	
-	[Nick Brown]	20/08/2008
-	Original GUI and code redesigned.
-
-	[Nick Brown]	02/03/2009
-	Added $admin_list_post and $user_list support in "include_config.php" - there is no GUI for modifying these values yet
-	Added an include for "include_config_defaults.php" in "include_config.php"
-	
-	[Nick Brown]	23/04/2009
-	Added $human_readable_ldap_fields and  $image_link_ldap_attribute options to the GUI. Tidied up code to get closer to
-	completely valid XHTML markup and make markup more readable.
-
-	[Nick Brown]	29/04/2009
-	Moved <link>s and <script>s into "include.php" <head>. XHTML markup is now valid. Added handling of cases where LDAP
-	extension is not available.
+	[Nick Brown]	02/03/2009	Added $admin_list_post and $user_list support in "include_config.php" - there is no GUI 
+	for modifying these values yet. Added an include for "include_config_defaults.php" in "include_config.php"
+	[Nick Brown]	23/04/2009	Added $human_readable_ldap_fields and  $image_link_ldap_attribute options to the GUI. 
+	Tidied up code to get closer to completely valid XHTML markup and make markup more readable.
+	[Nick Brown]	29/04/2009	Moved <link>s and <script>s into "include.php" <head>. XHTML markup is now valid. Added 
+	handling of cases where LDAP extension is not available.
+	[Nick Brown]	01/05/2009	Added checkbox to enable LDAP over SSL for a connection.
 
 **********************************************************************************************************/
 
@@ -238,7 +231,7 @@ include "include_config.php";
 					<li><a id='npb_config_security_tab' href='javascript://' onclick='SelectNavTab(this);'>Security</a></li>
 					<li><a id='npb_config_homepage_tab' href='javascript://' onclick='SelectNavTab(this);'>Homepage</a></li>
 					<li><a id='npb_config_ldap_tab' href='javascript://' onclick='SelectNavTab(this);
-					<?php	if (function_exists("ldap_search")) {echo "ListLdapConnections();";}?>'>LDAP</a></li>
+					<?php	if ($TheApp->LdapEnabled) {echo "ListLdapConnections();";}?>'>LDAP</a></li>
 				</ul>
 			</div>
 			
@@ -401,7 +394,7 @@ function CheckedIfYes(&$var)
 			<div id='npb_config_ldap_div' class='npb_section_data'>
 				<div id='npb_ldap_connections_div'>
 <?php	
-if (function_exists("ldap_search")) {echo "</div><button onclick=\"NewLdapConnection()\">New Connection</button>";}
+if ($TheApp->LdapEnabled) {echo "</div><button onclick=\"NewLdapConnection()\">New Connection</button>";}
 else {echo "<p>You do not have the LDAP extension enabled in your PHP configuration. Please refer to your PHP documentation.<p></div>";}  
 ?>				
 				<!-- LDAP Connection Config -->
@@ -414,8 +407,8 @@ else {echo "<p>You do not have the LDAP extension enabled in your PHP configurat
 						<input type='text' id='ldap_connection_user' size='20'/><br />
 						<label for="ldap_connection_password">LDAP Password:</label>
 						<input type='password' id='ldap_connection_password' size='20'/><br />
-						<!--<label for="ldap_connection_use_ssl">Use secure connection:</label>
-						<input type='checkbox' id='ldap_connection_use_ssl'/>&nbsp;&nbsp;(requires independent configuration of OpenLDAP/OpenSSL)<br />-->
+						<label for="ldap_connection_use_ssl">Use secure connection:</label>
+						<input type='checkbox' id='ldap_connection_use_ssl' onclick='CheckOpenSslStatus();'/>&nbsp;&nbsp;(requires independent configuration of OpenSSL)<br />
 						<button type="button" onclick="TestLdapConnection();">Test Connection</button>
 						<button type="button" onclick="SaveLdapConnection();">Save</button>
 						<button type="button" onclick="document.getElementById('npb_ldap_connection_config_div').style.display = 'none';">Cancel</button>

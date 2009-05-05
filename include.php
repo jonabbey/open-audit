@@ -8,23 +8,22 @@ Description:
 
 Recent Changes:
 
-	[Nick Brown]	02/03/2009
-	Only a minor change - the "logout" link in the top right of the page now displays the user's role (admin/user) as well as their
-	name.
-	
-	[Nick Brown]	17/04/2009
-	Minor improvement to SQL query that retrieves audited system from DB
-	
-	[Nick Brown]	29/04/2009
-	Moved <link>s and <script>s into <head> from "admin_config.php". Minor changes to ensure valid XHTML markup. Moved 
-	javascript functions into external file "include.js"
+	[Nick Brown]	02/03/2009	Only a minor change - the "logout" link in the top right of the page now displays the user's 
+	role (admin/user) as well as their name.
+	[Nick Brown]	17/04/2009	Minor improvement to SQL query that retrieves audited system from DB
+	[Nick Brown]	29/04/2009	Moved <link>s and <script>s into <head> from "admin_config.php". Minor changes to ensure 
+	valid XHTML markup. Moved javascript functions into external file "include.js"
+	[Nick Brown]	01/05/2009	Incldued "application_class.php" to provide access to the global $TheApp object. 
 
 **********************************************************************************************************/
+include_once "application_class.php";
 include_once "include_config.php";
 include_once "include_lang.php";
 include_once "include_functions.php";
 include "include_dell_warranty_functions.php"; // Added by Andrew Hull to allow us to grab Dell Warranty details from the Dell website
 include_once "include_col_scheme.php";
+
+//die(var_dump($TheApp));
 
 $page = GetVarOrDefaultValue($page);
 

@@ -5,25 +5,20 @@ Module:	include_functions.php
 Description:
 		General purpose functions used throughout the application.
 
-Change Control:
+Recent Changes:
 
-	[Nick Brown]	02/03/2009
-	Added GetLdapConnectionsFromDb() , GetOpenAuditDbConnection() and RedirectToUrl().
-	LogEvent() modified to use GetOpenAuditDbConnection()
-	
-	[Nick Brown]	11/03/2009
-	Change to GetLdapConnectionsFromDb()
-
-	[Nick Brown]	23/03/2009
-	Change to GetAesKey()
-
-	[Nick Brown]	03/04/2009	
-	Added ConnectToOpenAuditDb() and ConvertBinarySidToSddl()
-	
-	[Nick Brown]	17/04/2009	
-	Minor change to ConvertSpecialField()
+	[Nick Brown]	02/03/2009	Added GetLdapConnectionsFromDb() , GetOpenAuditDbConnection() 
+	and RedirectToUrl(). LogEvent() modified to use GetOpenAuditDbConnection()
+	[Nick Brown]	11/03/2009	Change to GetLdapConnectionsFromDb()
+	[Nick Brown]	23/03/2009	Change to GetAesKey()
+	[Nick Brown]	03/04/2009	Added ConnectToOpenAuditDb() and ConvertBinarySidToSddl()
+	[Nick Brown]	17/04/2009	Minor change to ConvertSpecialField()
+	[Nick Brown]	24/04/2009	Minor change to  GetLdapConnectionsFromDb()
+	[Nick Brown]	01/05/2009	Incldued "application_class.php" to provide access to the global $TheApp object. 
+	GetAesKey() re-written to use $TheApp
 
 **********************************************************************************************************/
+require_once "application_class.php";
 require_once "include_config.php";
 
 function return_unknown($something)
@@ -814,41 +809,24 @@ Returns:
 Change Log:
 	16/03/2009			New function	[Nick Brown]
 	23/03/2009			Added additional testing for OS type		[Nick Brown]
+	05/05/2009			Now uses $TheApp	[Nick Brown]
 **********************************************************************************************************/
 function GetAesKey()
 {
-	$aeskey = 'openaudit';
-	$err_level = error_reporting(0);
-
-	// Try various methods to determine OS  - See http://www.compdigitec.com/labs/2008/07/16/determine-the-os-and-version-of-php/
-	$os = php_uname("s");  
-	$os .= phpversion();
-	$os .= $_SERVER["SERVER_SOFTWARE"];
-	$os .= $_ENV['OS'];
-	$os .= $_SERVER['OS'];
-
-	// If preferred methods fail - use this string as AES key
-	$aeskey = $os.PHP_OS;
+	global $TheApp;
 	
-	// Linux - get the UUID of the "first" disk (based on sort)
-	if (preg_match("/(ubuntu|suse)/i", $os))
+	switch ($TheApp->OS)
 	{
-		$shellout = shell_exec("ls /dev/disk/by-uuid");
-		{
+		case "Windows":
+			preg_match("/Volume Serial Number[a-zA-Z]* is (.*)\n/i", shell_exec('vol c:'), $m);
+			return $m[1];
+		case "Linux":
+			$shellout = shell_exec("ls /dev/disk/by-uuid");
 			$list = preg_split("/[\s,]+/", trim($shellout));
 			sort($list);
-			$aeskey = $list[0];
-		}
+			return $list[0];
 	}
-	
-	// Windows - get the serial number of the C: volume
-	elseif (preg_match("/(win32|winnt|Windows)/i", $os))
-	{
-		if (preg_match("/Volume Serial Number[a-zA-Z]* is (.*)\n/i", shell_exec('vol c:'), $m)) {$aeskey = $m[1];}	
-	}
-
-	error_reporting($err_level); 
-	return $aeskey;
+	return 'openaudit';
 }
 
 /**********************************************************************************************************
@@ -993,9 +971,9 @@ Function Name:
 Description:
 	Connects and authenticates to LDAP server
 Arguments:
-	&$ldap_server			[IN]	[STRING]	ldap server host name
-	&$ldap_user			[IN]	[STRING]	user name for authentication
-	&$ldap_password		[IN]	[STRING]	user password for authentication
+	ldap_server			[IN]	[STRING]	ldap server host name
+	$ldap_user			[IN]	[STRING]	user name for authentication
+	$ldap_password		[IN]	[STRING]	user password for authentication
 Returns:
 	LDAP link				[RESOURCE]  if succesful, or...
 	LDAP error				[ARRAY]  if not.
@@ -1004,7 +982,7 @@ Change Log:
 	02/09/2008			Added error detection [Nick Brown]
 	08/09/2008			Added anonymous bind support [Nick Brown]
 **********************************************************************************************************/
-function ConnectToLdapServer(&$ldap_server, $ldap_user, $ldap_password)
+function ConnectToLdapServer($ldap_server, $ldap_user, $ldap_password)
 {
 	$l = ldap_connect($ldap_server);
 	ldap_set_option($l,LDAP_OPT_PROTOCOL_VERSION,3);
@@ -1029,7 +1007,8 @@ Returns:
 Change Log:
 	24/02/2009			New function	[Nick Brown]
 	11/03/2009			Connection username and password now included in returned array	[Nick Brown]
-	17/03/2009			Using GetAesKey() instead of GetVolumeLabel()
+	17/03/2009			Using GetAesKey() instead of GetVolumeLabel()	[Nick Brown]
+	24/04/2009			Added "ldap_connections_use_ssl" value to returned array	[Nick Brown]
 **********************************************************************************************************/
 function GetLdapConnectionsFromDb()
 {
@@ -1040,10 +1019,10 @@ function GetLdapConnectionsFromDb()
 	
 	$aes_key = GetAesKey();
 	
-	$sql =
-  "SELECT ldap_connections_id,AES_DECRYPT(ldap_connections_user,'".$aes_key."') AS ldap_user, 
-	AES_DECRYPT(ldap_connections_password,'".$aes_key."') AS ldap_password, ldap_connections_server, 
-	ldap_connections_fqdn, ldap_connections_name, ldap_connections_nc FROM ldap_connections ";
+	$sql = "SELECT ldap_connections_id,AES_DECRYPT(ldap_connections_user,'".$aes_key."') AS ldap_user, 
+					AES_DECRYPT(ldap_connections_password,'".$aes_key."') AS ldap_password, ldap_connections_use_ssl,
+					ldap_connections_server, ldap_connections_fqdn, ldap_connections_name, ldap_connections_nc 
+					FROM ldap_connections ";
 	
 	$result = mysql_query($sql, $db);
 	if ($myrow = mysql_fetch_array($result))
@@ -1056,6 +1035,7 @@ function GetLdapConnectionsFromDb()
 			$ldap_connections[$id]["server"] = $myrow["ldap_connections_server"];
 			$ldap_connections[$id]["user"] = $myrow["ldap_user"];
 			$ldap_connections[$id]["password"] = $myrow["ldap_password"];
+			$ldap_connections[$id]["use_ssl"] = $myrow["ldap_connections_use_ssl"];
 			$ldap_connections[$id]["name"] = $myrow["ldap_connections_name"];
 			$ldap_connections[$id]["fqdn"] = $myrow["ldap_connections_fqdn"];
 			$ldap_connections[$id]["nc"] = $myrow["ldap_connections_nc"];
