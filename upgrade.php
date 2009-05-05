@@ -5,10 +5,10 @@ Module:	upgrade.php
 Description:
 	Code to ensure PHP installation is brought up to the latest version
 
-Change Control:
+Recent Changes:
 
-	[Nick Brown]	17/03/2009
-	Added code to upgrade to Version 09.03.17 
+	[Nick Brown]	17/03/2009	Added code to upgrade to Version 09.03.17 
+	[Nick Brown]	05/05/2009	Upgrade to Version 09.05.05 - LDAP over SSL support 
 
 **********************************************************************************************************/
 ?>
@@ -582,8 +582,11 @@ $result = mysql_query($sql);
 				
 modify_config("version", "09.03.17");
 
-// *********************************************************************************************
+// *************  Version 09.05.05 *******************************************************************
+$sql = "ALTER TABLE `ldap_connections` ADD COLUMN `ldap_connections_use_ssl` tinyint(1) NOT NULL default '0';";
+upgrade ($version,"09.05.05", $sql);
 
+// ************************************************************************************************
 set_time_limit (30);
 
 ?>
