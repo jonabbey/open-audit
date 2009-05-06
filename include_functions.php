@@ -833,7 +833,7 @@ function GetAesKey()
 			break;
 	}
 	error_reporting($err_level); 
-	return 'openaudit';
+	return $AesKey;
 }
 
 /**********************************************************************************************************
