@@ -16,6 +16,7 @@ Recent Changes:
 	[Nick Brown]	24/04/2009	Minor change to  GetLdapConnectionsFromDb()
 	[Nick Brown]	01/05/2009	Incldued "application_class.php" to provide access to the global $TheApp object. 
 	GetAesKey() re-written to use $TheApp
+	[Nick Brown]	06/05/2009	GetAesKey() modified
 
 **********************************************************************************************************/
 require_once "application_class.php";
@@ -810,22 +811,28 @@ Change Log:
 	16/03/2009			New function	[Nick Brown]
 	23/03/2009			Added additional testing for OS type		[Nick Brown]
 	05/05/2009			Now uses $TheApp	[Nick Brown]
+	06/05/2009			Windows regex modified to handle internazionalization	[Nick Brown]
 **********************************************************************************************************/
 function GetAesKey()
 {
 	global $TheApp;
 	
+	$AesKey = "openaudit";
+	$err_level = error_reporting(0); 
 	switch ($TheApp->OS)
 	{
 		case "Windows":
-			preg_match("/Volume Serial Number[a-zA-Z]* is (.*)\n/i", shell_exec('vol c:'), $m);
-			return $m[1];
+			preg_match("/\b[0-9a-fA-F]{4}-[0-9a-fA-F]{4}\b/", shell_exec('vol c:'), $m);
+			$AesKey = $m[0];
+			break;
 		case "Linux":
 			$shellout = shell_exec("ls /dev/disk/by-uuid");
 			$list = preg_split("/[\s,]+/", trim($shellout));
 			sort($list);
-			return $list[0];
+			$AesKey = $list[0];
+			break;
 	}
+	error_reporting($err_level); 
 	return 'openaudit';
 }
 
