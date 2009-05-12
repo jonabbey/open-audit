@@ -1,11 +1,16 @@
 /**********************************************************************************************************
-Module Comments:
-	
-	[Nick Brown]	20/08/2008
+Module:	admin_config.js
+
+Description:
 	The code in this module is used by admin_config.php (which is the Admin -> Config page).
 	It provides:
 	- The functionality of the page navigation tab (to switch between config pages)
 	- Functions that are called in response to GUI actions (popup menu, buttons etc)
+
+Recent Changes:
+
+	[Nick Brown]	01/05/2009
+	Added CheckOpenSslStatus() function.
 	
 **********************************************************************************************************/
 //debugger; 
@@ -250,6 +255,7 @@ function EditLdapConnection()
 	document.getElementById("ldap_connection_server").value = xmlconfig.GetValue("ldap_connection_server");
 	document.getElementById("ldap_connection_user").value = xmlconfig.GetValue("ldap_connection_user");
 	document.getElementById("ldap_connection_password").value = xmlconfig.GetValue("ldap_connection_password");
+	document.getElementById("ldap_connection_use_ssl").checked = (xmlconfig.GetValue("ldap_connection_use_ssl") == "1") ? true : false;
 }
 
 /**********************************************************************************************************
@@ -293,6 +299,8 @@ function SaveLdapConnection()
 	var ldap_params = '&ldap_connection_server=' + document.getElementById("ldap_connection_server").value;
 	ldap_params += '&ldap_connection_user=' + document.getElementById("ldap_connection_user").value;
 	ldap_params += '&ldap_connection_password=' + document.getElementById("ldap_connection_password").value;
+	var use_ssl_value = document.getElementById("ldap_connection_use_ssl").checked ? "1" : "0";
+	ldap_params += '&ldap_connection_use_ssl=' + use_ssl_value;
 	ldap_params += '&ldap_connection_id=' + document.getElementById("ldap_connection_id").value;
 	var LdapSave = new XmlRequestor('admin_config_data.php?sub=f3' + ldap_params);
 	if(LdapSave.ParseError != '')
@@ -339,4 +347,30 @@ function TestLdapConnection()
 	ldap_params += '&ldap_connection_user=' + document.getElementById("ldap_connection_user").value;
 	ldap_params += '&ldap_connection_password=' + document.getElementById("ldap_connection_password").value;
 	LdapTest.send('admin_config_data.php?sub=f2' + ldap_params);
+}
+
+/**********************************************************************************************************
+Function Name:
+	CheckOpenSslStatus
+Description:
+	Called when 'ldap_connection_use_ssl' checkbox is clicked. If checkbox has been checked,  then checks host server 
+	OpenSSL configuration status. If SSL isn't configured then user is notified and checkbox is unchecked.
+Arguments:	None
+Returns: 	None
+Change Log:
+	01/05/2009			New function	[Nick Brown]
+**********************************************************************************************************/
+function CheckOpenSslStatus()
+{
+	if (document.getElementById("ldap_connection_use_ssl").checked)
+	{
+		var SslStatus = new XmlRequestor('admin_config_data.php?sub=f10');
+		if(SslStatus.GetValue("result") != "Y")
+		{
+			var SslMsg = "The PHP configuration of your host doesn't appear to have the OpenSSL extension\n";
+			SslMsg += "correctly configured. Please refer to the PHP documentation for details on how to do this.";
+			alert(SslMsg);
+			document.getElementById("ldap_connection_use_ssl").checked = false;
+		}
+	}
 }
