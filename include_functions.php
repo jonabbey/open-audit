@@ -17,6 +17,7 @@ Recent Changes:
 	[Nick Brown]	01/05/2009	Incldued "application_class.php" to provide access to the global $TheApp object. 
 	GetAesKey() re-written to use $TheApp
 	[Nick Brown]	06/05/2009	GetAesKey() modified
+	[Nick Brown]	12/05/2009	GetAesKey() modified
 
 **********************************************************************************************************/
 require_once "application_class.php";
@@ -812,6 +813,7 @@ Change Log:
 	23/03/2009			Added additional testing for OS type		[Nick Brown]
 	05/05/2009			Now uses $TheApp	[Nick Brown]
 	06/05/2009			Windows regex modified to handle internazionalization	[Nick Brown]
+	12/05/2009			Better handling of failure to execute shell_exec()	[Nick Brown]
 **********************************************************************************************************/
 function GetAesKey()
 {
@@ -823,13 +825,13 @@ function GetAesKey()
 	{
 		case "Windows":
 			preg_match("/\b[0-9a-fA-F]{4}-[0-9a-fA-F]{4}\b/", shell_exec('vol c:'), $m);
-			$AesKey = $m[0];
+			$AesKey = (strlen($m[0]) > 0) ? $m[0] : "openaudit";
 			break;
 		case "Linux":
 			$shellout = shell_exec("ls /dev/disk/by-uuid");
 			$list = preg_split("/[\s,]+/", trim($shellout));
 			sort($list);
-			$AesKey = $list[0];
+			$AesKey = (strlen($list[0]) > 0) ? $list[0] : "openaudit";
 			break;
 	}
 	error_reporting($err_level); 
