@@ -291,6 +291,8 @@ $query_array=array("name"=>array("name"=>__("Report"),
                                                     "table_layout"=>"horizontal",
                                                     "fields"=>array("10"=>array("name"=>"other_description", "head"=>__("Description"),),
                                                                     "20"=>array("name"=>"other_p_port_name", "head"=>__("Port"),),
+                                                                    "30"=>array("name"=>"other_p_shared", "head"=>__("Shared"),),
+                                                                    "40"=>array("name"=>"other_p_share_name", "head"=>__("Share Name"),),
                                                                    ),
                                                     ),
                                    "usb"=>array(
