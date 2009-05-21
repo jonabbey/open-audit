@@ -1433,8 +1433,11 @@ function insert_printer ($split){
         if ($verbose == "y"){echo $sql . "<br />\n\n";}
         $result = mysql_query($sql) or die ('Insert Failed: ' . mysql_error() . '<br />' . $sql);
       } else {
-        // Already present in database - update timestamp
-        $sql = "UPDATE other SET other_timestamp = '$timestamp', other_location = '$printer_location' WHERE other_description = '$printer_caption' AND other_linked_pc = '$uuid' AND other_timestamp = '$printer_timestamp'";
+        // Already present in database - update timestamp and dynamic values
+        $sql =  "UPDATE other SET other_timestamp = '$timestamp', other_location = '$printer_location', ";
+		$sql .= "                 other_p_shared = '$printer_shared', other_p_share_name = '$printer_share_name' ";
+		$sql .= "WHERE other_linked_pc = '$uuid' AND other_description = '$printer_caption' AND other_p_port_name = '$printer_port_name' ";
+		$sql .= "      AND other_timestamp = '$printer_timestamp'";
         if ($verbose == "y"){echo $sql . "<br />\n\n";}
         $result = mysql_query($sql) or die ('Insert Failed: ' . mysql_error() . '<br />' . $sql);
       }
