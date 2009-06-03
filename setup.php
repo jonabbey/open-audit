@@ -284,7 +284,7 @@ function step34SetupDB() {
   <br />
   <input type="hidden" name="language_post" value="<?php echo $_POST['language_post']; ?>" />
   <input type="hidden" name="step" value="3.6" />
-  <input type="submit" value="<?php echo __("Submit Cbentials") ?>" name="submit_button" />
+  <input type="submit" value="<?php echo __("Submit Crentials") ?>" name="submit_button" />
   </form>
   <br />
 <?php
