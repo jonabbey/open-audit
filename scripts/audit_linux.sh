@@ -11,6 +11,7 @@ OA_Usage() {
   echo ""
   echo "Options:"
   echo "  -h              Show this information and exit"
+  echo "  -v              Print the version and exit"
   echo "  -n              Run the script without requiring root priveleges"
   echo "  -w <unc path>   Windows audit. UNC path to audit.vbs (Ex. //server/share/audit.vbs)"
   echo "  -b <basedn>     basedn for domain audits (Ex. \"ou=servers,dc=domain,dc=com\")"
@@ -20,12 +21,13 @@ OA_Usage() {
   echo "  -S              Linux safemode audit (Doesn't search path to determine file locations)"
   echo "  -a              Log audits using syslog (Default: local0.info)"
   echo "  -p <fac.pri>    The facility and priority to use for syslog (Ex. local1.info)"
+  echo "  -C <computers>  List of computers to audit (Ex. \"comp1 comp2 comp3 srv1 srv2 srv3\")"
   echo ""
   echo "Common Audits (No audit.config needed):"
   echo "  -L              Local workstation audit (requires the 'o' argument)"
   echo "  -R              Remote workstation audit (Requires the 's' argument)"
   echo "  -D              Domain audit (Requires the 'd','y', and 'H' arguments)"
-  echo "  -I              Input file audit (Requires the 'i' argument)"
+  echo "  -I              Input audit (Requires the 'i' or 'C' argument)"
   echo ""
   echo "Override audit.config Variables :"
   echo "  -q              Do not be verbose (audit.config - verbose = \"n\")"
@@ -226,6 +228,8 @@ OA_Process_Audits() {
   computer_list="$1"
   computers_processed=0
   computer_count=$(echo "$computer_list" | wc -l)
+  echo "Comp List:"
+  echo "$computer_list"
 
   for remote_hostname in $(echo "$computer_list" | $oa_awk '{print $0}'); do
     computers_remaining=$($oa_expr $computer_count - $computers_processed)
@@ -360,8 +364,14 @@ if [ "$1" == "--help" ] || $(echo "$1" | grep -qE '^[^-]'); then
   OA_Usage
 fi
 
+# Print the version if --version or -v is used
+if [ "$1" == "--version" ] || [ "$1" == "-v" ]; then
+  echo "1.00"
+  exit 0;
+fi
+
 # Check arguments with getopts
-while getopts hnakqLDIRSb:c:d:l:t:w:N:i:p:P:u:s:y:o:A:H:U: options; do
+while getopts hnakqLDIRSb:c:C:d:l:t:w:N:i:p:P:u:s:y:o:A:H:U: options; do
   case $options in
     a)  opt_syslog="yes";;
     A)  if [ ! -e "$OPTARG" ]; then
@@ -378,6 +388,9 @@ while getopts hnakqLDIRSb:c:d:l:t:w:N:i:p:P:u:s:y:o:A:H:U: options; do
           exit 1
         fi
         opt_config_path=$OPTARG
+      ;;
+    C)  OA_Getopt_Check "$options" "$OPTARG"
+        opt_system_list=$OPTARG
       ;;
     d)  OA_Getopt_Check "$options" "$OPTARG"
         opt_ad_user=$OPTARG
@@ -495,8 +508,8 @@ elif [ -n "$opt_audit_remote" ]; then
     OA_Usage
   fi
 elif [ -n "$opt_audit_input" ]; then
-  if [ -z "$opt_input_file" ]; then
-    echo -e "\nInput file audits require the 'i' option"
+  if [ -z "$opt_input_file" ] && [ -z "$opt_system_list" ]; then
+    echo -e "\nInput file audits require the 'i' or 'C' option"
     OA_Usage
   elif [ -z "$opt_type" ] && [ -z "OPT_WEB_URL" ]; then
     echo -e "\nLinux input file audits require the 'U' option"
@@ -512,7 +525,7 @@ elif [ -n "$opt_audit_domain" ]; then
     OA_Usage
   elif [ -z "$opt_ad_user" ] || [ -z "$opt_ad_pass" ]; then
     echo -e "\nMissing domain account or password file"
-    echo "Domain audits require the 'a' and 'd' options"
+    echo "Domain audits require the 'y' and 'd' options"
     OA_Usage
   fi
 fi
@@ -573,7 +586,7 @@ elif [ -n "$opt_audit_domain" ]; then
   software_audit="y"
 elif [ -n "$opt_audit_input" ]; then
   strComputer=""
-  input_file="$opt_input_file"
+  input_file="${opt_input_file-"$opt_system_list"}"
   non_ie_page="$opt_web_url"
   verbose="${opt_verbose-"y"}"
   uuid_type="${opt_uuid-"uuid"}"
@@ -600,7 +613,6 @@ else
       echo "$line" | grep -q '^.*_page=\$' && var_value="${audit_host}${var_value/\$\{audit_host\}/}"
       declare $var_name=$var_value
     done
-
 
     # Check for script parameters to override ...
     input_file="${opt_input_file-"$input_file"}"
@@ -845,9 +857,19 @@ remote_script="/tmp/${remote_script_name}"
 if [ "$strComputer" != "." ] || [ "$input_file" != "" ]; then 
   if [ "$strComputer" != "." ]; then
     # An input file audit is specified if the below is met
-    if [ "$input_file" != "" ] && [ -e "$input_file" ]; then
-      # Remove leading whitespace and DOS newlines from the input file
-      oa_input_list=$($oa_sed 's/[ \t]*$//g' "$input_file")
+    if [ "$input_file" != "" ]; then
+      if [ -z "$opt_system_list" ] && [ ! -e "$input_file" ]; then
+        OA_Audit_Log "" "log_start_failed" "input_file"
+        OA_Trace "Input file \"${input_file}\" doesn't exist."
+        exit 1
+      fi
+      # Remove trailing whitespace from the input file
+      if [ -n "$opt_system_list" ]; then
+        oa_input_list=$(echo "$opt_system_list" | $oa_awk 'BEGIN{RS = " "}; {print $1}' | $oa_sed '/^$/d');
+        echo "$oa_input_list"
+      else
+        oa_input_list=$($oa_sed 's/[ \t]*$//g' "$input_file")
+      fi
       # Execute SSH portion for input_file
       if [ -z "$opt_type" ]; then
         #  A default SSH user is needed since it's not required to specify
@@ -859,11 +881,13 @@ if [ "$strComputer" != "." ] || [ "$input_file" != "" ]; then
           OA_Usage
         fi
         OA_Audit_Log "" "log_header"
-        OA_Audit_Log "" "log_start_success" "input_file" "$(wc -l "$input_file" | $oa_cut -d" " -f1)"
-        OA_Trace "-----------------------------------------------"
-        OA_Trace "Processing input file: $input_file"
-        OA_Trace "(Linux) Computers to audit: $(wc -l "$input_file" | $oa_cut -d" " -f1)"
-        OA_Trace "-----------------------------------------------"
+        if [ -z "$opt_system_list" ]; then
+          OA_Audit_Log "" "log_start_success" "input_file" "$(wc -l "$input_file" | $oa_cut -d" " -f1)"
+          OA_Trace "-----------------------------------------------"
+          OA_Trace "Processing input file: $input_file"
+          OA_Trace "(Linux) Computers to audit: $(wc -l "$input_file" | $oa_cut -d" " -f1)"
+          OA_Trace "-----------------------------------------------"
+        fi
         OA_Process_Audits "$oa_input_list" "linux" "input_file"
       # Execute WINEXE portion for input_file
       else
@@ -872,11 +896,13 @@ if [ "$strComputer" != "." ] || [ "$input_file" != "" ]; then
           OA_Usage
         fi
         OA_Audit_Log "" "log_header"
-        OA_Audit_Log "" "log_start_success" "input_file" "$(wc -l "$input_file" | $oa_cut -d" " -f1)"
-        OA_Trace "-----------------------------------------------"
-        OA_Trace "Processing input file: $input_file"
-        OA_Trace "(Windows) Computers to audit: $(wc -l "$input_file" | $oa_cut -d" " -f1)"
-        OA_Trace "-----------------------------------------------"
+        if [ -z "$opt_system_list" ]; then
+          OA_Audit_Log "" "log_start_success" "input_file" "$(wc -l "$input_file" | $oa_cut -d" " -f1)"
+          OA_Trace "-----------------------------------------------"
+          OA_Trace "Processing input file: $input_file"
+          OA_Trace "(Windows) Computers to audit: $(wc -l "$input_file" | $oa_cut -d" " -f1)"
+          OA_Trace "-----------------------------------------------"
+        fi
         OA_Process_Audits "$oa_input_list" "windows" "input_file"
       fi
     # Execute WINEXE portion for single remote audit
@@ -907,14 +933,9 @@ if [ "$strComputer" != "." ] || [ "$input_file" != "" ]; then
           OA_LDAP_Audit
         fi
       fi
-    # Only these two conditions are left if all the above failed
+    # Only this condition is left if all the above failed
     else
-      if [ ! -e "$input_file" ]; then
-        OA_Audit_Log "" "log_start_failed" "input_file"
-        OA_Trace "Input file \"${input_file}\" doesn't exist."
-      else
-        OA_Trace "The strComputer variable is empty."
-      fi
+      OA_Trace "The strComputer variable is empty."
       exit 1
     fi
     OA_Audit_Log "" "log_end" "" "$SECONDS"
@@ -932,10 +953,7 @@ fi
 ###################################
 #-SSH_AUDIT_SCRIPT-#
 
-#  Make OA_PACKAGES blank if you want it to audit all packages. However, this seems to cause
-#+ wget to fail with the "too many arguments" error. This is a limitation of the kernel's 
-#+ design (memory issues). The proper fix would probably be to split the packages into
-#+ into its own file via a certain amount of lines then submit them separately.
+#  Make OA_PACKAGES blank if you want it to audit all packages.
 if [ -z "$opt_packages" ]; then
 # oa_packages=""
   oa_packages="apache apache2 apt azureus bash build-essential cdparanoia cdrdao cdrecord cpp cron \
@@ -999,70 +1017,99 @@ OA_Trace "OS Information..."
 name=$($oa_uname -s)
 version=$($oa_uname -r)
 
-#  Once lsb_release is more adopted, it would make more sense to use the below if
-#+ and then figure out the package manage via a case.
+#  If lsb_release is available, use that to get the OS info. Fallback on release files otherwise.  
 
-# if which lsb_release 2> /dev/null; then
-#   DISTRIBUTION="$(lsb_release -i)"
-#   OS_RELEASE="$(lsb_release -i) $(lsb_release -r) ($(lsb_release -c))"
-# fi
+if which lsb_release > /dev/null 2>&1; then
+  lsb_release_present=1
+  distribution="$(lsb_release -i | $oa_awk '{for (u=3; u<=NF; u++){printf("%s ", $u)}printf("\n")}')"
+  os_release="$(lsb_release -d | $oa_awk '{for (u=2; u<=NF; u++){printf("%s ", $u)}printf("\n")}')"
+  system_srvpack="$(lsb_release -c | $oa_awk '{for (u=2; u<=NF; u++){printf("%s ", $u)}printf("\n")}')"
+fi
 
 if [ "$name" = "Linux" ]; then
   if [ -e /etc/redhat-release ]; then
-    distribution="RedHat"
-    os_release=$($oa_cat /etc/redhat-release)
+    if [ -z "$distribution" ]; then
+      distribution="RedHat"
+      os_release=$($oa_cat /etc/redhat-release)
+    fi
     os_pck_mgr=$oa_rpm
   elif [ -e /etc/redhat-version ]; then
-    distribution="RedHat"
-    os_release=$($oa_cat /etc/redhat-version)
+    if [ -z "$distribution" ]; then
+      distribution="RedHat"
+      os_release=$($oa_cat /etc/redhat-version)
+    fi
     os_pck_mgr=$oa_rpm
   elif [ -e /etc/fedora-release ]; then
-    distribution="Fedora"
-    os_release=$($oa_cat /etc/fedora-release)
+    if [ -z "$distribution" ]; then
+      distribution="Fedora"
+      os_release=$($oa_cat /etc/fedora-release)
+    fi
     os_pck_mgr=$oa_rpm
   elif [ -e /etc/mandrake-release ]; then
-    distribution="Mandrake"
-    os_release=$($oa_cat /etc/mandrake-release)
+    if [ -z "$distribution" ]; then
+      distribution="Mandrake"
+      os_release=$($oa_cat /etc/mandrake-release)
+    fi
     os_pck_mgr=$oa_rpm
   elif [ -e /etc/SuSE-release ]; then
-    distribution="Novell SuSE"
-    os_release=$($oa_awk 'BEGIN{IGNORECASE = "1"}; /suse/{print $0}' /etc/SuSE-release)
+    if [ -z "$distribution" ]; then
+      distribution="Novell SuSE"
+      os_release=$($oa_awk 'BEGIN{IGNORECASE = "1"}; /suse/{print $0}' /etc/SuSE-release)
+    fi
     os_pck_mgr=$oa_rpm
   elif [ -e /etc/arch-release ]; then
-    distribution="Arch"
-    os_release=$($oa_cat /etc/issue)
+    if [ -z "$distribution" ]; then
+      distribution="Arch"
+      os_release=$($oa_cat /etc/issue)
+    fi
     os_pck_mgr=$oa_pacman
   elif [ -e /etc/gentoo-release ]; then
-    distribution="Gentoo"
-    os_release=$($oa_cat /etc/gentoo-release)
+    if [ -z "$distribution" ]; then
+      distribution="Gentoo"
+      os_release=$($oa_cat /etc/gentoo-release)
+    fi
     os_pck_mgr=$oa_equery
   elif [ -e /etc/slackware-release ]; then
-    distribution="Slackware"
-    os_release=$($oa_cat /etc/slackware-release)
+    if [ -z "$distribution" ]; then
+      distribution="Slackware"
+      os_release=$($oa_cat /etc/slackware-release)
+    fi
     os_pck_mgr=$oa_pkg
   elif [ -e /etc/slackware-version ]; then
-    distribution="Slackware"
-    os_release=$($oa_cat /etc/slackware-version)
+    if [ -z "$distribution" ]; then
+      distribution="Slackware"
+      os_release=$($oa_cat /etc/slackware-version)
+    fi
     os_pck_mgr=$oa_pkg
   elif [ -e /etc/yellowdog-release ]; then
-    distribution="Yellow dog"
-    os_release=$($oa_cat /etc/yellowdog-release)
+    if [ -z "$distribution" ]; then
+      distribution="Yellow dog"
+      os_release=$($oa_cat /etc/yellowdog-release)
+    fi
     os_pck_mgr=$oa_rpm
   elif [ -e /etc/debian_version ] && [ "$($oa_grep 'Ubuntu' /etc/issue 2> /dev/null)" ]; then
-    distribution="Ubuntu"
-    os_release=$($oa_cat /etc/issue)
+    if [ -z "$distribution" ]; then
+      distribution="Ubuntu"
+      os_release=$($oa_cat /etc/issue)
+    fi
     os_pck_mgr=$oa_dpkg
   elif [ -e /etc/debian_version ]; then
-    distribution="Debian"
-    os_release=$($oa_cat /etc/issue)
+    if [ -z "$distribution" ]; then
+      distribution="Debian"
+      os_release=$($oa_cat /etc/issue)
+     fi;
     os_pck_mgr=$oa_dpkg
   elif [ -e /etc/lfs-version ]; then
-    distribution="Linux from scratch"
-    os_release=$($oa_cat /etc/lfs-version)
+    if [ -z "$distribution" ]; then
+      distribution="Linux from scratch"
+      os_release=$($oa_cat /etc/lfs-version)
+    fi
     os_pck_mgr=''
   elif [ -e /etc/issue ] && [ "$($oa_grep 'Openmoko' /etc/issue 2> /dev/null)" ]; then
-    distribution="Openmoko"
-    os_release="Openmoko $($oa_cat /etc/version)"
+    if [ -z "$distribution" ]; then
+      distribution="Openmoko"
+      os_release="Openmoko $($oa_cat /etc/version)"
+    fi
     os_pck_mgr=$oa_opkg
   else
     distribution="unknown"
@@ -1071,21 +1118,24 @@ if [ "$name" = "Linux" ]; then
   fi
 fi
 
-case $os_release in
-  Ubuntu*5.10*) os_release="5.10 (Breezy Badger)";;
-  Ubuntu*6.06*) os_release="6.06 (Dapper Drake)";;
-  Ubuntu*6.10*) os_release="6.10 (Edgy Eft)";;
-  Ubuntu*7.04*) os_release="7.04 (Fiesty Fawn)";;
-  Ubuntu*7.10*) os_release="7.10 (Gutsy Gibbon)";;
-  Ubuntu*8.04.1*) os_release="8.04.1 (Hardy Heron)";;
-  Ubuntu*8.04*) os_release="8.04 (Hardy Heron)";;
-  Ubuntu*8.10*) os_release="8.10 (Intrepid Ibex)";;
-  Ubuntu*9.04*) os_release="9.04 (Jaunty Jackalope)";;
-  Debian*4.0*) os_release="Debian 4.0 (Etch)";;
-  Debian*5.0*) os_release="Debian 5.0 (Lenny)";;
-  *Arch*Core*Dump*) os_release="Arch Linux (Core Dump)";;
-  *Arch*Linux*) os_release="Arch Linux";;
-esac
+if [ -z "$lsb_release_present" ]; then
+  case $os_release in
+    Ubuntu*5.10*) os_release="5.10 (Breezy Badger)";;
+    Ubuntu*6.06*) os_release="6.06 (Dapper Drake)";;
+    Ubuntu*6.10*) os_release="6.10 (Edgy Eft)";;
+    Ubuntu*7.04*) os_release="7.04 (Fiesty Fawn)";;
+    Ubuntu*7.10*) os_release="7.10 (Gutsy Gibbon)";;
+    Ubuntu*8.04.1*) os_release="8.04.1 (Hardy Heron)";;
+    Ubuntu*8.04*) os_release="8.04 (Hardy Heron)";;
+    Ubuntu*8.10*) os_release="8.10 (Intrepid Ibex)";;
+    Ubuntu*9.04*) os_release="9.04 (Jaunty Jackalope)";;
+    Ubuntu*9.10*) os_release="9.10 (Karmic Koala)";;
+    Debian*4.0*) os_release="Debian 4.0 (Etch)";;
+    Debian*5.0*) os_release="Debian 5.0 (Lenny)";;
+    *Arch*Core*Dump*) os_release="Arch Linux (Core Dump)";;
+    *Arch*Linux*) os_release="Arch Linux";;
+  esac
+fi
 
 ###################################
 #          Make the UUID          #
@@ -1095,7 +1145,8 @@ OA_Trace "Auditor..."
 
 # Used for various HAL queries in different sections
 if [ -z "$oa_hal_missing" ]; then
-  pc=$($oa_hal_find --key info.product --string Computer)
+  # This seems to be the most portable way to get the root UDI for HAL
+  pc=$($oa_lshal | $oa_awk -F\' '/^udi/{print $2; exit}');
 fi
 
 # Try to get domain info from likewise config, samba config, or kerberos config
@@ -1190,11 +1241,6 @@ for i in $($oa_ifconfig -a | $oa_awk '/^[A-Za-z0-9]+/{print $1}' | $oa_sort); do
     net_ip_enabled="Unknown"
   fi
 
-  # Bind the primary IP of the computer to eth0.
-  if [ "$net_connection_id" = "eth0" ]; then
-    net_primary_ip="$net_ip"
-  fi
-
   # Find information on DHCP leases, if the lease is active.
   if [ -e /var/run/dhclient.${net_connection_id}.pid ] && [ -d /var/lib/dhcp3 ]; then
     dhcp_info_dump=$($oa_awk 'BEGIN{RS = "\{"}; NR == 3' /var/lib/dhcp3/dhclient.${net_connection_id}.leases \
@@ -1240,8 +1286,9 @@ echo "audit^^^$hostname^^^$audit_date^^^$uuid^^^$audit_user^^^$ie_submit_verbose
 ###################################
 
 # This shows who is logged in physically on Ubuntu and Suse. Other distros seem to default differently.
-net_user_name=$($oa_who | $oa_awk '/(tty7|vc\/7)/{print $1}')
-# net_primary_ip set in Network Interfaces section
+net_user_name=$($oa_who | $oa_awk '/(tty7|vc\/7|:0)/{print $1;exit}')
+# Get the main IP based on the interface assigned to the first default gateway found
+net_primary_ip=$($oa_ifconfig $($oa_route -n | $oa_awk '$4 ~ /UG/{print $8; exit}') | $oa_awk '/inet add?r:/{split($2,a,":"); print a[2]}')
 
 echo "system01^^^ $net_primary_ip ^^^$net_domain^^^$net_user_name^^^ ^^^ ^^^ ^^^" >> $ReportFile
 # Missing - AD Site
@@ -1255,25 +1302,24 @@ echo "system01^^^ $net_primary_ip ^^^$net_domain^^^$net_user_name^^^ ^^^ ^^^ ^^^
 OA_Trace "System Model..."
 
 if [ -z "$oa_hal_missing" ] && ! echo "$hal_version" | $oa_grep -qE "0\.[0-5]\.([0-9]|10)\.[0-9]"; then
-  pc=$($oa_hal_find --key info.product --string Computer)
   pc_manufacturer=$($oa_hal_get --udi $pc --key system.hardware.vendor)
   pc_model=$($oa_hal_get --udi $pc --key system.hardware.product)
   pc_type=$($oa_hal_get --udi $pc --key system.formfactor)
   pc_serial=$($oa_hal_get --udi $pc --key system.hardware.serial)
 elif [ -z "$oa_hal_missing" ] && echo "$hal_version" | $oa_grep -qE "0\.[0-5]\.([0-9]|10)\.[0-9]"; then
-  pc=$($oa_hal_find --key info.product --string computer)
   pc_manufacturer=$($oa_hal_get --udi $pc --key smbios.system.manufacturer)
   pc_model=$($oa_hal_get --udi $pc --key smbios.system.product)
   pc_type=$($oa_hal_get --udi $pc --key system.formfactor)
   pc_serial=$($oa_hal_get --udi $pc --key smbios.system.serial)
 elif [ -z "$oa_dmidecode_missing" ]; then
+  echo "In Third IF"
   pc_type=$($oa_dmidecode --string chassis-type)
   pc_manufacturer=$($oa_dmidecode --string chassis-manufacturer)
   pc_model=$($oa_dmidecode --string system-product-name)
   pc_serial=$($oa_dmidecode --string chassis-serial-number)
 fi
 
-num_cpu=$($oa_dmidecode --type processor | $oa_awk '/^Handle/{count++};END{print count}')
+num_cpu=$($oa_grep -c '^processor' /proc/cpuinfo)
 
 # Total system RAM
 ram_sizekb=$($oa_awk '/MemTotal/{print $2}' /proc/meminfo)
@@ -1314,7 +1360,8 @@ elif [ -z "$oa_hal_missing" ] &&  echo "$hal_version" | $oa_grep -qE "0\.[0-5]\.
   pc_bios_date=$($oa_hal_get --udi $pc --key smbios.bios.release_date)
   pc_bios_version=$($oa_hal_get --udi $pc --key smbios.bios.version)
   pc_bios_description=$($oa_hal_get --udi $pc --key smbios.system.product)
-  pc_bios_manufacturer=$($oa_hal_get --udi $pc --key smbios.chassis.manufacturer)
+  pc_bios_manufacturer=$($oa_hal_get --udi $pc --key smbios.chassis.manufacturer 2> /dev/null || \
+                         $oa_hal_get --udi $pc --key system.formfactor)
 elif [ -z "$oa_dmidecode_missing" ]; then 
   pc_uuid=$($oa_dmidecode --string system-uuid)
   pc_serial=$($oa_dmidecode --string chassis-serial-number)
@@ -1360,7 +1407,7 @@ esac
 mount_point=$($oa_awk '/ \/ /{print $1}' /etc/mtab)
 
 echo "system03^^^$mount_point^^^$version^^^Linux^^^$distribution^^^$country^^^$os_release^^^\
-$os_install^^^ ^^^ $os_lang ^^^ ^^^$system_serial^^^ ^^^$version^^^^^^$os_lastboot^^^" >> $ReportFile
+$os_install^^^ ^^^ $os_lang ^^^ ^^^$system_serial^^^$system_srvpack^^^$version^^^^^^$os_lastboot^^^" >> $ReportFile
 # Missing - Description
 #         - Organisation
 #         - Registered User
@@ -1509,6 +1556,10 @@ $video_driver^^^ ^^^ ^^^$oa_pci_dev_id^^^" >> $ReportFile
         # Missing - Attached To
         #         - Country Selected
         ;;
+      System*peripheral*)
+        OA_Trace "Onboard Device..."
+        echo "onboard^^^$oa_pci_manufacturer^^^$oa_pci_name^^^" >> $ReportFile
+        ;;
     esac
   done
 fi
@@ -1575,14 +1626,25 @@ done
 
 OA_Trace "Motherboard..."
 
-if [ -z "$oa_dmidecode_missing" ]; then
-  mobo_manufacturer=$($oa_dmidecode --string baseboard-manufacturer 2> /dev/null)
-  mobo_product=$($oa_dmidecode --string baseboard-product-name 2> /dev/null)
-  mobo_memoryslots=$($oa_dmidecode -t 16 2> /dev/null | $oa_awk '/Number Of Devices/{print $4}')
-  # num_cpu is pulled from the system02 section.
+mobo_manufacturer=$($oa_dmidecode --string baseboard-manufacturer 2> /dev/null)
+mobo_product=$($oa_dmidecode --string baseboard-product-name 2> /dev/null)
+mobo_memoryslots=$($oa_dmidecode -t 16 2> /dev/null | 
+                   $oa_awk '/Number Of Devices/{print $4}' 2> /dev/null)
 
-  echo "motherboard^^^$mobo_manufacturer^^^$mobo_product^^^$num_cpu^^^$mobo_memoryslots^^^" >> $ReportFile
+# Fall back to HAL if dmidecode fails
+if [ "$mobo_manufacturer" == "" ]; then
+  mobo_manufacturer=$($oa_hal_get --udi $pc --key system.board.vendor 2> /dev/null || \
+                       $oa_hal_get --udi $pc --key system.vendor 2> /dev/null)
 fi
+
+if [ "$mobo_product" == "" ]; then
+  mobo_product=$($oa_hal_get --udi $pc --key system.board.product 2> /dev/null || \
+                 $oa_hal_get --udi $pc --key system.product 2> /dev/null)
+fi
+
+# num_cpu is pulled from the system02 section.
+
+echo "motherboard^^^$mobo_manufacturer^^^$mobo_product^^^$num_cpu^^^$mobo_memoryslots^^^" >> $ReportFile
 
 ###################################
 #        Software Packages        #
@@ -1594,12 +1656,12 @@ if [ "$software_audit" = "y" -o "$software_audit" = "Y" ]; then
   if [ ! -n "$oa_packages" ]; then
     SoftwareReport="${ReportFile}.software"
     case $os_pck_mgr in
-      "$oa_dpkg") oa_package_track=$(env COLUMNS=200 $oa_dpkg -l | $oa_awk '{print $2}' | $oa_sort);;
-      "$oa_rpm") oa_package_track=$($oa_rpm -qa | $oa_sort);;
+        "$oa_dpkg") oa_package_track=$(env COLUMNS=200 $oa_dpkg -l | $oa_awk '{print $2}' | $oa_sort);;
+         "$oa_rpm") oa_package_track=$($oa_rpm -qa | $oa_sort);;
       "$oa_pacman") oa_package_track=$($oa_pacman -Qe | $oa_sort);;
       "$oa_equery") oa_package_track=$($oa_equery list | $oa_awk -F"/" '{match($2,/[-0-9.]*[0-9.r]*$/); print substr($2,0,RSTART-1)}' | $oa_sort);;
-      "$oa_pkg") oa_package_track=$oa_packages;;
-      "$oa_opkg") oa_package_track=$($oa_opkg list_installed | $oa_awk -F" - " '{print $1}' | $oa_sort)
+         "$oa_pkg") oa_package_track=$oa_packages;;
+        "$oa_opkg") oa_package_track=$($oa_opkg list_installed | $oa_awk -F" - " '{print $1}' | $oa_sort)
     esac
   else
     oa_package_track=$oa_packages
@@ -2049,7 +2111,7 @@ done
 
 OA_Trace "Mapped Drives..."
 
-for i in $($oa_awk '/(\<cifs\>|\<nfs\>|\<smbfs\>)/{gsub("/", "\\/", $1); gsub(/\$/, "\\\$", $1); print $1}' /etc/mtab 2> /dev/null); do
+for i in $($oa_awk '/( cifs | nfs | smbfs )/{gsub("/", "\\/", $1); gsub(/\$/, "\\\$", $1); print $1}' /etc/mtab 2> /dev/null); do
   oa_mapped_type=$($oa_awk '/^'"$i"'/{print $3}' /etc/mtab)
   oa_mapped_id=$($oa_awk '/^'"$i"'/{print $1}' /etc/mtab)
   oa_mapped_filesystem=$($oa_awk '/^'"$i"'/{print $2}' /etc/mtab)
@@ -2107,8 +2169,8 @@ if [ "$online" = "yesxml" ] || [ "$online" = "ie" ]; then
       oa_wget_certificates="--no-check-certificate"
     fi
 
-    oa_audit_result="'$($oa_cat $ReportFile)'"
-    $oa_wget $oa_wget_certificates --delete-after --post-data="submit=submit&add=$oa_audit_result" $non_ie_page
+    $oa_sed -i '1s/^/submit=submit\&add=/' "$ReportFile"
+    $oa_wget $oa_wget_certificates --delete-after --post-file="$ReportFile" $non_ie_page
     $oa_rm "$ReportFile"
     OA_Trace "\nAudit report submitted, check above wget output to confirm.\n"
   else
