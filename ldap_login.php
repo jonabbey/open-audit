@@ -79,7 +79,7 @@ if (isset($_POST['username']))
 	else
 	{
 		DestroySession();
-		RedirectToUrl($_SERVER['SCRIPT_NAME']);
+		RedirectToUrl($_SERVER['SCRIPT_NAME'].'?Result=NoAccess');
 	}
 }
 ?>
@@ -117,7 +117,7 @@ foreach($ldap_connections as $key => $ldap_connection) {echo "<option value='".$
 		<!--<option value='BUILTIN'>Open Audit-->
 	</select><br />
 	
-	<input TYPE="Submit" id="submit" name="submit" value="<?php echo __("Submit:");?>">
+	<input TYPE="Submit" id="submit" name="submit" value="<?php echo __("Submit");?>">
 
 	</form>
 </div>
@@ -129,14 +129,20 @@ foreach($ldap_connections as $key => $ldap_connection) {echo "<option value='".$
 <?php 
 // Look for Result=false in the calling URI (actually just look for 'sult' cos we aren't that bothered ;} )
 // This method seems to work regardless of register_globals, see http://uk2.php.net/manual/en/reserved.variables.php
-if (@preg_match("/sult/i",$_SERVER['REQUEST_URI'])) {
+if (@preg_match("/Result=Failed/i",$_SERVER['REQUEST_URI'])) {
 
 // Warn them off if they screwed up the login.
-echo '<br />'. __("Unauthorised use of this site may be a criminal offence.");
+echo '<b><br /><br />'. __("Unauthorised use of this site may be a criminal offence.");
 echo '<br />'.__(" Access attempt from ").' '.$_SERVER['REMOTE_ADDR'];
 echo '<br />'.__("Your IP address and browser details will be logged.");
 echo '<br />'. __("Any malicious attempt to access this site will be investigated.");
-echo '<br />'. __("Please contact the administrator if you are having problems logging in.");
+echo '<br />'. __("Please contact the administrator if you are having problems logging in.") . '</b>';
+
+} elseif (@preg_match("/Result=NoAccess/i",$_SERVER['REQUEST_URI'])) {
+
+// Let them know they need to request access for the site
+echo '<b><br /><br />'.__("Your are not in the correct group to access this site.");
+echo '<br />'. __("Please contact the administrator or local Help-Desk to request access.") . '</b>';
 
 }else{
 // Be gentle with them the first time.
