@@ -75,9 +75,9 @@ echo "<td valign=\"top\">\n";
              if ($myrow = mysql_fetch_array($result_headline)){
                  echo $myrow[0];
                  echo "</td></tr>";
-                 if(isset($show_summary_barcode) AND ($show_summary_barcode === TRUE)){
+                 if((isset($show_summary_barcode) AND ($show_summary_barcode === TRUE)) or (isset($show_summary_barcode) AND ($show_summary_barcode === 'y'))){
                   //
-                include_once('lib\barcode\code128.class.php');
+                include_once('lib/barcode/code128.class.php');
                 
                 
                   $thistext = htmlspecialchars($myrow[0]);
