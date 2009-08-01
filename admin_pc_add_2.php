@@ -1,4 +1,12 @@
 <?php
+/**********************************************************************************************************
+Recent Changes:
+
+	01/08/2009	Added in the 'insert_service' function the adding/updating of the 'service.service_start_name' field.
+				Fixed a bug in updating the 'service' table (only name and display_name are fixed, every other field is dynamic and needs to be updated)
+
+**********************************************************************************************************/
+
 $page = "add_pc";
 // Increase the script timeout value
 set_time_limit(200);
@@ -1737,14 +1745,13 @@ function insert_service ($split) {
     $service_started = trim($extended[5]);
     $service_start_mode = trim($extended[6]);
     $service_state = trim($extended[7]);
+	$service_start_name = trim($extended[8]);
     $sql  = "UPDATE service SET ";
-    $sql .= "service_timestamp = '$timestamp', ";
-    $sql .= "service_count = '$count' ";
-    $sql .= "WHERE service_uuid = '$uuid' AND ";
-    $sql .= "service_name = '$service_name' AND ";
-    $sql .= "service_start_mode = '$service_start_mode' AND ";
-    $sql .= "service_state = '$service_state' AND ";
-    $sql .= "(service_timestamp = '$service_timestamp' OR service_timestamp = '$timestamp')";
+    $sql .= "service_timestamp = '$timestamp', service_count = '$count', service_path_name = '$service_path_name', ";
+    $sql .= "service_started = '$service_started', service_start_mode = '$service_start_mode', ";
+    $sql .= "service_state = '$service_state',  service_start_name = '$service_start_name' ";
+    $sql .= "WHERE service_uuid = '$uuid' AND service_name = '$service_name' AND service_display_name = '$service_display_name' ";
+    $sql .= "AND (service_timestamp = '$service_timestamp' OR service_timestamp = '$timestamp')";
     if ($verbose == "y"){echo $sql . "<br />\n\n";}
     $result = mysql_query($sql) or die ('Update Failed: ' . mysql_error() . '<br />' . $sql);
     $affected = mysql_affected_rows();
@@ -1753,10 +1760,10 @@ function insert_service ($split) {
       // Insert into database
       $sql  = "INSERT INTO service (service_uuid, service_display_name, service_name, ";
       $sql .= "service_path_name, service_started, service_start_mode, service_state, ";
-      $sql .= "service_count, service_timestamp, service_first_timestamp) VALUES (";
+      $sql .= "service_count, service_start_name, service_timestamp, service_first_timestamp) VALUES (";
       $sql .= "'$uuid', '$service_display_name', '$service_name', ";
       $sql .= "'$service_path_name', '$service_started', '$service_start_mode', '$service_state', ";
-      $sql .= "'$count', '$timestamp', '$timestamp')";
+      $sql .= "'$count', '$service_start_name', '$timestamp', '$timestamp')";
       if ($verbose == "y"){echo $sql . "<br />\n\n";}
       if ($verbose == "y"){echo "Affected Rows: " . mysql_affected_rows() . "<br />\n\n";}
       $result = mysql_query($sql) or die ('Insert Failed: ' . mysql_error() . '<br />' . $sql);

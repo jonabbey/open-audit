@@ -376,7 +376,7 @@ $query_array=array("name"=>array("name"=>__("Report"),
                                                                     "20"=>array("name"=>"service_name", "head"=>__("Name"),),
                                                                     "30"=>array("name"=>"service_start_mode", "head"=>__("Start Mode"),),
                                                                     "40"=>array("name"=>"service_state", "head"=>__("State"),),
-                                                                    "50"=>array("name"=>"service_started", "head"=>__("Started"),),
+                                                                    "50"=>array("name"=>"service_start_name", "head"=>__("Logon As"),),
                                                                    ),
                                                     ),
                                    "os"=>array(

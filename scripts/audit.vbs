@@ -8,6 +8,7 @@
 ' Change Control:
 '	[Nick Brown]	17/04/2009	 Changes to system user detection - line 893
 '	[Nick Brown]	23/04/2009	 [Bug] ODBC section not using Echo() - around line 3926 - Fixed
+'				01/08/2009	 In the Services section added auditing of StartName 
 
 '***********************************************************************************************
 
@@ -2459,13 +2460,10 @@ Echo(comment)
 On Error Resume Next
 Set colItems = objWMIService.ExecQuery("Select * from Win32_Service",,48)
 For Each objItem in colItems
-  form_input = "service^^^" & clean(objItem.Description) & " ^^^" _
-                            & clean(objItem.DisplayName) & " ^^^" _
-                            & clean(objItem.Name)        & " ^^^" _
-                            & clean(objItem.PathName)    & " ^^^" _
-                            & clean(objItem.Started)     & " ^^^" _
-                            & clean(objItem.StartMode)   & " ^^^" _
-                            & clean(objItem.State)       & "^^^"
+  form_input = "service^^^" & clean(objItem.Description) & " ^^^" & clean(objItem.DisplayName) & " ^^^" _
+                            & clean(objItem.Name)        & " ^^^" & clean(objItem.PathName)    & " ^^^" _
+                            & clean(objItem.Started)     & " ^^^" & clean(objItem.StartMode)   & " ^^^" _
+                            & clean(objItem.State)       & " ^^^" & clean(objItem.StartName)   & " ^^^"
   entry form_input,comment,objTextFile,oAdd,oComment
   form_input = ""
   ' Searching for IIS services

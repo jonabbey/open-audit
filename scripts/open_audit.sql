@@ -972,6 +972,7 @@ CREATE TABLE `service` (
   `service_start_mode` varchar(10) NOT NULL default '',
   `service_state` varchar(10) NOT NULL default '',
   `service_count` varchar(5) NOT NULL default '',
+  `service_start_name` varchar(100) NOT NULL default '',
   `service_timestamp` bigint(20) unsigned NOT NULL default '0',
   `service_first_timestamp` bigint(20) unsigned NOT NULL default '0',
   PRIMARY KEY  (`service_id`),
