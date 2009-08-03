@@ -1380,7 +1380,7 @@ function GetDetectedXpAvData($id)
   global $db;
 	$tr_class='npb_highlight_row';
 
-  $sql  = "SELECT system_name, net_ip_address, system_uuid, virus_name, virus_uptodate FROM system ";
+  $sql  = "SELECT system_name, system_timestamp, net_ip_address, system_uuid, virus_name, virus_uptodate FROM system ";
   $sql .= "WHERE (virus_name = '' OR virus_uptodate = 'False') AND system_service_pack = '2.0' AND system_os_name LIKE 'Microsoft Windows XP%' ";
   $sql .= "ORDER BY system_name";
 	
@@ -1397,6 +1397,7 @@ function GetDetectedXpAvData($id)
 		echo "  	<th>".__("Hostname")."</td>";
 		echo "  	<th>".__("AntiVirus Program")."</td>";
 		echo "  	<th>".__("AntiVirus Up To Date")."</td>";
+		echo "  	<th>".__("Date Audited")."</td>";
 	  echo "</tr>";
 		do
 		{
@@ -1405,6 +1406,7 @@ function GetDetectedXpAvData($id)
 			echo "	<td><a href=\"system.php?pc=".$myrow["system_uuid"]."&amp;view=summary\">".$myrow["system_name"]."</a></td>";
 			echo "	<td>".$myrow["virus_name"]."</td>";
 			echo "	<td>".$myrow["virus_uptodate"]."</td>";
+			echo "	<td>".return_date_time($myrow["system_timestamp"])."</td>";			
 			echo "	</tr>";
 		} while ($myrow = mysql_fetch_array($result));
 	}
