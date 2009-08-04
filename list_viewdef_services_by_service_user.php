@@ -1,7 +1,7 @@
 <?php
 
-$query_array=array("headline"=>__("List Systems with Service Logon as ".$_GET["logon_as"]."."),
-                   "sql"=>"SELECT * FROM service, system, service_details WHERE service_start_name = '" . $_GET["logon_as"] . "' AND service_uuid  = system_uuid AND service_timestamp = system_timestamp AND sd_display_name = service_display_name ",
+$query_array=array("headline"=>__("List Systems and Services with Service User Logon details."),
+                   "sql"=>"SELECT * FROM service, system, service_details WHERE  service_uuid  = system_uuid AND service_timestamp = system_timestamp AND sd_display_name = service_display_name ",
                    "sort"=>"system_name",
                    "dir"=>"ASC",
                    "get"=>array("file"=>"system.php",
