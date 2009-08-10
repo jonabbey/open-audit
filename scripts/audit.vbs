@@ -793,7 +793,7 @@ For Each objItem in colItems
 
      ' IP Address are padded with zeros so they sort properly
      MyIP = Split(net_ip(0), ".", -1, 1)
-     if MyIP(0) <> "169" AND MyIP(1) <> "254" then
+     if Not (MyIP(0) ="169" And MyIP(1) ="254") then
        MyIP(0) = right("000" & MyIP(0),3)
        MyIP(1) = right("000" & MyIP(1),3)
        MyIP(2) = right("000" & MyIP(2),3)
@@ -806,7 +806,7 @@ For Each objItem in colItems
        elseif net_ip(0) = "000.000.000.000" then net_ip(0) = "none" end if
      end if
      MyIP = Split(net_ip(1), ".", -1, 1)
-     if MyIP(0) <> "169" AND MyIP(1) <> "254" then
+     if Not (MyIP(0) ="169" And MyIP(1) ="254") then
        MyIP(0) = right("000" & MyIP(0),3)
        MyIP(1) = right("000" & MyIP(1),3)
        MyIP(2) = right("000" & MyIP(2),3)
@@ -815,7 +815,7 @@ For Each objItem in colItems
        if net_ip(1) = "000.000.000.000" then net_ip(1) = "none" end if
      end if
      MyIP = Split(net_ip(2), ".", -1, 1)
-     if MyIP(0) <> "169" AND MyIP(1) <> "254" then
+     if Not (MyIP(0) ="169" And MyIP(1) ="254") then
        MyIP(0) = right("000" & MyIP(0),3)
        MyIP(1) = right("000" & MyIP(1),3)
        MyIP(2) = right("000" & MyIP(2),3)
