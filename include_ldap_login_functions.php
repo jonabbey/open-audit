@@ -18,6 +18,8 @@ Recent Changes:
 	[Nick Brown]	03/04/2009	Moved  ConvertBinarySidToSddl() to "include_functions.php"
 	[Nick Brown]	24/04/2009	Added utf8_encode() to LDAP search filter strings
 	[Nick Brown]	01/05/2009	AuthenticateUsingLdap() - added SSL support	
+	[Nick Brown]	19/08/2009	Added support for Open LDAP in AuthenticateUsingLdap(), GetUserRole(). New
+	function GetOpenLdapUserDN().
 
 **********************************************************************************************************/
 include_once "include_functions.php";
@@ -38,11 +40,11 @@ Returns:
 Change Log:
 	24/02/2009			New function	[Nick Brown]
 	11/03/2009			$_SESSION["username"] no longer set in this function[Nick Brown]
-	01/05/2009			Added SSL support	
+	01/05/2009			Added SSL support	[Nick Brown]
+	19/08/2009			Added Open LDAP support 	[Nick Brown]
 **********************************************************************************************************/
 function AuthenticateUsingLdap($username, $password, &$ldap_connection)
 {
-	
 	/*
 	global $TheApp;
 	
@@ -54,13 +56,68 @@ function AuthenticateUsingLdap($username, $password, &$ldap_connection)
 	}
 	*/
 	
-	$upn = isEmailAddress($username) ? $username : $username."@".$ldap_connection['fqdn'];
+	if($ldap_connection['schema'] == "AD")
+		{$user = isEmailAddress($username) ? $username : $username."@".$ldap_connection['fqdn'];}
+	if($ldap_connection['schema'] == "OpenLDAP")
+		{$user = GetOpenLdapUserDN($username, $ldap_connection);}
 		
 	// Authenticate
   error_reporting(E_ERROR | E_PARSE);
 	$server = ($ldap_connection['use_ssl'] == 1) ? "ldaps://".$ldap_connection['server'] : $ldap_connection['server'];
-	$connect = ConnectToLdapServer($server, $upn, $password);
+	$connect = ConnectToLdapServer($server, $user, $password);
 	return $connect;
+}
+
+/**********************************************************************************************************
+Function Name:
+	GetOpenLdapUserDN
+Description:
+	Attempts to locate user's DN in LDAP directory from their CN value
+Arguments:
+	$username		[IN]	[STRING]			Users' CN value
+	$ldap_connection		[IN]	[Array]			LDAP connection info array 
+Returns:
+	User's DN 			[STRING]
+Change Log:
+	19/08/2009			New function	[Nick Brown]
+**********************************************************************************************************/
+function GetOpenLdapUserDN(&$username, &$ldap_connection)
+{
+	$db = ConnectToOpenAuditDb();
+	
+	// Connect to LDAP server anonymously to perform search
+	$ldap = ConnectToLdapServer($ldap_connection['server'],"","");
+	
+	// Get all LDAP paths for supplied LDAP connection from MySQL db
+	$sql = "SELECT ldap_paths_dn FROM ldap_paths WHERE ldap_paths_connection_id=".$ldap_connection['id'];
+	$result = mysql_query($sql, $db);
+	
+	// Loop thru all defined paths
+	$userpath ="";
+	if ($myrow = mysql_fetch_array($result))
+	{
+		// Perform LDAP query using each path until user is found
+		do
+		{
+			$path = $myrow["ldap_paths_dn"];
+			$ldap_search_query = "(&(objectClass=organizationalPerson)(cn=".$username."))";
+			$sr = ldap_search($ldap, $path, utf8_encode($ldap_search_query));
+			$entries = ldap_get_entries($ldap, $sr);
+			if($entries['count'] > 0)
+			{
+				// Found user in this path - exit loop
+				$userpath = ",".$path;
+				break;
+			} 
+		}
+		while ($myrow = mysql_fetch_array($result));
+	}
+
+	// tidy up resource handles
+	mysql_close();
+	ldap_unbind($ldap);
+
+	return "cn=".$username.$userpath;
 }
 
 /**********************************************************************************************************
@@ -75,11 +132,14 @@ Returns:
 	User's role				[STRING]
 Change Log:
 	24/02/2009			New function	[Nick Brown]
+	19/08/2009			Added (very basic) Open LDAP support 	[Nick Brown]
 **********************************************************************************************************/
 function GetUserRole(&$ldap, &$ldap_connection)
 {
 	global $admin_list, $user_list;
-
+	
+	if($ldap_connection['schema'] == "OpenLDAP"){return "admin";}
+	
 	if ((count($admin_list)>0) || (count($user_list)>0))
 	{
 		$user = GetUserInfo($ldap, $ldap_connection);

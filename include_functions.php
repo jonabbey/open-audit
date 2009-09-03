@@ -18,6 +18,7 @@ Recent Changes:
 	GetAesKey() re-written to use $TheApp
 	[Nick Brown]	06/05/2009	GetAesKey() modified
 	[Nick Brown]	12/05/2009	GetAesKey() modified
+	[Nick Brown]	19/08/2009	GetLdapConnectionsFromDb() modified
 
 **********************************************************************************************************/
 require_once "application_class.php";
@@ -1018,6 +1019,7 @@ Change Log:
 	11/03/2009			Connection username and password now included in returned array	[Nick Brown]
 	17/03/2009			Using GetAesKey() instead of GetVolumeLabel()	[Nick Brown]
 	24/04/2009			Added "ldap_connections_use_ssl" value to returned array	[Nick Brown]
+	19/08/2009			Added support for Open LDAP schema	[Nick Brown]
 **********************************************************************************************************/
 function GetLdapConnectionsFromDb()
 {
@@ -1030,7 +1032,8 @@ function GetLdapConnectionsFromDb()
 	
 	$sql = "SELECT ldap_connections_id,AES_DECRYPT(ldap_connections_user,'".$aes_key."') AS ldap_user, 
 					AES_DECRYPT(ldap_connections_password,'".$aes_key."') AS ldap_password, ldap_connections_use_ssl,
-					ldap_connections_server, ldap_connections_fqdn, ldap_connections_name, ldap_connections_nc 
+					ldap_connections_server, ldap_connections_fqdn, ldap_connections_name, ldap_connections_nc, 
+					ldap_connections_schema 
 					FROM ldap_connections ";
 	
 	$result = mysql_query($sql, $db);
@@ -1040,7 +1043,8 @@ function GetLdapConnectionsFromDb()
 		do
 		{
 			$id = $myrow["ldap_connections_id"];
-			$ldap_connections[$id] = Array() ;
+			$ldap_connections[$id] = Array();
+			$ldap_connections[$id]["id"] = $myrow["ldap_connections_id"];
 			$ldap_connections[$id]["server"] = $myrow["ldap_connections_server"];
 			$ldap_connections[$id]["user"] = $myrow["ldap_user"];
 			$ldap_connections[$id]["password"] = $myrow["ldap_password"];
@@ -1048,6 +1052,7 @@ function GetLdapConnectionsFromDb()
 			$ldap_connections[$id]["name"] = $myrow["ldap_connections_name"];
 			$ldap_connections[$id]["fqdn"] = $myrow["ldap_connections_fqdn"];
 			$ldap_connections[$id]["nc"] = $myrow["ldap_connections_nc"];
+			$ldap_connections[$id]["schema"] = $myrow["ldap_connections_schema"];
 		}
 		while ($myrow = mysql_fetch_array($result));
 	}

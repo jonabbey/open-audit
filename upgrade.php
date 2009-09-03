@@ -10,6 +10,7 @@ Recent Changes:
 	[Nick Brown]	17/03/2009	Added code to upgrade to Version 09.03.17 
 	[Nick Brown]	05/05/2009	Upgrade to Version 09.05.05 - LDAP over SSL support 
 				01/08/2009	Upgrade to version 09.08.01 - Added 'service_start_name' column to the 'service' table
+	[Nick Brown]	03/09/2009	Upgrade to Version 09.09.03 - Added OpenLDAP support 
 
 **********************************************************************************************************/
 ?>
@@ -595,6 +596,12 @@ upgrade ($version,"09.08.01", $sql);
 
 // ************************************************************************************************
 
+// *************  Version 09.09.03 *******************************************************************
+$sql = "ALTER TABLE ldap_connections CHANGE `ldap_connections_user` `ldap_connections_user` VARBINARY(255) NOT NULL;
+ALTER TABLE ldap_connections CHANGE `ldap_connections_password` `ldap_connections_password` VARBINARY(255) NOT NULL;";
+upgrade ($version,"09.09.03", $sql);
+
+// ************************************************************************************************
 
 set_time_limit (30);
 

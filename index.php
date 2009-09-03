@@ -24,6 +24,7 @@ Recent Changes:
 	[Nick Brown]	29/04/2009	Removed reference to $validate - doesn't appear to be used anywhere in the application.
 	[Nick Brown]	05/05/2009	$latest_version  now "09.05.05"
 				01/08/2009	$latest_version  now "09.08.01"
+	[Nick Brown]	03/09/2009	$latest_version  now "09.09.03"
 
 **********************************************************************************************************/
 
@@ -32,7 +33,7 @@ $extra = "";
 $software = "";
 $count = 0;
 $total_rows = 0;
-$latest_version = "09.08.01";
+$latest_version = "09.09.03";
 
 // Check for config, otherwise run setup
 if(!file_exists("include_config.php"))exit(header("Location: setup.php"));

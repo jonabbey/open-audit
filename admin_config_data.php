@@ -13,6 +13,8 @@ Recent Changes:
 	GetLdapConnectionXml() and GetDefaultNC()
 	[Nick Brown]	01/05/2009	New function GetOpenSslEnabled() ."application_class.php" now included to provide 
 	access to the global $TheApp object
+	[Nick Brown]	19/08/2009	New function GetLdapSchemaType(). Added support for Open LDAP in 
+	TestLdapConnectionHtml()
 
 **********************************************************************************************************/
 set_time_limit(60);
@@ -95,7 +97,7 @@ Function Name:
 Description:
 	Retrieves all LDAP paths associated with the supplied LDAP connection.
 	Returns them as an HTML list
-Arguments:
+Arg/uments:
 	$ConnectionGuid	[IN] [String]		LDAP Connection GUID
 	$db					[IN] [Resource]	DB connection	
 Returns:		
@@ -141,6 +143,7 @@ Change Log:
 	19/09/2008			Removed echo  statments and replaced with response string	[Nick Brown]
 	22/09/2008			Function renamed	[Nick Brown]
 	29/04/2009			Added checking for valid Default Naming Context returned from GetDefaultNC()	[Nick Brown]	
+	19/08/2009			Added call to GetLdapSchemaType() to support Open LDAP
 **********************************************************************************************************/
 function TestLdapConnectionHtml($db)
 {	
@@ -157,24 +160,35 @@ function TestLdapConnectionHtml($db)
 	}	
 	$response .=  "Server connection successful<br />";
 
-	// Get default domain NC
-	$domain_nc = GetDefaultNC($l);
-	if (is_array($domain_nc))
+	// Get LDAP Schema
+	$schema = GetLdapSchemaType($l);
+	$response .=  "Schema: ".$schema."<br />";
+	
+	// AD schema can use UPN logon
+	if($schema == "AD")
 	{
-		$response .=  "!! Unable to obtain Default Naming Context !!<br />";
-		$response .=  "Err Number: ".$l["number"]."<br />";
-		$response .=  "Err String: ".$l["string"]."<br />";
-		return $response;
-	}	
-	$response .=  "Default Naming Context: ".$domain_nc."<br />";
+		// Get default domain NC
+		$domain_nc = GetDefaultNC($l,$schema);
+		if (is_array($domain_nc))
+		{
+			$response .=  "!! Unable to obtain Default Naming Context !!<br />";
+			$response .=  "Err Number: ".$l["number"]."<br />";
+			$response .=  "Err String: ".$l["string"]."<br />";
+			return $response;
+		}	
+		$response .=  "Default Naming Context: ".$domain_nc."<br />";
 
-	// Convert default domain NC to DNS suffix string
-	$user_dns_suffix = implode(".",explode(",DC=",substr($domain_nc,3)));
-	$response .=  "User DNS Suffix: ".$user_dns_suffix."<br />";
-	ldap_unbind($l);
+		// Convert default domain NC to DNS suffix string
+		$user_dns_suffix = implode(".",explode(",DC=",substr($domain_nc,3)));
+		$response .=  "User DNS Suffix: ".$user_dns_suffix."<br />";
+		ldap_unbind($l);
+		
+		// Check if supplied user is already in UPN format - else append domain DNS suffix
+		$ldap_user = isEmailAddress($_GET["ldap_connection_user"]) ? $_GET["ldap_connection_user"] : $_GET["ldap_connection_user"]."@".$user_dns_suffix;
+	}
+	else {$ldap_user = $_GET["ldap_connection_user"];}
 	
 	// Now try to bind using supplied credentials
-	$ldap_user = isEmailAddress($_GET["ldap_connection_user"]) ? $_GET["ldap_connection_user"] : $_GET["ldap_connection_user"]."@".$user_dns_suffix;
 	$l = ConnectToLdapServer($_GET["ldap_connection_server"],$ldap_user,$_GET["ldap_connection_password"]);
 	if (is_array($l))
 	{
@@ -192,6 +206,30 @@ function TestLdapConnectionHtml($db)
 
 /**********************************************************************************************************
 Function Name:
+	GetLdapSchemaType
+Description:
+	Determines LDAP schema type from RootDSE of the LDAP server
+Arguments:
+	&$ldap	[IN] [RESOURCE]	LDAP resource link
+Returns:
+	[String]	schema type string "AD", "OpenLDAP", "UNKNOWN"
+Change Log:
+	18/08/2009			New function	[Nick Brown]
+**********************************************************************************************************/
+function GetLdapSchemaType(&$ldap)
+{
+	// Check for AD LDAP schema
+	$sr = ldap_read($ldap,null,"(|(structuralObjectClass=*)(dsServiceName=*))",array("structuralObjectClass","dsServiceName"));
+	$entries = ldap_get_entries($ldap, $sr);
+	
+	if(isset($entries[0]["structuralobjectclass"][0])) {return "OpenLDAP";}
+	if(isset($entries[0]["dsservicename"][0])) {return "AD";}
+	
+	return "UNKNOWN";
+}
+
+/**********************************************************************************************************
+Function Name:
 	GetDefaultNC
 Description:
 	Reads and returns the DefaultNamingContext attribute from RootDSE of the LDAP server
@@ -203,11 +241,14 @@ Change Log:
 	25/04/2008			New function	[Nick Brown]
 	29/04/2009			Now returns error array if LDAP query fails	[Nick Brown]	
 **********************************************************************************************************/
-function GetDefaultNC(&$ldap)
+function GetDefaultNC(&$ldap, &$schema)
 {
-	$sr = ldap_read($ldap,null,"(defaultnamingcontext=*)",array("defaultnamingcontext"));
+	if($schema =="OpenLDAP"){$prop = "namingcontexts";}
+	if($schema =="AD"){$prop = "defaultnamingcontext";}
+	
+	$sr = ldap_read($ldap,null,"(".$prop."=*)",array($prop));
 	$entries = ldap_get_entries($ldap, $sr);
-	$DefaultNC = $entries[0]["defaultnamingcontext"][0];
+	$DefaultNC = $entries[0][$prop][0];
 	$errdata = array("number" => ldap_errno($l), "string" => ldap_error($l));
 	if ($errdata["number"] !=0 ) return $errdata; else return $DefaultNC;
 }
@@ -227,6 +268,7 @@ Change Log:
 	25/04/2008			New function	[Nick Brown]
 	19/09/2008			Removed echo  statments and replaced with response string	[Nick Brown]
 	17/03/2009			Using GetAesKey() instead of GetVolumeLabel()
+	19/08/2009			Added call to GetLdapSchemaType(). Added support for Open LDAP
 **********************************************************************************************************/
 function SaveLdapConnectionXml($db)
 {
@@ -239,16 +281,28 @@ function SaveLdapConnectionXml($db)
 	
 	// Connect anonymously to get default domain NC & config NC
 	$l = ConnectToLdapServer($_GET["ldap_connection_server"]);
-	$domain_nc = GetDefaultNC($l);
-	$config_nc = GetConfigNC($l);
-	$fqdn = implode(".",explode(",DC=",substr($domain_nc,3)));
-	ldap_unbind($l);
+	$schema = GetLdapSchemaType($l);
+		
+	$nc = GetDefaultNC($l,$schema);
+	$fqdn = implode(".",explode(",dc=",strtolower(substr($nc,3))));	
+	
+	if($schema == "AD")
+	{
+		$config_nc = GetConfigNC($l);
+		ldap_unbind($l);
 
-	// Authenticate and get domain GUID and NetBIOS name
-	$ldap_user = isEmailAddress($_GET["ldap_connection_user"]) ? $_GET["ldap_connection_user"] : $_GET["ldap_connection_user"]."@".$fqdn;
-	$l = ConnectToLdapServer($_GET["ldap_connection_server"],$ldap_user,$_GET["ldap_connection_password"]);
-	$ldap_connection_name = GetDomainNetbios($l,"CN=Partitions,".$config_nc,$domain_nc);
-	ldap_unbind($l);
+		// Authenticate and get domain NetBIOS name
+		$ldap_user = isEmailAddress($_GET["ldap_connection_user"]) ? $_GET["ldap_connection_user"] : $_GET["ldap_connection_user"]."@".$fqdn;
+		$l = ConnectToLdapServer($_GET["ldap_connection_server"],$ldap_user,$_GET["ldap_connection_password"]);
+		$ldap_connection_name = GetDomainNetbios($l,"CN=Partitions,".$config_nc,$nc);
+		ldap_unbind($l);
+	}
+
+	if($schema == "OpenLDAP")
+	{
+		$ldap_connection_name = strtoupper(substr($fqdn,0,strpos($fqdn,".")));
+		$ldap_user = $_GET["ldap_connection_user"];
+	}
 	
 	$aes_key = GetAesKey();
 	if (isset($_GET["ldap_connection_id"]) and strlen($_GET["ldap_connection_id"]) > 0)
@@ -256,7 +310,7 @@ function SaveLdapConnectionXml($db)
 		// UPDATE query - connection already exists so modify
 		LogEvent("admin_config_data.php","SaveLdapConnectionXml","Edit Connection: ".$ldap_connection_name);
 		$sql  = "UPDATE `ldap_connections` SET 
-						`ldap_connections_nc`='".$domain_nc."',
+						`ldap_connections_nc`='".$nc."',
 						`ldap_connections_fqdn`='".$fqdn."',
 						`ldap_connections_server`='".$_GET["ldap_connection_server"]."',
 						`ldap_connections_user`=AES_ENCRYPT('".$_GET["ldap_connection_user"]."','".$aes_key."'),
@@ -279,16 +333,15 @@ function SaveLdapConnectionXml($db)
 						`ldap_connections_name`,
 						`ldap_connections_schema`) 	
 						VALUES (
-						'".$domain_nc."',
+						'".$nc."',
 						'".$fqdn."',
 						'".$_GET["ldap_connection_server"]."', 
 						AES_ENCRYPT('".$_GET["ldap_connection_user"]."','".$aes_key."'),
 						AES_ENCRYPT('".$_GET["ldap_connection_password"]."','".$aes_key."'),
 						'".$_GET["ldap_connection_use_ssl"]."',
-						'".$ldap_connection_name."','AD')";
+						'".$ldap_connection_name."','".$schema."')";
 	}
-	
-	mysql_query($sql, $db);
+	$result = mysql_query($sql, $db);
 	//return "<SaveLdapConnection><html>".$html."</html><sql_query>".$sql."</sql_query><result>".$testresult."</result></SaveLdapConnection>";
 	return "<SaveLdapConnection><html>".$html."</html><result>".$testresult."</result></SaveLdapConnection>";
 }
@@ -440,6 +493,7 @@ function GetLdapConnectionXml($db)
 	$response = "<connections>";
 	if ($myrow = mysql_fetch_array($result))
 	{
+		//print_r($myrow);
 		do
 		{
 			$response .= "<connection>";
