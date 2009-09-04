@@ -39,6 +39,7 @@ $query_array=array("name"=>array("name"=>__("Summary"),
                                                                     "80"=>array("name"=>"system_system_type", "head"=>__("Chassis Type"),),
                                                                     "90"=>array("name"=>"system_model", "head"=>__("Model #"),),
                                                                     "100"=>array("name"=>"system_id_number", "head"=>__("Serial #"),),
+//																	"102"=>array("name"=>"", "head"=>__(""),),
                                                                     "110"=>array("name"=>"system_vendor", "head"=>__("Manufacturer"),),
                                                                     "120"=>array("name"=>"system_os_name", "head"=>__("Operating System"),),
                                                                     "130"=>array("name"=>"system_build_number", "head"=>__("Build Number"),),
@@ -466,5 +467,6 @@ if ((isset($use_ldap_integration))and($use_ldap_integration == 'y')) {
         // echo $filename;
          }
 //echo $filename;
+//      $query_array['views']['summary']['fields']['102']['head'] = "Dell Express Code: ".base_convert('system_id_number',36,10) ;
 //echo $query_array['views']['management']['image'] ;
 ?>

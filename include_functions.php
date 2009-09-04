@@ -1154,5 +1154,10 @@ function DisplayError($error_msg)
 	include "include_right_column.php";
 	die;
 }
+function base36_convert($numstring)
+{
+   $result = base_convert($numstring,36,10);
+    return $result;
+}
 
 ?>
