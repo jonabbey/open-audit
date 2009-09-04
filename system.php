@@ -355,6 +355,11 @@ while (list ($viewname, $viewdef_array) = @each ($query_array["views"])) {
                            echo " / ";
                            echo " <a href='http://support.dell.com/support/downloads/index.aspx?c=us&amp;l=en&amp;s=gen&amp;servicetag=" . $myrow["system_id_number"] . "' onclick=\"this.target='_blank';\">".__("Drivers &amp; Software")."</a>";
                            $links_to_manu=1;
+						   $express_code= base_convert('system_id_number',36,10) ;
+						   $express_code_formatted = substr($express_code,0,3)."-".substr($express_code,3,3)."-".substr($express_code,6,3)."-".substr($express_code,9,2);
+					   	echo "  -   Dell Express Code: ".$express_code_formatted ;
+						echo "</tr>\n";
+						echo "<td>\n";						   
                        }
                        // Added Hewlett-Packard (AJH 14th April 2009)
                      } elseif ($myrow["system_vendor"] == "Compaq" || $myrow["system_vendor"] == "HP" || $myrow["system_vendor"] == "Hewlett-Packard"){
