@@ -357,7 +357,7 @@ while (list ($viewname, $viewdef_array) = @each ($query_array["views"])) {
                            $links_to_manu=1;
 						   $express_code= base_convert('system_id_number',36,10) ;
 						   $express_code_formatted = substr($express_code,0,3)."-".substr($express_code,3,3)."-".substr($express_code,6,3)."-".substr($express_code,9,2);
-					   	echo "  -   Dell Express Code: ".$express_code_formatted ;
+					   	echo "  -   ".__("Dell Express Service Code").": ".$express_code_formatted ;
 //						echo "</tr>\n";
 //						echo "<td>\n";						   
                        }
