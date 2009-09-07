@@ -144,7 +144,7 @@ if (isset($_POST["submit"])){
   } else {}
 
   if ($mac == "00:00:00:00:00:00"){
-    $sql = "SELECT net_uuid FROM network_card WHERE net_ip_address = '" . $ip_address . "'";
+    $sql = "SELECT net_uuid FROM network_card WHERE net_ip_address = '" . ip_trans_to($ip_address) . "'";
     echo $sql . "<br />";
     $result = mysql_query($sql) or die ('Query Failed: <br />$sql<br />' . mysql_error() . '<br />' . $sql);
     $myrow = mysql_fetch_array($result);
