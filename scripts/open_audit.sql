@@ -432,10 +432,11 @@ CREATE TABLE  `ldap_connections` (
   `ldap_connections_nc` varchar(255) NOT NULL,
   `ldap_connections_fqdn` varchar(255) NOT NULL,
   `ldap_connections_server` varchar(255) NOT NULL,
-  `ldap_connections_user` varchar(45) NOT NULL,
-  `ldap_connections_password` varchar(45) NOT NULL,
+  `ldap_connections_user` varbinary(255) NOT NULL,
+  `ldap_connections_password` varbinary(255) NOT NULL,
   `ldap_connections_name` varchar(45) NOT NULL,
   `ldap_connections_schema` varchar(45) NOT NULL,
+  `ldap_connections_use_ssl` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`ldap_connections_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
@@ -1339,7 +1340,7 @@ CREATE TABLE `video` (
   KEY `id2` (`video_timestamp`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
-INSERT INTO config (config_name, config_value) VALUES ('version','08.12.10');
+INSERT INTO config (config_name, config_value) VALUES ('version','09.09.03');
 
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
