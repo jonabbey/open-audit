@@ -229,7 +229,7 @@ if ($myrow = mysql_fetch_array($result)){
   do {
       $bgcolor = change_row_color($bgcolor,$bg1,$bg2);
       echo "<tr style=\"bgcolor:" . $bgcolor . ";\">
-               <td width=\"5%\"><input type=\"checkbox\" name=" . $myrow["system_uuid"] . " id=" . $myrow["system_uuid"] . " value=" . $myrow["system_uuid"] . "></td>
+               <td width=\"5%\"><input type=\"checkbox\" name=\"" . $myrow["system_uuid"] . "\" id=\"" . $myrow["system_uuid"] . "\" value=\"" . $myrow["system_uuid"] . "\"></td>
                <td><a href=\"system.php?pc=".$myrow["system_uuid"]."&amp;view=summary\">" . ip_trans($myrow["net_ip_address"]) . "</a></td>
                <td><a href=\"system.php?pc=".$myrow["system_uuid"]."&amp;view=summary\">" . $myrow["system_name"] . "</a></td>
                <td>" . $myrow["net_domain"] . "</td>
