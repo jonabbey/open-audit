@@ -9,14 +9,16 @@ $query_array=array("headline"=>__("Statistic for Hard Disks"),
                                        SELECT count(*)
                                        FROM hard_drive, system WHERE
                                            system_uuid=hard_drive_uuid AND
-                                           system_timestamp=hard_drive_timestamp
+                                           system_timestamp=hard_drive_timestamp AND
+                                           hard_drive_size!=0
                                        )
                                  * COUNT(*)
                                ,$round_to_decimal_places) AS percentage
                            FROM hard_drive, system
                            WHERE
                                system_uuid=hard_drive_uuid AND
-                               system_timestamp=hard_drive_timestamp
+                               system_timestamp=hard_drive_timestamp AND
+                               hard_drive_size!=0
                            GROUP BY hard_drive_size
                            ",
                    "sort"=>"count_item",
