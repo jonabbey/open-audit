@@ -25,6 +25,7 @@ Recent Changes:
 	[Nick Brown]	29/04/2009	Checks for availability of LDAP functions  - redirects to "include_ldap_config_err.php" 
 	if not available
 	[Nick Brown]	01/05/2009	Included "application_class.php" to provide access to the global $TheApp object. 
+	[Chad Sikorra]	02/10/2009	Add URL redirection
 
 **********************************************************************************************************/
 
@@ -49,13 +50,18 @@ if ((count($ldap_connections) == 0) or !$TheApp->LdapEnabled)
 // If we have logon details POST'ed - perform LDAP authentication
 if (isset($_POST['username']))
 {	
+	// Make sure to save the redirect url on logon failures
+	if (isset($_GET['redirect'])) {
+		$redirect_persist = "&redirect=".urlencode($_GET['redirect']);
+	}
+
 	// Connect (authenticate) to LDAP
 	$connect = AuthenticateUsingLdap($_POST['username'],$_POST['password'],$ldap_connections[$_POST['ldap_connection']]);
 	// Check for connection error
 	if (is_array($connect))
 	{
 		DestroySession();
-		RedirectToUrl($_SERVER['SCRIPT_NAME'].'?Result=Failed');
+		RedirectToUrl($_SERVER['SCRIPT_NAME'].'?Result=Failed'.$redirect_persist);
 	}
 
 	// Set Session value - remove domain suffix if UPN was used
@@ -74,12 +80,13 @@ if (isset($_POST['username']))
 	if ($_SESSION["role"] != "none")
 	{
 		LogEvent("ldap_login.php","Main","User ".$_SESSION["username"]." succesfully logged on as ".$_SESSION["role"]);
-		RedirectToUrl("./index.php");
+		$url = (isset($_GET['redirect'])) ? urldecode($_GET['redirect']) : './index.php';
+		RedirectToUrl($url);
 	} 
 	else
 	{
 		DestroySession();
-		RedirectToUrl($_SERVER['SCRIPT_NAME'].'?Result=NoAccess');
+		RedirectToUrl($_SERVER['SCRIPT_NAME'].'?Result=NoAccess'.$redirect_persist);
 	}
 }
 ?>

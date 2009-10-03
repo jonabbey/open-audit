@@ -33,7 +33,7 @@ echo "  <td width=\"150\"><b>&nbsp;".__("Field")."</b></td>\n";
 echo "  <td><b>&nbsp;".__("Result")."</b></td>\n";
 echo "</tr>";
 
-$search = stripslashes($_POST["search_field"]);
+$search = (isset($_GET["search_field"])) ? stripslashes($_GET["search_field"]) : stripslashes($_POST["search_field"]);
 $search = mysql_real_escape_string($search);
 $search = strtoupper($search);
 

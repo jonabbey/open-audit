@@ -13,6 +13,7 @@ Change Control:
 	[Nick Brown]	02/03/2009
 	Minor change - removed check for value of $use_ldap_login - not needed as this has been done in "include.php" which is
 	why we are here.
+	[Chad Sikorra]	02/10/2009	Add URL redirection
 	
 **********************************************************************************************************/
 session_start();
@@ -22,8 +23,12 @@ $user_deny_pages = array("admin_config.php", "database_backup_form.php", "databa
 
 if(!isset($_SESSION["role"]))
 {
-    header('Location: ldap_login.php');
-    exit;
+	$redirect =
+		( empty($_SERVER['QUERY_STRING']) ) ?
+		"?redirect=".urlencode($_SERVER['PHP_SELF']) :
+		"?redirect=".urlencode("{$_SERVER['PHP_SELF']}?{$_SERVER['QUERY_STRING']}") ;
+	header('Location: ldap_login.php'.$redirect);
+	exit;
 }
 else
 {

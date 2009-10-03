@@ -16,10 +16,10 @@ echo "<a href=\"http://www.open-audit.org\">Open-AudIT</a> ".__("Webpage").".<br
 echo "Mark Unwin.<br />";
 
 // Search box
-echo "<form action=\"search.php\" method=\"post\">\n";
+echo "<form action=\"search.php\" method=\"get\">\n";
 echo "<p>" . __("Search") . "<br />\n";
 echo "<input size=\"15\" name=\"search_field\" />\n";
-echo "<input name=\"submit\" value=\"Go\" type=\"submit\" />\n";
+echo "<input value=\"Go\" type=\"submit\" />\n";
 echo "</p>\n";
 echo "</form>\n";
 #echo "</center>";
