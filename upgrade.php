@@ -614,7 +614,6 @@ $os_string .= $_ENV['OS'];
 $os_string .= $_SERVER['OS'];
 
 unset($sql);
-global $TheApp;
 
 if ( !preg_match("/(ubuntu|suse)/i", $os_string) and $TheApp->OS == 'Linux' ) {
   $aes_key = GetAesKey();
