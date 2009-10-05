@@ -11,6 +11,8 @@ Recent Changes:
 	[Nick Brown]	05/05/2009	Upgrade to Version 09.05.05 - LDAP over SSL support 
 				01/08/2009	Upgrade to version 09.08.01 - Added 'service_start_name' column to the 'service' table
 	[Nick Brown]	03/09/2009	Upgrade to Version 09.09.03 - Added OpenLDAP support 
+	[Chad Sikorra]	04/10/2009	Upgrade to Version 09.10.03 - Update regex that helps determine AES key.
+					Add version checks to 09.03.17
 
 **********************************************************************************************************/
 ?>
@@ -560,29 +562,30 @@ upgrade ($version,"08.12.10", $sql);
 
 // *************  Version 09.03.17 *******************************************************************
 
-// Update include_config.php - preserving existing values
-$current_content = file_get_contents("include_config.php");
-$content = "<?php\ninclude_once \"include_config_defaults.php\"; // Ensures that all variables have a default value\n";
-$content .= substr($current_content, 6); 
-
-if (is_writable("include_config.php")) 
+if (versionCheck($version, "09.03.17"))
 {
-	if (!$handle = fopen("include_config.php", 'w')){exit("Cannot open file ($filename)");}
-	if (fwrite($handle, $content) === FALSE){exit("Cannot write to file ($filename)");}
-	echo __("The Open-AudIT config has been updated");
-  fclose($handle);
+// Update include_config.php - preserving existing values
+	$current_content = file_get_contents("include_config.php");
+	$content = "<?php\ninclude_once \"include_config_defaults.php\"; // Ensures that all variables have a default value\n";
+	$content .= substr($current_content, 6); 
+
+	if (is_writable("include_config.php")) 
+	{
+		if (!$handle = fopen("include_config.php", 'w')){exit("Cannot open file ($filename)");}
+		if (fwrite($handle, $content) === FALSE){exit("Cannot write to file ($filename)");}
+		echo __("The Open-AudIT config has been updated");
+  	fclose($handle);
+	}
+	else {echo __("The file") . "include_config.php" . __("is not writable");}
 }
-else {echo __("The file") . "include_config.php" . __("is not writable");}
 
 // Update encrypted  LDAP data using new AES key function (GetAesKey)
 $old_aes_key = GetVolumeLabel('c');
 $aes_key = GetAesKey();
 $sql = "UPDATE `ldap_connections` SET
 				`ldap_connections_user` = AES_ENCRYPT(AES_DECRYPT(`ldap_connections_user`,'".$old_aes_key."'),'".$aes_key."'),
-				`ldap_connections_password` = AES_ENCRYPT(AES_DECRYPT(`ldap_connections_password`,'".$old_aes_key."'),'".$aes_key."')";
-$result = mysql_query($sql);
-				
-modify_config("version", "09.03.17");
+				`ldap_connections_password` = AES_ENCRYPT(AES_DECRYPT(`ldap_connections_password`,'".$old_aes_key."'),'".$aes_key."');";
+upgrade ($version,"09.03.17", $sql);
 
 // *************  Version 09.05.05 *******************************************************************
 $sql = "ALTER TABLE `ldap_connections` ADD COLUMN `ldap_connections_use_ssl` tinyint(1) NOT NULL default '0';";
@@ -600,6 +603,27 @@ upgrade ($version,"09.08.01", $sql);
 $sql = "ALTER TABLE ldap_connections CHANGE `ldap_connections_user` `ldap_connections_user` VARBINARY(255) NOT NULL;
 ALTER TABLE ldap_connections CHANGE `ldap_connections_password` `ldap_connections_password` VARBINARY(255) NOT NULL;";
 upgrade ($version,"09.09.03", $sql);
+
+// ************************************************************************************************
+
+// *************  Version 09.10.05 *******************************************************************
+$os_string = php_uname("s");  
+$os_string .= phpversion();
+$os_string .= $_SERVER["SERVER_SOFTWARE"];
+$os_string .= $_ENV['OS'];
+$os_string .= $_SERVER['OS'];
+
+unset($sql);
+global $TheApp;
+
+if ( !preg_match("/(ubuntu|suse)/i", $os_string) and $TheApp->OS == 'Linux' ) {
+  $aes_key = GetAesKey();
+  $sql = 'UPDATE ldap_connections SET 
+           ldap_connections_user=AES_ENCRYPT(AES_DECRYPT(ldap_connections_user,"openaudit"),"'.$aes_key.'"),
+           ldap_connections_password= AES_ENCRYPT(AES_DECRYPT(ldap_connections_password,"openaudit"),"'.$aes_key.'");';
+}
+
+upgrade ($version,"09.10.05",$sql);
 
 // ************************************************************************************************
 

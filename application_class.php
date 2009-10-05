@@ -17,6 +17,7 @@ Public Methods:
 Recent Changes:
 	
 	[Nick Brown]	01/05/2009	New code.
+	[Chad Sikorra]	05/10/2009	Add 'linux' to OS regex.
 
 **********************************************************************************************************/
 class OpenAuditApplication
@@ -68,7 +69,7 @@ class OpenAuditApplication
 		$os_string .= $_SERVER['OS'];
 		$this->OsString = $os_string.PHP_OS;
 		
-		if (preg_match("/(ubuntu|suse)/i", $os_string)){$this->OS = "Linux";}
+		if (preg_match("/(ubuntu|suse|linux)/i", $os_string)){$this->OS = "Linux";}
 		elseif (preg_match("/(win32|winnt|Windows)/i", $os_string)){$this->OS = "Windows";}
 		
 		error_reporting($err_level); 
