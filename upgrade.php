@@ -607,13 +607,17 @@ upgrade ($version,"09.09.03", $sql);
 // ************************************************************************************************
 
 // *************  Version 09.10.05 *******************************************************************
+$err_level = error_reporting(0);
+
 $os_string = php_uname("s");  
 $os_string .= phpversion();
 $os_string .= $_SERVER["SERVER_SOFTWARE"];
 $os_string .= $_ENV['OS'];
 $os_string .= $_SERVER['OS'];
 
-unset($sql);
+error_reporting($err_level); 
+
+$sql = '';
 
 if ( !preg_match("/(ubuntu|suse)/i", $os_string) and $TheApp->OS == 'Linux' ) {
   $aes_key = GetAesKey();
