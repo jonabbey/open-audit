@@ -9,6 +9,7 @@
 '	[Nick Brown]	17/04/2009	 Changes to system user detection - line 893
 '	[Nick Brown]	23/04/2009	 [Bug] ODBC section not using Echo() - around line 3926 - Fixed
 '				01/08/2009	 In the Services section added auditing of StartName 
+'	[Chad Sikorra]	09/10/2009	 Add support for named arguments from the command line
 
 '***********************************************************************************************
 
@@ -71,14 +72,24 @@ script_prefix = Right(script_prefix,(len(script_prefix) - (InStrRev(WScript.Scri
 ' We also need the Path
 sScriptPath=Left(WScript.ScriptFullName, InStrRev(WScript.ScriptFullName,"\"))
 
-this_config = sScriptPath & script_prefix & ".config"
+dim filesys
+Set filesys = CreateObject("Scripting.FileSystemObject")
+
+' Look for an audit.config from command line arg config_path first
+If WScript.Arguments.Named.Exists("config_path") then
+  If not filesys.FileExists(Wscript.Arguments.Named("config_path")) then
+    Wscript.Echo "Cannot find config: " & Wscript.Arguments.Named("config_path")
+    Wscript.Quit(1)
+  End If
+  this_config = Wscript.Arguments.Named("config_path")
+Else
+  this_config = sScriptPath & script_prefix & ".config"
+End If
 
 'this_config = "audit.config"
 this_audit_log = sScriptPath & script_prefix & "_log.csv"
 ' keep_audit_log = "y"
 '
-' This takes no account of the command line switches added to a forked version, but in principal
-' The logic should be...
 ' look for audit.config and use that, if it doesn't exist, grab it from 
 ' the web server, if we cant do that, then use the internal defaults. 
 ' Finally modify the defaults depending on any command line switches 
@@ -86,24 +97,14 @@ this_audit_log = sScriptPath & script_prefix & "_log.csv"
 '
 ' First check to see if we have no config file, if so lets see if we can grab one from the server
 '
-dim filesys
-Set filesys = CreateObject("Scripting.FileSystemObject")
 
-If filesys.FileExists(this_config) then
-' Do nothing
-else 
+If not filesys.FileExists(this_config) and not WScript.Arguments.Named.Exists("cmd_args_only") then
 'wscript.echo("Creating new config")
 '
 ' This section takes a look at the local audit.config, and if there is none, it makes one from the server URL 
 ' The idea is to allow us to throw the audit.vbs file to a browser and have it grab the config it needs.
 ' We should only need to set one thing, namely the URL from which we will grab the remainder of the config.
 '
-'
-' (FIXME) We assume the local config file will always be audit.config but there may be a Command Switch to modify this.
-' logically this is not a problem, we will try to grab a config and put it in audit.config 
-' If there is a command switch specifying a different file name we wont use audit.config anyway so it matters not 
-' if we fail to create one.
-' 
 
 ' Now we open the web page where the remote config lives
 Set WshShell = WScript.CreateObject("WScript.Shell")
@@ -129,8 +130,9 @@ End If
 'ExecuteGlobal CreateObject("Scripting.FileSystemObject").OpenTextFile(sScriptPath & this_config).ReadAll
 
 
+' It's possible to have only command line arguments, so see if there's a config to read
+If filesys.FileExists(this_config) then
 ExecuteGlobal CreateObject("Scripting.FileSystemObject").OpenTextFile(this_config).ReadAll
-
 
 '
 ' Once run, we can delete the config. Can any calling scripts can use the config up until we exit the toplevel script. Not sure???
@@ -143,18 +145,51 @@ Set our_config = config_file.OpenTextFile( this_config, ForWriting, True)
     our_config.close
     config_file.DeleteFile this_config
     end if
+end if
 
 
+
+For Each arg in WScript.Arguments.Named
+  Select Case Ucase(arg) 
+    Case "?","HELP" Usage              
+    Case "CMD_ARGS_ONLY","CONFIG_PATH" ' Nothing to do with these here
+    Case "STRCOMPUTER"               strComputer = Wscript.Arguments.Named(arg)
+    Case "STRUSER"                       strUser = Wscript.Arguments.Named(arg)
+    Case "STRPASS"                       strPass = Wscript.Arguments.Named(arg)
+    Case "ONLINE"                         online = Wscript.Arguments.Named(arg)
+    Case "NON_IE_PAGE"               non_ie_page = Wscript.Arguments.Named(arg)
+    Case "IE_FORM_PAGE"             ie_form_page = Wscript.Arguments.Named(arg)
+    Case "IE_AUTO_SUBMIT"         ie_auto_submit = Wscript.Arguments.Named(arg)
+    Case "IE_VISIBLE"                 ie_visible = Wscript.Arguments.Named(arg)
+    Case "IE_SUBMIT_VERBOSE"   ie_submit_verbose = Wscript.Arguments.Named(arg)
+    Case "SOFTWARE_AUDIT"         software_audit = Wscript.Arguments.Named(arg)
+    Case "MONITOR_DETECT"         monitor_detect = Wscript.Arguments.Named(arg)
+    Case "PRINTER_DETECT"         printer_detect = Wscript.Arguments.Named(arg)
+    Case "UUID_TYPE"                   uuid_type = Wscript.Arguments.Named(arg)
+    Case "VERBOSE"                       verbose = Wscript.Arguments.Named(arg)
+    Case "INPUT_FILE"                 input_file = Wscript.Arguments.Named(arg)
+    Case "AUDIT_LOCAL_DOMAIN" audit_local_domain = Wscript.Arguments.Named(arg)
+    Case "LOCAL_DOMAIN"             local_domain = Wscript.Arguments.Named(arg)
+    Case "DOMAIN_TYPE"               domain_type = Wscript.Arguments.Named(arg)
+    Case "SCRIPT_NAME"               script_name = Wscript.Arguments.Named(arg)
+    Case "NUMBER_OF_AUDITS"     number_of_audits = Wscript.Arguments.Named(arg)
+    Case Else
+      Wscript.Echo "Unknown argument: " & arg
+      WScript.Quit(1)
+  End Select
+next
+
+' Keep support for unnamed arguments...
 
 ' If any command line args given - use the first one as strComputer
-If Wscript.Arguments.Count > 0 Then
-strComputer = wscript.arguments(0)
+If Wscript.Arguments.Unnamed.Count > 0 Then
+  strComputer = wscript.arguments.unnamed(0)
 end if
-If Wscript.Arguments.Count > 1 Then
-strUser = wscript.arguments(1)
+If Wscript.Arguments.Unnamed.Count > 1 Then
+  strUser = wscript.arguments.unnamed(1)
 end if
-If Wscript.Arguments.Count > 2 Then
-strPass = wscript.arguments(2)
+If Wscript.Arguments.Unnamed.Count > 2 Then
+  strPass = wscript.arguments.unnamed(2)
 end if
 
 if online = "p" then
@@ -4974,3 +5009,24 @@ Function LogKilledAudit(txt)
 
    LogKilledAudit=True
 End Function 
+
+Sub Usage
+    Wscript.Echo "Recognized audit.config named arguments:" & vbcrlf &_
+                 "   strComputer     strUser        strPass" & vbcrlf &_
+                 "   non_ie_page     online         ie_form_page" & vbcrlf &_
+                 "   ie_auto_submit  ie_visible     ie_submit_verbose" & vbcrlf &_
+                 "   software_audit  monitor_detect printer_detect" & vbcrlf &_
+                 "   uuid_type       verbose        number_of_audits" & vbcrlf &_
+                 "   local_domain    domain_type    audit_local_domain" & vbcrlf &_
+                 "   script_name     input_file" & vbcrlf &_
+                 vbcrlf &_
+                 "Additional recognized named arguments:" & vbcrlf &_
+                 "   /config_path:<path>   The complete path to an audit.config to use" & vbcrlf &_
+                 "   /cmd_args_only        Do not use an audit.config. Only use named arguments" & vbcrlf &_
+                 vbcrlf &_
+                 "Recognized unnamed arguments:" & vbcrlf &_
+                 "   hostname   (First argument )" & vbcrlf &_
+                 "   username   (Second argument)" & vbcrlf &_
+                 "   password   (Third argument )"
+    Wscript.Quit(0)
+End Sub
