@@ -70,7 +70,7 @@ $menue_array = array(
                     "image"=>"images/security.png",
                     "class"=>"menuparent",
                     "childs"=>array("10"=>array("name"=>"All", "link"=>"system.php?pc=$pc&amp;view=security&amp;category=", "image"=>"images/statistics.png", "title"=>"",),
-                                    "20"=>array("name"=>"Firewall", "link"=>"system.php?pc=$pc&amp;view=security&amp;category=firewall_xpsp2,firewall_other", "image"=>"images/firewall.png", "title"=>"",),
+                                    "20"=>array("name"=>"Firewall", "link"=>"system.php?pc=$pc&amp;view=security&amp;category=win_firewall,firewall_other", "image"=>"images/firewall.png", "title"=>"",),
                                     "30"=>array("name"=>"Antivirus", "link"=>"system.php?pc=$pc&amp;view=security&amp;category=antivirus_xp,antivirus_other", "image"=>"images/antivirus.png", "title"=>"",),
                                     "40"=>array("name"=>"Automatic Updating", "link"=>"system.php?pc=$pc&amp;view=security&amp;category=auto_updating", "image"=>"images/scsi.png", "title"=>"",),
                                     "50"=>array("name"=>"Portscan", "link"=>"system.php?pc=$pc&amp;view=security&amp;category=nmap", "image"=>"images/nmap.png", "title"=>"",),
