@@ -338,6 +338,7 @@ Arguments:	None
 Returns: 	None
 Change Log:
 	20/08/2008			New function	[Nick Brown]
+	12/10/2009			Add missing GET var for ssl	[Chad Sikorra]
 **********************************************************************************************************/
 function TestLdapConnection()
 {
@@ -346,6 +347,8 @@ function TestLdapConnection()
 	var ldap_params = '&ldap_connection_server=' + document.getElementById("ldap_connection_server").value;
 	ldap_params += '&ldap_connection_user=' + document.getElementById("ldap_connection_user").value;
 	ldap_params += '&ldap_connection_password=' + document.getElementById("ldap_connection_password").value;
+	var use_ssl_value = document.getElementById("ldap_connection_use_ssl").checked ? "1" : "0";
+	ldap_params += '&ldap_connection_use_ssl=' + use_ssl_value;
 	LdapTest.send('admin_config_data.php?sub=f2' + ldap_params);
 }
 
