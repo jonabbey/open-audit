@@ -20,6 +20,9 @@ Change Control:
 	
 	[Nick Brown]	24/04/2009
 	Added utf8_encode() to LDAP search filter strings
+
+	[Chad Sikorra]	14/10/2009
+	Format various date/time fields to be readable. Added FormatWindowsTimestamp and FormatAdObjectTime.
 	
 **********************************************************************************************************/
 require_once "include.php";
@@ -156,10 +159,15 @@ function FormatLdapValue(&$name, &$value)
 {
 	$known_binary_fields = Array("ciscoecsbuumlocationobjectid","msexchmailboxsecuritydescriptor","msexchrecordedname",
 		"sidhistory","userparameters","logonhours","replicationsignature");
-	if (preg_match("/(".implode("|",$known_binary_fields).")/i", $name)) {return "[Binary Data]";}
+	$win_ts_fields = Array('lastlogon','lastlogoff','pwdlast','badpasswordtime','lastlogontimestamp','pwdlastset');
+	if (preg_grep("/^$name$/",$known_binary_fields)) {return "[Binary Data]";}
 	if (preg_match("/guid$/i", $name)) {return formatGUID($value[0]);}
 	if (preg_match("/sid$/i", $name)) {return ConvertBinarySidToSddl($value[0]);}
 	if (count($value)>1) {return "<ul><li>".implode("</li><li>",$value)."</li></ul>";}
+	// Per MSDN, if accountexpires equals 9223372036854775807 or 0, it never expires 
+	if ($name=='accountexpires' && ($value[0]==0 || $value[0]==9223372036854775807)){return "Never Expires";}
+	if (preg_grep("/^$name$/",$win_ts_fields)) {return FormatWindowsTimestamp($value[0]);}
+	if ($name=='whenchanged' || $name=='whencreated') {return FormatAdObjectTime($value[0]);}
 	return $value[0];
 }
 
@@ -203,4 +211,47 @@ function GetLdapConnection()
 	
 	return $ldap_info;
 }
+
+/**********************************************************************************************************
+Function Name:
+	FormatWindowsTimestamp
+Description:
+	Convert an Windows timestamp to a Unix timestamp, format it, and return a readable date
+	Method gleaned from a post at: http://php.net/manual/en/function.ldap-get-entries.php
+Arguments:
+	$win_ts	[IN]	[INTEGER]		Windows timestamp - nanoseconds since January 1st, 1601.
+Returns:
+	A readable date formatted by date()		[String]
+Change Log:
+	14/10/2009			New function	[Chad Sikorra]
+**********************************************************************************************************/
+function FormatWindowsTimestamp($win_ts)
+{
+	if($win_ts==0){return "Unknown";}
+	$win_secs = substr($win_ts,0,strlen($win_ts)-7); // divide by 10,000,000 to get seconds
+	$ts       = ($win_secs - 11644473600);           // 1.1.1601 -> 1.1.1970 : difference in seconds
+
+	return date("D M j Y, g:i:s A", $ts);
+}
+
+/**********************************************************************************************************
+Function Name:
+	FormatAdObjectTime
+Description:
+	Format the time for an AD object creation/modification time property
+	It is in the format of: YYYYMMDDHHIISS.TZ (ISO 8601 Format)
+Arguments:
+	$ts	[IN]	[STRING]		Time for the AD object, in the above format
+Returns:
+	A readable date formatted by date()		[String]
+Change Log:
+	14/10/2009			New function	[Chad Sikorra]
+**********************************************************************************************************/
+function FormatAdObjectTime($ts)
+{
+	$time = gmmktime(substr($ts,8,2),substr($ts,10,2),substr($ts,12,2),substr($ts,4,2),substr($ts,6,2),substr($ts,0,4));
+	return date("D M j Y, g:i:s A", $time);
+}
+
+?>
 ?>

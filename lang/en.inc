@@ -494,7 +494,7 @@ $GLOBALS["lang"]["Windows Reported"]="Windows Reported";
 
 $GLOBALS["lang"]["description"]="Description";
 $GLOBALS["lang"]["Discard Search"]="Discard Search";
-$GLOBALS["lang"]["accountexpires"]="Account Expiress";	
+$GLOBALS["lang"]["accountexpires"]="Account Expires";	
 $GLOBALS["lang"]["streetaddress"]="Street";	
 $GLOBALS["lang"]["badpasswordtime"]="Bad Password Time";	
 $GLOBALS["lang"]["badpwdcount"]="Bad Password Count";	
