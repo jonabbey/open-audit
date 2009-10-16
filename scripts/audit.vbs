@@ -2367,7 +2367,9 @@ Next
 '''''''''''''''''
 '  AV Settings  '
 '''''''''''''''''
-if ((SystemBuildNumber = "2600" AND CInt(ServicePack) > 1) OR (SystemBuildNumber = "6000")) then
+
+' Skipping if audited system is not WinXp SP2+, Vista, W2k8 or Seven
+if ((SystemBuildNumber = "2600" AND CInt(ServicePack) > 1) OR (CInt(SystemBuildNumber) >= 6000)) then
   comment = "AV - Security Center Settings"
   Echo(comment)
   Set objWMIService_AV = GetObject("winmgmts:\\" & strComputer & "\root\SecurityCenter")
@@ -2924,7 +2926,9 @@ end if
 '''''''''''''''''''''''''''
 'Windows Firewall Settings '
 '''''''''''''''''''''''''''
-if ((SystemBuildNumber = "2600" AND CInt(ServicePack) > 1) OR (SystemBuildNumber = "3790" AND CInt(ServicePack) > 0) OR (SystemBuildNumber = "6000")) then
+
+' Skipping if audited system is not WinXp SP2+, W2k3 SP1+, Vista, W2k8 or Seven
+if ((SystemBuildNumber = "2600" AND CInt(ServicePack) > 1) OR (SystemBuildNumber = "3790" AND CInt(ServicePack) > 0) OR (CInt(SystemBuildNumber) >= 6000)) then
   comment = "Windows Firewall Settings"
   Echo(comment)
   On Error Resume Next
@@ -3946,7 +3950,9 @@ End If
 '''''''''''''''''''''''''''
 'ODBC Connections '
 '''''''''''''''''''''''''''
-if ((ServicePack = "2" AND SystemBuildNumber = "2600") OR (SystemBuildNumber = "3790" AND ServicePack = "1" OR ServicePack = "2") OR (SystemBuildNumber = "6000")) then
+
+' Skipping if audited system is not WinXp, W2k3, Vista, W2k8 or Seven
+if ((SystemBuildNumber = "2600") OR (SystemBuildNumber = "3790") OR (CInt(SystemBuildNumber) >= 6000)) then
   comment = "ODBC Connections"
   Echo(comment)
   On Error Resume Next
