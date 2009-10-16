@@ -159,7 +159,7 @@ function FormatLdapValue(&$name, &$value)
 {
 	$known_binary_fields = Array("ciscoecsbuumlocationobjectid","msexchmailboxsecuritydescriptor","msexchrecordedname",
 		"sidhistory","userparameters","logonhours","replicationsignature");
-	$win_ts_fields = Array('lastlogon','lastlogoff','pwdlast','badpasswordtime','lastlogontimestamp','pwdlastset');
+	$win_ts_fields = Array('accountexpires','lastlogon','lastlogoff','pwdlast','badpasswordtime','lastlogontimestamp','pwdlastset');
 	if (preg_grep("/^$name$/",$known_binary_fields)) {return "[Binary Data]";}
 	if (preg_match("/guid$/i", $name)) {return formatGUID($value[0]);}
 	if (preg_match("/sid$/i", $name)) {return ConvertBinarySidToSddl($value[0]);}
