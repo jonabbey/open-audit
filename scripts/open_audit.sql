@@ -1002,6 +1002,22 @@ CREATE TABLE `shares` (
   KEY `id2` (`shares_timestamp`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
+DROP TABLE IF EXISTS `smtp_connection`;
+CREATE TABLE `smtp_connection` (
+  `smtp_connection_id` int(10) unsigned NOT NULL auto_increment,
+  `smtp_connection_from` varchar(45) NOT NULL default '',
+  `smtp_connection_server` varchar(255) NOT NULL default '',
+  `smtp_connection_port` int(10) unsigned NOT NULL,
+  `smtp_connection_auth` int(10) unsigned NOT NULL,
+  `smtp_connection_use_ssl` int(10) unsigned NOT NULL,
+  `smtp_connection_start_tls` int(10) unsigned NOT NULL,
+  `smtp_connection_security` varchar(45) NOT NULL default '',
+  `smtp_connection_user` varbinary(255) NOT NULL default '',
+  `smtp_connection_password` varbinary(255) NOT NULL default '',
+  `smtp_connection_realm` varchar(255) NOT NULL default '',
+  PRIMARY KEY  (`smtp_connection_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
 DROP TABLE IF EXISTS `software`;
 CREATE TABLE `software` (
   `software_id` int(10) unsigned NOT NULL auto_increment,
@@ -1340,7 +1356,7 @@ CREATE TABLE `video` (
   KEY `id2` (`video_timestamp`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
-INSERT INTO config (config_name, config_value) VALUES ('version','09.10.05');
+INSERT INTO config (config_name, config_value) VALUES ('version','09.11.15');
 
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 

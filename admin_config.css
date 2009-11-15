@@ -26,10 +26,10 @@
 #npb_popupmenu_div a:hover{
 	background-color: #F0F0F0;
 }
- 
+
  /* Pad the navigation list */
 ul.npb_tab_nav{
-  font-size:80%;
+	font-size:80%;
 	margin: 0px;
 	padding:	2px 10px;
 }
@@ -47,8 +47,8 @@ ul.npb_tab_nav li{
 	font-weight:	bold;
 }
 
-/* Hide the "Security", "Homepage" and "LDAP" pages (DIVs) initially */
-#npb_config_security_div, #npb_config_homepage_div, #npb_config_ldap_div {
+/* Hide the "Security", "Homepage", and Server Connection pages (DIVs) initially */
+#npb_config_security_div, #npb_config_homepage_div, #npb_config_connections_div {
 	display:	none;
 }
 
@@ -73,40 +73,45 @@ div.npb_config_col {
 	margin: 0 0 0 15px;
 }
 
-/* layout the LDAP connections DIV */
-#npb_ldap_connections_div {
+/* layout the LDAP/SMTP DIV */
+#npb_ldap_connections_div, #npb_smtp_connection_div {
 	margin:	10px;
 	padding:	5px;
 	font-size: 85%;
 }
 
-/* layout the LDAP connections & LDAP paths configuration DIVs */
-#npb_ldap_connection_config_div, #npb_ldap_path_config_div {
+/* layout the LDAP connections, LDAP paths & Server configuration DIVs */
+.npb-connection-config {
 	font:	normal 80% verdana, tahoma, arial, Sans;
 	padding: 10px;
 	display:	none;
 }
 
-/* size and pad buttons on LDAP config page */
-#npb_config_ldap_div  button {
+/* No extra padding between the test div*/
+#npb_connection_test_div {
+	margin: -20px 0px 0px 0px;
+}
+
+/* size and pad buttons on the Connections config page */
+#npb_config_connections_div  button, #npb_choose_email_div button {
 	font:	normal 80% verdana, tahoma, arial, Sans;
 	margin: 0px 0px 0px 10px;
 }
 
 /* size buttons on LDAP connection & page config DIV */
-#npb_ldap_connection_config_div button, #npb_ldap_path_config_div button {
+.npb-connection-config button {
 	font:	normal 90% verdana, tahoma, arial, Sans;
 }
 
 /* define how the fieldset borders look */
-#npb_ldap_connection_config_div fieldset, #npb_ldap_path_config_div fieldset, #npb_config_security_div fieldset{
+.npb-connection-config fieldset, #npb_config_security_div fieldset {
 	margin:	5px;
 	width:	95%;
 	border:	1px solid #cccccc;
 }
 
 /* float labels left and right-align them for these forms */
-#npb_ldap_connection_config_div label, #npb_ldap_path_config_div label, #npb_config_general_div label{
+.npb-connection-config label, #npb_config_general_div label, #npb_smtp_test {
 	display: block;
 	float: left; 
 	width: 150px; 
@@ -136,14 +141,24 @@ div.npb_config_col {
 }
 
 /* Layout for form input controls */
-#npb_ldap_connection_config_div input, #npb_ldap_path_config_div  input, #npb_config_general_div input , #npb_config_security_div input, #npb_config_homepage_div  input{
+.npb-connection-config input, #npb_config_general_div input,
+#npb_config_security_div input, #npb_config_homepage_div  input {
+	margin:	0 0 10px 10px;
+	font:	normal 90% verdana, tahoma, arial, Sans;
+	vertical-align: middle;
+}
+
+/* Layout for form select control for smtp */
+.npb-connection-config select {
 	margin:	0 0 10px 10px;
 	font:	normal 90% verdana, tahoma, arial, Sans;
 	vertical-align: middle;
 }
 
 /* Size checkbox controls to make them align better with accomapnying label */
-#npb_ldap_path_config_div  input[type="checkbox"], #npb_config_security_div  input[type="checkbox"],#npb_config_homepage_div  input[type="checkbox"]{
+.npb-connection-config  input[type="checkbox"], #npb_config_security_div  input[type="checkbox"],
+#npb_config_homepage_div  input[type="checkbox"],
+#npb_choose_email_div  input[type="radio"]{
 	margin:	4px 0 10px 10px;
 }
 
@@ -157,8 +172,8 @@ div.npb_section_content form {
 	display: inline;
 }
 
-/* layout for LDAP connection images */
-#npb_ldap_connections_div img {
+/* layout for LDAP/SMTP images */
+#npb_ldap_connections_div img, #npb_smtp_connection_div img {
 	width: 24px;
 	height: 24px;
 	vertical-align: middle;
@@ -166,8 +181,8 @@ div.npb_section_content form {
 	margin:	0px 5px 0px 0px;
 }
 
-/* layout for the LDAP connections table */
-#npb_ldap_connections_div table {
+/* layout for the LDAP/SMTP tables */
+#npb_ldap_connections_div table, #npb_smtp_connection_div table {
 	border-spacing: 0px;
 	border-collapse: collapse;
 	width:	100%;
@@ -175,13 +190,13 @@ div.npb_section_content form {
 }
 
 /* Appply a bottom-border line between table rows */
-#npb_ldap_connections_div td{
+#npb_ldap_connections_div td, #npb_smtp_connection_div td {
 	border-bottom:	2px solid #F4F4F4;
 	padding: 5px;
 }
 
-/* Apply formatting to the LDAP connections table header */
-#npb_ldap_connections_div th{
+/* Apply formatting to the LDAP/SMTP table header */
+#npb_ldap_connections_div th, #npb_smtp_connection_div th {
 	text-align: left;
 	padding: 5px;
 	background-color: #F4F4F4;
@@ -194,3 +209,8 @@ div.npb_section_content form {
 	padding: 0px;
 }
 
+/* Format SMTP data cells so they align with each other */
+.npb-smtp-data { text-align: center; }
+
+/* Align the button for choosing LDAP/SMTP */
+.npb-label-div { margin-left: 75px; float: left; }

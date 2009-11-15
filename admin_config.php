@@ -20,6 +20,7 @@ Recent Changes:
 	[Nick Brown]	29/04/2009	Moved <link>s and <script>s into "include.php" <head>. XHTML markup is now valid. Added 
 	handling of cases where LDAP extension is not available.
 	[Nick Brown]	01/05/2009	Added checkbox to enable LDAP over SSL for a connection.
+	[Chad Sikorra]	15/11/2009	Added SMTP configuration/support on the same tab where LDAP connections are configured
 
 **********************************************************************************************************/
 
@@ -230,8 +231,7 @@ include "include_config.php";
 					<li><a id='npb_config_general_tab' href='javascript://' onclick='SelectNavTab(this);'>General</a></li>
 					<li><a id='npb_config_security_tab' href='javascript://' onclick='SelectNavTab(this);'>Security</a></li>
 					<li><a id='npb_config_homepage_tab' href='javascript://' onclick='SelectNavTab(this);'>Homepage</a></li>
-					<li><a id='npb_config_ldap_tab' href='javascript://' onclick='SelectNavTab(this);
-					<?php	if ($TheApp->LdapEnabled) {echo "ListLdapConnections();";}?>'>LDAP</a></li>
+					<li><a id='npb_config_connections_tab' href='javascript://' onclick='SelectNavTab(this);ListLdapConnections();ListSmtpConnections();'>LDAP/SMTP</a></li>
 				</ul>
 			</div>
 			
@@ -389,35 +389,54 @@ function CheckedIfYes(&$var)
 
 ?>
 
-<!--   DIV - LDAP -->
+<!--   DIV - Connections -->
 
-			<div id='npb_config_ldap_div' class='npb_section_data'>
-				<div id='npb_ldap_connections_div'>
-<?php	
-if ($TheApp->LdapEnabled) {echo "</div><button onclick=\"NewLdapConnection()\">New Connection</button>";}
-else {echo "<p>You do not have the LDAP extension enabled in your PHP configuration. Please refer to your PHP documentation.<p></div>";}  
-?>				
-				<!-- LDAP Connection Config -->
-				<div id='npb_ldap_connection_config_div'>
-					<fieldset><legend>LDAP Connection Details</legend>
-						<input type="hidden" id="ldap_connection_id" />
-						<label for="ldap_connection_server">LDAP Server Name:</label>
-						<input type='text' id='ldap_connection_server' size='50'/><br />
-						<label for="ldap_connection_user">LDAP User Name:</label>
-						<input type='text' id='ldap_connection_user' size='20'/><br />
-						<label for="ldap_connection_password">LDAP Password:</label>
-						<input type='password' id='ldap_connection_password' size='20'/><br />
-						<label for="ldap_connection_use_ssl">Use secure connection:</label>
-						<input type='checkbox' id='ldap_connection_use_ssl' onclick='CheckOpenSslStatus();'/>&nbsp;&nbsp;(requires independent configuration of OpenSSL)<br />
-						<button type="button" onclick="TestLdapConnection();">Test Connection</button>
-						<button type="button" onclick="SaveLdapConnection();">Save</button>
-						<button type="button" onclick="document.getElementById('npb_ldap_connection_config_div').style.display = 'none';">Cancel</button>
+			<div id='npb_config_connections_div' class='npb_section_data'>
+
+				<div id='npb_ldap_connections_div'></div>
+				<div id='npb_smtp_connection_div'></div>
+
+				<div><button onclick="NewServerConnection()">New Connection</button></div>
+
+				<!-- Server Connection Config -->
+				<div id='npb_choose_server_div' class='npb-connection-config'>
+					<fieldset><legend>Server Connection Details</legend>
+						<label for="server_connection_type">Connection Type</label>
+						<select id='server_connection_type'/>
+							<option value="ldap">LDAP</option>
+							<option value="smtp">SMTP</option>
+						</select><br />
+						<div class="npb-label-div"><button type="button" onclick="CloseConnectionDivs();">Cancel</button></div>
+						<button type="button" onclick="ChooseServerConnection();">Continue</button>
 					</fieldset>	
-					<fieldset><legend>Connection Results</legend><p id="ldap_connection_results"></p></fieldset>
+				</div>
+
+				<!-- LDAP Connection Config -->
+				<div id='npb_ldap_connection_config_div' class='npb-connection-config' >
+					<fieldset><legend>LDAP Connection Details</legend>
+						<div id="npb_ldap_disabled">
+							<p><button type="button" onclick="CloseConnectionDivs();">Ok</button>
+							You do not have the LDAP extension enabled in your PHP configuration. Please refer to your PHP documentation.</p>
+						</div>
+						<div id="npb_ldap_enabled">
+							<input type="hidden" id="ldap_connection_id" />
+							<label for="ldap_connection_server">LDAP Server Name:</label>
+							<input type='text' id='ldap_connection_server' size='50'/><br />
+							<label for="ldap_connection_user">LDAP User Name:</label>
+							<input type='text' id='ldap_connection_user' size='20'/><br />
+							<label for="ldap_connection_password">LDAP Password:</label>
+							<input type='password' id='ldap_connection_password' size='20'/><br />
+							<label for="ldap_connection_use_ssl">Use secure connection:</label>
+							<input type='checkbox' id='ldap_connection_use_ssl' onclick='CheckOpenSslStatus(this);'/>&nbsp;&nbsp;(requires independent configuration of OpenSSL)<br />
+							<button type="button" onclick="TestLdapConnection();">Test Connection</button>
+							<button type="button" onclick="SaveLdapConnection();">Save</button>
+							<button type="button" onclick="CloseConnectionDivs();">Cancel</button>
+						</div>
+					</fieldset>	
 				</div>
 
 				<!-- LDAP Path Config -->
-				<div id='npb_ldap_path_config_div'>
+				<div id='npb_ldap_path_config_div' class='npb-connection-config'>
 					<fieldset><legend>LDAP Path</legend>
 						<input type="hidden" id="ldap_path_connection_id"/>
 						<input type="hidden" id="ldap_path_id"/>
@@ -426,19 +445,68 @@ else {echo "<p>You do not have the LDAP extension enabled in your PHP configurat
 						<label for="ldap_path_audit">Include in audit:</label>
 						<input type="checkbox" id='ldap_path_audit'/><br />
 						<button type="button" onclick="SaveLdapPath();">Save</button>
-						<button type="button" onclick="document.getElementById('npb_ldap_path_config_div').style.display = 'none';">Cancel</button>
+						<button type="button" onclick="CloseConnectionDivs();">Cancel</button>
 					</fieldset>	
 				</div>
-				
+
+				<!-- SMTP Connection Config -->
+				<div id='npb_smtp_connection_config_div' class='npb-connection-config'>
+					<fieldset><legend>SMTP Connection Details</legend>
+						<div id="npb_smtp_exists">
+							<p><button type="button" onclick="CloseConnectionDivs();">Ok</button>
+							A SMTP connection already exists. Edit the existing one or delete it.</p>
+						</div>
+						<div id="npb_smtp_connection_form">
+							<input type="hidden" id="smtp_connection_id" />
+							<label for="smtp_connection_server">Server Name/IP:</label>
+							<input type="text" size="20" value="" id="smtp_connection_server"/> <br/>
+							<label for="smtp_connection_port">Port:</label>
+							<input type="text" size="5" value="" id="smtp_connection_port"/> <br/>
+							<label for="smtp_connection_from">From Address:</label>
+							<input type="text" size="20" value="" id="smtp_connection_from"/> <br/>
+							<label for="smtp_connection_use_ssl">Use Secure Connection:</label>
+							<input type='checkbox' id='smtp_connection_use_ssl' onclick='CheckOpenSslStatus(this);'/>&nbsp;&nbsp;(requires independent configuration of OpenSSL)<br />
+							<label for="smtp_connection_auth">Enable SMTP Authentication:</label>
+							<input type="checkbox" onclick="ToggleSmtpAuth(this)" size="20" id="smtp_connection_auth"/><br/>
+							<label for="smtp_connection_start_tls">Use START TLS:</label>
+							<input type='checkbox' id='smtp_connection_start_tls' onclick='CheckOpenSslStatus(this);'/>&nbsp;&nbsp;(requires independent configuration of OpenSSL)<br />
+							<label for="smtp_connection_security">Authentication Type:</label>
+							<select id='smtp_connection_security'/>
+								<option value="">Auto Detect</option>
+								<option value="PLAIN">PLAIN</option>
+								<option value="CRAM-MD5">CRAM-MD5</option>
+								<option value="DIGEST-MD5">DIGEST-MD5</option>
+								<option value="LOGIN">LOGIN</option>
+								<option value="NTLM">NTLM</option>
+							</select><br />
+							<label for="smtp_connection_user">Username:</label>
+							<input type="text" size="20" value="" id="smtp_connection_user"/> <br/>
+							<label for="smtp_connection_password">Password:</label>
+							<input type="password" size="20" value="" id="smtp_connection_password"/><br/>
+							<label for="smtp_connection_realm">Realm (Optional):</label>
+							<input type="text" size="20" value="" id="smtp_connection_realm"/><br/>
+							<label for="smtp_connection_email">Test Email:</label>
+							<input type="text" size="20" value="" id="smtp_connection_email"/><br/>
+							<button type="button" onclick="TestSmtpConnection();">Test Email</button>
+							<button type="button" onclick="SaveSmtpConnection();">Save</button>
+							<button type="button" onclick="CloseConnectionDivs();">Cancel</button>
+						</div>
+					</fieldset>
+				</div>
+
+				<!-- Connection Test Results DIV -->
+				<div id="npb_connection_test_div" class='npb-connection-config'>
+					<fieldset><legend>Connection Results</legend><p id="server_connection_results"></p></fieldset>
+				</div>
 			</div>
-		
-		</div>
-	</div>
+	<!-- End Connection Config DIV -->
+
+</div>
 </td>
 
 <?php
 include "include_right_column.php";
 ?>
+
 </body>
 </html>
-

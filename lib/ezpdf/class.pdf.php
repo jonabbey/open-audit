@@ -1915,8 +1915,10 @@ function stream($options=''){
   }
   header("Content-type: application/pdf");
   header("Content-Length: ".strlen(ltrim($tmp)));
-  $fileName = (isset($options['Content-Disposition'])?$options['Content-Disposition']:'file.pdf');
-  header("Content-Disposition: inline; filename=".$fileName);
+  // Added ability to set disposition/filename independently so filenames works better.
+  $fileName = (isset($options['filename'])?$options['filename']:'file.pdf');
+  $disposition = (isset($options['disposition'])?$options['disposition']:'inline');
+  header("Content-Disposition: ".$disposition."; filename=\"".$fileName."\"");
   if (isset($options['Accept-Ranges']) && $options['Accept-Ranges']==1){
     header("Accept-Ranges: ".strlen(ltrim($tmp))); 
   }

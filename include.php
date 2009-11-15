@@ -83,6 +83,19 @@ if ($use_pass != "n") {
 		<script type='text/javascript' src="javascript/PopupMenu.js"></script>
 		<script type='text/javascript' src="javascript/admin_config.js"></script>
 		<script type='text/javascript' src="javascript/include.js"></script>
+
+    <?php 
+      // Used to only included pieces of jquery/jquery ui that the page needs.
+      if(isset($JQUERY_UI)){
+        echo '<script type="text/javascript" src="javascript/jquery/jquery.js"></script>';
+        echo '<link media="screen" rel="stylesheet" type="text/css" href="jquery-ui-theme.css" />';
+        foreach($JQUERY_UI as $script) {
+          echo '<script type="text/javascript" src="javascript/jquery/jquery-ui-'.$script.'.js"></script>';
+          echo '<link media="screen" rel="stylesheet" type="text/css" href="jquery-ui-'.$script.'.css" />';
+        }
+      }
+    ?>
+
   </head>
   <body onload="IEHoverPseudo();">
 <?php

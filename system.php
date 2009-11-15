@@ -1,12 +1,5 @@
 <?php
-/*
-function microtime_float()
-{
-    list($usec, $sec) = explode(" ", microtime());
-    return ((float)$usec + (float)$sec);
-}
-*/
-
+$JQUERY_UI = array('core','dialog','tooltip');
 include_once("include.php");
 $time_start = microtime_float();
 
@@ -474,7 +467,7 @@ while (list ($viewname, $viewdef_array) = @each ($query_array["views"])) {
     if(isset($_REQUEST["monitor"])){
         echo "<input type=\"hidden\" name=\"monitor\" value=\"".$_REQUEST["monitor"]."\" />\n";
     }
-    echo "<br /><a href=\"#\" onclick=\"document.forms['form_export'].submit();\">".__("Export this Page to PDF")."</a>\n";
+    echo "<br /><a href=\"#\" class=\"get-view-pdf\">".__("Export this Page to PDF")."</a>\n";
     echo "</p></form>\n";
 
 
@@ -484,6 +477,7 @@ while (list ($viewname, $viewdef_array) = @each ($query_array["views"])) {
 
  echo "</td>\n";
 include "include_right_column.php";
+include "include_export_modal.php"; 
 echo "</body>\n";
 echo "</html>\n";
 

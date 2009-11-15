@@ -630,6 +630,25 @@ upgrade ($version,"09.10.05",$sql);
 
 // ************************************************************************************************
 
+// *************  Version 09.11.15 *******************************************************************
+$sql = "CREATE TABLE `smtp_connection` (
+          `smtp_connection_id` int(10) unsigned NOT NULL auto_increment,
+          `smtp_connection_from` varchar(45) NOT NULL default '',
+          `smtp_connection_server` varchar(255) NOT NULL default '',
+          `smtp_connection_port` int(10) unsigned NOT NULL,
+          `smtp_connection_auth` int(10) unsigned NOT NULL,
+          `smtp_connection_use_ssl` int(10) unsigned NOT NULL,
+          `smtp_connection_start_tls` int(10) unsigned NOT NULL,
+          `smtp_connection_security` varchar(45) NOT NULL default '',
+          `smtp_connection_user` varbinary(255) NOT NULL default '',
+          `smtp_connection_password` varbinary(255) NOT NULL default '',
+          `smtp_connection_realm` varchar(255) NOT NULL default '',
+          PRIMARY KEY  (`smtp_connection_id`)
+        ) ENGINE=MyISAM DEFAULT CHARSET=latin1;";
+upgrade ($version,"09.11.15", $sql);
+
+// ************************************************************************************************
+
 set_time_limit (30);
 
 ?>

@@ -1160,4 +1160,53 @@ function base36_convert($numstring)
     return $result;
 }
 
+/**********************************************************************************************************
+Function Name:
+	GetSmtpConnectionFromDb
+Description:
+	Get SMTP connection from db and return as an array
+Arguments:
+Returns:
+	SMTP Connection				[ARRAY]  
+Change Log:
+	14/10/2009			New function	[Chad Sikorra]
+**********************************************************************************************************/
+function GetSmtpConnectionFromDb(){
+  global $mysql_server,$mysql_user,$mysql_password,$mysql_database;
+
+  $db = mysql_connect($mysql_server,$mysql_user,$mysql_password);
+  mysql_select_db($mysql_database,$db);
+
+  $aes_key = GetAesKey();
+
+  $sql = "SELECT AES_DECRYPT(smtp_connection_user,'$aes_key') AS smtp_user,
+                 AES_DECRYPT(smtp_connection_password,'$aes_key') AS smtp_password,
+                 smtp_connection_use_ssl, smtp_connection_server, smtp_connection_start_tls,
+                 smtp_connection_security, smtp_connection_from, smtp_connection_auth,
+                 smtp_connection_port, smtp_connection_realm  
+          FROM smtp_connection LIMIT 1";
+
+  $result = mysql_query($sql, $db);
+  if ($myrow = mysql_fetch_array($result)){
+    $smtp = array();
+
+    $smtp["host"]           = $myrow["smtp_connection_server"];
+    $smtp["port"]           = $myrow["smtp_connection_port"];
+    $smtp["user"]           = $myrow["smtp_user"];
+    $smtp["password"]       = $myrow["smtp_password"];
+    $smtp["from"]           = $myrow["smtp_connection_from"];
+    $smtp["use_ssl"]        = $myrow["smtp_connection_use_ssl"];
+    $smtp["realm"]          = $myrow["smtp_connection_realm"];
+    $smtp["security"]       = $myrow["smtp_connection_security"];
+    $smtp["start_tls"]      = $myrow["smtp_connection_start_tls"];
+    $smtp["authentication"] = $myrow["smtp_connection_auth"];
+  }
+  else {
+    $smtp = null;
+  }
+  mysql_close();
+
+  return $smtp;
+}
+
 ?>

@@ -232,9 +232,11 @@ function XmlRequestor(url)
 		[String]	The value contained within the XML tag
 	Change Log:
 		20/08/2008			New function	[Nick Brown]
+		14/11/2009			Return empty if there is no child	[Chad Sikorra]
 	******************************************************************************************************/
 	this.GetValue = function(TagName)
 	{
+		if(this.GetNode(TagName).firstChild==null){return "";}
 		return this.GetNode(TagName).firstChild.nodeValue;
 	}
 

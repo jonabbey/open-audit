@@ -15,6 +15,7 @@ Recent Changes:
 	access to the global $TheApp object
 	[Nick Brown]	19/08/2009	New function GetLdapSchemaType(). Added support for Open LDAP in 
 	TestLdapConnectionHtml()
+	[Chad Sikorra]	15/11/2009	Added functions for SMTP connection
 
 **********************************************************************************************************/
 set_time_limit(60);
@@ -47,6 +48,12 @@ switch($_GET["sub"])
 	case "f8": exit(GetLdapPathXml($db));
 	case "f9": exit(DeleteLdapPathXml($db));
 	case "f10": exit(GetOpenSslEnabled());
+	case "f11": exit(GetSmtpConnectionHtml($db));
+	case "f12": exit(TestSmtpConnectionHtml($db));
+	case "f13": exit(SaveSmtpConnectionXml($db));
+	case "f14": exit(DeleteSmtpConnectionHtml($db));
+	case "f15": exit(GetSmtpConnectionXml($db));
+	case "f16": exit(GetLdapEnabled());
 }
 
 /**********************************************************************************************************
@@ -650,6 +657,29 @@ function DeleteLdapPathXml($db)
 
 /**********************************************************************************************************
 Function Name:
+	GetLdapEnabled
+Description:	Called to determine if PHP LDAP extensions are enabled
+Arguments:	None
+Returns:		
+	[String]	XML response
+Change Log:
+	10/11/2009			New function	[Chad Sikorra]
+**********************************************************************************************************/
+function GetLdapEnabled()
+{
+	global $TheApp;
+	
+	header("Content-type: text/xml");
+	
+	$response  = "<GetLdapEnabled><result>";
+	$response .= $TheApp->LdapEnabled ? "Y" : "N";
+	$response .= "</result></GetLdapEnabled>";
+
+	return $response;
+}
+
+/**********************************************************************************************************
+Function Name:
 	GetOpenSslEnabled
 Description:
 Arguments:	None
@@ -670,4 +700,266 @@ function GetOpenSslEnabled()
 
 	return $response;
 }
+
+/**********************************************************************************************************
+Function Name:
+	GetSmtpConnectionHtml
+Description:
+	Retrieves configured SMTP connection from the DB. Displays it as an HTML table.
+Arguments:
+	$db	[IN] [Resource]	DB connection	
+Returns:		
+	[String]	HTML table of the SMTP connection
+Change Log:
+	14/10/2009			New function	[Chad Sikorra]
+**********************************************************************************************************/
+function GetSmtpConnectionHtml($db)
+{	
+	$sql  = "SELECT * FROM smtp_connection LIMIT 1";
+	$result = mysql_query($sql, $db);
+	
+	// Display results table
+	$response = "<table>";
+	$response .= "<tr><th>SMTP Connection</th><th><center>SMTP Port</center></th> <th><center>Authentication</center></th><th><center>SSL Enabled</center></th></tr>";
+	if ($myrow = mysql_fetch_array($result))
+	{
+		$auth = ($myrow['smtp_connection_port']    == 1) ? 'Yes' : 'No';
+		$ssl  = ($myrow['smtp_connection_use_ssl'] == 1) ? 'Yes' : 'No';
+		$response .= "<tr>";
+		$response .= "<td><a id='".$myrow['smtp_connection_id']."' href=\"#\" onMouseover=\"ShowMenu(event,smtp_menu);\" onMouseout=\"DelayHideMenu(event)\">";
+		$response .= "<img src=\"images/mail-forward.png\" />".$myrow['smtp_connection_server']."</a></td>";
+		$response .= "<td class=\"npb-smtp-data\">".$myrow['smtp_connection_port']."</td>";
+		$response .= "<td class=\"npb-smtp-data\">".$auth."</td>";
+		$response .= "<td class=\"npb-smtp-data\">".$ssl."</td>";
+		$response .= "</tr>";
+	}
+	else
+	{
+		$response .= "<tr>
+		<td><input type=\"hidden\" id=\"smtp_table_empty\">No SMTP connection defined.</td>
+		<td></td>
+		<td></td>
+		</tr>";
+	}
+	$response .= "</table>";
+
+	return $response;
+}
+
+/**********************************************************************************************************
+Function Name:
+	TestSmtpConnectionHtml
+Description:
+	Attenpts to send an email via SMTP - Returns progress/result as HTML
+Arguments:
+	$db	[IN] [Resource]	DB connection	
+Returns:		
+	[String] HTML string containing the connection result
+Change Log:
+	09/10/2009			New function	[Chad Sikorra]
+**********************************************************************************************************/
+function TestSmtpConnectionHtml($db)
+{	
+
+	if(!isEmailAddress($_GET["smtp_connection_email"]))
+	{
+		return "Please enter a valid email address in the 'Test Email' field";
+	}
+	if(!isEmailAddress($_GET["smtp_connection_from"]))
+	{
+		return "Please enter a valid email address for the 'From' field";
+	}
+
+	require_once("./lib/mimemessage/email_message.php");
+	require_once("./lib/mimemessage/smtp_message.php");
+	require_once("./lib/smtp/smtp.php");
+	require_once("./lib/sasl/sasl.php");
+
+	$email = new smtp_message_class;
+
+	$ssl = ($_GET["smtp_connection_use_ssl"]   == "true") ? '1' : '0';
+	$tls = ($_GET["smtp_connection_start_tls"] == "true") ? '1' : '0';
+
+	$email->smtp_host=$_GET["smtp_connection_server"];
+	$email->smtp_port=$_GET["smtp_connection_port"];
+	$email->smtp_ssl=$ssl;
+	$email->smtp_direct_delivery=0;
+	$email->smtp_debug=1;
+	$email->smtp_html_debug=1;
+	$email->timeout=5;
+
+	if ( $_GET["smtp_connection_auth"] == "true" )
+	{
+		$email->smtp_start_tls=$tls;
+		$email->authentication_mechanism=$_GET["smtp_connection_security"];
+		$email->smtp_user=$_GET["smtp_connection_user"];
+		$email->smtp_password=$_GET["smtp_connection_password"];
+		$email->smtp_realm=$_GET["smtp_connection_realm"];
+	}
+
+  preg_match("/^(.*?)@/",$_GET["smtp_connection_from"],$name);
+	$email->SetEncodedEmailHeader('From',$_GET["smtp_connection_from"],$name[1]);
+	$email->SetEncodedEmailHeader('To',$_GET["smtp_connection_email"],"");
+	$email->SetEncodedHeader('Subject','SMTP Test Message');
+
+	$message = "This is a SMTP test message from Open-AudIT.";
+	$email->AddQuotedPrintableTextPart($message);
+
+	return $email->Send();
+}
+
+/**********************************************************************************************************
+Function Name:
+	SaveSmtpConnectionXml
+Description:
+	Writes the supplied SMTP connection settings to the DB. Checks if settings are valid:
+	HTML reponse is stored in the <html> XML element
+	Result status is stored in <result> XML element
+Arguments:
+	$db	[IN] [RESOURCE]	DB resource
+Returns:
+	[String]	XML string containing the HTML response and if any settings are not valid
+Change Log:
+	10/10/2009			New function	[Chad Sikorra]
+**********************************************************************************************************/
+function SaveSmtpConnectionXml($db)
+{
+	header("Content-type: text/xml");
+
+	$auth      = ( $_GET["smtp_connection_auth"]      == "true" ) ? '1' : '0';
+	$use_ssl   = ( $_GET["smtp_connection_use_ssl"]   == "true" ) ? '1' : '0';
+	$start_tls = ( $_GET["smtp_connection_start_tls"] == "true" ) ? '1' : '0';
+
+	// Validate supplied details
+	if($auth == 1 and (empty($_GET["smtp_connection_user"]) or empty($_GET["smtp_connection_pass"])))
+	{
+		$errorlist .= "If you select authentication, you need a username and password<br />"; 
+	}
+	if(empty($_GET["smtp_connection_server"]) or empty($_GET["smtp_connection_port"]))
+	{
+		$errorlist .= "The SMTP server/port cannot be blank<br />"; 
+	}
+	if (!preg_match("/^[1-9]([0-9]+)?$/",$_GET["smtp_connection_port"]))
+	{
+		$errorlist .= "The SMTP port must be a number<br />";
+	}
+	if(!isEmailAddress($_GET["smtp_connection_from"]))
+	{
+		$errorlist .= "Please enter a valid email address for the 'From' field";
+	}
+
+	if(isset($errorlist)) return "<SaveSmtpConnection><html>$errorlist</html><result>false</result></SaveSmtpConnection>";
+
+	$aes_key = GetAesKey();
+	if (isset($_GET["smtp_connection_id"]) and strlen($_GET["smtp_connection_id"]) > 0)
+	{
+		// UPDATE query - connection already exists so modify
+		LogEvent("admin_config_data.php","SaveSmtpConnectionXml","Edit Connection: ".$_GET["smtp_connection_server"]);
+		$sql  = "UPDATE `smtp_connection` SET 
+						`smtp_connection_auth`='".$auth."',
+						`smtp_connection_port`='".$_GET["smtp_connection_port"]."',
+						`smtp_connection_server`='".$_GET["smtp_connection_server"]."',
+						`smtp_connection_user`=AES_ENCRYPT('".$_GET["smtp_connection_user"]."','".$aes_key."'),
+						`smtp_connection_password`=AES_ENCRYPT('".$_GET["smtp_connection_password"]."','".$aes_key."'),
+						`smtp_connection_realm`='".$_GET["smtp_connection_realm"]."',
+						`smtp_connection_use_ssl`='".$use_ssl."',
+						`smtp_connection_start_tls`='".$start_tls."',
+						`smtp_connection_from`='".$_GET["smtp_connection_from"]."',
+						`smtp_connection_security`='".$_GET["smtp_connection_security"]."'
+						WHERE smtp_connection_id='".$_GET["smtp_connection_id"]."'";	
+	}
+	else
+	{
+		// INSERT query - new connection
+		LogEvent("admin_config_data.php","SaveSmtpConnectionXml","New Connection: ".$_GET["smtp_connection_server"]);
+		$sql  = "INSERT INTO `smtp_connection` (
+						`smtp_connection_auth`,
+						`smtp_connection_port`,
+						`smtp_connection_server`,
+						`smtp_connection_from`,
+						`smtp_connection_security`,
+						`smtp_connection_user`,
+						`smtp_connection_password`,
+						`smtp_connection_realm`,
+						`smtp_connection_start_tls`,
+						`smtp_connection_use_ssl`)
+						VALUES (
+						'".$auth."', 
+						'".$_GET["smtp_connection_port"]."', 
+						'".$_GET["smtp_connection_server"]."', 
+						'".$_GET["smtp_connection_from"]."', 
+						'".$_GET["smtp_connection_security"]."', 
+						AES_ENCRYPT('".$_GET["smtp_connection_user"]."','".$aes_key."'),
+						AES_ENCRYPT('".$_GET["smtp_connection_password"]."','".$aes_key."'),
+						'".$_GET["smtp_connection_realm"]."','".$start_tls."','".$use_ssl."')";
+	}
+	mysql_query($sql, $db);
+	return "<SaveSmtpConnection><html></html><result>true</result></SaveSmtpConnection>";
+}
+
+/**********************************************************************************************************
+Function Name:
+	DeleteSmtpConnectionHtml
+Description:
+	Deletes the SMTP connection from the DB
+Arguments:
+	$db	[IN] [RESOURCE]	DB resource
+Returns:	None
+Change Log:
+	10/10/2009			New function	[Chad Sikorra]
+**********************************************************************************************************/
+function DeleteSmtpConnectionHtml($db)
+{
+	LogEvent("admin_config_data.php","DeleteSmtpConnectionHtml","Delete SMTP Connection: ".$_GET["smtp_connection_id"]);
+	$sql  = "DELETE FROM smtp_connection WHERE smtp_connection_id='".$_GET["smtp_connection_id"]."'";
+	mysql_query($sql, $db);
+}
+
+/**********************************************************************************************************
+Function Name:
+	GetSmtpConnectionXml
+Description:
+	Gets the SMTP connection details from the DB by $_GET["smtp_connection_id"]
+	Returns an XML string containing the info	
+Arguments:
+	$db	[IN] [RESOURCE]	DB resource
+Returns:
+	[String]	XML string containing connection details
+Change Log:
+	10/10/2009			New function	[Chad Sikorra]
+**********************************************************************************************************/
+function GetSmtpConnectionXml($db)
+{
+	header("Content-type: text/xml");
+	$aes_key = GetAesKey();
+
+	$sql = "SELECT smtp_connection_server, 
+			AES_DECRYPT(smtp_connection_user,'".$aes_key."') AS smtp_user,
+			AES_DECRYPT(smtp_connection_password,'".$aes_key."') AS smtp_password,
+			smtp_connection_use_ssl, smtp_connection_auth, smtp_connection_port,
+			smtp_connection_from, smtp_connection_start_tls, smtp_connection_security,
+			smtp_connection_realm
+		FROM smtp_connection
+		WHERE smtp_connection_id='".$_GET["smtp_connection_id"]."'";
+	$result = mysql_query($sql, $db);
+	
+	if ($myrow = mysql_fetch_array($result))
+	{
+		$response .= "<connection>";
+		$response .= "<smtp_connection_server>".$myrow['smtp_connection_server']."</smtp_connection_server>";
+		$response .= "<smtp_connection_user>".$myrow['smtp_user']."</smtp_connection_user>";
+		$response .= "<smtp_connection_password>".$myrow['smtp_password']."</smtp_connection_password>";
+		$response .= "<smtp_connection_realm>".$myrow['smtp_connection_realm']."</smtp_connection_realm>";
+		$response .= "<smtp_connection_use_ssl>".$myrow['smtp_connection_use_ssl']."</smtp_connection_use_ssl>";
+		$response .= "<smtp_connection_start_tls>".$myrow['smtp_connection_start_tls']."</smtp_connection_start_tls>";
+		$response .= "<smtp_connection_security>".$myrow['smtp_connection_security']."</smtp_connection_security>";
+		$response .= "<smtp_connection_port>".$myrow['smtp_connection_port']."</smtp_connection_port>";
+		$response .= "<smtp_connection_auth>".$myrow['smtp_connection_auth']."</smtp_connection_auth>";
+		$response .= "<smtp_connection_from>".$myrow['smtp_connection_from']."</smtp_connection_from>";
+		$response .= "</connection>";
+	}
+
+	return $response;
+}
+
 ?>

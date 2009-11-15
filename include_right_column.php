@@ -54,12 +54,16 @@ echo "<a href=\"./show_license.php\">".__("License")."</a></small></small></smal
             $i++;
             echo "<tr>\n";
             echo "<td align=\"left\" style=\"width:20px;\">\n";
-             echo "<img src=\"".$topic_item["image"]."\" width=\"16\" height=\"16\" style=\"border:0px;\" alt=\"\" />\n";
+            echo "<img src=\"".$topic_item["image"]."\" width=\"16\" height=\"16\" style=\"border:0px;\" alt=\"\" />\n";
             echo "</td>\n";
 
             echo "<td>\n";
-             echo "<a href=\"".$topic_item["link"]."\">";
-             echo __($topic_item["name"]);
+            echo "<a href=\"".$topic_item["link"]."\"";
+            if (isset($topic_item["css-class"])) {
+              echo " class=\"".$topic_item["css-class"]."\"";
+            }
+            echo "/>\n";
+            echo __($topic_item["name"]);
             echo "</a>\n";
             echo "</td>\n";
 

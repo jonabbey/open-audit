@@ -1,12 +1,6 @@
 <?php
-/*
-function microtime_float()
-{
-    list($usec, $sec) = explode(" ", microtime());
-    return ((float)$usec + (float)$sec);
-}
-*/
 
+$JQUERY_UI = array('core','dialog','tooltip');
 include_once("include.php");
 $time_start = microtime_float();
 // set an initial 4 min extra timeout
@@ -466,7 +460,7 @@ if ($myrow = mysql_fetch_array($result)){
      if(isset($_REQUEST["monitor"])){
          echo "<input type=\"hidden\" name=\"monitor\" value=\"".$_REQUEST["monitor"]."\" />\n";
      }
-     echo "<br /><a href=\"http://www.openoffice.org/\"<img src=\"images/x-office-spreadsheet.png\" alt=\"".__("CSV Spreadsheet")."\" title=\"".__("Click Here for the latest version of Open Office")."\" style=\"border:0px;\" width=\"28\" height=\"28\" /></a><a href=\"#\" onclick=\"document.forms['form_export'].submit();\"> ".__("Export this List to CSV")."</a>\n";
+     echo "<br /><a href=\"http://www.openoffice.org/\"<img src=\"images/x-office-spreadsheet.png\" alt=\"".__("CSV Spreadsheet")."\" title=\"".__("Click Here for the latest version of Open Office")."\" style=\"border:0px;\" width=\"28\" height=\"28\" /></a><a href=\"#\" class=\"get-view-csv\"> ".__("Export this List to CSV")."</a>\n";
     echo "</p></form>\n";
             echo "<td>\n";
     // Export to DIA
@@ -524,6 +518,7 @@ echo "</div>\n";
 echo __("This Page was generated in")." ".number_format((microtime_float()-$time_start),2)." ". __("Seconds").".";
 
 echo "</td>\n";
+include "include_export_modal.php"; 
 include "include_right_column.php";
 echo "</body>\n";
 echo "</html>\n";

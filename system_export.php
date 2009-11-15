@@ -17,6 +17,22 @@ include_once("include_functions.php");
 include_once("include_lang.php");
 $time_start = microtime_float();
 
+// If they selected to email the report, this page is called via AJAX, so set some headers
+// then check if SMTP is enabled
+if(isset($_GET["email_list"])){
+  require("include_email_functions.php");
+  error_reporting(0);
+
+  header( "Expires: Mon, 20 Dec 1998 01:00:00 GMT" );
+  header( "Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT" );
+  header( "Cache-Control: no-cache, must-revalidate" );
+  header( "Pragma: no-cache" );
+  header("Content-type: text/xml");
+
+  $email =& GetEmailObject();
+
+  if ( is_null($email) ){ exit("<pdfsend><smtpstatus>disabled</smtpstatus></pdfsend>"); }
+}
 
 //Include PDF-Libaries
 /////////////////////////////////////////////////////////////////////////////////
@@ -25,6 +41,7 @@ require('./lib/ezpdf/class.ezpdf.php');
 //Create PDF-Instance
 $pdf = '';
 $pdf = new Cezpdf();
+$name = (isset($_GET["system-name"]))?$_GET["system-name"]:'unknown';
 
 //MySQL-Connect
 $db = mysql_connect($mysql_server,$mysql_user,$mysql_password) or die('Could not connect: ' . mysql_error());
@@ -277,6 +294,46 @@ foreach($systems_array as $system){
 
 //Draw End
 /////////////////////////////////////////////////////////////////////////////////
-$pdf->ezStream();
-$pdf->ezStopPageNumbers();
+
+// set the filename if specified
+$filename = (isset($_GET["filename"])) ? $_GET["filename"] . '.pdf' : $name . '.pdf';
+
+// Download the file or email it?
+if(!isset($_GET["email_list"])){
+  $stream_options = array(
+    'disposition' => 'attachment',
+    'filename'    => $filename
+  );
+  $pdf->ezStream($stream_options);
+  $pdf->ezStopPageNumbers();
+}
+else {
+  $username = (isset($_GET["username"])) ? $_GET["username"] : "Unknown";
+  $time     = date("F j, Y, g:i a");
+
+  $html_vars = array('{filename}','{filetype}','{username}','{timestamp}');
+  $data_vars = array($filename,"PDF",$username,$time);
+
+  $subject = "PDF-Report for ".$_GET["system-name"];
+  $html    = ParseEmailTemplate($html_vars,$data_vars,'./emails/export_file.html');
+
+  $attachment = array(
+   "Data"         => $pdf->ezOutput(),
+   "Name"         => $filename,
+   "Content-Type" => "application/pdf",
+   "Disposition"  => "attachment"
+  );
+
+  $result = SendHtmlEmail($subject,$html,$_GET["email_list"],$email,array($attachment));
+
+  $xml  = "<pdfsend>";
+  $xml .= "<smtpstatus>enabled</smtpstatus>";
+  $xml .= "<result>";
+  $xml .= (count($result) == 0) ? 'true' : 'false';
+  $xml .= "</result>";
+  foreach($result as $address){ $xml .= "<email>$address</email>"; }
+  $xml .= "</pdfsend>";
+
+  exit("$xml");
+}
 ?>
