@@ -82,11 +82,15 @@ else {
   $username = (isset($_GET["username"])) ? $_GET["username"] : "Unknown";
   $time     = date("F j, Y, g:i a");
 
-  $html_vars = array('{filename}','{filetype}','{username}','{timestamp}');
-  $data_vars = array($filename,"CSV",$username,$time);
+  $variables = array(
+    '{filename}'  => $filename,
+    '{filetype}'  => 'CSV',
+    '{username}'  => $username,
+    '{timestamp}' => $time
+  );
 
   $subject = "Open-AudIT CSV Report";
-  $html    = ParseEmailTemplate($html_vars,$data_vars,'./emails/export_file.html');
+  $html    = ParseEmailTemplate($variables,'./emails/export_file.html');
 
   $attachment = array(
    "Data"         => $csv_data,

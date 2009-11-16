@@ -311,11 +311,15 @@ else {
   $username = (isset($_GET["username"])) ? $_GET["username"] : "Unknown";
   $time     = date("F j, Y, g:i a");
 
-  $html_vars = array('{filename}','{filetype}','{username}','{timestamp}');
-  $data_vars = array($filename,"PDF",$username,$time);
+  $variables = array(
+    '{filename}'  => $filename,
+    '{filetype}'  => 'PDF',
+    '{username}'  => $username,
+    '{timestamp}' => $time
+  );
 
-  $subject = "PDF-Report for ".$_GET["system-name"];
-  $html    = ParseEmailTemplate($html_vars,$data_vars,'./emails/export_file.html');
+  $subject = "PDF-Report for ".$name;
+  $html    = ParseEmailTemplate($variables,'./emails/export_file.html');
 
   $attachment = array(
    "Data"         => $pdf->ezOutput(),

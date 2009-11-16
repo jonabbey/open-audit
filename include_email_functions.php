@@ -115,13 +115,12 @@ Function Name:
 Description:
   Given the template varibles, replacements, and filename, return the HTML with the vars in place.
 Arguments:
-  $html_vars   [IN] [Array]  The variables to look for in the email
-  $data_vars   [IN] [Array]  The replacements for the variables
+  $variables   [IN] [Array]  The variables to look for in the email and what to replace it with
   $template    [IN] [String] The name of the email template file
 Returns:    
   [String] The email with variables replaced
 **********************************************************************************************************/
-function ParseEmailTemplate($html_vars,$data_vars,$template) {
+function ParseEmailTemplate($variables,$template) {
 
   $html = file_get_contents($template);
 
@@ -129,12 +128,10 @@ function ParseEmailTemplate($html_vars,$data_vars,$template) {
     return "Cannot read template file: $template <br>Check your Open-AudIT installation to make sure it exists.";
   }
   else {
-    $count = 0;
-    foreach($html_vars as $var) {
-      if( preg_match("/$var/",$html) ) {
-        $html = preg_replace("/$var/",$data_vars[$count],$html);
+    foreach($variables as $variable => $data) {
+      if( preg_match("/$variable/",$html) ) {
+        $html = preg_replace("/$variable/",$data,$html);
       }
-      $count++;
     }
   }
 
