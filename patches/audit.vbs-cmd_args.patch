@@ -1,0 +1,63 @@
+--- a/scripts/audit.vbs	2009-09-27 21:39:59.000000000 -0500
++++ b/scripts/audit.vbs	2009-09-27 20:58:37.000000000 -0500
+@@ -89,7 +89,9 @@
+ dim filesys
+ Set filesys = CreateObject("Scripting.FileSystemObject")
+ 
+-If filesys.FileExists(this_config) then
++Set colNamedArguments = WScript.Arguments.Named
++
++If filesys.FileExists(this_config) or colNamedArguments.Exists("cmd_args_only") then
+ ' Do nothing
+ else 
+ 'wscript.echo("Creating new config")
+@@ -129,6 +131,7 @@
+ 'ExecuteGlobal CreateObject("Scripting.FileSystemObject").OpenTextFile(sScriptPath & this_config).ReadAll
+ 
+ 
++If filesys.FileExists(this_config) and not colNamedArguments.Exists("cmd_args_only") then
+ ExecuteGlobal CreateObject("Scripting.FileSystemObject").OpenTextFile(this_config).ReadAll
+ 
+ 
+@@ -143,18 +146,27 @@
+     our_config.close
+     config_file.DeleteFile this_config
+     end if
++end if
+ 
+ 
+ 
+-' If any command line args given - use the first one as strComputer
+-If Wscript.Arguments.Count > 0 Then
+-strComputer = wscript.arguments(0)
++If colNamedArguments.Exists("strComputer") Then
++ strComputer = colNamedArguments.Item("strComputer")
++end if
++If colNamedArguments.Exists("online") Then
++ online = colNamedArguments.Item("online")
++end if
++If colNamedArguments.Exists("non_ie_page") Then
++ non_ie_page = colNamedArguments.Item("non_ie_page")
++end if
++If colNamedArguments.Exists("software_audit") Then
++ software_audit = colNamedArguments.Item("software_audit")
+ end if
+-If Wscript.Arguments.Count > 1 Then
+-strUser = wscript.arguments(1)
++If colNamedArguments.Exists("uuid_type") Then
++ uuid_type = colNamedArguments.Item("uuid_type")
+ end if
+-If Wscript.Arguments.Count > 2 Then
+-strPass = wscript.arguments(2)
++If colNamedArguments.Exists("verbose") Then
++ verbose = colNamedArguments.Item("verbose")
+ end if
+ 
+ if online = "p" then
+@@ -4973,4 +4985,4 @@
+    set fp=Nothing
+ 
+    LogKilledAudit=True
+-End Function 
+\ No newline at end of file
++End Function 

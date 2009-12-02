@@ -1,0 +1,161 @@
+--- a/scripts/open_audit.sql	2009-09-28 13:23:25.000000000 -0500
++++ b/scripts/open_audit.sql	2009-09-28 13:40:49.000000000 -0500
+@@ -9,6 +9,142 @@
+ /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+ /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+ 
++DROP TABLE IF EXISTS `audit_commands`;
++CREATE TABLE `audit_commands` (
++  `audit_cmd_id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
++  `audit_cmd_name` VARCHAR(100) NOT NULL default '',
++  `audit_cmd_command` VARCHAR(500) NOT NULL default '',
++  PRIMARY KEY(`audit_cmd_id`)
++) ENGINE=MyISAM DEFAULT CHARSET=latin1;
++
++DROP TABLE IF EXISTS `audit_configurations`;
++CREATE TABLE `audit_configurations` (
++  `audit_cfg_id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
++  `audit_cfg_name` VARCHAR(50) NOT NULL default '',
++  `audit_cfg_action` VARCHAR(25) NOT NULL default '',
++  `audit_cfg_type` VARCHAR(25) NOT NULL default '',
++  `audit_cfg_os` VARCHAR(25) NOT NULL default '',
++  `audit_cfg_max_audits` INT(10) UNSIGNED NOT NULL default '0',
++  `audit_cfg_wait_time` INT(10) UNSIGNED NOT NULL default '1200',
++  `audit_cfg_ldap_conn` INT(10) UNSIGNED NOT NULL default '0',
++  `audit_cfg_ldap_use_conn` INT(10) UNSIGNED NOT NULL default '0',
++  `audit_cfg_audit_conn` INT(10) UNSIGNED NOT NULL default '0',
++  `audit_cfg_audit_use_conn` INT(10) UNSIGNED NOT NULL default '0',
++  `audit_cfg_audit_local` INT(10) UNSIGNED NOT NULL default '0',
++  `audit_cfg_ldap_user` VARBINARY(255) NOT NULL default '',
++  `audit_cfg_ldap_pass` VARBINARY(255) NOT NULL default '',
++  `audit_cfg_ldap_server` VARCHAR(200) NOT NULL default '',
++  `audit_cfg_ldap_path` VARCHAR(200) NOT NULL default '',
++  `audit_cfg_ldap_page` INT(10) UNSIGNED NOT NULL default '0',
++  `audit_cfg_filter` VARCHAR(200) NOT NULL default '',
++  `audit_cfg_filter_case` INT(10) UNSIGNED NOT NULL default '0',
++  `audit_cfg_filter_inverse` INT(10) UNSIGNED NOT NULL default '0',
++  `audit_cfg_audit_user` VARCHAR(200) NOT NULL default '',
++  `audit_cfg_audit_pass` VARCHAR(200) NOT NULL default '',
++  `audit_cfg_ip_start` VARCHAR(15) NOT NULL default '',
++  `audit_cfg_ip_end` INT(10) UNSIGNED NOT NULL default '0',
++  `audit_cfg_pc_list` VARCHAR(2048) NOT NULL default '',
++  `audit_cfg_win_vbs` VARCHAR(200) NOT NULL default '',
++  `audit_cfg_com_path` VARCHAR(200) NOT NULL default '',
++  `audit_cfg_lin_sft` INT(10) UNSIGNED NOT NULL default '0',
++  `audit_cfg_lin_sft_lst` INT(10) UNSIGNED NOT NULL default '0',
++  `audit_cfg_sft_lst` VARCHAR(2048) NOT NULL default '',
++  `audit_cfg_lin_identity` VARCHAR(200) NOT NULL default '',
++  `audit_cfg_lin_url` VARCHAR(200) NOT NULL default '',
++  `audit_cfg_win_sft` INT(10) UNSIGNED NOT NULL default '0',
++  `audit_cfg_win_url` VARCHAR(200) NOT NULL default '',
++  `audit_cfg_win_uuid` VARCHAR(10) NOT NULL default '',
++  `audit_cfg_nmap_int` INT(10) UNSIGNED NOT NULL default '0',
++  `audit_cfg_nmap_srv` INT(10) UNSIGNED NOT NULL default '0',
++  `audit_cfg_nmap_udp` INT(10) UNSIGNED NOT NULL default '0',
++  `audit_cfg_nmap_tcp_syn` INT(10) UNSIGNED NOT NULL default '0',
++  `audit_cfg_nmap_url` VARCHAR(200) NOT NULL default '',
++  `audit_cfg_nmap_path` VARCHAR(200) NOT NULL default '',
++  `audit_cfg_command_list` VARCHAR(2048) NOT NULL default '',
++  `audit_cfg_command_interact` INT(10) UNSIGNED NOT NULL default '0',
++  `audit_cfg_log_enable` INT(10) UNSIGNED NOT NULL default '0',
++  `audit_cfg_mysql_ids` VARCHAR(200) NOT NULL default '',
++  `audit_cfg_cmd_list` VARCHAR(200) NOT NULL default '',
++  PRIMARY KEY(`audit_cfg_id`)
++) ENGINE=MyISAM DEFAULT CHARSET=latin1;
++
++DROP TABLE IF EXISTS `audit_cron`;
++CREATE TABLE `audit_cron` (
++  `audit_cron_id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
++  `audit_cron_active` INT(10) UNSIGNED NOT NULL default '0',
++  `audit_cron_interval` INT(10) UNSIGNED NOT NULL default '5',
++  `audit_cron_pid` INT(10) UNSIGNED NOT NULL default '0',
++  `audit_cron_service_enable` INT(10) UNSIGNED NOT NULL default '0',
++  `audit_cron_service_name` VARCHAR(200) NOT NULL default '',
++  `audit_cron_smtp_auth` INT(10) UNSIGNED NOT NULL default '0',
++  `audit_cron_smtp_port` INT(10) UNSIGNED NOT NULL default '25',
++  `audit_cron_smtp_from` VARCHAR(200) NOT NULL default '',
++  `audit_cron_smtp_user` VARBINARY(255) NOT NULL default '',
++  `audit_cron_smtp_pass` VARBINARY(255) NOT NULL default '',
++  `audit_cron_smtp_server` VARCHAR(100) NOT NULL default '',
++  `audit_cron_web_address` VARCHAR(200) NOT NULL default '',
++  PRIMARY KEY(`audit_cron_id`)
++) ENGINE=MyISAM DEFAULT CHARSET=latin1;
++
++DROP TABLE IF EXISTS `audit_log`;
++CREATE TABLE `audit_log` (
++  `audit_log_id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
++  `audit_log_message` VARCHAR(255) NOT NULL default '',
++  `audit_log_host` VARCHAR(255) NOT NULL default '',
++  `audit_log_schedule_id` VARCHAR(255) NOT NULL default '',
++  `audit_log_config_id` VARCHAR(255) NOT NULL default '',
++  `audit_log_time` INT(10) UNSIGNED NOT NULL default '0',
++  `audit_log_timestamp` INT(10) UNSIGNED NOT NULL default '0',
++  `audit_log_pid` INT(10) UNSIGNED NOT NULL default '0',
++  PRIMARY KEY(`audit_log_id`)
++) ENGINE=MyISAM DEFAULT CHARSET=latin1;
++
++DROP TABLE IF EXISTS `audit_mysql_query`;
++CREATE TABLE `audit_mysql_query` (
++  `audit_mysql_id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT, 
++  `audit_mysql_cfg_id` INT(10) UNSIGNED NOT NULL default '0',
++  `audit_mysql_table` VARCHAR(50) NOT NULL default '',
++  `audit_mysql_field` VARCHAR(50) NOT NULL default '',
++  `audit_mysql_sort` VARCHAR(10) NOT NULL default '',
++  `audit_mysql_data` VARCHAR(500) NOT NULL default '',
++  PRIMARY KEY(`audit_mysql_id`)
++) ENGINE=MyISAM DEFAULT CHARSET=latin1;
++
++DROP TABLE IF EXISTS `audit_schedules`;
++CREATE TABLE `audit_schedules` (
++  `audit_schd_id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
++  `audit_schd_name` VARCHAR(100) NOT NULL default '',
++  `audit_schd_cfg_id` INT(10) UNSIGNED NOT NULL default '0',
++  `audit_schd_active` INT(10) UNSIGNED NOT NULL default '1',
++  `audit_schd_updated` INT(10) UNSIGNED NOT NULL default '0',
++  `audit_schd_type` VARCHAR(25) NOT NULL default '',
++  `audit_schd_strt_hr` INT(10) UNSIGNED NOT NULL default '0',
++  `audit_schd_strt_min` INT(10) UNSIGNED NOT NULL default '0',
++  `audit_schd_hr_frq_hr` INT(10) UNSIGNED NOT NULL default '0',
++  `audit_schd_hr_frq_min` INT(10) UNSIGNED NOT NULL default '0',
++  `audit_schd_hr_between` INT(10) UNSIGNED NOT NULL default '0',
++  `audit_schd_hr_strt_hr` INT(10) UNSIGNED NOT NULL default '0',
++  `audit_schd_hr_strt_min` INT(10) UNSIGNED NOT NULL default '0',
++  `audit_schd_hr_end_hr` INT(10) UNSIGNED NOT NULL default '0',
++  `audit_schd_hr_end_min` INT(10) UNSIGNED NOT NULL default '0',
++  `audit_schd_dly_frq` INT(10) UNSIGNED NOT NULL default '0',
++  `audit_schd_wk_days` VARCHAR(75) NOT NULL default '',
++  `audit_schd_mth_day` INT(10) UNSIGNED NOT NULL default '0',
++  `audit_schd_mth_months` VARCHAR(100) NOT NULL default '',
++  `audit_schd_last_run` INT(10) UNSIGNED NOT NULL default '0',
++  `audit_schd_next_run` INT(10) UNSIGNED NOT NULL default '0',
++  `audit_schd_log_disable` INT(10) UNSIGNED NOT NULL default '0',
++  `audit_schd_cron_line` VARCHAR(250) NOT NULL default '',
++  `audit_schd_email_log` INT(10) UNSIGNED NOT NULL default '0',
++  `audit_schd_email_list` VARCHAR(500) NOT NULL default '',
++  `audit_schd_email_subject` VARCHAR(100) NOT NULL default '',
++  `audit_schd_email_replyto` VARCHAR(100) NOT NULL default '',
++  `audit_schd_email_tt_html` VARCHAR(100) NOT NULL default '',
++  `audit_schd_email_tt_text` VARCHAR(100) NOT NULL default '',
++  `audit_schd_email_logo` VARCHAR(100) NOT NULL default '',
++  PRIMARY KEY(`audit_schd_id`)
++) ENGINE=MyISAM DEFAULT CHARSET=latin1;
++
+ DROP TABLE IF EXISTS `auth`;
+ CREATE TABLE `auth` (
+   `auth_id` INT( 10 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,
+@@ -98,6 +234,15 @@
+   PRIMARY KEY  (`config_name`)
+ ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+ 
++DROP TABLE IF EXISTS `cron_log`;
++CREATE TABLE `cron_log` (
++  `cron_log_id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
++  `cron_log_pid` INT(10) UNSIGNED NOT NULL default '0',
++  `cron_log_message` VARCHAR(100) NOT NULL default '',
++  `cron_log_timestamp` INT(10) UNSIGNED NOT NULL default '0',
++  PRIMARY KEY(`cron_log_id`)
++) ENGINE=MyISAM DEFAULT CHARSET=latin1;
++
+ DROP TABLE IF EXISTS `environment_variable`;
+ CREATE TABLE `environment_variable` (
+   `env_var_id` INT( 10 ) UNSIGNED NOT NULL AUTO_INCREMENT ,

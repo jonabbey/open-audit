@@ -1,0 +1,114 @@
+#config-table,#sched-table {
+  font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
+  font-size: 10px;
+  margin: 5px;
+  width: 500px;
+  text-align: left;
+  border-collapse: collapse;
+}
+
+#config-table th,#sched-table th {
+  font-size: 12px;
+  font-weight: normal;
+  padding: 8px;
+  background: #b9c9fe;
+  border-top: 4px solid #aabcfe;
+  border-bottom: 1px solid #fff;
+  color: #039;
+}
+
+#config-table td,#sched-table td {
+  padding: 8px;
+  background: #e8edff; 
+  border-bottom: 1px solid #fff;
+  color: #669;
+  border-top: 1px solid transparent;
+}
+
+#config-table tr:hover td,#sched-table tr:hover td {
+  background: #d0dafd;
+  color: #339;
+}
+
+#config-tables {
+  float: left;
+  width: 475px;
+  margin-left: 25px;
+  margin-right: 50px;
+  margin-top: 10px;
+}
+
+#clear-left {
+  clear: left;
+}
+
+#log-box {
+  display: block;
+  float: left;
+  margin-top: 10px;
+  text-align: left;
+  width: 500px;
+}
+
+#log {
+  color: #339;
+}
+
+#box {
+  width: 1050px;
+  position: relative;
+}
+
+#manage-img, #cron-img, .hand-img:hover {
+  cursor: pointer;
+}
+
+#result-holder {
+  margin-top: 10px;
+  float: left;
+  margin-right: 15px;
+}
+
+#manage-result {
+  float: left;
+  font-size: 10px;
+}
+
+label {
+  float: left;
+  width: 45%;
+  margin-right: 0.5em;
+  padding-top: 0.8em;
+  padding-right: 0.8em;
+  text-align: right;
+  font-weight: bold;
+}
+
+#busy {
+  margin-right: 5px;
+}
+
+.header {
+  margin-left: 2em;
+  font-weight:bold;
+  vertical-align:top;
+  padding-top:20px;
+  font-size: 120%;
+  color: #555;
+}
+
+.busy {
+  width: 2em;
+  height: 2em;
+}
+
+.hand-img {
+  text-decoration: underline;
+  color: blue;
+  font-weight: bolder;
+}
+
+.notify-text {
+  font-size: 110%;
+  font-weight: bolder;
+}

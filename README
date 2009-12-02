@@ -1,0 +1,110 @@
+---------------
+Perl Modules
+---------------
+
+A list of Perl modules needed to run audit.pl by itself
+
+Carp
+DBI w/ DBI::mysql
+File::Which
+LWP::UserAgent
+MIME::Lite
+Net::LDAP
+Net::LDAP::Control::Paged
+Net::Ping
+Net::SMTP
+Schedule::Cron
+Sys::Hostname
+Template
+Term::ReadKey
+
+---------------
+Install
+---------------
+
+1. Copy this folder to your web root/whever you serve the files.
+2. Proceed with the normal OpenAudIT install procedure.
+3. Configure/manage Web-Schedule settings from the "Audits" menu in OpenAudIT.
+
+ *NOTE: Linux Install*
+    Nmap requires root priveleges on Linux for certain commands to work. For directions on how to setup
+    sudo priveleges for Nmap audits, first create an Nmap audit configuration then go back to edit the
+    configuration and choose 'Test NMAP' in the NMAP Settings area.
+
+ *NOTE: Windows Install*
+    If you want to create a windows service that manages the schedules/audits, do the following...
+     1. Using a command prompt, navigate into the scripts directory with the audit.exe file.
+     2. Run 'audit.exe --install'. This will install this file as a service.  
+        ...Or run 'audit.exe --install --service-custom' to be prompted for service details
+     3. Go to the Web-Schedule settings page and check to manage as a service and enter the name
+
+----------------------------
+Adding the 'Audits' Menu
+----------------------------
+
+if you're incorporating the Web-Schedule files only into an existing installation, you need to edit the 
+include_menu_array.php file to include the following directly before the admin menu...
+
+/* Start audit menu */
+
+      "55" => array("name"=>"Audits",
+                    "link"=>"#",
+                    "class"=>"menuparent",
+                    "childs"=>array("10"=>array("name"=>"Manage Audits", "link"=>"./audit_manage.php", "image"=>"images/software.png", "title"=>"",),
+                                    "20"=>array("name"=>"Schedule Audit Logs", "link"=>"./list.php?view=audit_logs", "image"=>"images/notes.png", "title"=>"",),
+                                    "30"=>array("name"=>"Run Now Audit Logs", "link"=>"./list.php?view=run_now_logs", "image"=>"images/notes.png", "title"=>"",),
+                                    "40"=>array("name"=>"Perl Cron Log", "link"=>"./list.php?view=cron_log", "image"=>"images/notes.png", "title"=>"",),
+                                    "50"=>array("name"=>"Add Audit Schedule", "link"=>"./audit_schedule.php", "image"=>"images/sched_task_l.png", "title"=>"",),
+                                    "60"=>array("name"=>"Add Audit Configuration", "link"=>"./audit_configuration.php", "image"=>"images/o_specialized.png", "title"=>"",),
+                                    "70"=>array("name"=>"Edit Audit Commands", "link"=>"./audit_commands.php", "image"=>"images/o_specialized.png", "title"=>"",),
+                                    "80"=>array("name"=>"Edit Cron Daemon Settings", "link"=>"./audit_cron_settings.php", "image"=>"images/o_specialized.png", "title"=>"",),
+                              ),
+              ),
+
+/* end audit menu */
+
+----------
+Tips/Hints
+----------
+
+To force the web interface to use the audit.pl file, and not the binary, rename the binary. If
+on linux, rename the 'scripts/audit' file, if on windows rename the 'scripts/audit.exe' file. 
+
+You can add images to the 'images/headers' directory to get custom logos when setting schedule 
+email settings
+
+You can add template toolkit formatted files to the 'lib/tt' directory to get custom templates 
+when setting schedule email settings
+
+------------------------
+Known Issues/Limitations
+------------------------
+
+** Compiled files ...
+
+The binary files for audit.pl were compiled for x86 windows and linux. Maybe if the PDK fixes their
+cross-compiling, I can make it for more :p I used PAR::Packer for the Linux build and PerlSvc for 
+Windows
+
+Winexe and RemCom.exe are both opensource apps used to connect to windows machines and execute
+commands. The versions I include are for x86. Links below if you need a different version...
+
+RemCom.exe : http://sourceforge.net/projects/rce
+Winexe     : http://eol.ovh.org/winexe
+
+** Linux/Mac audits
+
+Linux/Mac audits are not implemented on the web interface. It will require a lot of work to get
+these working properly
+
+** Linux commands
+
+Command audits aren't implemented for Linux yet. Once implemented, it will probably only work if
+using a Linux server for OpenAudIT
+
+--------
+Licenses 
+--------
+
+Winexe : GPLv3 (scripts/licenses/winexe)
+RemCom : BSD License

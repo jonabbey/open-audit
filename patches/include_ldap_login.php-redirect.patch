@@ -1,0 +1,13 @@
+--- a/include_ldap_login.php	2009-06-21 20:58:31.000000000 -0500
++++ b/include_ldap_login.php	2009-06-21 22:51:57.000000000 -0500
+@@ -22,7 +22,9 @@
+ 
+ if(!isset($_SESSION["role"]))
+ {
+-    header('Location: ldap_login.php');
++    preg_match("/.*\/(.*.php(\?.*)?)$/", $_SERVER['REQUEST_URI'], $match);
++    $redirect = ($match[1] != '') ? "?redirect=".$match[1] : '';
++    header('Location: ldap_login.php'.$redirect);
+     exit;
+ }
+ else

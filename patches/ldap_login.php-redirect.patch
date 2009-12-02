@@ -1,0 +1,41 @@
+--- a/ldap_login.php	2009-06-21 20:58:31.000000000 -0500
++++ b/ldap_login.php	2009-06-21 22:49:32.000000000 -0500
+@@ -49,13 +49,21 @@
+ // If we have logon details POST'ed - perform LDAP authentication
+ if (isset($_POST['username']))
+ {	
++	// Make sure to save the redirect url on logon failures
++        $redirect_persist = '';
++        if (isset($_GET['redirect'])) {
++          preg_match("/.*[?&]redirect=(.*)$/", $_SERVER['REQUEST_URI'], $match);
++          $redirect_url     = ( $match[1] != '' ) ? $match[1] : './index.html';
++          $redirect_persist = "&redirect=".$redirect_url;
++        }
++
+ 	// Connect (authenticate) to LDAP
+ 	$connect = AuthenticateUsingLdap($_POST['username'],$_POST['password'],$ldap_connections[$_POST['ldap_connection']]);
+ 	// Check for connection error
+ 	if (is_array($connect))
+ 	{
+ 		DestroySession();
+-		RedirectToUrl($_SERVER['SCRIPT_NAME'].'?Result=Failed');
++		RedirectToUrl($_SERVER['SCRIPT_NAME'].'?Result=Failed'.$redirect_persist);
+ 	}
+ 
+ 	// Set Session value - remove domain suffix if UPN was used
+@@ -74,12 +82,13 @@
+ 	if ($_SESSION["role"] != "none")
+ 	{
+ 		LogEvent("ldap_login.php","Main","User ".$_SESSION["username"]." succesfully logged on as ".$_SESSION["role"]);
+-		RedirectToUrl("./index.php");
++                $url = (isset($_GET['redirect'])) ? $redirect_url : './index.php';
++		RedirectToUrl($url);
+ 	} 
+ 	else
+ 	{
+ 		DestroySession();
+-		RedirectToUrl($_SERVER['SCRIPT_NAME'].'?Result=NoAccess');
++		RedirectToUrl($_SERVER['SCRIPT_NAME'].'?Result=NoAccess'.$redirect_persist);
+ 	}
+ }
+ ?>
