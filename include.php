@@ -14,6 +14,7 @@ Recent Changes:
 	[Nick Brown]	29/04/2009	Moved <link>s and <script>s into <head> from "admin_config.php". Minor changes to ensure 
 	valid XHTML markup. Moved javascript functions into external file "include.js"
 	[Nick Brown]	01/05/2009	Incldued "application_class.php" to provide access to the global $TheApp object. 
+	[Chad Sikorra]	20/11/2009	Check the filename of the current page to determine what css/js to include
 
 **********************************************************************************************************/
 include_once "application_class.php";
@@ -75,24 +76,34 @@ if ($use_pass != "n") {
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 		<link media="screen" rel="stylesheet" type="text/css" href="default.css" />
     <link media="print" rel="stylesheet" type="text/css" href="defaultprint.css" />
-		<link media="screen" rel="stylesheet" type="text/css" href="admin_config.css" />
 		<!--[if lt IE 7]><link media="screen" rel="stylesheet" type="text/css" href="iefix.css" /><![endif]-->
 		<!--[if lt IE 7]><link media="print" rel="stylesheet" type="text/css" href="iefix.css" /><![endif]-->
-		
 		<script type='text/javascript' src="javascript/ajax.js"></script>
-		<script type='text/javascript' src="javascript/PopupMenu.js"></script>
-		<script type='text/javascript' src="javascript/admin_config.js"></script>
 		<script type='text/javascript' src="javascript/include.js"></script>
 
     <?php 
       // Used to only included pieces of jquery/jquery ui that the page needs.
       if(isset($JQUERY_UI)){
-        echo '<script type="text/javascript" src="javascript/jquery/jquery.js"></script>';
-        echo '<link media="screen" rel="stylesheet" type="text/css" href="jquery-ui-theme.css" />';
+        echo '<script type="text/javascript" src="javascript/jquery/jquery.js"></script>'."\n";
+        echo '<script type="text/javascript" src="javascript/jquery/jquery-bgiframe.js"></script>'."\n";
+        echo '<link media="screen" rel="stylesheet" type="text/css" href="jquery-ui-theme.css" />'."\n";
         foreach($JQUERY_UI as $script) {
-          echo '<script type="text/javascript" src="javascript/jquery/jquery-ui-'.$script.'.js"></script>';
-          echo '<link media="screen" rel="stylesheet" type="text/css" href="jquery-ui-'.$script.'.css" />';
+          echo '<script type="text/javascript" src="javascript/jquery/jquery-ui-'.$script.'.js"></script>'."\n";
+          echo '<link media="screen" rel="stylesheet" type="text/css" href="jquery-ui-'.$script.'.css" />'."\n";
         }
+      }
+
+      // Only include certain files if it's a page that needs it.
+      switch(basename($_SERVER["PHP_SELF"])){
+        case 'list.php':
+        case 'system.php':
+          echo '<script type="text/javascript" src="javascript/list-system.js"></script>'."\n";
+          break;
+        case 'admin_config.php':
+          echo '<script type="text/javascript" src="javascript/PopupMenu.js"></script>'."\n".
+               '<script type="text/javascript" src="javascript/admin_config.js"></script>'."\n".
+               '<link media="screen" rel="stylesheet" type="text/css" href="admin_config.css" />'."\n";
+          break;
       }
     ?>
 
