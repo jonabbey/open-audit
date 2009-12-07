@@ -359,8 +359,6 @@ function NewLdapConnection()
 	CheckLdapStatus();
 	document.getElementById("npb_ldap_path_config_div").style.display = 'none';	
 	document.getElementById("npb_ldap_connection_config_div").style.display = 'block';
-	document.getElementById("npb_ldap_disabled").style.display = 'none';
-	document.getElementById("npb_ldap_enabled").style.display = 'block';
 	document.getElementById("ldap_connection_server").value = 'LDAP Server FQDN';
 	document.getElementById("ldap_connection_user").value = 'LDAP user account';
 	document.getElementById("ldap_connection_password").value = 'LDAP password';	
