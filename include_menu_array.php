@@ -115,6 +115,7 @@ $menue_array = array(
                     "class"=>"menuparent",
                     "childs"=>array("10"=>array("name"=>"All Audited Systems", "link"=>"./list.php?view=all_systems", "image"=>"images/computer.png", "title"=>"All Audited Systems",),
                                     "20"=>array("name"=>"All Systems More Info", "link"=>"./list.php?view=all_systems_more", "image"=>"images/computer.png", "title"=>"All Audited Systems More Info",),
+                                    "25"=>array("name"=>"All Systems Manual Fields", "link"=>"./list.php?view=all_systems_manual_fields", "image"=>"images/computer.png", "title"=>"All Audited Systems More Info",),
                                     "30"=>array("name"=>"All Servers", "link"=>"./list.php?view=all_servers", "image"=>"images/server.png", "title"=>"All Servers",),
                                     "40"=>array("name"=>"All Win-Workstations", "link"=>"./list.php?view=all_win_workstations", "image"=>"images/computer_2.png", "title"=>"All Win-Workstations",),
                                     "50"=>array("name"=>"All Laptops", "link"=>"./list.php?view=all_laptops", "image"=>"images/laptop.png", "title"=>"All Laptops",),
