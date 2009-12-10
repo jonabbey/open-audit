@@ -724,7 +724,7 @@ function GetSmtpConnectionHtml($db)
 	$response .= "<tr><th>SMTP Connection</th><th><center>SMTP Port</center></th> <th><center>Authentication</center></th><th><center>SSL Enabled</center></th></tr>";
 	if ($myrow = mysql_fetch_array($result))
 	{
-		$auth = ($myrow['smtp_connection_port']    == 1) ? 'Yes' : 'No';
+		$auth = ($myrow['smtp_connection_auth']    == 1) ? 'Yes' : 'No';
 		$ssl  = ($myrow['smtp_connection_use_ssl'] == 1) ? 'Yes' : 'No';
 		$response .= "<tr>";
 		$response .= "<td><a id='".$myrow['smtp_connection_id']."' href=\"#\" onMouseover=\"ShowMenu(event,smtp_menu);\" onMouseout=\"DelayHideMenu(event)\">";
@@ -832,7 +832,7 @@ function SaveSmtpConnectionXml($db)
 	$start_tls = ( $_GET["smtp_connection_start_tls"] == "true" ) ? '1' : '0';
 
 	// Validate supplied details
-	if($auth == 1 and (empty($_GET["smtp_connection_user"]) or empty($_GET["smtp_connection_pass"])))
+	if($auth == 1 and (empty($_GET["smtp_connection_user"]) or empty($_GET["smtp_connection_password"])))
 	{
 		$errorlist .= "If you select authentication, you need a username and password<br />"; 
 	}
