@@ -1,7 +1,7 @@
-#config-table,#sched-table {
+#config-table, #sched-table {
   font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
   font-size: 10px;
-  margin: 5px;
+  margin: 15px 10px 10px 30px;
   width: 500px;
   text-align: left;
   border-collapse: collapse;
@@ -30,63 +30,33 @@
   color: #339;
 }
 
-#config-tables {
-  float: left;
-  width: 475px;
-  margin-left: 25px;
-  margin-right: 50px;
-  margin-top: 10px;
-}
-
-#clear-left {
-  clear: left;
-}
-
 #log-box {
-  display: block;
-  float: left;
-  margin-top: 10px;
-  text-align: left;
-  width: 500px;
-}
-
-#log {
   color: #339;
+	font:	normal 80% verdana, tahoma, arial, Sans;
+  width: 400px;
+  overflow: auto;
 }
 
-#box {
-  width: 1050px;
-  position: relative;
-}
+#ws-status-img { margin-left: 7px; }
 
-#manage-img, #cron-img, .hand-img:hover {
+#manage-img, #ws-status-img, .hand-img:hover {
   cursor: pointer;
 }
 
-#result-holder {
-  margin-top: 10px;
-  float: left;
-  margin-right: 15px;
-}
-
-#manage-result {
-  float: left;
+#toggle-service {
+  display: none;
   font-size: 10px;
+  font-style: italic;
 }
 
 label {
   float: left;
   width: 45%;
   margin-right: 0.5em;
-  padding-top: 0.8em;
-  padding-right: 0.8em;
   text-align: right;
   font-weight: bold;
 }
 
-#busy {
-  margin-right: 5px;
-}
 
 .header {
   margin-left: 2em;
@@ -97,10 +67,11 @@ label {
   color: #555;
 }
 
-.busy {
-  width: 2em;
-  height: 2em;
-}
+#log-link-holder { margin-left: 30px; }
+#log-link-holder img { border: none; margin-right: 5px; }
+
+#busy { margin-right: 5px; }
+.busy { width: 2em; height: 2em; }
 
 .hand-img {
   text-decoration: underline;
@@ -112,3 +83,16 @@ label {
   font-size: 110%;
   font-weight: bolder;
 }
+
+.notifier {
+  z-index: 100;
+  margin: 0px 0px;
+  padding: 8px 8px;
+  border: 1px solid #4f79b3;
+  background-color: #9cbede;
+	font:	normal 90% verdana, tahoma, arial, Sans;
+}
+
+.confirm-icon { float: left; margin: 0 7px 20px 0; }
+        
+

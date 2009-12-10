@@ -1,8 +1,8 @@
 <?php 
 
 $page = "admin";
-include "include.php";
-include "include_audit_functions.php";
+require_once "include.php";
+require_once "include_audit_functions.php";
 
 ?>
 <link media="screen" rel="stylesheet" type="text/css" href="audit_command.css"/>

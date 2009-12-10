@@ -1,18 +1,26 @@
 <?php
+/**********************************************************************************************************
 
-function Get_Email_List($email_list) {
-  $emails = array();
-  $emails = explode(";",$email_list);
-  $count  = 0;
+Description:
+    These functions are used on the audit_*.php pages for various reasons, mostly to separate HTML from
+    code a bit. Others are used for things specific to the web scheduling and audits
+    
+**********************************************************************************************************/
 
-  while ( $email = array_pop($emails) ) {
-    $count++;
-    echo "<div class=\"Box\" id=\"email$count\">
-          <input type=\"hidden\" name=\"email_to\" value=\"$email\">
-          <img src=\"images/delete.png\" id=\"$count\" class=\"delete\" onclick=\"removeEmail(document.getElementById('email$count'))\">&nbsp;&nbsp;$email</div>";
-  }
-}
+include_once "application_class.php";
+include_once "include_functions.php";
 
+/**********************************************************************************************************
+Function Name:
+  Get_Commands
+Description:
+  Construct the HTML DIV elements for each command 
+Arguments:
+  $db       [IN] [RESOURCE] The MySQL connection resource to use
+  $cmd_list [IN] [ARRAY]    The commands that should be marked as selected
+Returns:    
+  Nothing to return
+**********************************************************************************************************/
 function Get_Commands($db,$cmd_list) {
   $sql    = "SELECT * FROM audit_commands";
   $result = mysql_query($sql, $db);
@@ -64,6 +72,16 @@ function Get_Commands($db,$cmd_list) {
   }
 }
 
+/**********************************************************************************************************
+Function Name:
+  get_command_info
+Description:
+  Construct the table rows for the table that holds the commands on the audit_commands.php page
+Arguments:
+  $db    [IN] [RESOURCE] The MySQL connection to use
+Returns:    
+  Nothing to return
+**********************************************************************************************************/
 function get_command_info($db){
   $sql    = "SELECT * FROM audit_commands";
   $result = mysql_query($sql, $db);
@@ -90,14 +108,22 @@ function get_command_info($db){
   }
 }
 
+/**********************************************************************************************************
+Function Name:
+  get_dir_files
+Description:
+  Given a directory, return a list of files inside it (but not recursively)
+Arguments:
+  $dir   [IN] [String]  The directory to look at
+Returns:    
+  [Array] An array of the filenames in the directory, sorted
+**********************************************************************************************************/
 function get_dir_files($dir) {
   $files = array();
   $fh    = opendir($dir);
 
   while ( $file = readdir($fh) ) {
-    if ( $file != '.' && $file != '..' ) {
-      $files[] = $file;
-    }
+    if ( is_file($dir . '/' . $file) ) array_push($files, $file);
   }
 
   closedir($fh);
@@ -106,23 +132,44 @@ function get_dir_files($dir) {
   return $files;
 }
 
+/**********************************************************************************************************
+Function Name:
+  get_file_list
+Description:
+  Construct an HTML SELECT element with a list of files from a directory 
+Arguments:
+  $dir      [IN] [String] The directory to get the file list from
+  $id       [IN] [String] The ID/name to give the select element
+  $selected [IN] [String] The option that should be selected
+Returns:    
+  Nothing to return
+**********************************************************************************************************/
 function get_file_list($dir,$id,$selected) {
   $files = get_dir_files($dir);
 
-  echo "<select id=\"{$id}\">
-        <option value=\"\" SELECTED>Default</option>
-        <option value=\"\">---------</option>";
+  echo "<select id=\"$id\" name=\"$id\">\n
+        <option value=\"\" SELECTED>Default</option>\n
+        <option value=\"\">---------</option>\n";
   while ( $file = array_pop($files) ) {
-    $default = ( $file == $selected ) ? 'SELECTED' : '' ;
-    echo "<option value=\"$file\" $default>$file</option>";
+    $default = ( !empty($selected) && $file == $selected ) ? 'SELECTED' : '' ;
+    echo "<option value=\"$file\" $default>$file</option>\n";
   }
-  echo "</select>";
+  echo "</select>\n";
 }
 
-// Get all the queries associated with a configuration, displayed on
-// audit_configuration.php
+/**********************************************************************************************************
+Function Name:
+  Get_MySQL_Queries
+Description:
+  Contstruct the table rows for the mysql queries table.
+Arguments:
+  $db     [IN] [RESOURCE] The MySQL resource connection to use
+  $cfg_id [IN] [INTEGER]  The configuration ID to get the query rows for
+Returns:    
+  Nothing to return
+**********************************************************************************************************/
 function Get_MySQL_Queries($db,$cfg_id) {
-  $sql      = "SELECT * FROM audit_mysql_query WHERE audit_mysql_cfg_id = '$cfg_id'";
+  $sql      = "SELECT * FROM mysql_queries WHERE mysql_queries_cfg_id = '$cfg_id'";
   $result   = mysql_query($sql, $db);
   $tables = array(
     'network_card' , 'scheduled_task' , 'usb'        ,
@@ -142,81 +189,112 @@ function Get_MySQL_Queries($db,$cfg_id) {
   if ( $result ) {
     $count = 0;
     while ( $myrow = mysql_fetch_array($result) ) {
-      $id    = $myrow['audit_mysql_id'];
-      $field = $myrow['audit_mysql_field'];
-      $table = $myrow['audit_mysql_table'];
-      $data  = $myrow['audit_mysql_data'];
-      $sort  = $myrow['audit_mysql_sort'];
+      $id    = $myrow['mysql_queries_id'];
+      $field = $myrow['mysql_queries_field'];
+      $table = $myrow['mysql_queries_table'];
+      $data  = $myrow['mysql_queries_data'];
+      $sort  = $myrow['mysql_queries_sort'];
 
-      echo "<tr id=\"{$id}\">
-              <td>
-                <img src=\"images/delete.png\" id=\"$count\" class=\"deletebutton\" onclick=\"removeQueryOpt(this)\" ></td>
-              <td>
-                <select class=\"mysql\" id=\"qtbl$count\" onChange=\"setFieldSelect(this,'cellfield$count','qfld$count')\">";
+      echo "<tr id=\"{$id}\">\n
+              <td>\n
+                <img src=\"images/delete.png\" id=\"$count\" class=\"deletebutton\" onclick=\"removeQueryOpt(this)\" ></td>\n
+              <td>\n
+                <select class=\"mysql\" id=\"qtbl$count\" onChange=\"setFieldSelect(this,'cellfield$count','qfld$count')\">\n";
                 foreach ( $tables as $line ) {
                   $selected = ( $line == $table ) ? 'SELECTED' : '';
-                  echo "<option value=\"$line\" $selected>$line</option>";
+                  echo "<option value=\"$line\" $selected>$line</option>\n";
                 }
-      echo "    </select>
-              </td>
-              <td id=\"cellfield{$count}\">
-               <select class=\"mysql\" id=\"qfld{$count}\">";
+      echo "    </select>\n
+              </td>\n
+              <td id=\"cellfield{$count}\">\n
+               <select class=\"mysql\" id=\"qfld{$count}\">\n";
                $fields = Get_MySQL_Fields($db,$table);
                 foreach ( $fields as $line ) {
                   $selected = ( $line == $field ) ? 'SELECTED' : '';
-                  echo "<option value=\"$line\" $selected>$line</option>";
+                  echo "<option value=\"$line\" $selected>$line</option>\n";
                 }
-      echo "    </select>
-              </td>
-              <td>
-                <select class=\"mysql\" id=\"qsrt{$count}\">";
+      echo "    </select>\n
+              </td>\n
+              <td>\n
+                <select class=\"mysql\" id=\"qsrt{$count}\">\n";
                 foreach ( $srt_flds as $key => $value ) {
                   $selected = ( $key == $sort ) ? 'SELECTED' : '';
-                  echo "<option value=\"$key\" $selected>$value</option>";
+                  echo "<option value=\"$key\" $selected>$value</option>\n";
                 }
-      echo "    </select>
-              <td><input size=\"15\" class=\"mysql\" id=\"qdata$count\" value=\"$data\"></td>
-            </tr>";
+      echo "    </select>\n
+              <td><input size=\"15\" class=\"mysql\" id=\"qdata$count\" value=\"$data\"></td>\n
+            </tr>\n";
       $count++;
     }
   }
 }
 
-function Get_LDAP_Connections($select_name,$db,$conn_id) {
-  $sql  = "SELECT * FROM ldap_connections";
-  $result = mysql_query($sql, $db);
-  if (mysql_num_rows($result) != 0) {
-    echo "<select size=\"1\" id=\"$select_name\" onChange=\"ToggleAuth(this)\">";
-    echo "<option value=\"nothing\" selected=\"selected\">Select Connection</option>";
-    echo "<option value=\"nothing\">-------</option>";
-    while ( $myrow = mysql_fetch_array($result) ) {
-      $name = $myrow['ldap_connections_name'];
-      $select = ( !empty($conn_id) AND $conn_id == $myrow['ldap_connections_id'] ) ? 'SELECTED' : '' ;
-      if ( empty($myrow['ldap_connections_name']) ) { $name = "No Name - Conn ID ".$myrow['ldap_connections_id']; }
-      echo "<option value=\"".$myrow['ldap_connections_id']."\" $select>$name</option>";
-      }
-    echo "</select>";
+/**********************************************************************************************************
+Function Name:
+  Get_LDAP_Connections
+Description:
+  Construct an HTML SELECT element that has the names of the available LDAP connections
+Arguments:
+  $select_name [IN] [String]   The ID for the SELECT element
+  $conn_id     [IN] [INTEGER]  The connection that should be selected
+Returns:    
+  Nothing to return
+**********************************************************************************************************/
+function Get_LDAP_Connections($select_name,$conn_id) {
+  $l = GetLdapConnectionsFromDb();
+  if ( is_array($l) ) {
+    echo "<select size=\"1\" id=\"$select_name\" name=\"$select_name\" onChange=\"ToggleAuth(this)\">\n";
+    echo "<option value=\"nothing\" selected=\"selected\">Select Connection</option>\n";
+    echo "<option value=\"nothing\">-------</option>\n";
+    foreach($l as $key => $conn) {
+      $select = ( !empty($conn_id) AND $conn_id == $key ) ? 'SELECTED' : '' ;
+      echo "<option value=\"$key\" $select>{$conn['name']}</option>\n";
+    }
+    echo "</select>\n";
   } else {
-    echo "<select size=\"1\" id=\"$select_name\" STYLE=\"visibility:hidden\">";
-    echo "<option value=\"nothing\" SELECTED>None Found</option>";
-    echo "</select><br><br>";
+    echo "<select size=\"1\" id=\"$select_name\" name=\"$select_name\" STYLE=\"visibility:hidden\">\n";
+    echo "<option value=\"nothing\" SELECTED>None Found</option>\n";
+    echo "</select><br /><br />\n";
   }
 }
 
-function Get_Audit_Configs($db,$config_id) {
-  $sql  = "SELECT * FROM audit_configurations";
-  $result = mysql_query($sql, $db);
-  echo "<select size=\"1\" id=\"select_config\">";
-  echo "<option value=\"nothing\" selected=\"selected\">Select Audit Config</option>";
-  echo "<option value=\"nothing\">-------</option>";
-  while ( $myrow = mysql_fetch_array($result) ) {
-    $name = $myrow['audit_cfg_name'];
-    $select = ( !empty($config_id) AND $config_id == $myrow['audit_cfg_id'] ) ? 'SELECTED' : '' ;
-    echo "<option value=\"{$myrow['audit_cfg_id']}\" $select>$name</option>";
+/**********************************************************************************************************
+Function Name:
+  Get_Audit_Configs
+Description:
+  Consturct an HTML SELECT element to choose an audit configuration on the audit_schedule.php form
+Arguments:
+  $config_id [IN] [INTEGER]   The configuration that should be selected
+Returns:    
+  Nothing to return
+**********************************************************************************************************/
+function Get_Audit_Configs($config_id) {
+  $configs = GetAuditConfigurationsFromDb();
+  echo "<select size=\"1\" id=\"select_config\" name=\"select_config\">\n";
+  echo "<option value=\"nothing\" selected=\"selected\">Select Audit Config</option>\n";
+  echo "<option value=\"nothing\">-------</option>\n";
+  if ( !is_null($configs) ) {
+    foreach ( $configs as $key => $cfg ) {
+      $name = $cfg['name'];
+      $select = ( !empty($config_id) AND $config_id == $key ) ? 'SELECTED' : '' ;
+      echo "<option value=\"$key\" $select>{$cfg['name']}</option>\n";
+    }
   }
-  echo "</select>";
+  echo "</select>\n";
 }
 
+/**********************************************************************************************************
+Function Name:
+  Get_Select_Options
+Description:
+  Construct an HTML SELECT element for the time dropdowns on the audit_schedule.php form
+Arguments:
+  $start    [IN] [INTEGER] The number to begin with
+  $end      [IN] [INTEGER] The number to end with
+  $selected [IN] [INTEGER] The number that should be selected
+Returns:    
+  Nothing to return
+**********************************************************************************************************/
 function Get_Select_Options($start,$end,$selected) {
   while ( $start <= $end ) {
     $value = ( preg_match("/^[0-9]$/", $start) ) ? "0".$start : $start;
@@ -226,60 +304,95 @@ function Get_Select_Options($start,$end,$selected) {
   }
 }
 
-function Get_Config_Name($db,$id) {
-  $sql  = "SELECT `audit_cfg_name` FROM audit_configurations WHERE `audit_cfg_id` = '$id'";
-  $result = mysql_query($sql, $db);
-  $myrow = mysql_fetch_array($result);
-  return $myrow['audit_cfg_name'];
+/**********************************************************************************************************
+Function Name:
+  Get_Config_Name
+Description:
+  Given a configuration ID, get the name
+Arguments:
+  $id   [IN] [INTEGER]  The ID of the configuration
+Returns:    
+  [String] The audit configuration name
+**********************************************************************************************************/
+function Get_Config_Name($id) {
+  $cfg = GetAuditConfigurationsFromDb();
+  return $cfg[$id]['name'];
 }
 
-function Get_Manage_Configs($db) {
-  $sql  = "SELECT * FROM audit_configurations";
-  $result = mysql_query($sql, $db);
-  echo "<div id=\"cfg-holder\"><table id=\"config-table\" summary=\"Audit Configurations\">
-    <thead>
-    	<tr>
-          <th scope=\"row\" colspan=\"5\"><center>Audit Configurations</center></th>
-        </tr>
-    	<tr>
-          <th scope=\"col\">Name</th>
-          <th scope=\"col\">Action</th>
-          <th scope=\"col\">Type</th>
-          <th scope=\"col\">Run</th>
-          <th scope=\"col\">Delete</th>
-        </tr>
-    </thead>
-    <tbody>";
-  while ( $myrow = mysql_fetch_array($result) ) {
-    $cfg_action = array(
-      'pc'      => "PC Audit",
-      'nmap'    => "Port Scan",
-      'pc_nmap' => "Audit/Port Scan",
-      'command' => "Commands"
-    );
-    $cfg_type = array(
-      'iprange' => "IP Range",
-      'domain'  => "LDAP",
-      'list'    => "PC List",
-      'mysql'   => "MySQL"
-    );
-    $audit_action = $cfg_action[$myrow['audit_cfg_action']];
-    $audit_type   = $cfg_type[$myrow['audit_cfg_type']];
-    echo "<tr>
-            <td><a href=\"audit_configuration.php?config_id={$myrow['audit_cfg_id']}\">{$myrow['audit_cfg_name']}</a></td>
-            <td>$audit_action</td>
-            <td>$audit_type</td>
-            <td>&nbsp;&nbsp;&nbsp;<img src=\"images/audit.png\" id=\"manage-img\"".
-            " onClick=\"auditConfigNow({$myrow['audit_cfg_id']},'{$myrow['audit_cfg_name']}')\"/></td>
-            <td>&nbsp;&nbsp;&nbsp;<img src=\"images/button_fail.png\" id=\"manage-img\"".
-            "alt=\"Delete this Configuration\" ".
-            "onClick=\"deleteConfigRow(this,{$myrow['audit_cfg_id']},'{$myrow['audit_cfg_name']}')\"/></td>
-          </tr>";
+/**********************************************************************************************************
+Function Name:
+  Get_Manage_Configs
+Description:
+  Construct the table of audit configurations for the audit_manage.php page
+Arguments: None
+Returns:    
+  Nothing to return
+**********************************************************************************************************/
+function Get_Manage_Configs() {
+  $configs = GetAuditConfigurationsFromDb();
+  echo "<div id=\"cfg-holder\">";
+  if (!is_null($configs)) {
+    echo "<table id=\"config-table\" summary=\"Audit Configurations\">
+      <thead>
+    	  <tr>
+            <th scope=\"row\" colspan=\"5\"><center>Audit Configurations</center></th>
+          </tr>
+    	  <tr>
+            <th scope=\"col\">Name</th>
+            <th scope=\"col\">Action</th>
+            <th scope=\"col\">Type</th>
+            <th scope=\"col\">Run</th>
+            <th scope=\"col\">Delete</th>
+          </tr>
+      </thead>
+      <tbody>";
+    foreach ( $configs as $key => $cfg ) {
+      $cfg_action = array(
+        'pc'      => "PC Audit",
+         'nmap'    => "Port Scan",
+         'pc_nmap' => "Audit/Port Scan",
+         'command' => "Commands"
+      );
+      $cfg_type = array(
+        'iprange' => "IP Range",
+        'domain'  => "LDAP",
+        'list'    => "PC List",
+        'mysql'   => "MySQL"
+      );
+      $audit_action = $cfg_action[$cfg['action']];
+      $audit_type   = $cfg_type[$cfg['type']];
+      echo "<tr>
+              <td><a href=\"audit_configuration.php?config_id=$key\">{$cfg['name']}</a></td>
+              <td>$audit_action</td>
+              <td>$audit_type</td>
+              <td>&nbsp;&nbsp;&nbsp;<img src=\"images/audit.png\" id=\"manage-img\"".
+              " onClick=\"confirmRunConfig($key,'{$cfg['name']}')\"/></td>
+              <td>&nbsp;&nbsp;&nbsp;<img src=\"images/button_fail.png\" id=\"manage-img\"".
+              "alt=\"Delete this Configuration\" ".
+              "onClick=\"confirmDeleteConfig(this,$key,'{$cfg['name']}')\"/></td>
+            </tr>";
+    }
+    echo "</tbody></table>";
   }
-  echo "</tbody></table></div>";
+  else {
+    echo "<p>No configurations found.
+          <a href=\"audit_configuration.php\">Add one</a></p>";
+  }
+  echo "</div>";
 }
 
-function Get_Manage_Schedules($db) {
+/**********************************************************************************************************
+Function Name:
+  Get_Manage_Schedules
+Description:
+  Construct the table of audit schedules for the audit_manage.php page
+Arguments:
+  $db   [IN] [RESOURCE]  The MySQL resource connection to use
+Returns:    
+  Nothing to return
+**********************************************************************************************************/
+function Get_Manage_Schedules() {
+  $schedules = GetAuditSchedulesFromDb();
   $type_map = array(
     'hourly'  => "Hourly",
     'weekly'  => "Weekly",
@@ -287,47 +400,61 @@ function Get_Manage_Schedules($db) {
     'daily'   => "Daily",
     'crontab' => "Cron Entry"
   );
-  $sql  = "SELECT * FROM audit_schedules";
-  $result = mysql_query($sql, $db);
-  echo "<div id=\"sched-holder\"><table id=\"sched-table\" summary=\"Audit Schedules\">
-    <thead>
-    	<tr>
-          <th scope=\"row\" colspan=\"7\"><center>Audit Schedules</center></th>
-        </tr>
-    	<tr>
-          <th scope=\"col\">Name</th>
-          <th scope=\"col\">Config</th>
-          <th scope=\"col\">Type</th>
-          <th scope=\"col\">Last Run</th>
-          <th scope=\"col\">Next Run</th>
-          <th scope=\"col\">Stop/Start</th>
-          <th scope=\"col\">Delete</th>
-        </tr>
-    </thead>
-    <tbody>";
-  while ( $myrow = mysql_fetch_array($result) ) {
-    $config_name  = Get_Config_Name($db,$myrow['audit_schd_cfg_id']);
-    $status_image = ( $myrow['audit_schd_active'] == "1" ) ? ( 'start' ) : ( 'stop'  );
-    $sched_type = $type_map[$myrow['audit_schd_type']];
-    $run_time = ( $myrow['audit_schd_last_run'] == 0 ) ? ( 'Never' ) : ( date('D M jS Y h:i:s A',$myrow['audit_schd_last_run']) );
-    $next_run = ( $myrow['audit_schd_next_run'] == 0 ) ? ( 'unknown' ) : ( date('D M jS Y h:i:s A',$myrow['audit_schd_next_run']) );
-    echo "<tr>
-            <td><a href=\"audit_schedule.php?sched_id={$myrow['audit_schd_id']}\">{$myrow['audit_schd_name']}</a></td>
-            <td>$config_name</td>
-            <td>$sched_type</td>
-            <td>$run_time</td>
-            <td>$next_run</td>
-            <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src=\"images/$status_image.png\" id=\"manage-img\" onClick=\"toggleSchedule(this,{$myrow['audit_schd_id']},'{$myrow['audit_schd_name']}')\"/></td>
-            <td>&nbsp;&nbsp;&nbsp;<img src=\"images/button_fail.png\" id=\"manage-img\" onClick=\"deleteSchedRow(this,{$myrow['audit_schd_id']},'{$myrow['audit_schd_name']}')\"/></td>
-          </tr>";
+
+  echo "<div id=\"sched-holder\">";
+  if ( !is_null($schedules) ) {
+    echo "<table id=\"sched-table\" summary=\"Audit Schedules\">
+      <thead>
+    	  <tr>
+            <th scope=\"row\" colspan=\"7\"><center>Audit Schedules</center></th>
+          </tr>
+    	  <tr>
+            <th scope=\"col\">Name</th>
+            <th scope=\"col\">Config</th>
+            <th scope=\"col\">Type</th>
+            <th scope=\"col\">Last Run</th>
+            <th scope=\"col\">Next Run</th>
+            <th scope=\"col\">Stop/Start</th>
+            <th scope=\"col\">Delete</th>
+          </tr>
+      </thead>
+      <tbody>";
+    foreach ( $schedules as $key => $cfg ) {
+      $config_name  = Get_Config_Name($cfg['config_id']);
+      $status_image = ( $cfg['active'] ) ? 'start' :  'stop';
+      $run_time = ($cfg['last_run'] == 0) ? 'Never'   : date('D M jS Y h:i:s A',$cfg['last_run']);
+      $next_run = ($cfg['next_run'] == 0) ? 'Unknown' : date('D M jS Y h:i:s A',$cfg['next_run']);
+      echo "<tr>
+              <td><a href=\"audit_schedule.php?sched_id=$key\">{$cfg['name']}</a></td>
+              <td>$config_name</td>
+              <td>{$type_map[$cfg['type']]}</td>
+              <td>$run_time</td>
+              <td>$next_run</td>
+              <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src=\"images/$status_image.png\" id=\"manage-img\" onClick=\"toggleSchedule(this,$key,'{$cfg['name']}')\"/></td>
+              <td>&nbsp;&nbsp;&nbsp;<img src=\"images/button_fail.png\" id=\"manage-img\" onClick=\"confirmDeleteSchedule(this,$key,'{$cfg['name']}')\"/></td>
+            </tr>";
+    }
+    echo "</tbody></table></div>";
   }
-  echo "</tbody></table></div>";
+  else {
+    echo "<p>No schedules found. <a href=\"audit_schedule.php\">Add one</a></p>";
+  }
+  echo "</div>";
 }
 
-/* Given the table name and the mysql connection
-   return the fields for the table as an array   */
+/**********************************************************************************************************
+Function Name:
+  Get_MySQL_Fields
+Description:
+  Given the template varibles, replacements, and filename, return the HTML with the vars in place.
+Arguments:
+  $db    [IN] [RESOURCE]  MySQL connection resource
+  $table [IN] [String]    The table to get fields for
+Returns:    
+  [Array] The fields from the table, sorted
+**********************************************************************************************************/
 function Get_MySQL_Fields($db,$table) {
-  $result = mysql_query("SHOW COLUMNS FROM $table");
+  $result = mysql_query("SHOW COLUMNS FROM $table",$db);
   $fields = array();
   if (!$result) {
     echo 'Could not run query: ' . mysql_error();
@@ -343,31 +470,60 @@ function Get_MySQL_Fields($db,$table) {
   return $fields;
 }
 
-/* If the web server is running windows, return true */
-function Windows_Server() {
-
-  if ( preg_match("/Win32|Win64|Windows|mswin|microsoft/i",$_SERVER['SERVER_SIGNATURE']) ) {
-    return TRUE;
-  }
-  else {
-    return FALSE;
-  }
-}
-
-/* Make a best guess about what to execute commands with from the web interface */
+/**********************************************************************************************************
+Function Name:
+  Get_Audit_Bin
+Description:
+  Make a best guess about what command/path to execute from the web interface
+Arguments:
+  None
+Returns:    
+  [String] The path to the file to use
+**********************************************************************************************************/
 function Get_Audit_Bin() {
+  global $TheApp;
+  $bin  = null;
   $wdir = getcwd();
+  $cfg  = GetAuditSettingsFromDb();
 
-  if ( Windows_Server() && file_exists('./scripts/audit.exe') ) {
+  if ( $cfg["script_only"] && file_exists('./scripts/audit.pl') ) {
+    $bin = ( $TheApp->OS == 'Windows' ) ? "perl \"$wdir\\scripts\\audit.pl\"" : "\"$wdir/scripts/audit.pl\"";
+  } 
+  elseif ( $TheApp->OS == 'Windows' && file_exists('./scripts/audit.exe') ) {
     $bin = "$wdir\\scripts\\audit.exe";
   }
-  elseif ( !Windows_Server() && file_exists('./scripts/audit') ) {
+  elseif ( $TheApp->OS != 'Windows' && file_exists('./scripts/audit') ) {
     $bin = "\"$wdir/scripts/audit\"";
-  } 
+  }
   elseif ( file_exists('./scripts/audit.pl') ) {
-    $bin = ( Windows_Server() ) ? "perl \"$wdir\\scripts\\audit.pl\"" : "\"$wdir/scripts/audit.pl\"";
+    $bin = ( $TheApp->OS == 'Windows' ) ? "perl \"$wdir\\scripts\\audit.pl\"" : "\"$wdir/scripts/audit.pl\"";
   } 
 
   return $bin;
+}
+
+/**********************************************************************************************************
+Function Name:
+  Verify_Cron_Line
+Description:
+  Check that a cron entry has correct syntax.
+Arguments:
+  [String] The cron line to check
+Returns:    
+  [Integer] The unix timestamp of the next run time. Or null on failure to verify the cron entry
+**********************************************************************************************************/
+function Verify_Cron_Line($cron_entry) {
+    $cron_entry = trim($cron_entry);
+		$cron_entry = preg_replace('/[\s]{2,}/', ' ', $cron_entry);
+
+		if ( preg_match('/[^-,* \\d\/]/', $cron_entry) !== 0 || count(explode(' ',$cron_entry)) == 5 ) {
+      $audit_bin = Get_Audit_Bin();
+      $entry     = escapeshellarg($cron_entry);
+      $output    = `$audit_bin --test-cron $entry`;
+      return ( !empty($output) ) ? $output : null;
+		}
+    else {
+      return null;
+    }
 }
 ?>

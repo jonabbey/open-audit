@@ -1,3 +1,11 @@
+/**********************************************************************************************************
+Function Name:
+	addToCommands
+Description:
+  Add a new command row on the audit_commands.php page when the add button is clicked
+Arguments: None
+Returns:	None
+**********************************************************************************************************/
 function addToCommands() {
   var c_name = document.getElementById("input-cmdname").value;
   var c_cmd  = document.getElementById("input-cmd").value;
@@ -50,6 +58,14 @@ function removeCommand(obj) {
   if ( tbl.rows.length == '1' || rowsShowing(tbl) == '0' ) { tbl.deleteRow(0); }
 }
 
+/**********************************************************************************************************
+Function Name:
+	stateChange
+Description:
+	Handle the state change from the AJAX POST request
+Arguments: None
+Returns:	None
+**********************************************************************************************************/
 function stateChange() {
   if ( ajaxRequest.readyState == 4 ) {
     if ( ajaxRequest.status == 200 ) {
@@ -61,6 +77,14 @@ function stateChange() {
   }
 }
 
+/**********************************************************************************************************
+Function Name:
+	submitCommands
+Description:
+	Update the commands via an AJAX POST to audit_command_ajax.php when the update button is pushed.
+Arguments: None
+Returns:	None
+**********************************************************************************************************/
 function submitCommands() {
   var postStr = "action=update";
   var change = false;
@@ -105,6 +129,15 @@ function submitCommands() {
   }
 }
 
+/**********************************************************************************************************
+Function Name:
+	addHeader
+Description:
+	Add a header to a table
+Arguments:
+  tbl	[IN] [OBJECT]  The table object to add the header to
+Returns:	None
+**********************************************************************************************************/
 function addHeader(tbl) {
 	if ( document.getElementById('table-cmd-head') ) { return; }
   var row = tbl.insertRow(0);
@@ -119,6 +152,16 @@ function addHeader(tbl) {
   cellRight.appendChild(document.createTextNode('Delete'));
 }
 
+/**********************************************************************************************************
+Function Name:
+	rowsShowing
+Description:
+	Get the ammount of rows that are actually visible
+Arguments:
+  tbl [IN] [OBJECT] The table object to check
+Returns:	None
+  count [INTEGER] The number of rows visible
+**********************************************************************************************************/
 function rowsShowing(tbl) {
   var tr = document.getElementById('cmd_table').getElementsByTagName('tr');
 	var count = 0;

@@ -89,7 +89,9 @@ if ($use_pass != "n") {
         echo '<link media="screen" rel="stylesheet" type="text/css" href="jquery-ui-theme.css" />'."\n";
         foreach($JQUERY_UI as $script) {
           echo '<script type="text/javascript" src="javascript/jquery/jquery-ui-'.$script.'.js"></script>'."\n";
-          echo '<link media="screen" rel="stylesheet" type="text/css" href="jquery-ui-'.$script.'.css" />'."\n";
+          if ( file_exists('jquery-ui-'.$script.'.css') ) {
+            echo '<link media="screen" rel="stylesheet" type="text/css" href="jquery-ui-'.$script.'.css" />'."\n";
+          }
         }
       }
 

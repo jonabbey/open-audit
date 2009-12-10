@@ -1,13 +1,18 @@
+/**********************************************************************************************************
+Function Name:
+	SwitchSchedType
+Description:
+	Show only the fieldset of the schedule type picked for the dropdown
+Arguments:
+	selected	[IN] [object]	select object for the schedule type
+Returns:	None
+**********************************************************************************************************/
 function SwitchSchedType(selected) {
-  var fsName = "fs_" + selected.options[selected.selectedIndex].value;
+  var class_name = selected.options[selected.selectedIndex].value;
 
-  window.document.getElementById("fs_hourly").style.display = 'none';
-  document.getElementById("fs_daily").style.display = 'none';
-  document.getElementById("fs_weekly").style.display = 'none';
-  document.getElementById("fs_monthly").style.display = 'none';
-  document.getElementById("fs_crontab").style.display = 'none';
+  $('fieldset.schedule-type').hide();
 
-  if ( fsName == "fs_hourly" || fsName == "fs_crontab" ) {
+  if ( class_name == "hourly" || class_name == "crontab" ) {
     document.getElementById('select_gen_hour').disabled = true;
     document.getElementById('select_gen_min').disabled = true;
   }
@@ -15,12 +20,19 @@ function SwitchSchedType(selected) {
     document.getElementById('select_gen_hour').disabled = false;
     document.getElementById('select_gen_min').disabled = false;
   }
-    
-  if ( document.getElementById(fsName) ) {
-    document.getElementById(fsName).style.display = 'block';
-  }
+
+  $('fieldset.' + class_name).show();
 }
 
+/**********************************************************************************************************
+Function Name:
+	BetweenHours
+Description:
+  Disable/enable boxes if this is a schedule that only goes between a certain time
+Arguments:
+	obj	[IN] [object]	checkbox object to select only between a certain time
+Returns:	None
+**********************************************************************************************************/
 function BetweenHours(obj) {
   var action = ( obj.checked ) ? false : true;
 
@@ -31,9 +43,19 @@ function BetweenHours(obj) {
   document.getElementById('select_hourly_start').disabled = ( obj.checked ) ? true : false ;
 }
 
+/**********************************************************************************************************
+Function Name:
+	ToggleLogging
+Description:
+	If logging is disabled at the schedule level, disable the ability to email
+Arguments:
+	obj	[IN] [object]	checkbox object for toggle the logging ability
+Returns:	None
+**********************************************************************************************************/
 function toggleLogging(obj) {
   if ( obj.checked ) {
     document.getElementById('check_email_log').disabled = true;
+    document.getElementById('check_email_log').checked = false;
     document.getElementById('fs_email').style.display = 'none';
   }
   else {
@@ -45,15 +67,25 @@ function toggleLogging(obj) {
   }
 }
 
-function toggleEmail(obj) {
-  document.getElementById('fs_email').style.display = 
-    ( obj.checked ) ? 'block' : 'none' ;
-}
+/**********************************************************************************************************
+Function Name:
+	toggleEmail
+Description:
+	Show/hide the email options
+Arguments:
+	obj	[IN] [object]	checkbox object for toggling emails
+Returns:	None
+**********************************************************************************************************/
+function toggleEmail(obj) { ( obj.checked ) ? $('#fs_email').show() : $('#fs_email').hide(); }
 
-/*******
-* How to display the schedule edit page... 
-*******/
-
+/**********************************************************************************************************
+Function Name:
+	SchedType
+Description:
+	Called when the page is loaded to determine what to show
+Arguments: None
+Returns:	 None
+**********************************************************************************************************/
 function SchedType() {
   SwitchSchedType( document.getElementById('select_sched_type') );
   BetweenHours( document.getElementById('check_hours_between') );
@@ -64,42 +96,14 @@ function SchedType() {
   document.getElementById('input_name').focus();
 }
 
-function addToEmailList() {
-  var email = document.getElementById('input_email_to').value;
-  if ( ! email ) { return; } 
-  var email_boxes = document.getElementById('EmailContainer').getElementsByTagName('div');
-  var id = email_boxes.count + 1;
-
-  var emailDiv = document.createElement('div');
-  var emailDel = document.createElement('img');
-  var emailVal = document.createElement('input');
-
-  emailDiv.setAttribute('id','email' + id );
-  emailDiv.setAttribute("class","Box");
-  emailDiv.setAttribute("className","Box");
-
-  emailDel.src = 'images/delete.png';
-  emailDel.id  = id;
-  emailDel.setAttribute('class','delete');
-  emailDel.setAttribute('className','delete');
-  emailDel.onclick = function() { removeEmail( document.getElementById('email' + id) ) };
-
-  emailVal.type  = 'hidden'
-  emailVal.name  = 'email_to';
-  emailVal.value = email;
-
-  emailDiv.appendChild( emailDel  );
-  emailDiv.appendChild( document.createTextNode(email) );
-  emailDiv.appendChild( emailVal  );
-
-  document.getElementById('EmailContainer').appendChild(emailDiv);
-}
-
-function removeEmail(obj) {
-  var inputs = obj.getElementsByTagName('input');
-  document.getElementById('EmailContainer').removeChild(obj);
-}
-
+/**********************************************************************************************************
+Function Name:
+	cronTest
+Description:
+	Make an AJAX request to test if the user entered cron line is valid. If it is, show the next run time
+Arguments: None
+Returns:	 None
+**********************************************************************************************************/
 function cronTest() {
   document.getElementById('cron_result').innerHTML = 
    "<img class=\"busy\" src=\"images/hourglass-busy.gif\">&nbsp;&nbsp;<i>Checking cron line...</i>";
@@ -113,3 +117,12 @@ function cronTest() {
       "<font color=\"green\">" + result             ;            
   }
 }
+
+/* Get the next execution time of the cron line */
+function testCron(selected) {
+  selected.disabled = true;
+  var postStr = "cron_line=" + encodeURI( document.getElementById('input_cron_line').value ) +
+                "&type=cron";
+  var phpPage = "audit_test_ajax.php";
+  ajaxFunction(phpPage, postStr, cronTest);
+} 

@@ -9,6 +9,137 @@
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
+DROP TABLE IF EXISTS `audit_commands`;
+CREATE TABLE `audit_commands` (
+  `audit_cmd_id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `audit_cmd_name` VARCHAR(100) NOT NULL default '',
+  `audit_cmd_command` VARCHAR(500) NOT NULL default '',
+  PRIMARY KEY(`audit_cmd_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+DROP TABLE IF EXISTS `audit_configurations`;
+CREATE TABLE `audit_configurations` (
+  `audit_cfg_id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `audit_cfg_name` VARCHAR(50) NOT NULL default '',
+  `audit_cfg_action` VARCHAR(25) NOT NULL default '',
+  `audit_cfg_type` VARCHAR(25) NOT NULL default '',
+  `audit_cfg_os` VARCHAR(25) NOT NULL default '',
+  `audit_cfg_max_audits` INT(10) UNSIGNED NOT NULL default '0',
+  `audit_cfg_wait_time` INT(10) UNSIGNED NOT NULL default '1200',
+  `audit_cfg_ldap_conn` INT(10) UNSIGNED NOT NULL default '0',
+  `audit_cfg_ldap_use_conn` INT(10) UNSIGNED NOT NULL default '0',
+  `audit_cfg_audit_conn` INT(10) UNSIGNED NOT NULL default '0',
+  `audit_cfg_audit_use_conn` INT(10) UNSIGNED NOT NULL default '0',
+  `audit_cfg_audit_local` INT(10) UNSIGNED NOT NULL default '0',
+  `audit_cfg_ldap_user` VARBINARY(255) NOT NULL default '',
+  `audit_cfg_ldap_pass` VARBINARY(255) NOT NULL default '',
+  `audit_cfg_ldap_server` VARCHAR(200) NOT NULL default '',
+  `audit_cfg_ldap_path` VARCHAR(200) NOT NULL default '',
+  `audit_cfg_ldap_page` INT(10) UNSIGNED NOT NULL default '0',
+  `audit_cfg_filter` VARCHAR(200) NOT NULL default '',
+  `audit_cfg_filter_case` INT(10) UNSIGNED NOT NULL default '0',
+  `audit_cfg_filter_inverse` INT(10) UNSIGNED NOT NULL default '0',
+  `audit_cfg_audit_user` VARCHAR(200) NOT NULL default '',
+  `audit_cfg_audit_pass` VARCHAR(200) NOT NULL default '',
+  `audit_cfg_ip_start` VARCHAR(15) NOT NULL default '',
+  `audit_cfg_ip_end` INT(10) UNSIGNED NOT NULL default '0',
+  `audit_cfg_pc_list` VARCHAR(2048) NOT NULL default '',
+  `audit_cfg_win_vbs` VARCHAR(200) NOT NULL default '',
+  `audit_cfg_com_path` VARCHAR(200) NOT NULL default '',
+  `audit_cfg_lin_sft` INT(10) UNSIGNED NOT NULL default '0',
+  `audit_cfg_lin_sft_lst` INT(10) UNSIGNED NOT NULL default '0',
+  `audit_cfg_sft_lst` VARCHAR(2048) NOT NULL default '',
+  `audit_cfg_lin_identity` VARCHAR(200) NOT NULL default '',
+  `audit_cfg_lin_url` VARCHAR(200) NOT NULL default '',
+  `audit_cfg_win_sft` INT(10) UNSIGNED NOT NULL default '0',
+  `audit_cfg_win_url` VARCHAR(200) NOT NULL default '',
+  `audit_cfg_win_uuid` VARCHAR(10) NOT NULL default '',
+  `audit_cfg_nmap_int` INT(10) UNSIGNED NOT NULL default '0',
+  `audit_cfg_nmap_srv` INT(10) UNSIGNED NOT NULL default '0',
+  `audit_cfg_nmap_udp` INT(10) UNSIGNED NOT NULL default '0',
+  `audit_cfg_nmap_tcp_syn` INT(10) UNSIGNED NOT NULL default '0',
+  `audit_cfg_nmap_url` VARCHAR(200) NOT NULL default '',
+  `audit_cfg_nmap_path` VARCHAR(200) NOT NULL default '',
+  `audit_cfg_command_list` VARCHAR(2048) NOT NULL default '',
+  `audit_cfg_command_interact` INT(10) UNSIGNED NOT NULL default '0',
+  `audit_cfg_log_enable` INT(10) UNSIGNED NOT NULL default '0',
+  `audit_cfg_mysql_ids` VARCHAR(200) NOT NULL default '',
+  `audit_cfg_cmd_list` VARCHAR(200) NOT NULL default '',
+  PRIMARY KEY(`audit_cfg_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+DROP TABLE IF EXISTS `audit_settings`;
+DROP TABLE IF EXISTS `audit_settings`;
+CREATE TABLE `audit_settings` (
+  `audit_settings_id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `audit_settings_active` INT(10) UNSIGNED NOT NULL default '0',
+  `audit_settings_interval` INT(10) UNSIGNED NOT NULL default '3',
+  `audit_settings_pid` INT(10) UNSIGNED NOT NULL default '0',
+  `audit_settings_runas_service` INT(10) UNSIGNED NOT NULL default '0',
+  `audit_settings_script_only` INT(10) UNSIGNED NOT NULL default '0',
+  `audit_settings_base_url` VARCHAR(200) NOT NULL default '',
+  `audit_settings_service_name` VARCHAR(200) NOT NULL default 'openaudit',
+  PRIMARY KEY(`audit_settings_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+DROP TABLE IF EXISTS `audit_log`;
+CREATE TABLE `audit_log` (
+  `audit_log_id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `audit_log_message` VARCHAR(255) NOT NULL default '',
+  `audit_log_host` VARCHAR(255) NOT NULL default '',
+  `audit_log_schedule_id` VARCHAR(255) NOT NULL default '',
+  `audit_log_config_id` VARCHAR(255) NOT NULL default '',
+  `audit_log_time` INT(10) UNSIGNED NOT NULL default '0',
+  `audit_log_timestamp` INT(10) UNSIGNED NOT NULL default '0',
+  `audit_log_pid` INT(10) UNSIGNED NOT NULL default '0',
+  PRIMARY KEY(`audit_log_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+DROP TABLE IF EXISTS `mysql_queries`;
+CREATE TABLE `mysql_queries` (
+  `mysql_queries_id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT, 
+  `mysql_queries_cfg_id` INT(10) UNSIGNED NOT NULL default '0',
+  `mysql_queries_table` VARCHAR(50) NOT NULL default '',
+  `mysql_queries_field` VARCHAR(50) NOT NULL default '',
+  `mysql_queries_sort` VARCHAR(10) NOT NULL default '',
+  `mysql_queries_data` VARCHAR(500) NOT NULL default '',
+  PRIMARY KEY(`mysql_queries_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+DROP TABLE IF EXISTS `audit_schedules`;
+CREATE TABLE `audit_schedules` (
+  `audit_schd_id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `audit_schd_name` VARCHAR(100) NOT NULL default '',
+  `audit_schd_cfg_id` INT(10) UNSIGNED NOT NULL default '0',
+  `audit_schd_active` INT(10) UNSIGNED NOT NULL default '1',
+  `audit_schd_updated` INT(10) UNSIGNED NOT NULL default '0',
+  `audit_schd_type` VARCHAR(25) NOT NULL default '',
+  `audit_schd_strt_hr` INT(10) UNSIGNED NOT NULL default '0',
+  `audit_schd_strt_min` INT(10) UNSIGNED NOT NULL default '0',
+  `audit_schd_hr_frq_hr` INT(10) UNSIGNED NOT NULL default '0',
+  `audit_schd_hr_frq_min` INT(10) UNSIGNED NOT NULL default '0',
+  `audit_schd_hr_between` INT(10) UNSIGNED NOT NULL default '0',
+  `audit_schd_hr_strt_hr` INT(10) UNSIGNED NOT NULL default '0',
+  `audit_schd_hr_strt_min` INT(10) UNSIGNED NOT NULL default '0',
+  `audit_schd_hr_end_hr` INT(10) UNSIGNED NOT NULL default '0',
+  `audit_schd_hr_end_min` INT(10) UNSIGNED NOT NULL default '0',
+  `audit_schd_dly_frq` INT(10) UNSIGNED NOT NULL default '0',
+  `audit_schd_wk_days` VARCHAR(75) NOT NULL default '',
+  `audit_schd_mth_day` INT(10) UNSIGNED NOT NULL default '0',
+  `audit_schd_mth_months` VARCHAR(100) NOT NULL default '',
+  `audit_schd_last_run` INT(10) UNSIGNED NOT NULL default '0',
+  `audit_schd_next_run` INT(10) UNSIGNED NOT NULL default '0',
+  `audit_schd_log_disable` INT(10) UNSIGNED NOT NULL default '0',
+  `audit_schd_cron_line` VARCHAR(250) NOT NULL default '',
+  `audit_schd_email_log` INT(10) UNSIGNED NOT NULL default '0',
+  `audit_schd_email_list` VARCHAR(500) NOT NULL default '',
+  `audit_schd_email_subject` VARCHAR(100) NOT NULL default '',
+  `audit_schd_email_replyto` VARCHAR(100) NOT NULL default '',
+  `audit_schd_email_template` VARCHAR(100) NOT NULL default '',
+  `audit_schd_email_logo` VARCHAR(100) NOT NULL default '',
+  PRIMARY KEY(`audit_schd_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
 DROP TABLE IF EXISTS `auth`;
 CREATE TABLE `auth` (
   `auth_id` INT( 10 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,
@@ -1356,7 +1487,17 @@ CREATE TABLE `video` (
   KEY `id2` (`video_timestamp`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
-INSERT INTO config (config_name, config_value) VALUES ('version','09.11.15');
+DROP TABLE IF EXISTS `ws_log`;
+CREATE TABLE `ws_log` (
+  `ws_log_id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `ws_log_pid` INT(10) UNSIGNED NOT NULL default '0',
+  `ws_log_message` VARCHAR(150) NOT NULL default '',
+  `ws_log_timestamp` INT(10) UNSIGNED NOT NULL default '0',
+  PRIMARY KEY(`ws_log_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+INSERT INTO config (config_name, config_value) VALUES ('version','09.12.10');
+INSERT INTO audit_settings () VALUES ();
 
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 

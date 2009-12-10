@@ -2,6 +2,10 @@ fieldset#fs_hourly, fieldset#fs_daily,
 fieldset#fs_weekly, fieldset#fs_monthly,
 fieldset#fs_email, fieldset#fs_crontab { display: none }
 
+.tooltip { margin-right: 5px; }
+
+#form-result img { padding: 0px 5px; }
+
 .Box {
   border: #000 1px solid;
   padding: 2px;

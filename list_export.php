@@ -99,7 +99,7 @@ else {
    "Disposition"  => "attachment"
   );
 
-  $result = SendHtmlEmail($subject,$html,$_GET["email_list"],$email,array($attachment));
+  $result = SendHtmlEmail($subject,$html,$_GET["email_list"],$email,array($attachment),null);
 
   $xml  = "<csvsend>";
   $xml .= "<smtpstatus>enabled</smtpstatus>";

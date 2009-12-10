@@ -12,9 +12,40 @@ Recent Changes:
 	[Nick Brown]	01/05/2009
 	Added CheckOpenSslStatus() function.
 	[Chad Sikorra]	15/11/2009 Added SMTP functions
+	[Chad Sikorra]	17/11/2009 Added audit functions. 'Save' now executes an ajax call before form submission
 	
 **********************************************************************************************************/
 //debugger; 
+
+
+/**********************************************************************************************************
+
+	Jquery 'ready' function - things to execute when the DOM is ready
+
+**********************************************************************************************************/
+
+$(document).ready(function() {
+	$("#npb_config_save_error").dialog({
+		width: 350,
+		bgiframe: true,
+		draggable: false,
+		resizable: false,
+		autoOpen: false,
+		dialogClass: 'ui-state-error',
+		modal: true,
+		title: 'Error Saving Configuration',
+		buttons: { 'Ok' : function() { $('#npb_config_save_error').dialog('close'); } }, 
+		position: ['center','middle']
+	}).prev().addClass('ui-state-error');
+
+	$("#admin_config").submit(function() { if ( !SaveConfiguration() ) { return false; } });
+	$('a.tooltip').tooltip({
+		'showURL' : false,
+		'extraClass' : 'tooltip-style',
+		'delay' : 0,
+		'fade' : 250
+	}).click( function() { return false; });
+});
 
 /**********************************************************************************************************
 Function Name:
@@ -103,7 +134,7 @@ function RefreshLdapConnectionsList()
 Function Name:
 	RefreshSmtpConnectionList
 Description:
-        Called by: DeleteSmtpConnection, SaveSmtpConnection
+	Called by: DeleteSmtpConnection, SaveSmtpConnection
 Arguments:	None
 Returns:	None
 Change Log:
@@ -300,7 +331,7 @@ Function Name:
 	CloseConnectionDivs
 Description:
 	Hide any open connection config divs, clear the test results
-        Called in reponse to 'cancel' button or when doing an edit/add
+	Called in reponse to 'cancel' button or when doing an edit/add
 Arguments:	None
 Returns: 	None
 Change Log:
@@ -406,7 +437,7 @@ function SaveLdapConnection()
 		else
 		{
 			// Success - hide connection config div and refresh list
-      CloseConnectionDivs();
+			CloseConnectionDivs();
 			RefreshLdapConnectionsList();
 		}
 	}
@@ -684,7 +715,6 @@ Function Name:
 	ToggleSmtpAuth
 Description:
 	Disable/Enable username/password fields based on if authentication is selected for SMTP
-
 	Called in response to adding,editing a SMTP connection or clicking on the checkbox
 Arguments:
 	obj	[IN] [object]	Checkbox object to toggle
@@ -700,4 +730,42 @@ function ToggleSmtpAuth(obj)
 	document.getElementById("smtp_connection_realm").disabled = toggleState;
 	document.getElementById("smtp_connection_security").disabled = toggleState;
 	document.getElementById("smtp_connection_start_tls").disabled = toggleState;
+}
+
+/**********************************************************************************************************
+Function Name:
+	SaveConfiguration
+Description:
+	Called when the "Save" button is clicked. Saves certain pieces to the DB first,
+	then actually submits the form if there were no issues 
+Arguments:	None
+Returns:	None
+Change Log:
+	04/12/2009			New function	[Chad Sikorra]
+**********************************************************************************************************/
+function SaveConfiguration()
+{
+	var config_params = '&' + $('#admin_config').serialize();
+	var ConfigSave = new XmlRequestor('admin_config_data.php?sub=f17' + config_params);
+	$('#npb_config_save_error').html('');
+
+	// Check returned XML for result, list errors if any
+	if(ConfigSave.GetValue("result")=="false")
+	{
+		var error_list;
+		error_list  = '<p><span class="ui-icon ui-icon-alert npb-save-alert">'
+		error_list += '</span><strong>Please correct the following errors</strong></p>';
+		error_list += '<div id="npb-save-error-div"><ul id="npb-save-error-list">';
+		$(ConfigSave.XmlDomObject).find('error').each(function(){
+			error_list += '<li>' + $(this).text() + '</li>';
+		});
+		error_list += '</ul></div>';
+		$('#npb_config_save_error').append(error_list);
+		$("#npb_config_save_error").dialog('open');
+		return false;
+	}
+	else
+	{
+		return true;
+	}
 }

@@ -4,6 +4,30 @@
  27 August 2008
  *************************************************************/
 
+.npb-tooltip {
+	margin-right: 5px;
+}
+
+#npb_config_save_error {
+	font:	normal 90% verdana, tahoma, arial, Sans;
+}
+
+ /* The alert icon on the save error modal */
+.npb-save-alert {
+  float: left;
+  margin-right: 10px;
+}
+
+/* The wrapper div for npb-save-error-list on the save error modal */
+#npb-save-error-div {
+  height: 90px;
+	overflow: auto;
+}
+
+#npb-save-error-list {
+	font:	normal 75% verdana, tahoma, arial, Sans;
+}
+
  /* Define look of the popup menu used by page */
 #npb_popupmenu_div {
 	position:	absolute;
@@ -48,7 +72,9 @@ ul.npb_tab_nav li{
 }
 
 /* Hide the "Security", "Homepage", and Server Connection pages (DIVs) initially */
-#npb_config_security_div, #npb_config_homepage_div, #npb_config_connections_div {
+#npb_config_security_div, #npb_config_homepage_div,
+#npb_config_connections_div, #npb_config_audits_div,
+#npb_config_save_error {
 	display:	none;
 }
 
@@ -62,8 +88,9 @@ ul.npb_tab_nav li{
 	padding:	10px;
 }
 
-/* Padding for the general, security & homepage "pages" (DIVs) */
-#npb_config_general_div, #npb_config_security_div, #npb_config_homepage_div {
+/* Padding for the general, security, audits & homepage "pages" (DIVs) */
+#npb_config_general_div, #npb_config_security_div,
+#npb_config_homepage_div, #npb_config_audits_div {
 	padding: 10px;
 }
 
@@ -104,14 +131,15 @@ div.npb_config_col {
 }
 
 /* define how the fieldset borders look */
-.npb-connection-config fieldset, #npb_config_security_div fieldset {
+.npb-connection-config fieldset, #npb_config_security_div fieldset,
+#npb_config_audits_div fieldset, #npb_config_general fieldset {
 	margin:	5px;
 	width:	95%;
 	border:	1px solid #cccccc;
 }
 
 /* float labels left and right-align them for these forms */
-.npb-connection-config label, #npb_config_general_div label, #npb_smtp_test {
+.npb-connection-config label, #npb_config_general_div label, #npb_smtp_test{
 	display: block;
 	float: left; 
 	width: 150px; 
@@ -120,8 +148,8 @@ div.npb_config_col {
 	text-align: right; 
 }
 
-/* float labels left and right-align them for security form */
-#npb_config_security_div label{
+/* float labels left and right-align them for security/audits form */
+#npb_config_security_div label, #npb_config_general_div label{
 	display: block;
 	float: left; 
 	width: 200px; 
@@ -142,7 +170,8 @@ div.npb_config_col {
 
 /* Layout for form input controls */
 .npb-connection-config input, #npb_config_general_div input,
-#npb_config_security_div input, #npb_config_homepage_div  input {
+#npb_config_security_div input, #npb_config_homepage_div  input,
+#npb_config_audits_div input{
 	margin:	0 0 10px 10px;
 	font:	normal 90% verdana, tahoma, arial, Sans;
 	vertical-align: middle;
@@ -157,8 +186,8 @@ div.npb_config_col {
 
 /* Size checkbox controls to make them align better with accomapnying label */
 .npb-connection-config  input[type="checkbox"], #npb_config_security_div  input[type="checkbox"],
-#npb_config_homepage_div  input[type="checkbox"],
-#npb_choose_email_div  input[type="radio"]{
+#npb_config_homepage_div  input[type="checkbox"], #npb_choose_email_div  input[type="radio"],
+#npb_config_general_div  input[type="checkbox"] {
 	margin:	4px 0 10px 10px;
 }
 
@@ -214,3 +243,4 @@ div.npb_section_content form {
 
 /* Align the button for choosing LDAP/SMTP */
 .npb-label-div { margin-left: 75px; float: left; }
+

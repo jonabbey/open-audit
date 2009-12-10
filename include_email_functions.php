@@ -65,10 +65,11 @@ Arguments:
   $email       [IN] [Object] Email object, or null to have this function create one
   $attachments [IN] [Array] An array of file attachment arrays for the Mimemessage class
                       Ex: ('Name'=>'','Data'=>'','Content-Type'=>'','Disposition'=>'')
+  $logo        [IN] [Sring] Path to a logo to use for the email. Ignored if null
 Returns:    
   [Array] An array of email addresses that failed to send, if any
 **********************************************************************************************************/
-function SendHtmlEmail($subject,$html,$to,&$email,$attachments) { 
+function SendHtmlEmail($subject,$html,$to,&$email,$attachments,$logo) { 
   if(is_null($email)){ $email =& GetEmailObject(); }
   $err_list  = array();
   $rel_parts = array();
@@ -76,6 +77,24 @@ function SendHtmlEmail($subject,$html,$to,&$email,$attachments) {
   $text = "This is an HTML email. Enable HTML to view it.";
 
   $email->SetEncodedHeader('Subject',$subject);
+
+  // Add a logo or image if one is specified
+  if ( !is_null($logo) && file_exists($logo["Path"]) ) {
+    $image=array(
+      "FileName"     => $logo["Path"],
+      "Content-Type" => "automatic/name",
+      "Disposition"  => "inline",
+      "Cache"        => 1
+    );
+
+    $email->CreateFilePart($image,$image_part);
+    $cid = $email->GetPartContentID($image_part);
+
+    // No way to predict/set the CID with this class, so set it after we get it...
+    $html = ( preg_match("/{$logo["Variable"]}/",$html) ) ?
+      preg_replace("/{$logo["Variable"]}/",$cid,$html) :
+      $html;
+  }
 
   // Create the parts to add first
   $email->CreateQuotedPrintableHTMLPart($html,'',$html_part);
@@ -89,6 +108,9 @@ function SendHtmlEmail($subject,$html,$to,&$email,$attachments) {
 
   $email->CreateAlternativeMultipart($alt_parts,$alt_part);
   array_push($rel_parts,$alt_part);
+  // The image part needs to be added after the other parts...
+  if ( isset($image_part) ) { array_push($rel_parts,$image_part); }
+
 
   $email->AddRelatedMultipart($rel_parts);
 

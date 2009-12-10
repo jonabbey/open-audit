@@ -1,232 +1,270 @@
-function deleteConfigRow(selected,config_id,config_name) {
-  if ( confirm("Delete configuration \"" + config_name + "\" ?") == true ) {
+/**********************************************************************************************************
+Function Name:
+  deleteConfigRow
+Description:
+  Delete an audit configuration. 
+Arguments:
+  selected    [IN] [OBJECT]  The image object that was clicked
+  config_id   [IN] [INTEGER] The configuration ID number to delete
+Returns:  None
+**********************************************************************************************************/
+function deleteConfigRow(selected,config_id) {
+  var DeleteConfiguration = new XmlRequestor('audit_manage_ajax.php?action=delete_config&config_id=' + config_id);
+
+  if ( DeleteConfiguration.GetValue("result") == 'true' ) {
     var row_to_remove = selected.parentNode.parentNode.rowIndex;
-    var postStr = "action=" + encodeURI( "delete config" ) +
-            "&config_id=" + encodeURI( config_id );
-    var phpPage = "audit_manage_ajax.php";
-    http_request = GetXmlHttpObject();
-    http_request.onreadystatechange = function () {
-      if ( http_request.readyState == 4 ) {
-        if ( http_request.status == 200 ) {
-          var result = http_request.responseText;
-          var regDel = /.*Deleted the Configuration:.*/i;
-          if ( regDel.exec(result) ) {
-            document.getElementById('config-table').deleteRow(row_to_remove);
-            if ( document.getElementById('config-table').rows.length == '2' ) { 
-              document.getElementById('cfg-holder').innerHTML = 
-                "No audit configurations found." +
-                "  <a href=\"audit_configuration.php\">Add one</a><br>";
-            }
-          }
-          alert(result);            
-        }
-        else {
-          alert('There was a problem with the request: ' + http_request.status );
-        }
-      }
+    document.getElementById('config-table').deleteRow(row_to_remove);
+    if ( document.getElementById('config-table').rows.length == '2' ) { 
+      document.getElementById('cfg-holder').innerHTML = 
+        "<p>No audit configurations found." +
+        "  <a href=\"audit_configuration.php\">Add one</a></p>";
     }
-
-    http_request.open('POST', phpPage, true);
-    http_request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    http_request.setRequestHeader("Content-length", postStr.length);
-    http_request.setRequestHeader("Connection", "close");
-    http_request.send(postStr);
   }
+
+  alert(DeleteConfiguration.GetValue("message"));
 }
 
-function deleteSchedRow(selected,sched_id,sched_name) {
-  if ( confirm("Delete schedule \"" + sched_name + "\" ?") == true ) {
+/**********************************************************************************************************
+Function Name:
+  confirmDeleteConfig
+Description:
+  Confirm the deletion of an audit configuration
+Arguments:
+  selected    [IN] [OBJECT]  The image object that was clicked
+  config_id   [IN] [INTEGER] The config ID number to delete
+  config_name [IN] [STRING]  The config name to delete
+Returns:  None
+**********************************************************************************************************/
+function confirmDeleteConfig(selected,config_id,config_name) {
+  $('#confirm-dialog').dialog('option', 'title', config_name);
+  $('#confirm-text').html('Delete this configuration?');
+  $('#confirm-dialog').dialog('option', 'buttons', {
+    "Delete": function() { deleteConfigRow(selected,config_id); $(this).dialog("close"); },
+    "Cancel": function() { $(this).dialog("close"); }
+  }); 
+  $('#confirm-dialog').dialog('open');
+}
+
+/**********************************************************************************************************
+Function Name:
+  deleteSchedRow
+Description:
+  Delete an audit schedule. 
+Arguments:
+  selected   [IN] [OBJECT]  The image object that was clicked
+  sched_id   [IN] [INTEGER] The schedule ID number to delete
+Returns:  None
+**********************************************************************************************************/
+function deleteSchedRow(selected,sched_id) {
+  var DeleteSchedule = new XmlRequestor('audit_manage_ajax.php?action=delete_schedule&schedule_id=' + sched_id);
+  if ( DeleteSchedule.GetValue("result") == 'true' ) {
     var row_to_remove = selected.parentNode.parentNode.rowIndex;
-    var postStr = "action=" + encodeURI( "delete schedule" ) +
-             "&schedule_id=" + encodeURI( sched_id );
-    var phpPage = "audit_manage_ajax.php";
-    http_request = GetXmlHttpObject();
-    http_request.onreadystatechange = function () {
-      if ( http_request.readyState == 4 ) {
-        if ( http_request.status == 200 ) {
-          var result = http_request.responseText;
-          var regDel = /.*Deleted the Schedule:.*/i;
-          if ( regDel.exec(result) ) {
-            document.getElementById('sched-table').deleteRow(row_to_remove);
-	    if ( document.getElementById('sched-table').rows.length == '2' ) { 
-              document.getElementById('sched-holder').innerHTML = 
-                "No audit schedules found." +
-                "  <a href=\"audit_schedule.php\">Add one</a><br>";
-            }
-          }
-          alert(result);            
-        }
-        else {
-          alert('There was a problem with the request: ' + http_request.status );
-        }
-      }
+    document.getElementById('sched-table').deleteRow(row_to_remove);
+    if ( document.getElementById('sched-table').rows.length == '2' ) { 
+      document.getElementById('sched-holder').innerHTML = 
+        "<p>No audit schedules found." +
+        "  <a href=\"audit_schedule.php\">Add one</a></p>";
     }
-
-    http_request.open('POST', phpPage, true);
-    http_request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    http_request.setRequestHeader("Content-length", postStr.length);
-    http_request.setRequestHeader("Connection", "close");
-    http_request.send(postStr);
   }
+
+  alert(DeleteSchedule.GetValue("message"));
 }
 
-function auditConfigNow(config_id,config_name) {
-  if ( confirm("Run configuration \"" + config_name + "\" now?") == true ) {
-    var postStr = "action=" + encodeURI( "run config" ) +
-            "&config_id=" + encodeURI( config_id );
-    var phpPage = "audit_manage_ajax.php";
-    http_request = GetXmlHttpObject();
-    http_request.onreadystatechange = function () {
-      if ( http_request.readyState == 4 ) {
-        if ( http_request.status == 200 ) {
-          var result = http_request.responseText;
-          alert(result);            
-        }
-        else {
-          alert('There was a problem with the request: ' + http_request.status );
-        }
-      }
-    }
-
-    http_request.open('POST', phpPage, true);
-    http_request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    http_request.setRequestHeader("Content-length", postStr.length);
-    http_request.setRequestHeader("Connection", "close");
-    http_request.send(postStr);
-  }
+/**********************************************************************************************************
+Function Name:
+  confirmDeleteSchedule
+Description:
+  Confirm the deletion of an audit schedule
+Arguments:
+  selected   [IN] [OBJECT]  The image object that was clicked
+  sched_id   [IN] [INTEGER] The schedule ID number to delete
+  sched_name [IN] [STRING] The schedule name to delete
+Returns:  None
+**********************************************************************************************************/
+function confirmDeleteSchedule(selected,sched_id,sched_name) {
+  $('#confirm-dialog').dialog('option', 'title', sched_name);
+  $('#confirm-text').html('Delete this schedule?');
+  $('#confirm-dialog').dialog('option', 'buttons', {
+    "Delete": function() { deleteSchedRow(selected,sched_id); $(this).dialog("close"); },
+    "Cancel": function() { $(this).dialog("close"); }
+  }); 
+  $('#confirm-dialog').dialog('open');
 }
 
+/**********************************************************************************************************
+Function Name:
+  auditConfigNow
+Description:
+  Run the specified audit configuration from the audit_manage.php page
+Arguments:
+  config_id   [IN] [INTEGER] The configuration ID number to run
+Returns:  None
+**********************************************************************************************************/
+function auditConfigNow(config_id) {
+  var RunAudit = new XmlRequestor('audit_manage_ajax.php?action=run_config&config_id=' + config_id);
+  alert(RunAudit.GetValue("message"));
+}
+
+/**********************************************************************************************************
+Function Name:
+  confirmRunConfig
+Description:
+  Confirm if they really want to run the configuration
+Arguments:
+  config_id   [IN] [INTEGER] The config ID number to run
+  config_name [IN] [STRING] The config name to run
+Returns:  None
+**********************************************************************************************************/
+function confirmRunConfig(config_id,config_name) {
+  $('#confirm-dialog').dialog('option', 'title', config_name);
+  $('#confirm-text').html('Run this configuration now?');
+  $('#confirm-dialog').dialog('option', 'buttons', {
+    "Run": function() { auditConfigNow(config_id); $(this).dialog("close"); },
+    "Cancel": function() { $(this).dialog("close"); }
+  }); 
+  $('#confirm-dialog').dialog('open');
+}
+
+/**********************************************************************************************************
+Function Name:
+  toggleSchedule
+Description:
+  Turn off/on the selected schedule
+Arguments:
+  selected  [IN] [OBJECT]  The configuration ID number to run
+  sched_id  [IN] [INTEGER] The name of the configuration
+Returns:  None
+**********************************************************************************************************/
 function toggleSchedule(selected,sched_id) {
-  var postStr = "action=" + encodeURI( "toggle schedule" ) +
-          "&schedule_id=" + encodeURI( sched_id );
-  var phpPage = "audit_manage_ajax.php";
-  http_request = GetXmlHttpObject();
-  http_request.onreadystatechange = function () {
-    if ( http_request.readyState == 4 ) {
-      if ( http_request.status == 200 ) {
-        var result = http_request.responseText;
-        var regDel = /.*Deactivated.*/i;
-        if ( regDel.exec(result) ) {
-          selected.src = "images/stop.png";
-        }
-        else {
-          selected.src = "images/start.png";
-        }
-        alert(result);            
+  var ToggleSchedule = new XmlRequestor('audit_manage_ajax.php?action=toggle_schedule&schedule_id=' + sched_id);
+  if(ToggleSchedule.GetValue("action") == 'Activated') {
+    selected.src = (ToggleSchedule.GetValue("result") == 'true') ? "images/start.png" : "images/stop.png";
+  }
+  else {
+    selected.src = (ToggleSchedule.GetValue("result") == 'true') ? "images/stop.png" : "images/start.png";
+  }
+  alert(ToggleSchedule.GetValue("message"));
+}
+
+/**********************************************************************************************************
+Function Name:
+  getCronLog
+Description:
+  Fetch the most recent entries for the web schedule log
+Arguments: None
+Returns:  None
+**********************************************************************************************************/
+function getWsLog() {
+  var WsLog=new HttpRequestor('log-box');
+  WsLog.send('audit_manage_ajax.php?action=ws_log&row_num=10');
+}
+
+/**********************************************************************************************************
+Function Name:
+  toggleCron
+Description:
+  Toggle the status of the web-schedule service, show an alert with the result of the action
+Arguments: None
+Returns:  None
+**********************************************************************************************************/
+function toggleWsService() {
+  $.ajax({
+    'url': 'audit_manage_ajax.php', 'type': 'GET', 'data': { 'action' : 'toggle_ws' },
+    'beforeSend': function(){ $('#toggle-service').show(); },
+    'error': function(){ alert('An Unexpected Error Occured'); },
+    'success': function(msg){
+      var message, img;
+      var xmlResult = $(msg).find('result').text() 
+      $('#toggle-service').hide(); 
+      if($(msg).find('action').text() == 'start'){
+        img     = ( xmlResult == 'true' ) ? "images/start.png" : "images/stop.png"; 
+        message = ( xmlResult == 'true' ) ?
+          "Started the Web-Schedule service" : "Unable to start the Web-Schedule service";
       }
       else {
-        alert("Error: " + http_request.status)
+        img = ( xmlResult == 'true' || xmlResult == 'pending' ) ? "images/stop.png" : "images/start.png"; 
+        if ( xmlResult == 'true'    ) { message = "Stopped the Web-Schedule service";        }
+        if ( xmlResult == 'pending' ) { message = "Service will stop on next DB poll";       }
+        if ( xmlResult == 'false'   ) { message = "Unable to stop the Web-Schedule service"; }
       }
+      $("#ws-status-img").attr("src",img); 
+      alert(message);
     }
-  }
-
-  http_request.open('POST', phpPage, true);
-  http_request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-  http_request.setRequestHeader("Content-length", postStr.length);
-  http_request.setRequestHeader("Connection", "close");
-  http_request.send(postStr);
+  });
 }
 
-function getCronLog() {
-  var postStr = "action=" + encodeURI( "cron log" ) +
-              "&row_num=" + encodeURI( '10' );
-  var phpPage = "audit_manage_ajax.php";
-  http_request_log = GetXmlHttpObject();
-  http_request_log.onreadystatechange = function () {
-    if ( http_request_log.readyState == 4 ) {
-      if ( http_request_log.status == 200 ) {
-        var result_log = http_request_log.responseText;
-        document.getElementById('log').innerHTML = result_log;            
-      }
-    }
-  }
-
-  http_request_log.open('POST', phpPage, true);
-  http_request_log.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-  http_request_log.setRequestHeader("Content-length", postStr.length);
-  http_request_log.setRequestHeader("Connection", "close");
-  http_request_log.send(postStr);
+/**********************************************************************************************************
+Function Name:
+  getWsStatus
+Description:
+  Called on a set interval to update the image that shows if the web schedule service is running or not
+Arguments: None
+Returns:  None
+**********************************************************************************************************/
+function getWsStatus() {
+  var WsStatus = new XmlRequestor('audit_manage_ajax.php?action=ws_status');
+  var img = ( WsStatus.GetValue("result") == 'running' ) ?  "images/start.png" : "images/stop.png";
+  $("#ws-status-img").attr("src",img); 
 }
 
-function toggleCron(selected,type) {
-  var postStr = "action=" + encodeURI( "toggle cron" ) +
-                 "&type=" + encodeURI( type );
-  var phpPage = "audit_manage_ajax.php";
-  http_request = GetXmlHttpObject();
-  http_request.onreadystatechange = function () {
-    document.getElementById('manage-result').innerHTML = 
-      "<br><img class=\"busy\" src=\"images/hourglass-busy.gif\"><i>Changing Web-Schedule Status...</i>";
-    if ( http_request.readyState == 4 ) {
-      if ( http_request.status == 200 ) {
-        var log_text;
-        var result = http_request.responseText;
-        switch (result) {
-          case  "stop failure": 
-            selected.src = "images/start.png";
-            log_text = "Unable to stop the Web-Schedule service";
-            break;
-          case  "stop success":
-            selected.src = "images/stop.png";
-            log_text = "Stopped the Web-Schedule service";
-            break;
-          case "start failure":
-            selected.src = "images/stop.png";
-            log_text = "Unable to start the Web-Schedule service";
-            break;
-          case "start success":
-            selected.src = "images/start.png";
-            log_text = "Started the Web-Schedule service";
-            break;
-          case  "stop pending":
-            selected.src = "images/start.png";
-            log_text = "Service will stop on next poll";
-            break;
-          default:
-            log_text = "An unexpected error occurred";
-        }
-        alert(log_text);            
-      }
-      else {
-        alert("Error: " + http_request.status);
-      }
-      document.getElementById('manage-result').innerHTML = ''; 
-    }
-  }
+/**********************************************************************************************************
+Function Name:
+  loadWsUpdate
+Description:
+  This is ran when the page loads, it sets an interval for the page to be updated
+Arguments: None
+Returns:  None
+**********************************************************************************************************/
+function loadWsUpdate() { updatePage(); setInterval(updatePage,5000); }
 
-  http_request.open('POST', phpPage, true);
-  http_request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-  http_request.setRequestHeader("Content-length", postStr.length);
-  http_request.setRequestHeader("Connection", "close");
-  http_request.send(postStr);
-}
-
-function getCronStatus() {
-  if(!document.getElementById('cron-img')){return;}
-  var status_postStr = "action=" + encodeURI( "cron status" );
-  var phpPage = "audit_manage_ajax.php";
-  status_http_request = GetXmlHttpObject();
-  status_http_request.onreadystatechange = function () {
-    if ( status_http_request.readyState == 4 ) {
-      if ( status_http_request.status == 200 ) {
-        var status_result = status_http_request.responseText;
-        document.getElementById('cron-img').src = ( status_result == 'running' ) ? "images/start.png" : "images/stop.png";            
-      }
-    }
-  }
-
-  status_http_request.open('POST', phpPage, true);
-  status_http_request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-  status_http_request.setRequestHeader("Content-length", status_postStr.length);
-  status_http_request.setRequestHeader("Connection", "close");
-  status_http_request.send(status_postStr);
-}
-
-function loadCron() {
-  updatePage();
-  setInterval(updatePage,5000);
-}
-
+/**********************************************************************************************************
+Function Name:
+  updatePage
+Description:
+  Runs at an interval specified by loadCron() to call some functions that update the page
+Arguments: None
+Returns:  None
+**********************************************************************************************************/
 function updatePage() {
-  getCronStatus();
-  getCronLog();
+  getWsStatus();
+  if($("#log-dialog").dialog('isOpen')) { getWsLog(); }
 }
+
+/**********************************************************************************************************
+
+  Jquery 'ready' function - things to execute when the DOM is ready
+
+**********************************************************************************************************/
+
+$(document).ready(function() {
+
+  loadWsUpdate();
+
+  $("#log-dialog").dialog({
+    width: 410,
+    bgiframe: true,
+    draggable: true,
+    resizable: false,
+    autoOpen: false,
+    title: "Web-Schedule Service Log",
+    position: ['center','middle']
+  });
+
+  $("#log-dialog-open").click(function() {
+    getWsLog();
+    $("#log-dialog").dialog('open');
+    return false;
+  });
+
+  $("#confirm-dialog").dialog({
+    bgiframe: true,
+    resizable: false,
+    draggable: false,
+    autoOpen: false,
+    modal: true,
+    overlay: {
+      backgroundColor: '#000',
+      opacity: 0.5
+    },
+  });
+});

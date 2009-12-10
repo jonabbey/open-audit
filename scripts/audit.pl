@@ -11,17 +11,18 @@ use Carp;
 use Getopt::Long;
 use FindBin qw($Bin $Script);
 use lib "$Bin/../lib/perl";
-our $VERSION = '0.14';
+our $VERSION = '0.20';
 
 # Some global variables needed
 our $WINDOWS_SERVER = ( $^O =~ m/mswin32|winxp/i ) ? ( '1' ) : ( '0' );
 our $AES_KEY = Get_AES_Key();            # AES key to decrypt some DB info
 our $DAEMON;                             # Set to 1 if the script runs as a daemon with schedules
 our %SCHEDULE_PIDS;                      # PID info hash for schedules being managed
-our $LOOP_PID  = undef;                  # Track the PID of the main loop for killing schedules
-our $CHILD_PID = undef;                  # PID from a child that may need to be killed on timeout
+our $LOOP_PID;                           # Track the PID of the main loop for killing schedules
+our $CHILD_PID;                          # PID from a child that may need to be killed on timeout
 our %Config;                             # Hash options for PerlSvc for installing the service
 our $SERVICE_INSTALL;                    # Set to 1 if the --instal switch was used with PerlSvc
+our $URL;                                # The base URL to Open-Audit
 
 # Trap a SIGINT/SIGTERM/SIGBREAK and run Cron_Cleanup
 $SIG{INT  } = \&Cron_Cleanup;
@@ -29,7 +30,7 @@ $SIG{TERM } = \&Cron_Cleanup;
 $SIG{BREAK} = \&Cron_Cleanup if ( $WINDOWS_SERVER );
 
 # Let the kernel reap forked processes
-$SIG{ CHLD } = 'IGNORE';
+$SIG{CHLD} = 'IGNORE';
 
 ############################################
 #             Usage Information            #
@@ -89,8 +90,8 @@ sub Service_Install {
     use Term::ReadKey;
 
     print "Leave an answer blank to accept a default value\n\n";
-    print "User format for domain account): DomainName\\UserName\n";
-    print "User format for local account): .\\UserName\n\n";
+    print "User format for domain account: DomainName\\UserName\n";
+    print "User format for local account: .\\UserName\n\n";
     print "Service name [openaudit]: ";
     chomp( $c_name = <> );
 
@@ -148,7 +149,7 @@ sub Win32_Service {
   $LOOP_PID = $$; 
   $DAEMON   = 1;
 
-  my %cron_cfg  = %{ Get_Cron_Info() };
+  my %cron_cfg  = %{ Get_Audit_Settings() };
 
   # Do PID check/update
   Start_Daemon_Check();
@@ -216,40 +217,6 @@ sub Test_Nmap {
   }
 
   print "Nmap command output was:\n\n $out";
-}
-
-############################################################
-# Purpose : See that SMTP works correctly
-# Usage   : Called via ajax from audit_cron_settings.php
-# Returns : The working status of SMTP, sends an email
-
-sub Test_SMTP {
-  my $email = shift;
-  my $c_cfg = Get_Cron_Info(); 
-
-  # Standard module, should be no need to eval 
-  require Sys::Hostname;
-  Sys::Hostname->import;
-
-  eval {
-    require MIME::Lite; 
-    MIME::Lite->import;
-  };
-  
-  if ( $@ ) {
-    Log_Cron("ERROR: Missing Module MIME::Lite, Cannot Send Email");
-    exit 1;
-  }
-
-  my $msg = MIME::Lite::->new( 
-    'To'      => $email,
-    'From'    => $$c_cfg{'smtp_from'},
-    'Subject' => "OA Web-Scheduler SMTP Test",
-    'Data'    => "This is a SMTP test message from ". hostname() . ".",
-    'Type'    => "text/plain",
-  );
-
-  Send_Email($msg->as_string,$email) ? ( exit 0 ) : ( exit 1 );
 }
 
 ############################################
@@ -367,197 +334,38 @@ sub MySQL_Quote_String {
   return $dbh->quote($msg);
 }
 
-############################################
-#            Email Sub Routines            #
-############################################
-#            Email Sub Routines            #
-############################################
-
 ############################################################
-# Purpose : Send an email to a specified address
-# Usage   : Called internally
-#             Arg 1 : The email as a string
-#             Arg 2 : The emails addresses to send to
-# Returns : Return 1 to indicate success, bare return on fail
+# Purpose : Trigger an email by POSTing to a PHP page
+# Usage   : Called if a scheule has email logs enabled
+#             Arg 1 : The timestamp for the audit log entries
+#             Arg 2 : The schedule ID to send logs for
+# Returns : Nothing to return
 
-sub Send_Email {
-  my ( $email , $email_to ) = @_;
-  my @recipients = split ";", $email_to;
-  my $c_cfg = Get_Cron_Info();
+sub Send_Audit_Log_Email {
+  my ( $ts , $schedule_id ) = @_;
+  my %ws_cfg = %{ Get_Audit_Settings() };
+  my %s_cfg  = %{ Get_Schedule_Info($schedule_id) };
 
-  eval {
-    require Net::SMTP;
-    Net::SMTP->import;
-  };
+  require LWP::UserAgent;
+  LWP::UserAgent->import;
 
-  if ( $@ ) {
-    Log_Cron("ERROR: Missing Module Net::SMTP, Cannot Send Email");
-    return;
-  }
-
-  my $smtp = Net::SMTP->new( 'Host' => $$c_cfg{'smtp_server'}, 'Timeout' => 30 ) or
-    ( Log_Cron("ERROR: Cannot Connect to SMTP Server - $$c_cfg{'smtp_server'}") and return );
-
-  if ( $$c_cfg{'smtp_auth'} ) {
-    $smtp->auth( $$c_cfg{'smtp_user'} , $$c_cfg{'smtp_pass'} ) or
-      ( Log_Cron("ERROR: SMTP Authentication Failure, Check SMTP Settings") and return );
-  }
-
-  $smtp->mail( $$c_cfg{'smtp_from'} );
-  $smtp->recipient( @recipients, { 'Notify' => [ 'Never' ], 'SkipBad' => 1 } );
-  $smtp->data();
-  $smtp->datasend( $email );
-  $smtp->dataend();
-  $smtp->quit();
-
-  return 1;
-}
-
-############################################################
-# Purpose : Create the TT vars and parse the audit. This is
-#           then passed to Build_Email
-# Usage   : Called internally
-#             Arg 1 : The audit configuration hash
-#             Arg 2 : The schedule configuration hash
-#             Arg 3 : The timestamp from the audit
-# Returns : An array with a TT vars hash and locs of the TT
-#           files to use
-
-sub Get_Audit_Email_Params {
-  my ( $a_cfg, $s_cfg, $ts ) = @_;
-  my (
-    @hosts,  @failed, %success , @aborted,
-    @killed,   %vars,  $elapsed, 
+  # Post to the webpage to trigger an email
+  my $ua       = LWP::UserAgent->new();
+  my $response = $ua->post(
+    $ws_cfg{'base_url'} . 'admin_email_trigger.php',
+    [
+      'schedule_id' => $schedule_id,
+      'timestamp'   => $ts,
+    ]
   );
 
-  my $sql = "SELECT * FROM audit_log 
-             WHERE audit_log_schedule_id = '$$s_cfg{'id'}'
-               AND audit_log_config_id = '$$a_cfg{'config_id'}'
-               AND audit_log_timestamp = '$ts'";
-  my %log = %{ MySQL_Execute($sql,"select") };
-
-  # Sort based on results 
-  foreach my $key ( keys %log ) {
-    my ( $msg , $host ) = ( $log{$key}{'audit_log_message'} , $log{$key}{'audit_log_host'} ); 
-
-    if ( $msg =~ m/^Cannot Connect/i ) { push @failed , $host };
-    if ( $msg =~ m/^Killed Hanging/i ) { push @killed , $host };
-    if ( $msg =~ m/^Audit Stopped/i  ) { push @aborted, $host };
-
-    if ( $msg =~ m/^(Finished|Audit Completed).*?(\d+)/i ) { $success{$host} = $2 };
-    if ( $msg =~ m/^Script Execution Time: (.*)$/i       ) { $elapsed = $1        };
-
-    push @hosts, $host if ( $host ); 
+  if ( not $response->is_success) {
+    my $msg  = "ERROR: Unable to send email for schedule \"$s_cfg{'name'}\". ";
+       $msg .= "Server Response - " . $response->status_line;
+    Log_Cron($msg);
   }
 
-  # Map the action/type to something that makes sense when read
-  my %action = ( 'pc'      => 'PC Audits'    , 'nmap'  => 'NMAP Scan', 
-                 'command' => 'Run Commands'                             ); 
-  my %type   = ( 'domain'  => 'LDAP Query'   , 'mysql' => 'MySQL Query',
-                 'iprange' => 'IP Range'     , 'list'  => 'PC/IP List'   );
-
-  # Stuff to pass to the template file...
-  $vars{'email_list'   } = $$s_cfg{'email_list'   };
-  $vars{'email_replyto'} = $$s_cfg{'email_replyto'};
-  $vars{'email_subject'} = $$s_cfg{'email_subject'};
-  $vars{'img_logo'     } = ( $$s_cfg{'email_logo'} ) ? ( "$$s_cfg{'email_logo'}"                    ) : ( "logo.png"                );
-  $vars{'img_loc'      } = ( $$s_cfg{'email_logo'} ) ? ( "$Bin/../images/headers/$vars{'img_logo'}" ) : ( "$Bin/../images/logo.png" );
-  $vars{'url_log'      } = "list.php?view=audit_log_for_timestamp&schedule_id=$$s_cfg{'id'}&timestamp=$ts";
-  $vars{'hosts_killed' } = \@killed;
-  $vars{'hosts_success'} = \%success;
-  $vars{'hosts_aborted'} = \@aborted;
-  $vars{'hosts_failed' } = \@failed;
-  $vars{'hosts_all'    } = \@hosts;
-  $vars{'time_start'   } = gmtime $ts;
-  $vars{'time_elapsed' } = $elapsed;
-  $vars{'audit_action' } = $action{$$a_cfg{'action'}};
-  $vars{'audit_type'   } = $type{$$a_cfg{'audit_type'}};
-  $vars{'schedule_name'} = $$s_cfg{'name'};
-  $vars{'schedule_type'} = ucfirst $$s_cfg{'type'};
-
-  # Set a custom teplate file if specified
-  my $tmpl_html = ( $$s_cfg{'email_tmpl_html'} ) ? ( $$s_cfg{'email_tmpl_html'} ) : ( "sched_log_html.tt" ) ;
-  my $tmpl_text = ( $$s_cfg{'email_tmpl_text'} ) ? ( $$s_cfg{'email_tmpl_text'} ) : ( "sched_log_text.tt" ) ;
-
-  return ( \%vars , $tmpl_html , $tmpl_text );
-}
-
-############################################################
-# Purpose : Build the email message given TT options/vars
-# Usage   : Called internally
-#             Arg 1 : A ref to an array with the following...
-#               1 : Template Toolkit variables hash ref
-#               2 : HTML Template Toolkit page loc (string)
-#               3 : Text Template Toolkit page loc (string)
-# Returns : The email message as a string given by MIME::Lite
-
-sub Build_Email {
-  my ( $vars, $tmpl_html, $tmpl_text ) = @_;
-  my ( $tt_html , $tt_text , $text_part );
-  my $c_cfg = Get_Cron_Info();
-
-  eval {
-    require MIME::Lite; 
-    require Template; 
-    MIME::Lite->import;
-    Template->import;
-  };
-  
-  if ( $@ ) {
-    Log_Cron("ERROR: Missing Module MIME::Lite or Template, Cannot Send Email");
-    return;
-  }
-
-  my $tt = Template->new( { 'INCLUDE_PATH' => "$Bin/../lib/tt" } );
-
-  # Append base web url if needed
-  $$vars{'url_log'} = $$c_cfg{'web_address'} . $$vars{'url_log'} if ( exists $$vars{'url_log'} );
-
-  $tt->process($tmpl_html,$vars,\$tt_html)
-    or ( Log_Cron("ERROR: Cannot Create Email - " . $tt->error()) and return );
-  $tt->process($tmpl_text,$vars,\$tt_text)
-    or ( Log_Cron("ERROR: Cannot Create Email - " . $tt->error()) and return );
-
-  my $msg = MIME::Lite::->new( 
-    'To'        => $$vars{'email_list'},
-    'From'      => $$c_cfg{'smtp_from'},
-    'Reply-To'  => $$vars{'email_replyto'},
-    'Subject'   => $$vars{'email_subject'},
-    'Type'      => 'multipart/alternative',
-  );
-
-  if ( $tt_text ) {
-    $text_part = MIME::Lite::->new( 
-      'Type' => "text/plain",
-      'Data' => $tt_text,
-    );
-  }
-
- # The HTML friendly page needs to be created as a separate part.
- # This way it can be set to multipart/related so pictures show up when sent.
-  my $html_part = MIME::Lite::->new( 
-    'Type' => 'multipart/related',
-  );
-
-  $html_part->attach(
-    'Type' => 'text/html',
-    'Data' => $tt_html,
-  );
-
-  # Save the extension in a regex capture...
-  $$vars{'img_logo'} =~ m/.*\.(.*)$/;
-
-  $html_part->attach(
-    'Type' => "image/$1",
-    'Id'   => $$vars{'img_logo'},
-    'Path' => $$vars{'img_loc' },
-  );
-
-  # The text part needs to be attached first in multipart/alternative messages, according to the RFC
-  $msg->attach($text_part) if ( $tt_text );
-  $msg->attach($html_part);
-
-  return $msg->as_string();
+  exit;
 }
 
 ############################################
@@ -593,6 +401,8 @@ sub Get_Computer_List {
 sub Get_Config_Info {
   my $cfg_id = shift;
   my ( $nmap_args, $nmap_path, $com_path );
+  my %ws_cfg  = %{ Get_Audit_Settings() };
+  my ( $ldap_user, $ldap_pass, $ldap_server, $ldap_path, $ldap_fqdn ) = undef;
 
   my $sql = "SELECT * FROM audit_configurations WHERE audit_cfg_id = '$cfg_id'";
   my %cfg = %{ MySQL_Execute($sql,"select") };
@@ -657,6 +467,7 @@ sub Get_Config_Info {
     ( $cfg{$cfg_id}{'audit_cfg_nmap_srv'    } == '1'                 ) ?
     ( " -sV --version-intensity $cfg{$cfg_id}{'audit_cfg_nmap_int'}" ) :
     ( ''                                                             ) ;
+  $nmap_args .= " --host-timeout $cfg{$cfg_id}{'audit_cfg_wait_time'}s";
 
   # Verify nmap path
   if ( $action eq 'nmap' ) {
@@ -682,21 +493,34 @@ sub Get_Config_Info {
   my %auth_info = %{ MySQL_Execute($sql,"select") };
 
   # Set up variables based on if a LDAP connection table entry is used or not
-  my ( $ldap_user, $ldap_pass, $ldap_server, $ldap_path, $ldap_fqdn ) =
-    (  $cfg{$cfg_id}{ 'audit_cfg_ldap_use_conn' }  == 0 ) ?
-    (  $auth_info{$cfg_id}{'ldap_user'},
-       $auth_info{$cfg_id}{'ldap_pass'},
-       $cfg{$cfg_id}{'audit_cfg_ldap_server'},
-       $cfg{$cfg_id}{'audit_cfg_ldap_path'  }  ) :
-    (  LDAP_Connections_Info( $cfg{$cfg_id}{'audit_cfg_ldap_conn'}) ) ;
+  if ( $cfg{$cfg_id}{'audit_cfg_type'} eq 'domain' ) {
+    ( $ldap_user, $ldap_pass, $ldap_server, $ldap_path, $ldap_fqdn ) =
+      (  $cfg{$cfg_id}{ 'audit_cfg_ldap_use_conn' }  == 0 ) ?
+      (  $auth_info{$cfg_id}{'ldap_user'},
+         $auth_info{$cfg_id}{'ldap_pass'},
+         $cfg{$cfg_id}{'audit_cfg_ldap_server'},
+         $cfg{$cfg_id}{'audit_cfg_ldap_path'  }  ) :
+      (  LDAP_Connections_Info( $cfg{$cfg_id}{'audit_cfg_ldap_conn'}) ) ;
 
-  # Need user to be in form user@domain to work between windows/linux with Net::LDAP module
-  $ldap_user =
-    ( $cfg{$cfg_id}{ 'audit_cfg_ldap_use_conn' }  == 1 ) ?
-    ( "$ldap_user\@$ldap_fqdn" ) :
-    ( "$ldap_user"             ) ;
+    # Need user to be in form user@domain to work between windows/linux with Net::LDAP module
+    $ldap_user =
+      ( $cfg{$cfg_id}{ 'audit_cfg_ldap_use_conn' }  == 1 ) ?
+      ( "$ldap_user\@$ldap_fqdn" ) :
+      ( "$ldap_user"             ) ;
+  }
 
   my $win_software = ( $cfg{$cfg_id}{'audit_cfg_win_sft'} ) ? ( 'y' ) : ( 'n' );
+
+  # If a URL is specified at the configuration level, use that
+  my $nmap_url = ( $cfg{$cfg_id}{'audit_cfg_nmap_url'} ) ?
+    ( $cfg{$cfg_id}{'audit_cfg_nmap_url'} ) :
+    ( "$ws_cfg{'base_url'}admin_nmap_input.php" ) ;
+  my $lin_url = ( $cfg{$cfg_id}{'audit_cfg_lin_url'} ) ?
+    ( $cfg{$cfg_id}{'audit_cfg_lin_url'} ) :
+    ( "$ws_cfg{'base_url'}admin_pc_add_2.php" ) ;
+  my $win_url = ( $cfg{$cfg_id}{'audit_cfg_win_url'} ) ?
+    ( $cfg{$cfg_id}{'audit_cfg_win_url'} ) :
+    ( "$ws_cfg{'base_url'}admin_pc_add_2.php" ) ;
 
   my %options = (
     'audit_user'         => $audit_user,
@@ -713,10 +537,10 @@ sub Get_Config_Info {
     'ldap_fqdn'          => $ldap_fqdn,
     'cfg_name'           => $cfg_name,
     'software_windows'   => $win_software,
+    'nmap_url'           => $nmap_url,
+    'linux_url'          => $lin_url,
+    'windows_url'        => $win_url,
     'ldap_page'          => $cfg{$cfg_id}{ 'audit_cfg_ldap_page'        },
-    'nmap_url'           => $cfg{$cfg_id}{ 'audit_cfg_nmap_url'         },
-    'linux_url'          => $cfg{$cfg_id}{ 'audit_cfg_lin_url'          },
-    'windows_url'        => $cfg{$cfg_id}{ 'audit_cfg_win_url'          },
     'windows_uuid'       => $cfg{$cfg_id}{ 'audit_cfg_win_uuid'         },
     'os'                 => $cfg{$cfg_id}{ 'audit_cfg_os'               },
     'vbs'                => $cfg{$cfg_id}{ 'audit_cfg_win_vbs'          },
@@ -733,7 +557,6 @@ sub Get_Config_Info {
     'local_user'         => $cfg{$cfg_id}{ 'audit_cfg_audit_local'      },
     'ip_start'           => $cfg{$cfg_id}{ 'audit_cfg_ip_start'         },
     'ip_end'             => $cfg{$cfg_id}{ 'audit_cfg_ip_end'           },
-    'audit_type'         => $cfg{$cfg_id}{ 'audit_cfg_type'             },
     'filter'             => $cfg{$cfg_id}{ 'audit_cfg_filter'           },
     'filter_case'        => $cfg{$cfg_id}{ 'audit_cfg_filter_case'      },
     'filter_inverse'     => $cfg{$cfg_id}{ 'audit_cfg_filter_inverse'   },
@@ -750,44 +573,34 @@ sub Get_Schedule_Info {
   my %cfg = %{ MySQL_Execute($sql,"select") };
 
   my %options = (
-    'id'            => $cfg{$sched_id}{'audit_schd_id'           },
-    'name'          => $cfg{$sched_id}{'audit_schd_name'         },
-    'type'          => $cfg{$sched_id}{'audit_schd_type'         },
-    'disable_log'   => $cfg{$sched_id}{'audit_schd_log_disable'  },
-    'email_log'     => $cfg{$sched_id}{'audit_schd_email_log'    },
-    'email_logo'    => $cfg{$sched_id}{'audit_schd_email_logo'   },
-    'email_list'    => $cfg{$sched_id}{'audit_schd_email_list'   },
-    'email_subject' => $cfg{$sched_id}{'audit_schd_email_subject'},
-    'email_replyto' => $cfg{$sched_id}{'audit_schd_email_replyto'},
+    'id'            => $cfg{$sched_id}{'audit_schd_id'         },
+    'name'          => $cfg{$sched_id}{'audit_schd_name'       },
+    'type'          => $cfg{$sched_id}{'audit_schd_type'       },
+    'disable_log'   => $cfg{$sched_id}{'audit_schd_log_disable'},
+    'email_log'     => $cfg{$sched_id}{'audit_schd_email_log'  },
   );
 
   return \%options;
 }
 
-sub Get_Cron_Info {
-  my $sql =  "SELECT audit_cron_id          , audit_cron_smtp_auth     ,
-                     audit_cron_smtp_port   , audit_cron_smtp_server   ,
-                     audit_cron_interval    , audit_cron_smtp_from     ,
-                     audit_cron_web_address , audit_cron_service_name  ,
-                     audit_cron_active      , audit_cron_service_enable,
-               AES_DECRYPT(audit_cron_smtp_user,'$AES_KEY') AS smtp_user,
-               AES_DECRYPT(audit_cron_smtp_pass,'$AES_KEY') AS smtp_pass
-             FROM audit_cron LIMIT 1";
-  my %cfg = %{ MySQL_Execute($sql,"select") };
+sub Get_Audit_Settings {
+  my %options;
+  my $cfg_sql = "SELECT audit_settings_id, audit_settings_interval,
+                        audit_settings_service_name, audit_settings_active,
+                        audit_settings_runas_service, audit_settings_script_only,
+                        audit_settings_base_url
+                 FROM audit_settings LIMIT 1";
 
-  my %options = (
-    'init_script'   => $cfg{'1'}{'audit_cron_init_script' },
-    'active'        => $cfg{'1'}{'audit_cron_active'      },
-    'service_name'  => $cfg{'1'}{'audit_cron_service_name'},
-    'poll_interval' => $cfg{'1'}{'audit_cron_interval'    },
-    'web_address'   => $cfg{'1'}{'audit_cron_web_address' },
-    'smtp_auth'     => $cfg{'1'}{'audit_cron_smtp_auth'   },
-    'smtp_server'   => $cfg{'1'}{'audit_cron_smtp_server' },
-    'smtp_port'     => $cfg{'1'}{'audit_cron_smtp_port'   },
-    'smtp_from'     => $cfg{'1'}{'audit_cron_smtp_from'   },
-    'smtp_user'     => $cfg{'1'}{'smtp_user'              },
-    'smtp_pass'     => $cfg{'1'}{'smtp_pass'              },
-  );
+  my %cfg  = %{ MySQL_Execute($cfg_sql,"select") };
+
+  foreach my $id ( keys %cfg ) {
+    $options{'active'       } = $cfg{$id}{'audit_settings_active'       };
+    $options{'runas_service'} = $cfg{$id}{'audit_settings_runas_service'};
+    $options{'service_name' } = $cfg{$id}{'audit_settings_service_name' };
+    $options{'base_url'     } = $cfg{$id}{'audit_settings_base_url'     };
+    $options{'script_only'  } = $cfg{$id}{'audit_settings_script_only'  };
+    $options{'poll_interval'} = $cfg{$id}{'audit_settings_interval'     };
+  }
 
   return \%options;
 }
@@ -796,7 +609,7 @@ sub Get_Cron_Info {
 # Purpose : Get the path to a file in a portable way
 # Usage   : Called internally
 #             Arg 1 : A filename
-# Returns : The path to the file, or undef on failure
+# Returns : The path to the file, or bare return on failure
 
 sub Get_File_Path {
   my $file = shift;
@@ -860,6 +673,12 @@ sub Audit_Configuration {
 sub Audit_Schedules {
   my ( $sched_id, $config_id, $sched_name ) = @_;
 
+  # The schedule shouldn't run if these are true...
+  if ( $DAEMON && ( not Get_Daemon_PID() or $LOOP_PID != Get_Daemon_PID() ) ) {
+     Cron_Stop($LOOP_PID) if ( PID_Exists($LOOP_PID) );
+     exit 1;
+  }
+
   my %s_cfg = %{ Get_Schedule_Info($sched_id) };
   my %a_cfg = %{ Get_Config_Info($config_id)  };
   $a_cfg{'sched_id'      } = $sched_id;
@@ -878,8 +697,7 @@ sub Audit_Schedules {
   my $ts = Run_Audits( \@computers, $a_cfg{'action'}, \%a_cfg );
   Log_Cron("Finished Running Schedule: $s_cfg{'name'}");
 
-  my $msg = Build_Email( Get_Audit_Email_Params(\%a_cfg,\%s_cfg,$ts) ) if ( $s_cfg{'email_log'} );
-  Send_Email($msg,$s_cfg{'email_list'}) if ( $s_cfg{'email_log'} and $msg );
+  Send_Audit_Log_Email($ts,$sched_id) if ( $s_cfg{'email_log'} );
   Update_Next_Run($sched_id);
 }
 
@@ -894,7 +712,7 @@ sub Audit_Schedules {
 sub Audit_Command {
   my ( $host, $options, $start ) = @_;
 
-  my ( $exec_time, $login_fail ) = undef;
+  my ( $exec_time, $login_fail );
   my ( @commands, %cmd_info, $log_message );
   my $count = 0;
   my $p_ts  = time;
@@ -969,7 +787,7 @@ sub Audit_Command {
 
 sub Run_Command {
   my ( $command, $host , $options  ) = @_;
-  my ( $log, $output, $exit_status ) = undef;
+  my ( $log, $output, $exit_status );
 
   # Windows, use winexe/remcom.exe
   if ( $$options{'os'} eq 'windows' ) {
@@ -1031,7 +849,7 @@ sub Get_Remote_Command {
 
 sub Audit_Nmap {
   my ( $host, $opt, $start  ) = @_;
-  my ( $log_message, $out ) = ( undef, undef );
+  my ( $log_message, $out );
 
   $$opt{'nmap_args'} .= " -O -v $host";
 
@@ -1100,14 +918,14 @@ sub Audit_Windows {
        $exec_time, $log_message,
        $error    , $post_bad   ,
        $post_good
-  ) = undef;
+  );
 
   require Net::Ping;
   Net::Ping->import;
 
   my $command =
       Get_Remote_Command($options,$host) . ' "cscript \"'.$$options{'vbs'}.'\" '         .
-      '/cmd_args_only:1 /non_ie_page:\"'.$$options{'windows_url'}.'\" /verbose:y '       .
+      '/cmd_args_only /non_ie_page:\"'.$$options{'windows_url'}.'\" /verbose:y '         .
       '/software_audit:'.$$options{'software_windows'}.' /strComputer:. /online:yesxml ' .
       '/uuid_type:'.$$options{'windows_uuid'}.'"';
 
@@ -1137,7 +955,7 @@ sub Audit_Windows {
         $log_message = 
           ( defined $post_bad ) ?
           ( "Audit received HTTP status code $post_bad when submitting results" ) :
-          ( "The audit never sent results to the server" ) ; 
+          ( "The audit never sent results to the server: $$options{'windows_url'}" ) ; 
       }
     }
     elsif ( not defined $log_message ) {
@@ -1158,7 +976,7 @@ sub Audit_Windows {
     $start
   );
 
-  ( $error ) ? return undef : return 1;
+  ( $error ) ? return : return 1;
 }
 
 ############################################################
@@ -1243,7 +1061,7 @@ sub LDAP_Connections_Info {
      FROM ldap_connections WHERE ldap_connections_id = '$conn_id'";
   my %ldap_conn = %{ MySQL_Execute($sql,"select") };
 
-  # Winexe needs to fqdn with the username.
+  # Winexe needs fqdn with the username.
   my $ldap_user =
     ( defined $audit_cred and $ldap_conn{$conn_id}{'ldap_connections_user'} !~ m/.*@.*/              ) ?
     ( "$ldap_conn{$conn_id}{'ldap_connections_user'}\@$ldap_conn{$conn_id}{'ldap_connections_fqdn'}" ) :
@@ -1311,14 +1129,14 @@ sub Get_MySQL_Computers {
     'video'          => "system_uuid = video_uuid AND"
   );
 
-  my $sql    = "SELECT * FROM audit_mysql_query WHERE audit_mysql_cfg_id = '$config_id'";
+  my $sql    = "SELECT * FROM mysql_queries WHERE mysql_queries_cfg_id = '$config_id'";
   my %q_list = %{ MySQL_Execute($sql,"select") };
 
   $query = "SELECT system_uuid, system_name FROM system";
 
   # Get all the tables, make a separate array to include all tables
   foreach my $key ( keys %q_list ) {
-    my $table = $q_list{$key}{'audit_mysql_table'};
+    my $table = $q_list{$key}{'mysql_queries_table'};
 
     push @q_tables, $table if ( not grep /^$table$/, @q_tables );
     push @tables, $table   if ( $table ne 'system' and not grep /^$table$/, @tables );
@@ -1334,10 +1152,10 @@ sub Get_MySQL_Computers {
     my $q_count = 0;
     # Check for any fields to search on this table
     foreach my $key ( keys %q_list ) {
-      my $sort  = $q_list{$key}{ 'audit_mysql_sort'  };
-      my $field = $q_list{$key}{ 'audit_mysql_field' };
-      my $data  = $q_list{$key}{ 'audit_mysql_data'  };
-      my $q_tbl = $q_list{$key}{ 'audit_mysql_table' };
+      my $sort  = $q_list{$key}{ 'mysql_queries_sort'  };
+      my $field = $q_list{$key}{ 'mysql_queries_field' };
+      my $data  = $q_list{$key}{ 'mysql_queries_data'  };
+      my $q_tbl = $q_list{$key}{ 'mysql_queries_table' };
       next if ( $q_tbl ne $table ); 
       ( $q_count == 0 ) ?
       ( $query .= " " . $op{$sort}->($table,$field,$data) )   :
@@ -1550,21 +1368,18 @@ sub Cron_Cleanup {
   # There is a subprocess that may need to be killed
   kill 9, $CHILD_PID if ( defined($CHILD_PID) and PID_Exists($CHILD_PID) );
 
-  # Is this (or was it spawned by) a daemon?
-  if ( $DAEMON ) {
-    my $pid = Get_Daemon_PID();
-    Write_Daemon_PID('0') if ( $pid == $$ );
-    MySQL_Execute("UPDATE `audit_cron` SET audit_cron_active='0'","non_select");
-  }
-
   # If the loop caught the signal, kill the schedules
   if ( defined($LOOP_PID) and $LOOP_PID == $$ ) {
+    if ( $DAEMON ) {
+      Write_Daemon_PID('0');
+      MySQL_Execute("UPDATE `audit_settings` SET audit_settings_active='0'","non_select");
+    }
     Log_Cron("Caught SIGINT/SIGTERM, Shutting Down");
     foreach my $id ( keys %SCHEDULE_PIDS ) {
       kill 9, $SCHEDULE_PIDS{$id}{'pid'} or
       ( Log_Cron("Cannot Stop Schedule: $SCHEDULE_PIDS{$id}{'name'}") and $status = 1 );
     }
-    Log_Cron("Stopped All OA Web-Schedules") if ( not $status );
+    Log_Cron("Stopped All Web-Schedules") if ( not $status );
   }
 
   exit $status;
@@ -1599,14 +1414,15 @@ sub Get_Cron_Line {
   my $cron_entry  = $schedule{$id}{'audit_schd_cron_line'  };
 
   # Some exceptions...
-  $min_start  = $schedule{$id}{'audit_schd_hr_frq_min'} if ( $type eq 'hourly' and $between );
-  my $hours   = ( $between ) ? ( "$hr_start=$hr_end" ) : ( "*" );
+  $min_start  = $schedule{$id}{'audit_schd_hr_strt_min'} if ( $type eq 'hourly' and $between     );
+  $min_start  = $schedule{$id}{'audit_schd_hr_frq_min'}  if ( $type eq 'hourly' and not $between );
+  my $hours   = ( $between ) ? ( "$hr_start-$hr_end" ) : ( "*" );
 
   if ( $type eq 'weekly'  ) { return "$min $hr * * $days"               };
   if ( $type eq 'hourly'  ) { return "$min_start $hours/$hr_freq * * *" };
   if ( $type eq 'daily'   ) { return "$min $hr */$dly_freq * *"         };
   if ( $type eq 'monthly' ) { return "$min $hr $monthly_day $months *"  };
-  if ( $type eq 'crontab' ) { return "$cron_entry"  };
+  if ( $type eq 'crontab' ) { return "$cron_entry"                      };
 }
 
 ############################################################
@@ -1618,10 +1434,10 @@ sub Get_Cron_Line {
 sub Log_Cron {
   my $log_line = shift;
   $log_line = MySQL_Quote_String($log_line);
-  my $sql = "INSERT INTO cron_log ( cron_log_message , cron_log_timestamp,
-                                    cron_log_pid        )
-                           VALUES ( $log_line        , '" . time . "'    ,
-                                    $$                  )";
+  my $sql = "INSERT INTO ws_log ( ws_log_message , ws_log_timestamp,
+                                    ws_log_pid        )
+                         VALUES ( $log_line        , '" . time . "'    ,
+                                    $$                )";
 
   print "(CRON) " . $log_line . "\n";
   MySQL_Execute($sql,"non_select") or carp "Warning: Cannot Log to DB";
@@ -1679,8 +1495,6 @@ sub Cron_Start {
     exit 1;
   }
 
-  undef $@;
-
   if ( defined $DAEMON and not $WINDOWS_SERVER ) {
     chdir '/'                  or croak "Can't chdir to /: $!";
     open STDIN, '/dev/null'    or croak "Can't read /dev/null: $!";
@@ -1699,7 +1513,7 @@ sub Cron_Start {
   # If daemon is specified, do PID check/update
   Start_Daemon_Check() if ( defined $DAEMON );
 
-  my %cron_cfg  = %{ Get_Cron_Info() };
+  my %cron_cfg  = %{ Get_Audit_Settings() };
 
   # Set the PID to track this process for clean-up
   $LOOP_PID = $$; 
@@ -1716,11 +1530,13 @@ sub Cron_Start {
 
 ############################################################
 # Purpose : Stop cron service if it's running
-# Usage   : Using switch --cron-stop
+# Usage   : Using switch --cron-stop, or from sub Audit_Schedule()
+#             Arg 1 : The PID of the service (optional)
 # Return  : Exit with status of 1 if it cannot stop the PID
 
 sub Cron_Stop {
-  my $pid = Get_Daemon_PID();
+  my $srv_pid = shift;
+  my $pid = ( $srv_pid ) ? ( $srv_pid ) : ( Get_Daemon_PID() );
 
   if ( not defined $pid ) {
     exit 0;
@@ -1736,11 +1552,11 @@ sub Cron_Stop {
 ############################################################
 # Purpose : Check if daemon has been marked to stop
 # Usage   : Called in busy-wait loop in Cron_Start
-# Return  : audit_cron_active value
+# Return  : audit_settings_active value
 
 sub Daemon_is_Active {
-  my %h_cron = %{ MySQL_Execute("SELECT audit_cron_id, audit_cron_active FROM audit_cron LIMIT 1","select") };
-  my $active = $h_cron{'1'}{'audit_cron_active'};
+  my %h_cron = %{ MySQL_Execute("SELECT audit_settings_id, audit_settings_active FROM audit_settings LIMIT 1","select") };
+  my $active = $h_cron{'1'}{'audit_settings_active'};
 
   return $active;
 }
@@ -1751,8 +1567,8 @@ sub Daemon_is_Active {
 # Return  : Bare return if not running, return PID otherwise
 
 sub Get_Daemon_PID {
-  my %h_pid = %{ MySQL_Execute("SELECT audit_cron_id, audit_cron_pid FROM audit_cron LIMIT 1","select") };
-  my $pid   = $h_pid{'1'}{'audit_cron_pid'};
+  my %h_pid = %{ MySQL_Execute("SELECT audit_settings_id, audit_settings_pid FROM audit_settings LIMIT 1","select") };
+  my $pid   = $h_pid{'1'}{'audit_settings_pid'};
 
   return undef if ( $pid == 0 );
   ( PID_Exists($pid) ) ? ( return $pid ) : ( return undef );
@@ -1767,7 +1583,7 @@ sub Get_Daemon_PID {
 sub Write_Daemon_PID {
   my $pid = shift;
 
-  MySQL_Execute("UPDATE `audit_cron` SET audit_cron_pid='$pid'","non_select");
+  MySQL_Execute("UPDATE `audit_settings` SET audit_settings_pid='$pid'","non_select");
 }
 
 ############################################################
@@ -1779,11 +1595,11 @@ sub Start_Daemon_Check {
   my $pid = Get_Daemon_PID();
   if ( not defined $pid ) {
     Write_Daemon_PID($$);
-    MySQL_Execute("UPDATE `audit_cron` SET audit_cron_active='1'","non_select");
-    Log_Cron("Started the OA Web-Schedue Service");
+    MySQL_Execute("UPDATE `audit_settings` SET audit_settings_active='1'","non_select");
+    Log_Cron("Started the Web-Schedule Service");
   }
   else {
-    Log_Cron("The OA Web-Schedule Service is Already Running with PID $pid");
+    Log_Cron("The Web-Schedule Service is Already Running with PID $pid");
     exit 1;
   }
 }
@@ -1971,28 +1787,23 @@ sub Cron_Fork {
 
 sub Interactive {
   my (
-    $audit_type , $audit_sql , $query_test,
-    $nmap_test  , $start     , $email     ,
-    $run_config , @audit_list, $config_id ,
-    $schedule_id, $smtp_test , $custom    ,
-    $cron_line  , $pid_check , $stop      ,
-    $service_install
+    $audit_type , $audit_sql , $query_test, $nmap_test,
+    $start      , $run_config, @audit_list, $config_id,
+    $schedule_id, $custom    , $cron_line , $pid_check,
+    $stop       , $service_install
   );
-
-  #Usage() if ( $#ARGV == -1 );
 
   GetOptions(
     'audit-list:s{1,}' => \@audit_list,
     'audit-type=s'     => \$audit_type,
     'audit-sql=s'      => \$audit_sql,
     'config-id=s'      => \$config_id,
-    'email-to=s'       => \$email,
     'schedule-id=s'    => \$schedule_id,
     'test-cron=s'      => \$cron_line,
     'test-query=s'     => \$query_test,
     'test-nmap=s'      => \$nmap_test,
-    'test-smtp=s'      => \$smtp_test,
     'run-config=s'     => \$run_config,
+    'url-path=s'       => \$URL,
     'check-pid'        => sub { $pid_check = '1';  },
     'daemon'           => sub { $DAEMON    = '1';  },
     'cron-start'       => sub { $start     = '1';  },
@@ -2010,7 +1821,6 @@ sub Interactive {
 
   Test_Query($query_test) if ( $query_test );
   Test_Nmap($nmap_test)   if ( $nmap_test  );
-  Test_SMTP($smtp_test)   if ( $smtp_test  );
 
   Service_Install($custom) if ( $SERVICE_INSTALL );
 

@@ -328,7 +328,7 @@ else {
    "Disposition"  => "attachment"
   );
 
-  $result = SendHtmlEmail($subject,$html,$_GET["email_list"],$email,array($attachment));
+  $result = SendHtmlEmail($subject,$html,$_GET["email_list"],$email,array($attachment),null);
 
   $xml  = "<pdfsend>";
   $xml .= "<smtpstatus>enabled</smtpstatus>";

@@ -4,9 +4,9 @@ fieldset#fs_linux, fieldset#fs_nmap,
 fieldset#fs_auth, fieldset#fs_command,
 fieldset#fs_mysql { display: none }
 
-.mysql {
-  font-size: .9em;
-}
+.mysql { font-size: .9em; }
+.formResult img { padding: 0px 5px; }
+.tooltip { margin-right: 5px; }
 
 #DragContainer {
   float: left;
@@ -129,3 +129,9 @@ input, select {
   width: 2em;
   height: 2em;
 }
+
+#dialog-test-results {
+  text-align: center;
+}
+
+#dialog-test-text { text-align: left; width: 380px; margin-right: auto; margin-left: auto; }

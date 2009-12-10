@@ -54,6 +54,7 @@ switch($_GET["sub"])
 	case "f14": exit(DeleteSmtpConnectionHtml($db));
 	case "f15": exit(GetSmtpConnectionXml($db));
 	case "f16": exit(GetLdapEnabled());
+	case "f17": exit(SaveConfigurationXml($db));
 }
 
 /**********************************************************************************************************
@@ -960,6 +961,116 @@ function GetSmtpConnectionXml($db)
 	}
 
 	return $response;
+}
+
+/**********************************************************************************************************
+Function Name:
+	SaveConfiguration
+Description:
+	Verify form before saving. Writes some admin config options to the DB before saving to include_config.php. 
+Arguments:
+	$db	[IN] [RESOURCE]	DB resource
+Returns:
+	[String]	XML string containing the HTML response and if any settings are not valid
+Change Log:
+	01/12/2009			New function	[Chad Sikorra]
+**********************************************************************************************************/
+function SaveConfigurationXml($db)
+{
+	header("Content-type: text/xml");
+
+	$errors      = array();
+	$config_file = "include_config.php";
+	global $TheApp;
+
+	$runas_service = ( $_GET["audit_runas_service"] == "on" ) ? '1' : '0';
+	$script_only   = ( $_GET["audit_script_only"]   == "on" ) ? '1' : '0';
+
+	$audit_cfg = GetAuditSettingsFromDb();
+
+	$xml_result = "<SaveConfiguration>";
+
+	// *************** Check include_config.php file ***************************************
+	if ( !is_writeable($config_file) )
+	{ 
+		array_push($errors, "Cannot write to configuration file \"$config_file\"");
+	}
+
+	// *************** Check Audit settings ************************************************
+	if ( is_null($audit_cfg) )
+	{ 
+		array_push($errors, "No audit settings in the database. Upgrade your database first.");
+	}
+	if (empty($_GET['audit_base_url'])) 
+	{
+		array_push($errors,"The base URL for audits cannot be blank"); 
+	} 
+	if ( $script_only != $audit_cfg['script_only'] && $audit_cfg['active'] )
+	{
+		array_push($errors,"Stop the Web-Schedule service before choosing to enable/disable script only use");
+	}
+	if ( $TheApp->OS == 'Windows' )
+	{
+		if ( $runas_service != $audit_cfg['service_enabled'] && $audit_cfg['active'] )
+		{
+			array_push($errors,"Stop the Web-Schedule service before changing service management");
+		}
+		if ( $service_enable == 1 ) 
+		{
+			if ( $audit_cfg['service_name'] != $_GET['audit_service_name'] and $audit_cfg['active'] ) 
+			{
+				array_push($errors,"Stop the Web-Schedule service before changing service names");
+			}
+		}
+	}
+	if ( $TheApp->OS == 'Windows' && $runas_service && empty($_GET['audit_service_name']) ) 
+	{
+		array_push($errors,"The service name cannot be left blank when enabled");
+	}
+	if ( !preg_match("/^[1-9]([0-9]+)?$/",$_GET['audit_poll_interval']) ) 
+	{
+		array_push($errors,"The polling interval must be a number with no leading zeros");
+	}
+
+	// *************** Check MySQL settings ************************************************
+	if (empty($_GET['mysql_server_post'])) 
+	{
+		array_push($errors,"You must declare a MySQL Server"); 
+	} 
+	if (empty($_GET['mysql_database_post'])) 
+	{
+		array_push($errors,"You must declare a MySQL Database"); 
+	}
+	if (empty($_GET['mysql_user_post']))
+	{
+		array_push($errors,"You must declare a MySQL Username"); 
+	}
+	if (empty($_GET['mysql_password_post']))
+	{
+		array_push($errors,"You must declare a MySQL Password"); 
+	}
+
+	// *************** Return any errors ************************************************
+	if(count($errors)>0)
+	{
+		foreach ( $errors as $error ) $xml_result = $xml_result . "<error>$error</error>";
+		$xml_result = $xml_result . '<result>false</result></SaveConfiguration>';
+		return $xml_result;
+	}
+
+	$db  = GetOpenAuditDbConnection();
+	$sql = "UPDATE audit_settings 
+		SET audit_settings_service_name='{$_GET['audit_service_name']}',
+		audit_settings_script_only='$script_only',
+		audit_settings_runas_service='$runas_service',
+		audit_settings_base_url='{$_GET['audit_base_url']}',
+		audit_settings_interval='{$_GET['audit_poll_interval']}'";
+
+	$status = ( mysql_query($sql,$db)  ) ? 'true' : 'false';
+	$xml_result .= ( $status == 'false' ) ? '<error>Failed to save settings to the database: '
+		. mysql_error() . '</error>' : '';
+
+	return $xml_result . "<result>$status</result></SaveConfiguration>";
 }
 
 ?>

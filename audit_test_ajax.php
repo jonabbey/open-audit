@@ -1,96 +1,90 @@
 <?php
-include "include_config.php";
-include "include_audit_functions.php";
+/**********************************************************************************************************
+  Test various queries/functions on the audit_schedule.php and audit_configuration.php pages
+**********************************************************************************************************/
 
-function TestSettings($test_type,$config_id,$db,$mysql_database) {
+set_time_limit(60);
+header( "Expires: Mon, 20 Dec 1998 01:00:00 GMT" );
+header( "Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT" );
+header( "Cache-Control: no-cache, must-revalidate" );
+header( "Pragma: no-cache" );
+
+require "include_config.php";
+require "include_audit_functions.php";
+error_reporting(0);
+
+switch ($_POST['type']) {
+  case "cron": exit(Get_Next_Run());
+  default:     exit(TestSettings());
+}
+
+/**********************************************************************************************************
+Function Name:
+  TestSettings
+Description:
+  Called from audit_configuration.php via AJAX to test NMAP, LDAP, or MySQL depending on what button was
+  pushed.
+Arguments: None
+Returns:    
+  [String] Result of the command in HTML form
+**********************************************************************************************************/
+function TestSettings() {
+  $test_type = $_POST['type'];
+  $id = $_POST['config_id'];
+  $html = null;
+
   /* Check if config at least exists */
-  $sql  = "SELECT * FROM audit_configurations WHERE `audit_cfg_id` = '".$config_id."'";
-  mysql_select_db($mysql_database);
-  $results =  @mysql_query($sql, $db) or die("Unable to query DB : ".mysql_error()."<br>");
-  if (@mysql_num_rows($results) != 0 or !empty($_POST['email']) ) {
+  $cfg = GetAuditConfigurationsFromDb();
+  if (!is_null($cfg) && array_key_exists($id,$cfg)) {
     /* check to make sure the the settings were saved */
-    $myrow = mysql_fetch_array($results);
-    if ( $test_type == "ldap" && $myrow['audit_cfg_type'] != "domain" ) {
-      echo "The configuration is not set to use LDAP<br>";
-      echo "Make sure you submit your changes before testing the connection!<br>";
+    if ( $test_type == "ldap" && $cfg[$id]['type'] != "domain" ) {
+      $html .= "The configuration is not set to use LDAP<br />";
+      $html .= "Make sure you submit your changes before testing the connection!<br />";
     }
-    else if ( $test_type == "mysql" && $myrow['audit_cfg_type'] != "mysql" ) {
-      echo "The configuration is not set to use MySQL<br>";
-      echo "Make sure you submit your changes before testing the connection!<br>";
+    else if ( $test_type == "mysql" && $cfg[$id]['type'] != "mysql" ) {
+      $html .= "The configuration is not set to use MySQL<br />";
+      $html .= "Make sure you submit your changes before testing the connection!<br />";
     }
-    else if ( $test_type == "nmap" && $myrow['audit_cfg_action'] != "nmap" ) {
-      echo "The configuration is not set to use Nmap<br>";
-      echo "Make sure you submit your changes before testing the connection!<br>";
+    else if ( $test_type == "nmap" && ( $cfg[$id]['action'] != "nmap" || $cfg[$id]['action'] == "pc_nmap" ) ) {
+      $html .= "The configuration is not set to use Nmap<br />";
+      $html .= "Type was {$cfg[$id]['type']}<br/>";
+      $html .= "Make sure you submit your changes before testing the connection!<br />";
     }
     else {
       $audit_bin = Get_Audit_Bin();
 
-      if ( empty($audit_bin) ) {
-        echo "Cannot find an audit.exe/audit.pl/audit file";
-        exit;
+      if ( is_null($audit_bin) ) {
+        return "Cannot find an audit.exe/audit.pl/audit file";
       }
 
-      if ( empty($_POST['email']) ) {
-        $test_results = array();
-        $test = ( $test_type == 'ldap' or $test_type == 'mysql' ) ? 'query' : $test_type ;
-        exec("{$audit_bin} --test-$test $config_id 2>&1",$test_results);
-        foreach ( $test_results as $line ) { echo $line . "<br>"; }
-      }
-      else {
-        TestSMTP($_POST['email'],$audit_bin);
-      }
+      $test_results = array();
+      $test = ( $test_type == 'ldap' or $test_type == 'mysql' ) ? 'query' : $test_type ;
+      exec("$audit_bin --test-$test $id 2>&1",$test_results);
+      foreach ( $test_results as $line ) { $html .= $line . "<br />"; }
     }
   }
   else {
-    echo "No such audit configuration in the database<br>";
+    $html .= "No such audit configuration in the database<br />";
   }
+
+  return $html;
 }
 
-function TestSMTP($email,$audit_bin) {
+/**********************************************************************************************************
+Function Name:
+  Get_Next_Run
+Description:
+  Called from audit_schedule.php via AJAX to test the syntax of the cron entry or see when it would run
+Arguments: None
+  [String] The cron entry to test
+Returns:    
+  [String] The result, as HTML
+**********************************************************************************************************/
+function Get_Next_Run() {
+  $cron_line = $_POST['cron_line'];
+  $next_run  = Verify_Cron_Line($cron_line);
 
-  if ( !preg_match("/^[\w!#$&%'*+=?`{|}~^.-]+@[A-Z0-9.-]+$/i", $email) ) {
-    echo "Please enter a valid email address";
-    exit;
-  }
-
-  system("{$audit_bin} --test-smtp " . escapeshellarg($_POST['email']),$result);
-
-  if ( $result == 0 ) {
-    echo "<b><i><font color=\"green\">Email was sent</font></i></b>";
-  }
-  else {
-    echo "<font color=\"red\"><b><i>Problems sending email!</i></b></font>";
-  }
-}
-
-function Get_Next_Run($cron_line) {
-  require_once("./lib/cronparser/CronParser.php");
-  $cron = new CronParser();
-
-  if ( ! $cron->calcLastRan($cron_line) ) {
-    echo "<b>Invalid Cron Entry</b>";
-    exit;
-  }
-
-  $audit_bin = Get_Audit_Bin();
-  $entry = escapeshellarg($cron_line);
-
-  $out = `{$audit_bin} --test-cron $entry`;
-  $next_run = date('D M jS Y h:i:s A',$out);
-
-  echo $next_run;
-}
-
-if ( $_POST['type'] == 'cron' ) {
-  Get_Next_Run($_POST['cron_line']);
-}
-else {
-  if ( $_POST['type'] == 'smtp' && empty($_POST['email']) ) {
-    echo "Please enter an email address to send to";
-    exit;
-  }
-  $db = mysql_connect($mysql_server,$mysql_user,$mysql_password);
-  TestSettings($_POST['type'],$_POST['config_id'],$db,$mysql_database);
+  return ( !is_null($next_run) ) ? date('D M jS Y h:i:s A',$next_run) : "<b>Invalid Cron Entry</b>";
 }
 
 ?>

@@ -12,7 +12,7 @@ $timestamp = date('d/m/y h:i:s a',$_GET['timestamp']);
                        "dir"=>"ASC",
                        "get"=>array("file"=>"search.php",
                                     "title"=>__("Run Now Log For Configuration on Date/Time"),
-                                    "var"=>array( "search"=>"%audit_log_host" ),
+                                    "var"=>array( "search_field"=>"%audit_log_host" ),
                                    ),
                        "fields"=>array("10"=>array("name"=>"audit_log_message",
                                                    "head"=>__("Log Message"),
@@ -30,7 +30,6 @@ $timestamp = date('d/m/y h:i:s a',$_GET['timestamp']);
                                        "40"=>array("name"=>"audit_log_time",
                                                    "head"=>__("Timestamp"),
                                                    "show"=>"y",
-                                                   "link"=>"y",
                                                   ),
                                       ),
                       );

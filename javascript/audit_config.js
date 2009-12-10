@@ -1,8 +1,14 @@
-/*****
-* This function creates the ajax object and sends the post string to the
-* php page specified for processing. the stateChange function handles the rest
-*****/
-
+/**********************************************************************************************************
+Function Name:
+	ajaxFunction
+Description:
+	Make the POST request to the request url, set the callback
+Arguments:
+  url	       [IN] [STRING]   The page to make the request to
+  parameters [IN] [STRING]   The POST variables to send
+  callBack   [IN] [FUNCTION] The function to call on the state change
+Returns:	None
+**********************************************************************************************************/
 function ajaxFunction(url, parameters, callBack) {
   ajaxRequest = GetXmlHttpObject();
   ajaxRequest.onreadystatechange = callBack;
@@ -13,24 +19,22 @@ function ajaxFunction(url, parameters, callBack) {
   ajaxRequest.send(parameters);
 }
 
-/*****
-* These two functions reset the forms so they appear new
-*****/
-
+/**********************************************************************************************************
+Function Name:
+	resetFormData
+Description:
+  Clears the audit configuration form after a successful edit/add
+Arguments: None
+Returns: None
+**********************************************************************************************************/
 function resetFormData() {
     document.getElementById('select_os').disabled = true;
     document.getElementById('select_audit').disabled = true;
-    document.getElementById("fs_auth").style.display = 'none';
-    document.getElementById("fs_windows").style.display = 'none';
-    document.getElementById("fs_ldap").style.display = 'none';
-    document.getElementById("fs_mysql").style.display = 'none';
-    document.getElementById("fs_list").style.display = 'none';
-    document.getElementById("fs_range").style.display = 'none';
     document.getElementById('select_os').disabled = 'true';
     document.getElementById('select_audit').disabled = 'true';
-    document.getElementById("fs_nmap").style.display = 'none';
-    document.getElementById("fs_linux").style.display = 'none';
-    document.getElementById("fs_command").style.display = 'none';
+    $('fieldset.os').hide();
+    $('fieldset.audit-action').hide();
+    $('fieldset.audit-type').hide();
     document.getElementById('input_ldap_user').disabled = false;
     document.getElementById('input_ldap_pass').disabled = false;
     document.getElementById('input_ldap_server').disabled = false;
@@ -40,26 +44,35 @@ function resetFormData() {
     document.getElementById('input_name').focus();
 }
 
+/**********************************************************************************************************
+Function Name:
+	resetSchedFormData
+Description:
+  Clears the audit schedules form after a successful edit/add
+Arguments: None
+Returns: None
+**********************************************************************************************************/
 function resetSchedFormData() {
-    document.getElementById("fs_hourly").style.display = 'none';
-    document.getElementById("fs_daily").style.display = 'none';
-    document.getElementById("fs_weekly").style.display = 'none';
-    document.getElementById("fs_monthly").style.display = 'none';
-    document.getElementById("fs_crontab").style.display = 'none';
-    document.getElementById("fs_email").style.display = 'none';
-    document.getElementById('input_name').focus();
+  $('fieldset.schedule-type').hide();
+  document.getElementById("fs_email").style.display = 'none';
+  document.getElementById('input_name').focus();
 }
 
-/*****
-* Called on state changes for add/updates for schedules and configs via ajax
-*****/
-
+/**********************************************************************************************************
+Function Name:
+	stateChange
+Description:
+	Called when the AJAX request for a schedule/configuration add/edit returns with a status. This decides
+  what to do based on it
+Arguments: None
+Returns: None
+**********************************************************************************************************/
 function stateChange() {
   if ( ajaxRequest.readyState == 4 ) {
     if ( ajaxRequest.status == 200 ) {
       result = ajaxRequest.responseText;
-      var regConfig = /.*The configuration has been added.*/i;
-      var regSched = /.*The schedule has been added.*/i;
+      var regConfig = /.*Configuration added.*/i;
+      var regSched = /.*Schedule added.*/i;
       if ( regConfig.exec(result) ) {
         document.getElementById('form_config').reset();
         resetFormData();
@@ -80,56 +93,20 @@ function stateChange() {
   }
 }
 
-/*****
-* This function pieces together the post string, decides what php page the ajax request
-* should go to, and sends the data to ajaxFunction to do the rest
-*****/
-
-function get(type,action,editID) {
+/**********************************************************************************************************
+Function Name:
+	SubmitForm
+Description:
+	Put together the POST string and send the request to the correct PHP page
+Arguments:
+	type   [IN] [string] config or schedule
+	action [IN] [string] add or edit
+	editID [IN] [string] ID of the configuration/schedule to edit
+Returns:	None
+**********************************************************************************************************/
+function SubmitForm(type,action,editID) {
   if ( type == "config" ) {
-    var postStr = "select_action=" + encodeURI( document.getElementById("select_action").value ) +
-                  "&select_audit=" + encodeURI( document.getElementById("select_audit").value ) +
-                     "&select_os=" + encodeURI( document.getElementById("select_os").value ) +
-                    "&input_name=" + encodeURI( document.getElementById("input_name").value ) +
-              "&input_max_audits=" + encodeURI( document.getElementById("input_max_audits").value ) +
-               "&input_wait_time=" + encodeURI( document.getElementById("input_wait_time").value ) +
-              "&select_ldap_cred=" + encodeURI( document.getElementById("select_ldap_cred").value ) +
-             "&select_audit_cred=" + encodeURI( document.getElementById("select_audit_cred").value ) +
-               "&input_ldap_user=" + encodeURI( document.getElementById("input_ldap_user").value ) +
-               "&input_ldap_pass=" + encodeURI( document.getElementById("input_ldap_pass").value ) +
-             "&input_ldap_server=" + encodeURI( document.getElementById("input_ldap_server").value ) +
-               "&input_ldap_path=" + encodeURI( document.getElementById("input_ldap_path").value ) +
-               "&input_ldap_page=" + encodeURI( document.getElementById("input_ldap_page").value ) +
-               "&input_cred_pass=" + encodeURI( document.getElementById("input_cred_pass").value ) +
-               "&input_cred_user=" + encodeURI( document.getElementById("input_cred_user").value ) +
-              "&check_cred_local=" + document.getElementById("check_cred_local").checked +
-         "&select_nmap_intensity=" + document.getElementById("select_nmap_intensity").value +
-                "&check_nmap_srv=" + document.getElementById("check_nmap_srv").checked +
-                "&check_nmap_udp=" + document.getElementById("check_nmap_udp").checked +
-            "&check_nmap_tcp_syn=" + document.getElementById("check_nmap_tcp_syn").checked +
-                "&input_nmap_url=" + encodeURI( document.getElementById("input_nmap_url").value ) +
-               "&input_nmap_path=" + encodeURI( document.getElementById("input_nmap_path").value ) +
-                 "&text_commands=" + encodeURI( document.getElementById("text_commands").value ) +
-        "&check_command_interact=" + document.getElementById("check_command_interact").checked +
-                     "&input_vbs=" + encodeURI( document.getElementById("input_vbs").value ) +
-                "&input_com_path=" + encodeURI( document.getElementById("input_com_path").value ) +
-          "&check_linux_software=" + document.getElementById("check_linux_software").checked +
-     "&check_linux_software_list=" + document.getElementById("check_linux_software_list").checked +
-           "&text_linux_software=" + encodeURI( document.getElementById("text_linux_software").value ) +
-               "&input_linux_url=" + encodeURI( document.getElementById("input_linux_url").value ) +
-             "&input_windows_url=" + encodeURI( document.getElementById("input_windows_url").value ) +
-        "&check_windows_software=" + document.getElementById("check_windows_software").checked +
-           "&select_windows_uuid=" + document.getElementById("select_windows_uuid").value +
-                  "&text_pc_list=" + encodeURI( document.getElementById("text_pc_list").value ) +
-                    "&start_ip_1=" + document.getElementById("start_ip_1").value +
-                    "&start_ip_2=" + document.getElementById("start_ip_2").value +
-                    "&start_ip_3=" + document.getElementById("start_ip_3").value +
-                    "&start_ip_4=" + document.getElementById("start_ip_4").value +
-                      "&end_ip_1=" + document.getElementById("end_ip_1").value +
-                      "&end_ip_2=" + document.getElementById("end_ip_2").value +
-                      "&end_ip_3=" + document.getElementById("end_ip_3").value +
-                      "&end_ip_4=" + document.getElementById("end_ip_4").value +
-              "&check_log_enable=" + document.getElementById("check_log_enable").checked;
+    var postStr = $('#form_config').serialize();
 
     if ( document.getElementById('DragContainer') != undefined ) {
       var cmdCheck = document.getElementById('DragContainer').getElementsByTagName('input');
@@ -142,11 +119,11 @@ function get(type,action,editID) {
 
     // The filter can be defined in two places, but they use the same DB entries
     // So just write new values based on what it will be used for, if at all
-    var audit_type = document.getElementById("select_audit").value;
+    var audit_type = $("#select_audit").val();
 
     if ( audit_type == "domain" || audit_type == "mysql" ) {
       if ( audit_type == "domain" ) { audit_type = 'ldap'; }
-      filter = document.getElementById('fs_' + audit_type).getElementsByTagName('input');
+      filter = $('#fs_' + audit_type + ' input');
       for( var i = 0 ; i < filter.length ; i++ ) { 
         switch (filter[i].id) {
           case  "check_filter_case":
@@ -163,7 +140,7 @@ function get(type,action,editID) {
     }
 
     if ( audit_type == "mysql" ) {
-      var s_tr = document.getElementById('mysql_query_options').getElementsByTagName('tr');
+      var s_tr = $('#mysql_query_options tr');
       for( var i = 0 ; i < s_tr.length ; i++ ) {
         // The display will only be none if they checked to remove an existing entry
         if ( s_tr[i].style.display == 'none' ) {
@@ -175,7 +152,7 @@ function get(type,action,editID) {
 
         var o_tbl  = document.getElementById('qtbl' + q_id);
         var o_fld  = document.getElementById('qfld' + q_id);
-        var o_srt = document.getElementById('qsrt' + q_id);
+        var o_srt  = document.getElementById('qsrt' + q_id);
 
         var tbl  = o_tbl.options[o_tbl.selectedIndex].value;
         var fld  = o_fld.options[o_fld.selectedIndex].value;
@@ -199,28 +176,7 @@ function get(type,action,editID) {
     }
     var phpPage = "audit_config_add_ajax.php";
   } else if ( type == "sched" ) {
-    var postStr = "select_sched_type=" + document.getElementById("select_sched_type").value +
-                     "&select_config=" + encodeURI( document.getElementById("select_config").value ) +
-                        "&input_name=" + encodeURI( document.getElementById("input_name").value ) +
-                   "&select_gen_hour=" + document.getElementById("select_gen_hour").value +
-                    "&select_gen_min=" + document.getElementById("select_gen_min").value +
-                "&select_hourly_freq=" + document.getElementById("select_hourly_freq").value +
-               "&select_hourly_start=" + document.getElementById("select_hourly_start").value +
-               "&check_hours_between=" + document.getElementById("check_hours_between").checked +
-                 "&select_hstrt_hour=" + document.getElementById("select_hstrt_hour").value +
-                  "&select_hstrt_min=" + document.getElementById("select_hstrt_min").value +
-                  "&select_hend_hour=" + document.getElementById("select_hend_hour").value +
-                   "&select_hend_min=" + document.getElementById("select_hend_min").value +
-                   "&input_days_freq=" + document.getElementById("input_days_freq").value +
-                 "&check_log_disable=" + document.getElementById("check_log_disable").checked +
-                   "&check_email_log=" + document.getElementById("check_email_log").checked +
-               "&input_email_subject=" + encodeURI( document.getElementById("input_email_subject").value ) +
-               "&input_email_replyto=" + encodeURI( document.getElementById("input_email_replyto").value ) +
-              "&select_email_tt_html=" + encodeURI( document.getElementById("select_tt_html").value ) +
-              "&select_email_tt_text=" + encodeURI( document.getElementById("select_tt_text").value ) +
-                 "&select_email_logo=" + encodeURI( document.getElementById("select_email_logo").value ) +
-                "&select_monthly_day=" + document.getElementById("select_monthly_day").value +
-                   "&input_cron_line=" + encodeURI( document.getElementById("input_cron_line").value );
+    var postStr = $('#form_sched').serialize();
 
     /* Add all the weekdays selected to a post array */
     var weekCheck=document.getElementsByName("check_weekly");
@@ -251,120 +207,90 @@ function get(type,action,editID) {
   ajaxFunction(phpPage, postStr, stateChange);
 }
 
-/*****
-* This function hides the other FS's based on what type of config was selected
-*****/
-
+/**********************************************************************************************************
+Function Name:
+	SwitchConfig
+Description:
+	This function hides the other FS's based on what type of config was selected
+Arguments:
+	selected [IN] [object] select object for the type of config
+Returns:	None
+**********************************************************************************************************/
 function SwitchConfig(selected) {
   var name = selected.options[selected.selectedIndex].value;
-  if ( name == "domain" ) {
-    document.getElementById("fs_ldap").style.display = 'block';
-    document.getElementById("fs_list").style.display = 'none';
-    document.getElementById("fs_mysql").style.display = 'none';
-    document.getElementById("fs_range").style.display = 'none';
-  } else if ( name == "list" ) {
-    document.getElementById("fs_ldap").style.display = 'none';
-    document.getElementById("fs_list").style.display = 'block';
-    document.getElementById("fs_mysql").style.display = 'none';
-    document.getElementById("fs_range").style.display = 'none';
-  } else if ( name == "iprange" ) {
-    document.getElementById("fs_ldap").style.display = 'none';
-    document.getElementById("fs_list").style.display = 'none';
-    document.getElementById("fs_mysql").style.display = 'none';
-    document.getElementById("fs_range").style.display = 'block';
-  } else if ( name == "nothing" ) {
-    document.getElementById("fs_ldap").style.display = 'none';
-    document.getElementById("fs_list").style.display = 'none';
-    document.getElementById("fs_range").style.display = 'none';
-    document.getElementById("fs_mysql").style.display = 'none';
-  } else if ( name == "mysql" ) {
-    document.getElementById("fs_ldap").style.display = 'none';
-    document.getElementById("fs_list").style.display = 'none';
-    document.getElementById("fs_range").style.display = 'none';
-    document.getElementById("fs_mysql").style.display = 'block';
-  }
+  $('fieldset.audit-type').hide();
+  $('fieldset.' + name).toggle();
 }
 
-/*****
-* This function hides/shows the correct FS for the OS based on what was selected
-*****/
-
+/**********************************************************************************************************
+Function Name:
+	SwitchOS
+Description:
+	This function hides/shows the correct FS for the OS based on what was selected
+Arguments:
+	selected [IN] [object] select object for the type of OS
+Returns:	None
+**********************************************************************************************************/
 function SwitchOS(selected) {
-  var name = selected.options[selected.selectedIndex].value;
-  if ( document.getElementById("select_action").value != 'command' ) {
-    if ( name == "windows" ) {
-      document.getElementById("fs_windows").style.display = 'block';
-      document.getElementById("fs_linux").style.display = 'none';
-    } else if ( name == "linux" ) {
-      document.getElementById("fs_windows").style.display = 'none';
-      document.getElementById("fs_linux").style.display = 'block';
-    } else if ( name == "nothing" ) {
-      document.getElementById("fs_windows").style.display = 'none';
-      document.getElementById("fs_linux").style.display = 'none';
-    }
-  }
+  var name   = $('#' + selected.id + ' :selected').val();
+  var action = $('#select_action :selected').val();
+  $('fieldset.os').hide();
+  if ( action == 'nmap' || action == 'command' ) { return; }
+  if ( name != 'nothing' ) { $('fieldset.' + name ).toggle(); }
 }
 
-/*****
-* This function hides/shows the correct FS for the config action based on what was selected
-*****/
-
+/**********************************************************************************************************
+Function Name:
+	SwitchAction
+Description:
+	This function hides/shows the correct FS for the config action based on what was selected
+Arguments:
+	selected [IN] [object] select object for the type of audit action
+Returns:	None
+**********************************************************************************************************/
 function SwitchAction(selected) {
   var name = selected.options[selected.selectedIndex].value;
+  $('fieldset.audit-action').hide();
+  $('fieldset.' + name).show();
   if ( name == "pc" ) {
     /* If the previous action was "command", the OS might remain hidden */
     if ( document.getElementById('select_os').value != 'nothing' ) {
       var os_choice = document.getElementById('select_os').value;
       document.getElementById("fs_" + os_choice ).style.display = 'block';
     }
-    document.getElementById("fs_auth").style.display = 'block';
     document.getElementById('select_os').disabled = false;
     document.getElementById('select_audit').disabled = false;
-    document.getElementById("fs_command").style.display = 'none';
-    document.getElementById("fs_nmap").style.display = 'none';
   } else if ( name == "nmap" ) {
-    document.getElementById("fs_auth").style.display = 'none';
-    document.getElementById("fs_command").style.display = 'none';
+    $('fieldset.os').hide();
     document.getElementById('select_audit').disabled = false;
-    document.getElementById("fs_nmap").style.display = 'block';
-    document.getElementById("fs_windows").style.display = 'none';
     document.getElementById('select_os').selectedIndex = 0;
     document.getElementById('select_os').disabled = 'true';
-    document.getElementById("fs_linux").style.display = 'none';
   } else if ( name == "pc_nmap" ) {
-    document.getElementById("fs_auth").style.display = 'block';
-    document.getElementById("fs_command").style.display = 'none';
     document.getElementById('select_audit').disabled = false;
-    document.getElementById("fs_nmap").style.display = 'block';
     document.getElementById('select_os').disabled = false;
   } else if ( name == "command" ) {
-    document.getElementById("fs_windows").style.display = 'none';
-    document.getElementById("fs_linux").style.display = 'none';
-    document.getElementById("fs_auth").style.display = 'block';
-    document.getElementById("fs_command").style.display = 'block';
+    $('fieldset.os').hide();
     document.getElementById('select_os').disabled = false;
     document.getElementById('select_audit').disabled = false;
-    document.getElementById("fs_nmap").style.display = 'none';
   } else if ( name == "nothing" ) {
-    document.getElementById("fs_auth").style.display = 'none';
-    document.getElementById("fs_windows").style.display = 'none';
-    document.getElementById("fs_ldap").style.display = 'none';
-    document.getElementById("fs_list").style.display = 'none';
-    document.getElementById("fs_range").style.display = 'none';
+    $('fieldset.os').hide();
+    $('fieldset.audit-type').hide();
     document.getElementById('select_audit').selectedIndex = 0;
     document.getElementById('select_os').selectedIndex = 0;
     document.getElementById('select_os').disabled = 'true';
     document.getElementById('select_audit').disabled = 'true';
-    document.getElementById("fs_nmap").style.display = 'none';
-    document.getElementById("fs_command").style.display = 'none';
-    document.getElementById("fs_linux").style.display = 'none';
   }
 }
 
-/*****
-* This function disables/enables manual user/pass fields if the user selects an ldap connection
-*****/
-
+/**********************************************************************************************************
+Function Name:
+	ToggleAuth
+Description:
+	This function disables/enables manual user/pass fields if the user selects an ldap connection
+Arguments:
+	selected [IN] [object] select object for the LDAP connection
+Returns:	None
+**********************************************************************************************************/
 function ToggleAuth(selected) {
   var action = ( selected.options[selected.selectedIndex].value != 'nothing' ) ? true : false;
   if ( selected.id == 'select_audit_cred' ) {
@@ -379,10 +305,15 @@ function ToggleAuth(selected) {
   } 
 }
 
-/*****
-* This function disables certain elements on the page load for the configs/schedules 
-*****/
-
+/**********************************************************************************************************
+Function Name:
+	DisableOnLoad
+Description:
+	This function disables certain elements on the page load for the configs/schedules 
+Arguments:
+	type [IN] [string] Is this for a configuration (config) or schedule (sched)?
+Returns:	None
+**********************************************************************************************************/
 function DisableOnLoad(type) {
   if ( type == "config" ) {
     document.getElementById('select_os').disabled = true;
@@ -401,28 +332,38 @@ function DisableOnLoad(type) {
   document.getElementById('input_name').focus();
 }
 
-/*****
-* This function copies the IP octet for the first three octets of the IP range.
-* This way we only have to compare the last octets for the start/end ip
-*****/
+/**********************************************************************************************************
+Function Name:
+	IpCopy
+Description:
+	Copy the typed IP octet to the corresponding one below
+Arguments:
+	selected [IN] [object]  INPUT object whose value needs to be copied
+	octet    [IN] [INTEGER] The octet of the corresponding IP that needs to have the value copied into
+Returns:	None
+**********************************************************************************************************/
+function IpCopy(selected, octet) { document.getElementById('end_ip_' + octet).value = selected.value; }
 
-function IpCopy(selected, octet) {
-  document.getElementById('end_ip_' + octet).value = selected.value;
-}
+/**********************************************************************************************************
+Function Name:
+	MinCopy
+Description:
+  This function copies the starting minutes for hourly schedules between a certain time
+  since it makes no sense to have a difference between the start and end minute
+Arguments:
+	selected [IN] [object] INPUT object whose value we should copy
+Returns:	None
+**********************************************************************************************************/
+function MinCopy(selected) { document.getElementById('select_hend_min').value = selected.value; }
 
-/*****
-* This function copies the starting minutes for hourly schedules between a certain time
-* since it makes no sense to have a difference between the start and end minute
-*****/
-
-function MinCopy(selected) {
-  document.getElementById('select_hend_min').value = selected.value;
-}
-
-/*******
-* Run the values through the switch functions to only display the correct stuff
-*******/
-
+/**********************************************************************************************************
+Function Name:
+	ConfigType
+Description:
+  Determine how/what to display on the audit_configuration.php page
+Arguments: None
+Returns:	None
+**********************************************************************************************************/
 function ConfigType() {
 
   SwitchConfig(document.getElementById("select_audit"));
@@ -436,83 +377,15 @@ function ConfigType() {
   document.getElementById('end_ip_3').disabled = true;
 }
 
-
-//Test an LDAP query and pop-up a window with results
-function LDAPTest() {
-  document.getElementById('ldap_result').innerHTML = 
-   "<br><br><img class=\"busy\" src=\"images/hourglass-busy.gif\"><i>Querying LDAP...</i>";
-  if ( ajaxRequest.readyState == 4 ) {
-    if ( ajaxRequest.status == 200 ) {
-      result = ajaxRequest.responseText;
-      document.getElementById('test_ldap').disabled = false;
-
-      popup = window.open('','LDAP','height=300,width=400,scrollbars=yes');
-      popup.document.write('<html><body><p>' + result + '<\/p>');
-      popup.document.write(' <a href="#" onclick="self.close();return false;">Close<\/a><\/body>');
-      popup.document.write(' <\/html>');
-    }
-    else {
-      alert('There was a problem with the request.');
-      document.getElementById('test_ldap').disabled = false;
-    }
-    document.getElementById('ldap_result').innerHTML = ''
-  }
-}
-
-//Test the nmap command and pop-up a window with results
-function NMAPTest() {
-  document.getElementById('nmap_result').innerHTML = 
-   "<br><br><img class=\"busy\" src=\"images/hourglass-busy.gif\"><i>Running NMAP command...</i>";
-  if ( ajaxRequest.readyState == 4 ) {
-    if ( ajaxRequest.status == 200 ) {
-      result = ajaxRequest.responseText;
-      document.getElementById('test_nmap').disabled = false;
-
-      popup = window.open('','NMAP','height=300,width=400,scrollbars=yes');
-      popup.document.write('<html><body><p>' + result + '<\/p>');
-      popup.document.write(' <a href="#" onclick="self.close();return false;">Close<\/a><\/body>');
-      popup.document.write(' <\/html>');
-    }
-    else {
-      alert('There was a problem with the request.');
-      document.getElementById('test_nmap').disabled = false;
-    }
-    document.getElementById('nmap_result').innerHTML = '';            
-  }
-}
-
-function MysqlTest() {
-  document.getElementById('mysql_result').innerHTML = 
-   "<br><br><img class=\"busy\" src=\"images/hourglass-busy.gif\"><i>Querying MySQL DB...</i>";
-  if ( ajaxRequest.readyState == 4 ) {
-    if ( ajaxRequest.status == 200 ) {
-      result = ajaxRequest.responseText;
-      document.getElementById('test_mysql').disabled = false;
-
-      popup = window.open('','MySQL','height=300,width=400,scrollbars=yes');
-      popup.document.write('<html><body><p>' + result + '<\/p>');
-      popup.document.write(' <a href="#" onclick="self.close();return false;">Close<\/a><\/body>');
-      popup.document.write(' <\/html>');
-    }
-    else {
-      alert('There was a problem with the request.');
-      document.getElementById('test_mysql').disabled = false;
-    }
-    document.getElementById('mysql_result').innerHTML = '';            
-  }
-}
-
-//Test sending an email
-function SMTPTest() {
-  document.getElementById('smtp_result').innerHTML = 
-   "<img class=\"busy\" src=\"images/hourglass-busy.gif\">&nbsp;&nbsp;<i>Attempting to send email...</i>";
-  if ( ajaxRequest.readyState == 4 ) {
-    result = ajaxRequest.responseText;
-    document.getElementById('smtp_button').disabled = false;
-    document.getElementById('smtp_result').innerHTML = result;            
-  }
-}
-
+/**********************************************************************************************************
+Function Name:
+	MakeMoveable
+Description:
+  Make it so when a user clicks a command box div it can be moved up/down
+Arguments:
+	obj	[IN] [object]	div object that fired the event
+Returns:	None
+**********************************************************************************************************/
 // Change the class on the box so we know which one should move
 function MakeMovable(obj) {
   if ( obj.className == "Box" ) {
@@ -534,7 +407,16 @@ function MakeMovable(obj) {
   }
 }
 
-// swapNode is nice, but it's IE specific. This function emulates it.
+/**********************************************************************************************************
+Function Name:
+	swapNodes
+Description:
+  Swap the conents of two nodes
+Arguments:
+	item1	[IN] [object]	DOM object to swap
+	item2	[IN] [object]	DOM object to swap
+Returns:	None
+**********************************************************************************************************/
 function swapNodes(item1,item2) {
   var itemtmp = item1.cloneNode(1);
   var parent = item1.parentNode;
@@ -547,7 +429,14 @@ function swapNodes(item1,item2) {
   itemtmp = null;
 }
 
-// Moves a command box up in order
+/**********************************************************************************************************
+Function Name:
+	boxUp
+Description:
+  Move a command box up in order
+Arguments: None
+Returns:	None
+**********************************************************************************************************/
 function boxUp() {
   var boxes = document.getElementById('DragContainer').getElementsByTagName('div');
   for ( var i = 0 ; i < boxes.length ; i++ ) { 
@@ -558,7 +447,14 @@ function boxUp() {
   }
 }
 
-// Moves a command box down in order
+/**********************************************************************************************************
+Function Name:
+	boxDown
+Description:
+  Moves a command box down in order
+Arguments: None
+Returns:	None
+**********************************************************************************************************/
 function boxDown() {
   var boxes = document.getElementById('DragContainer').getElementsByTagName('div');
   var end   = boxes.length - 1;
@@ -570,79 +466,70 @@ function boxDown() {
   }
 }
 
-function submitCronSettings() {
-  var postStr = "select_action=update" +
-               "&input_service=" + encodeURI( document.getElementById("input_service").value ) +
-        "&check_service_enable=" + document.getElementById("check_service_enable").checked +
-           "&input_smtp_server=" + encodeURI( document.getElementById("input_smtp_server").value ) +
-             "&input_smtp_port=" + encodeURI( document.getElementById("input_smtp_port").value ) +
-             "&input_smtp_from=" + encodeURI( document.getElementById("input_smtp_from").value ) +
-             "&input_smtp_user=" + encodeURI( document.getElementById("input_smtp_user").value ) +
-             "&input_smtp_pass=" + encodeURI( document.getElementById("input_smtp_pass").value ) +
-             "&check_smtp_auth=" + document.getElementById("check_smtp_auth").checked +
-           "&input_web_address=" + encodeURI( document.getElementById("input_web_address").value ) +
-              "&input_interval=" + encodeURI( document.getElementById("input_interval").value );
-  var phpPage = "audit_cron_settings_ajax.php";
-  ajaxFunction(phpPage, postStr, verifyCronSettings);
-}
-
-function verifyCronSettings() {
-  if ( ajaxRequest.readyState == 4 ) {
-    if ( ajaxRequest.status == 200 ) {
-      result = ajaxRequest.responseText;
-      document.getElementById('form_result_settings').innerHTML = result;            
-    }
+function TestResult(selected,test_type) {
+  var id = $('#config_id').val();
+  var title;
+  switch (test_type) {
+    case "ldap":  title = 'LDAP Query Results';  break;
+    case "mysql": title = 'MySQL Query Results'; break;
+    case "nmap":  title = 'NMAP Command Output'; break;
   }
+  $('#dialog-test-results').dialog('option','title',title);
+  selected.disabled = true;
+  $.ajax({
+    'url': 'audit_test_ajax.php',
+    'type': 'POST',
+    'data': {
+      'config_id': id,
+      'type': test_type,
+    },
+    'beforeSend': function(){
+      var html = "<br><br><img class=\"busy\" src=\"images/hourglass-busy.gif\"><i>Fetching Results...</i>";
+      $('#' + test_type + '_result').html(html);
+    },
+    'success': function(msg){
+      selected.disabled = false;
+      $('#' + test_type + '_result').html('');
+      $('#dialog-test-text').html(msg);
+      $('#dialog-test-results').dialog('open');
+    },
+    'error': function(){ $('#' + test_type + '_result').html(''); selected.disabled = false; },
+  });
 }
 
-function toggleSmtpAuth() {
-  document.getElementById('input_smtp_user').disabled =
-    ( document.getElementById('check_smtp_auth').checked ) ? false : true ;
-  document.getElementById('input_smtp_pass').disabled =
-    ( document.getElementById('check_smtp_auth').checked ) ? false : true ;
-}
+/**********************************************************************************************************
 
-function toggleService() {
-  document.getElementById('input_service').disabled =
-    ( document.getElementById('check_service_enable').checked ) ? false : true ;
-}
+	Jquery 'ready' function - things to execute when the DOM is ready
 
-function settingsOnload() {
-  toggleService();
-  toggleSmtpAuth();
-}
+**********************************************************************************************************/
 
-function addToEmailList() {
-  var email = document.getElementById('input_email_to').value;
-  var email_boxes = document.getElementById('EmailContainer').getElementsByTagName('div');
-  var id = email_boxes.count + 1;
+$(document).ready(function() {
+	$('a.tooltip').tooltip({
+		'showURL' : false,
+		'extraClass' : 'cfg-tooltip',
+		'delay' : 0,
+		'fade' : 250
+	}).click( function() { return false; });
 
-  var emailDiv = document.createElement('div');
-  var emailDel = document.createElement('img');
-  var emailVal = document.createElement('input');
-
-  emailDiv.setAttribute('id','email' + id );
-  emailDiv.setAttribute("class","Box");
-  emailDiv.setAttribute("className","Box");
-
-  emailDel.src = 'images/delete.png';
-  emailDel.id  = id;
-  emailDel.setAttribute('class','delete');
-  emailDel.setAttribute('className','delete');
-  emailDel.onclick = function() { removeEmail( document.getElementById('email' + id) ) };
-
-  emailVal.type  = 'hidden'
-  emailVal.name  = 'email_to';
-  emailVal.value = email;
-
-  emailDiv.appendChild( emailDel  );
-  emailDiv.appendChild( document.createTextNode(email) );
-  emailDiv.appendChild( emailVal  );
-
-  document.getElementById('EmailContainer').appendChild(emailDiv);
-}
-
-function removeEmail(obj) {
-  var inputs = obj.getElementsByTagName('input');
-  document.getElementById('EmailContainer').removeChild(obj);
-}
+  // Stuff for the audit_configuration.php page only...
+  if(($('#select_audit').length)){ 
+    ConfigType();
+    $("#dialog-test-results").dialog({
+      bgiframe: true,
+      resizable: false,
+      draggable: false,
+      autoOpen: false,
+      modal: true,
+      width: 400,
+      height: 300,
+      overlay: {
+        backgroundColor: '#000',
+        opacity: 0.5
+      },
+    });
+  }
+  // Stuff for the audit_schedule.php page only...
+  else if(($('#select_sched_type').length)){ 
+    SchedType();
+  }
+});

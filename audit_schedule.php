@@ -1,23 +1,34 @@
 <?php
-$page = "admin";
-include "include.php";
-include "include_audit_functions.php";
+  $JQUERY_UI = array('tooltip');
+  $page = "admin";
+  require_once "include.php";
+  require_once "include_audit_functions.php";
 
-  $sql  = "SELECT * FROM audit_schedules WHERE `audit_schd_id` = '".$_GET['sched_id']."'";
-  $db = mysql_connect($mysql_server,$mysql_user,$mysql_password);
-  $result  = mysql_query($sql, $db);
-  $myrow   = @mysql_fetch_array($result);
-  $emails  = $myrow['audit_schd_email_list'];
-  $dly_frq = 
-    ( empty($myrow['audit_schd_dly_frq']) ) ?
-    '1' : $myrow['audit_schd_dly_frq'] ;
+  // Set tooltip values for some configuration options that need an explanation
+  $tooltips = array(
+    "email_list" =>  "Separate multiple email addresses with a semi-colon",
+    "cron_entry" =>  "A Vixie compatible cron entry for a schedule.<br />"
+                    ."Supports steps (*/1), ranges (1-5), and three letter<br />"
+                    ."abbreviations for weekdays/months. Example<br /> Format: 10 5 * * *",
+  );
+
+// Get values for items that are stored only in the DB, not in include_config.php
+  $cfg = GetAuditSchedulesFromDb();
+  $id  = ( isset($_GET['sched_id']) ) ? $_GET['sched_id'] : '0'; 
+
+  $dly_frq = ( empty($cfg[$id]['daily_frequency']) ) ? '1' : $cfg[$id]['daily_frequency'] ;
 
   $form_action = ( isset($_GET['sched_id']) ) ? 'edit' : 'add' ; 
+  $months    = @explode(",",$cfg[$id]['months']); 
+  $wk_days   = @explode(",",$cfg[$id]['week_days']); 
+  $daily_frq = (!is_null($cfg[$id])) ? $cfg[$id]['daily_frequency'] : 1;
 
   $head = 
     ( isset($_GET['sched_id']) ) ?
-    "Editing Schedule \"{$myrow['audit_schd_name']}\"" :
+    "Editing Schedule: {$cfg[$id]['name']}" :
     'Add a Schedule';
+
+  function CheckWeekMonth($list,$item){ if(in_array($item,$list)){echo "CHECKED";} }
 ?>
 <link media="screen" rel="stylesheet" type="text/css" href="audit_sched.css" />
 <script type='text/javascript' src="javascript/audit_config.js"></script>
@@ -27,157 +38,155 @@ include "include_audit_functions.php";
   <div class="form-result"><span id="form_result_success"></span></div>
   <?php
     /* Check if the schedule exists. Do not show the form if none exists */
-    if (@mysql_num_rows($result) != 0 or !isset($_GET['sched_id']) ) {
+    if ((isset($_GET['sched_id']) && !is_null($cfg[$id])) || !isset($_GET['sched_id'])) {
   ?>
   <div class="submit-push">&nbsp;</div>
   <div class="header"><?php echo $head ?></div>
-  <br><br>
-  <form action="javascript:get('sched','<?php echo $form_action ?>','<?php echo $_GET['sched_id'] ?>');" method="post" id="form_sched">
+  <br /><br />
+  <form action="javascript:SubmitForm('sched','<?php echo $form_action ?>','<?php echo $id; ?>');" method="post" id="form_sched">
     <fieldset><legend>General Settings</legend>
         <label for="input_name">Name</label>
-        <input type="text" size="20" id="input_name" value="<?php echo $myrow['audit_schd_name'] ?>"/>
-        <br>
+        <input type="text" size="20" id="input_name" name="input_name" value="<?php echo $cfg[$id]['name'] ?>"/>
+        <br />
         <label for="select_config">Configuration</label>
-        <?php $db = mysql_connect($mysql_server,$mysql_user,$mysql_password);
-              Get_Audit_Configs($db,$myrow['audit_schd_cfg_id']); ?>
-        <br>
+        <?php Get_Audit_Configs($cfg[$id]['config_id']); ?>
+        <br />
         <label for="select_sched_type">Schedule Type</label>
-        <select size="1" onChange="SwitchSchedType(this)" id="select_sched_type">
+        <select size="1" onChange="SwitchSchedType(this)" id="select_sched_type" name="select_sched_type">
           <option value="nothing">Schedule Type</option>
           <option value="nothing">-------</option>
-          <option value="hourly" <?php if ( $myrow['audit_schd_type'] == "hourly" ) { echo "SELECTED"; } ?> >Hourly</option>
-          <option value="daily" <?php if ( $myrow['audit_schd_type'] == "daily" ) { echo "SELECTED"; } ?> >Daily</option>
-          <option value="weekly" <?php if ( $myrow['audit_schd_type'] == "weekly" ) { echo "SELECTED"; } ?> >Weekly</option>
-          <option value="monthly" <?php if ( $myrow['audit_schd_type'] == "monthly" ) { echo "SELECTED"; } ?> >Monthly</option>
-          <option value="crontab"<?php if ( $myrow['audit_schd_type'] == "crontab" ) { echo "SELECTED"; } ?> >Cron Entry</option>
+          <option value="hourly" <?php if($cfg[$id]['type']=="hourly"){echo "SELECTED";} ?> >Hourly</option>
+          <option value="daily" <?php if($cfg[$id]['type']=="daily"){echo "SELECTED";} ?> >Daily</option>
+          <option value="weekly" <?php if($cfg[$id]['type']=="weekly"){echo "SELECTED";} ?> >Weekly</option>
+          <option value="monthly" <?php if($cfg[$id]['type']=="monthly"){echo "SELECTED";} ?> >Monthly</option>
+          <option value="crontab"<?php if($cfg[$id]['type']=="crontab"){echo "SELECTED";} ?> >Cron Entry</option>
         </select>
-        <br>
+        <br />
         <label for="select_gen_hour">Starting Time</label>
-        <select size="1" id="select_gen_hour">
-          <?php Get_Select_Options("0","23",$myrow['audit_schd_strt_hr']); ?>
+        <select size="1" id="select_gen_hour" name="select_gen_hour">
+          <?php Get_Select_Options("0","23",$cfg[$id]['hour']); ?>
         </select>:
-        <select size="1" id="select_gen_min">
-          <?php Get_Select_Options("0","59",$myrow['audit_schd_strt_min']); ?>
+        <select size="1" id="select_gen_min" name="select_gen_min">
+          <?php Get_Select_Options("0","59",$cfg[$id]['minute']); ?>
         </select>
-        <br>
+        <br />
         <label for="check_log_disable">Disable Logging</label>
-        <input type="checkbox" onclick="toggleLogging(this)" size="20" id="check_log_disable" <?php if ( $myrow['audit_schd_log_disable'] == 1 ) { echo "CHECKED"; } ?>/>
-        <br><br>
+        <input type="checkbox" onclick="toggleLogging(this)" size="20" id="check_log_disable" name="check_log_disable" <?php if ( $cfg[$id]['log_disabled'] ) { echo "CHECKED"; } ?>/>
+        <br /><br />
         <label for="check_email_log">Email Audit Results</label>
-        <input type="checkbox" onclick="toggleEmail(this)" size="20" id="check_email_log" <?php if ( $myrow['audit_schd_email_log'] == 1 ) { echo "CHECKED"; } ?>/>
+        <input type="checkbox" onclick="toggleEmail(this)" size="20" id="check_email_log" name="check_email_log" <?php if ( $cfg[$id]['email_log'] ) { echo "CHECKED"; } ?>/>
     </fieldset>
-    <fieldset id="fs_hourly"><legend>Hourly Settings</legend>
+    <fieldset id="fs_hourly" class="schedule-type hourly"><legend>Hourly Settings</legend>
       <label for="select_hourly_freq">Every</label>
-      <select size="1" id="select_hourly_freq"> <?php Get_Select_Options("1","12",$myrow['audit_schd_hr_frq_hr']); ?> </select>&nbsp;&nbsp;
+      <select size="1" id="select_hourly_freq" name="select_hourly_freq"> <?php Get_Select_Options("1","12",$cfg[$id]['hour_frequency']); ?> </select>&nbsp;&nbsp;
       <b>hours</b>
-      <br>
+      <br />
       <label for="select_hourly_start">Start the task</label>
-      <select size="1" id="select_hourly_start"><?php Get_Select_Options("0","59",$myrow['audit_schd_hr_frq_min']); ?></select>&nbsp;&nbsp;
+      <select size="1" id="select_hourly_start" name="select_hourly_start"><?php Get_Select_Options("0","59",$cfg[$id]['minute_frequency']); ?></select>&nbsp;&nbsp;
       <b>minutes past the hour</b>
-      <br>
+      <br />
       <label for="select_hourly_start">Between a certain time</label>
-      <input type="checkbox" size="20" id="check_hours_between" <?php if ( $myrow['audit_schd_hr_between'] == 1 ) { echo "CHECKED"; } ?> onClick="BetweenHours(this)"/>
-      <br><br>
+      <input type="checkbox" size="20" id="check_hours_between" name="check_hours_between" <?php if ( $cfg[$id]['between_hours'] ) { echo "CHECKED"; } ?> onClick="BetweenHours(this)"/>
+      <br /><br />
       <label for="select_hstrt_hour">Starting Time</label>
-      <select size="1" id="select_hstrt_hour">
-        <?php Get_Select_Options("0","23",$myrow['audit_schd_hr_strt_hr']); ?>
+      <select size="1" id="select_hstrt_hour" name="select_hstrt_hour">
+        <?php Get_Select_Options("0","23",$cfg[$id]['hour_start']); ?>
       </select>:
-      <select size="1" id="select_hstrt_min" onChange="MinCopy(this)">
-        <?php Get_Select_Options("0","59",$myrow['audit_schd_hr_strt_min']); ?>
+      <select size="1" id="select_hstrt_min" name="select_hstrt_min" onChange="MinCopy(this)">
+        <?php Get_Select_Options("0","59",$cfg[$id]['minute_start']); ?>
       </select>
-      <br>
+      <br />
       <label for="select_hend_hour">Ending Time</label>
-      <select size="1" id="select_hend_hour">
-        <?php Get_Select_Options("0","23",$myrow['audit_schd_hr_end_hr']); ?>
+      <select size="1" id="select_hend_hour" name="select_hend_hour">
+        <?php Get_Select_Options("0","23",$cfg[$id]['hour_end']); ?>
       </select>:
-      <select size="1" id="select_hend_min">
-        <?php Get_Select_Options("0","59",$myrow['audit_schd_hr_strt_min']); ?>
+      <select size="1" id="select_hend_min" name="select_hend_min">
+        <?php Get_Select_Options("0","59",$cfg[$id]['minute_start']); ?>
       </select>
     </fieldset>
-    <fieldset id="fs_daily"><legend>Daily Settings</legend>
+    <fieldset id="fs_daily" class="schedule-type daily"><legend>Daily Settings</legend>
       <label for="input_days_freq">Every</label>
-      <input type="text" size="3" id="input_days_freq" value="<?php echo $dly_frq ?>"/>
+      <input type="text" size="3" id="input_days_freq" name="input_days_freq" value="<?php echo $daily_frq ?>"/>
       &nbsp;&nbsp;<b>day(s)</b>
     </fieldset>
-    <fieldset id="fs_crontab"><legend>Cron Entry</legend>
-      <label for="input_cron_line">Cron Line</label>
-      <input type="text" size="25" id="input_cron_line" value="<?php echo $myrow['audit_schd_cron_line'] ?>"/>
-      <br>
+    <fieldset id="fs_crontab" class="schedule-type crontab"><legend>Cron Entry</legend>
+      <label for="input_cron_line">
+	    <a href="#" title="<?php echo $tooltips["cron_entry"] ?>" class="tooltip">[?]</a>Cron Line
+      </label>
+      <input type="text" size="25" id="input_cron_line" name="input_cron_line" value="<?php echo $cfg[$id]['cron_line'] ?>"/>
+      <br />
       <label>Check Next Execution Time</label>
       <input type="button" id="cron_button" value="Cron Test" onclick="testCron(this)">
-      <br><br>
+      <br /><br />
       <label></label>
       <span id="cron_result"></span>
     </fieldset>
-    <fieldset id="fs_weekly"><legend>Weekly Settings</legend>
+    <fieldset id="fs_weekly" class="schedule-type weekly"><legend>Weekly Settings</legend>
       <label>On these days...</label>
-      <br>
-      <br>
+      <br />
+      <br />
       <table border="0" id="table_weekly" class="form-table">
-        <tr><td><input type="checkbox" name="check_weekly" value="mon" <? if ( preg_match("/.*mon.*/", $myrow['audit_schd_wk_days']) ) { echo "CHECKED"; } ?> />Monday</td>
-            <td><input type="checkbox" name="check_weekly" value="tue" <? if ( preg_match("/.*tue.*/", $myrow['audit_schd_wk_days']) ) { echo "CHECKED"; } ?> />Tuesday</td>
-            <td><input type="checkbox" name="check_weekly" value="wed" <? if ( preg_match("/.*wed.*/", $myrow['audit_schd_wk_days']) ) { echo "CHECKED"; } ?> />Wednesday</td>
-            <td><input type="checkbox" name="check_weekly" value="thu" <? if ( preg_match("/.*thu.*/", $myrow['audit_schd_wk_days']) ) { echo "CHECKED"; } ?> />Thursday</td>
+        <tr><td><input type="checkbox" name="check_weekly" value="mon" <?php CheckWeekMonth($wk_days,"mon"); ?> />Monday</td>
+            <td><input type="checkbox" name="check_weekly" value="tue" <?php CheckWeekMonth($wk_days,"tue"); ?> />Tuesday</td>
+            <td><input type="checkbox" name="check_weekly" value="wed" <?php CheckWeekMonth($wk_days,"wed"); ?> />Wednesday</td>
+            <td><input type="checkbox" name="check_weekly" value="thu" <?php CheckWeekMonth($wk_days,"thu"); ?> />Thursday</td>
         </tr><tr>
-            <td><input type="checkbox" name="check_weekly" value="fri" <? if ( preg_match("/.*fri.*/", $myrow['audit_schd_wk_days']) ) { echo "CHECKED"; } ?> />Friday</td>
-            <td><input type="checkbox" name="check_weekly" value="sat" <? if ( preg_match("/.*sat.*/", $myrow['audit_schd_wk_days']) ) { echo "CHECKED"; } ?> />Saturday</td>
-            <td><input type="checkbox" name="check_weekly" value="sun" <? if ( preg_match("/.*sun.*/", $myrow['audit_schd_wk_days']) ) { echo "CHECKED"; } ?> />Sunday</td>
+            <td><input type="checkbox" name="check_weekly" value="fri" <?php CheckWeekMonth($wk_days,"fri"); ?> />Friday</td>
+            <td><input type="checkbox" name="check_weekly" value="sat" <?php CheckWeekMonth($wk_days,"sat"); ?> />Saturday</td>
+            <td><input type="checkbox" name="check_weekly" value="sun" <?php CheckWeekMonth($wk_days,"sun"); ?> />Sunday</td>
         </tr>
       </table>
     </fieldset>
-    <fieldset id="fs_monthly"><legend>Monthly Settings</legend>
+    <fieldset id="fs_monthly" class="schedule-type monthly"><legend>Monthly Settings</legend>
       <label for="select_monthly_day">This day of the month</label>
-      <select size="1" id="select_monthly_day">
-        <?php Get_Select_Options("1","31",$myrow['audit_schd_mth_day']); ?>
-      </select><br><br>
-      <label>On these months...</label><br>
-      <br>
+      <select size="1" id="select_monthly_day" name="select_monthly_day">
+        <?php Get_Select_Options("1","31",$cfg[$id]['month_day']); ?>
+      </select><br /><br />
+      <label>On these months...</label><br />
+      <br />
       <table border="0" class="form-table" id="table_monthly">
-        <tr><td><input type="checkbox" name="check_monthly" value="jan" <? if ( preg_match("/.*jan.*/", $myrow['audit_schd_mth_months']) ) { echo "CHECKED"; } ?> />January</td>
-            <td><input type="checkbox" name="check_monthly" value="feb" <? if ( preg_match("/.*feb.*/", $myrow['audit_schd_mth_months']) ) { echo "CHECKED"; } ?> />February</td>
-            <td><input type="checkbox" name="check_monthly" value="mar" <? if ( preg_match("/.*mar.*/", $myrow['audit_schd_mth_months']) ) { echo "CHECKED"; } ?> />March</td>
-            <td><input type="checkbox" name="check_monthly" value="apr" <? if ( preg_match("/.*apr.*/", $myrow['audit_schd_mth_months']) ) { echo "CHECKED"; } ?> />April</td>
+        <tr><td><input type="checkbox" name="check_monthly" value="jan" <?php CheckWeekMonth($months,"jan"); ?> />January</td>
+            <td><input type="checkbox" name="check_monthly" value="feb" <?php CheckWeekMonth($months,"feb"); ?> />February</td>
+            <td><input type="checkbox" name="check_monthly" value="mar" <?php CheckWeekMonth($months,"mar"); ?> />March</td>
+            <td><input type="checkbox" name="check_monthly" value="apr" <?php CheckWeekMonth($months,"apr"); ?> />April</td>
         </tr><tr>
-            <td><input type="checkbox" name="check_monthly" value="may" <? if ( preg_match("/.*may.*/", $myrow['audit_schd_mth_months']) ) { echo "CHECKED"; } ?> />May</td>
-            <td><input type="checkbox" name="check_monthly" value="jun" <? if ( preg_match("/.*jun.*/", $myrow['audit_schd_mth_months']) ) { echo "CHECKED"; } ?> />June</td>
-            <td><input type="checkbox" name="check_monthly" value="jul" <? if ( preg_match("/.*jul.*/", $myrow['audit_schd_mth_months']) ) { echo "CHECKED"; } ?> />July</td>
-            <td><input type="checkbox" name="check_monthly" value="aug" <? if ( preg_match("/.*aug.*/", $myrow['audit_schd_mth_months']) ) { echo "CHECKED"; } ?> />August</td>
+            <td><input type="checkbox" name="check_monthly" value="may" <?php CheckWeekMonth($months,"may"); ?> />May</td>
+            <td><input type="checkbox" name="check_monthly" value="jun" <?php CheckWeekMonth($months,"jun"); ?> />June</td>
+            <td><input type="checkbox" name="check_monthly" value="jul" <?php CheckWeekMonth($months,"jul"); ?> />July</td>
+            <td><input type="checkbox" name="check_monthly" value="aug" <?php CheckWeekMonth($months,"aug"); ?> />August</td>
         </tr><tr>
-            <td><input type="checkbox" name="check_monthly" value="sep" <? if ( preg_match("/.*sep.*/", $myrow['audit_schd_mth_months']) ) { echo "CHECKED"; } ?> />September</td>
-            <td><input type="checkbox" name="check_monthly" value="oct" <? if ( preg_match("/.*oct.*/", $myrow['audit_schd_mth_months']) ) { echo "CHECKED"; } ?> />October</td>
-            <td><input type="checkbox" name="check_monthly" value="nov" <? if ( preg_match("/.*nov.*/", $myrow['audit_schd_mth_months']) ) { echo "CHECKED"; } ?> />November</td>
-            <td><input type="checkbox" name="check_monthly" value="dec" <? if ( preg_match("/.*dec.*/", $myrow['audit_schd_mth_months']) ) { echo "CHECKED"; } ?> />December</td>
+            <td><input type="checkbox" name="check_monthly" value="sep" <?php CheckWeekMonth($months,"sep"); ?> />September</td>
+            <td><input type="checkbox" name="check_monthly" value="oct" <?php CheckWeekMonth($months,"oct"); ?> />October</td>
+            <td><input type="checkbox" name="check_monthly" value="nov" <?php CheckWeekMonth($months,"nov"); ?> />November</td>
+            <td><input type="checkbox" name="check_monthly" value="dec" <?php CheckWeekMonth($months,"dec"); ?> />December</td>
         </tr>
       </table>
     </fieldset>
-    <fieldset id="fs_email"><legend>Email Settings</legend>
+    <fieldset id="fs_email" class="schedule-email"><legend>Email Settings</legend>
       <label for="input_email_subject">Email Subject Line</label>
-      <input type="text" size="20" value="<?php echo $myrow['audit_schd_email_subject'] ?>" id="input_email_subject"/>
-      <br>
+      <input type="text" size="20" value="<?php echo $cfg[$id]['email_subject'] ?>" id="input_email_subject" name="input_email_subject"/>
+      <br />
       <label for="input_email_replyto">Reply-To Email Address</label>
-      <input type="text" size="20" value="<?php echo $myrow['audit_schd_email_replyto'] ?>"  id="input_email_replyto"/>
-      <br>
-      <label for="input_email_to">Email To</label>
-      <input type="text" id="input_email_to">&nbsp;&nbsp;&nbsp; <img src="images/add.png" class="add" onclick="addToEmailList()">
-      <br>
-      <label></label><div id="EmailContainer"> <?php @Get_Email_List($emails); ?></div>
-      <div id="clear-left"></div>
+      <input type="text" size="20" value="<?php echo $cfg[$id]['email_replyto'] ?>"  id="input_email_replyto" name="input_email_replyto"/>
+      <br />
+      <label for="input_email_to">
+	    <a href="#" title="<?php echo $tooltips["email_list"] ?>" class="tooltip">[?]</a>Email To
+      </label>
+      <input type="text" size="20" value="<?php echo $cfg[$id]['email_list'] ?>"  id="input_email_list" name="input_email_list"/>
+      <br />
       <label for="select_email_logo">Email Header Logo</label>
-        <?php get_file_list('./images/headers','select_email_logo', $myrow['audit_schd_email_logo']); ?>
-      <br>
-      <label for="select_tt_html">Toolkit Template HTML File</label>
-        <?php get_file_list('./lib/tt','select_tt_html', $myrow['audit_schd_email_tt_html']); ?>
-      <br>
-      <label for="select_tt_text">Toolkit Template Text File</label>
-        <?php get_file_list('./lib/tt','select_tt_text', $myrow['audit_schd_email_tt_html']); ?>
+        <?php get_file_list('./emails/images','select_email_logo', $cfg[$id]['email_logo']); ?>
+      <br />
+      <label for="select_tt_html">Email Template File</label>
+        <?php get_file_list('./emails','select_email_template', $cfg[$id]['email_template']); ?>
     </fieldset>
-    <br>
+    <br />
       <div class="submit-push"></div>
       <input value="Submit" type="submit"/>
-      <br>
+      <br />
       <span id="form_result_fail"></span>
   </form>
-  <?php /* Display the below message if the schedule doesn't exist */
+  <?php
     } else {
       echo "No such schedule found.";
     }
@@ -187,16 +196,4 @@ include "include_audit_functions.php";
 </td>
 <?php include "include_right_column.php"; ?>
 </body>
-<script type='text/javascript'>
-  //Call this down here to make sure all the elements are at least loaded first...
-  window.onload = SchedType;
-/* Get the next execution time of the cron line */
-  function testCron(selected) {
-    selected.disabled = true;
-    var postStr = "cron_line=" + encodeURI( document.getElementById('input_cron_line').value ) +
-                  "&type=cron";
-    var phpPage = "audit_test_ajax.php";
-    ajaxFunction(phpPage, postStr, cronTest);
-  } 
-</script>
 </html>

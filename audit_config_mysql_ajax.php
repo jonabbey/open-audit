@@ -1,7 +1,7 @@
 <?php
-include "include_config.php";
-include "include_functions.php";
-include "include_audit_functions.php";
+require_once "include_config.php";
+require_once "include_functions.php";
+require_once "include_audit_functions.php";
 
 function Add_Audit_Mysql($db,$database) {
   mysql_select_db($mysql_database);
@@ -13,15 +13,15 @@ function Add_Audit_Mysql($db,$database) {
   $id     = $_POST['id'];
 
   if ( $id == 'new' ) {
-    $sql = "INSERT INTO audit_mysql_query ( audit_mysql_table, audit_mysql_field,
-                                            audit_mysql_data , audit_mysql_sort   
+    $sql = "INSERT INTO mysql_queries ( mysql_queries_table, mysql_queries_field,
+                                            mysql_queries_data , mysql_queries_sort   
             VALUES ( '{$table}','{$field}','{$data}','{$sort}' )";
   }
   else {
-    $sql  = "UPDATE `audit_mysql_query` 
-             SET audit_mysql_field = '{$field}', audit_mysql_table = '{$table}',
-                 audit_mysql_data = '{$data}' , audit_mysql_sort = '{$sort}'
-             WHERE audit_mysql_id = '{$id}'";
+    $sql  = "UPDATE `mysql_queries` 
+             SET mysql_queries_field = '{$field}', mysql_queries_table = '{$table}',
+                 mysql_queries_data = '{$data}' , mysql_queries_sort = '{$sort}'
+             WHERE mysql_queries_id = '{$id}'";
   }
 
   mysql_query($sql) or die("Could not add mysql query options: " . mysql_error() . "<br>");

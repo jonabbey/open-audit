@@ -110,6 +110,11 @@ $timestamp = substr($timestamp, 0, 4) . "-" . substr($timestamp, 4, 2) . "-" . s
 return $timestamp;
 }
 
+function return_unix_date_time($timestamp)
+{
+  return date('d/m/y h:i:s a', $timestamp);
+}
+
 function adjustdate($years=0,$months=0,$days=0)
 {
   $todayyear=date('Y');
@@ -224,6 +229,10 @@ function ConvertSpecialField($myrow, $field, $db, $page)
 		case "system_last_boot":
 		case "log_timestamp";
 			return return_date_time($myrow[$field["name"]]);
+		case "audit_log_timestamp":
+		case "audit_log_time":
+		case "ws_log_timestamp";
+			return return_unix_date_time($myrow[$field["name"]]);
 		case "system_system_type":
 			if($page=="list") {return determine_img($myrow["system_os_name"],$myrow[$field["name"]]);
 			} else {return $myrow[$field["name"]];}
@@ -1207,6 +1216,249 @@ function GetSmtpConnectionFromDb(){
   mysql_close();
 
   return $smtp;
+}
+
+/**********************************************************************************************************
+Function Name:
+  GetAuditSettingsFromDb
+Description:
+  Get the general settings for the web-schedule service from the database.
+Arguments:
+Returns:
+  Web-schedule settings from the DB, or null [ARRAY]  
+Change Log:
+  04/12/2009 New function [Chad Sikorra]
+**********************************************************************************************************/
+function GetAuditSettingsFromDb(){
+  global $mysql_server,$mysql_user,$mysql_password,$mysql_database;
+
+  $db = mysql_connect($mysql_server,$mysql_user,$mysql_password);
+  mysql_select_db($mysql_database,$db);
+
+  $sql = "SELECT * FROM audit_settings LIMIT 1";
+
+  $result = mysql_query($sql, $db);
+  if ($myrow = mysql_fetch_array($result)){
+    $audit = array();
+
+    $audit["service_name"]    = $myrow["audit_settings_service_name"];
+    $audit["service_enabled"] = $myrow["audit_settings_runas_service"];
+    $audit["poll_interval"]   = $myrow["audit_settings_interval"];
+    $audit["script_only"]     = $myrow["audit_settings_script_only"];
+    $audit["base_url"]        = $myrow["audit_settings_base_url"];
+    $audit["active"]          = $myrow["audit_settings_active"];
+    $audit["pid"]             = $myrow["audit_settings_pid"];
+  }
+  else {
+    $audit = null;
+  }
+  mysql_close();
+
+  return $audit;
+}
+
+/**********************************************************************************************************
+Function Name:
+  GetUrlPath
+Description:
+  Get the base URL for where Open-AudIT is. It can be used to craft email URLS and is also passed
+  to the audit.pl script to execute a php page on the server to check for/send emails
+Arguments: 
+  None
+Returns:
+  URL path, minus the currently executing script [STRING]  
+Change Log:
+  05/12/2009 New function [Chad Sikorra]
+**********************************************************************************************************/
+function GetUrlPath(){
+   $protocol  = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') ? 'https' : 'http';
+   $host      = $_SERVER['SERVER_NAME'];
+   // append the port number if it isn't a standard one
+   $port      = ( $_SERVER['SERVER_PORT'] != 80 && $_SERVER['SERVER_PORT'] != 443 ) ?
+                ':'.$_SERVER['SERVER_PORT'] : '';
+   // account for PHP_SELF returning only a slash if OA is installed at the root
+   $directory = ( preg_match("/\/$/",dirname($_SERVER['PHP_SELF'])) ) ?
+                dirname($_SERVER['PHP_SELF']) :
+                dirname($_SERVER['PHP_SELF']) . '/';
+
+   $url = $protocol . '://' . $host . $port . $directory;
+
+   return $url;
+}
+
+/**********************************************************************************************************
+Function Name:
+  GetAuditSchedulesFromDb
+Description:
+  Get the all audit schedules from the database.
+Arguments: None
+Returns:
+  Audit schedule settings from the DB, or null [ARRAY]  
+Change Log:
+  04/12/2009 New function [Chad Sikorra]
+**********************************************************************************************************/
+function GetAuditSchedulesFromDb(){
+  global $mysql_server,$mysql_user,$mysql_password,$mysql_database;
+
+  $db = mysql_connect($mysql_server,$mysql_user,$mysql_password);
+  mysql_select_db($mysql_database,$db);
+
+  $sql = "SELECT * FROM audit_schedules";
+
+  $result = mysql_query($sql, $db);
+  if ($myrow = mysql_fetch_array($result))
+  {
+    $cfg = array();
+    do
+    {
+      $id = $myrow["audit_schd_id"];
+      $cfg[$id] = Array();
+      $cfg[$id]["name"]            = $myrow["audit_schd_name"];
+      $cfg[$id]["active"]          = $myrow["audit_schd_active"];
+      $cfg[$id]["updated"]         = $myrow["audit_schd_updated"];
+      $cfg[$id]["last_run"]        = $myrow["audit_schd_last_run"];
+      $cfg[$id]["next_run"]        = $myrow["audit_schd_next_run"];
+      $cfg[$id]["log_disabled"]    = $myrow["audit_schd_log_disable"];
+      $cfg[$id]["email_subject"]   = $myrow["audit_schd_email_subject"];
+      $cfg[$id]["email_replyto"]   = $myrow["audit_schd_email_replyto"];
+      $cfg[$id]["email_template"]  = $myrow["audit_schd_email_template"];
+      $cfg[$id]["email_list"]      = $myrow["audit_schd_email_list"];
+      $cfg[$id]["email_logo"]      = $myrow["audit_schd_email_logo"];
+      $cfg[$id]["email_log"]       = $myrow["audit_schd_email_log"];
+      $cfg[$id]["config_id"]       = $myrow["audit_schd_cfg_id"];
+      $cfg[$id]["type"]            = $myrow['audit_schd_type'];
+      $cfg[$id]["minute"]          = $myrow['audit_schd_strt_min'];
+      $cfg[$id]["hour"]            = $myrow['audit_schd_strt_hr'];
+      $cfg[$id]["week_days"]       = $myrow['audit_schd_wk_days'];
+      $cfg[$id]["months"]          = $myrow['audit_schd_mth_months'];
+      $cfg[$id]["hour_frequency"]  = $myrow['audit_schd_hr_frq_hr'];
+      $cfg[$id]["hour_start"]      = $myrow['audit_schd_hr_strt_hr'];
+      $cfg[$id]["hour_end"]        = $myrow['audit_schd_hr_end_hr'];
+      $cfg[$id]["daily_frequency"] = $myrow['audit_schd_dly_frq'];
+      $cfg[$id]["between_hours"]   = $myrow['audit_schd_hr_between'];
+      $cfg[$id]["minute_frequency"]= $myrow['audit_schd_hr_frq_min' ];
+      $cfg[$id]["minute_start"]    = $myrow['audit_schd_hr_strt_min'];
+      $cfg[$id]["month_day"]       = $myrow['audit_schd_mth_day'];
+
+      # Some exceptions...
+      $min_start = ( $cfg[$id]["type"] == 'hourly' && $cfg[$id]["between_hours"]) ?
+        $cfg[$id]['minute_start'] : $cfg[$id]['minute'];
+      $min_start = ( $cfg[$id]["type"] == 'hourly' && !$cfg[$id]["between_hours"]) ?
+        $cfg[$id]['minute_frequency'] : $min_start;
+      $hours     = ( $cfg[$id]["between_hours"] ) ?
+        "{$cfg[$id]["hour_start"]}-{$cfg[$id]["hour_end"]}" : "*";
+
+      switch($cfg[$id]["type"]){
+        case "weekly": $cfg[$id]["cron_line"]="{$cfg[$id]["minute"]} {$cfg[$id]["hour"]} * * {$cfg[$id]["day"]}"; break;
+        case "hourly": $cfg[$id]["cron_line"]="$min_start $hours/{$cfg[$id]["hour_frequency"]} * * *"; break;
+        case "daily":  $cfg[$id]["cron_line"]="{$cfg[$id]["minute"]} {$cfg[$id]["hour"]} */{$cfg[$id]["daily_frequency"]} * *";break;
+        case "monthly":$cfg[$id]["cron_line"]="{$cfg[$id]["minute"]} {$cfg[$id]["hour"]} {$cfg[$id]["month_day"]} {$cfg[$id]["months"]} *";break;
+        case "crontab":$cfg[$id]["cron_line"]=$myrow["audit_schd_cron_line"];break;
+      }
+    }
+    while ($myrow = mysql_fetch_array($result));
+  }
+  else
+  {
+    $cfg = null;
+  }
+  mysql_close();
+
+  return $cfg;
+}
+
+/**********************************************************************************************************
+Function Name:
+  GetAuditConfigurationsFromDb
+Description:
+  Get the all audit configurations from the database.
+Arguments: None
+Returns:
+  Audit configuration settings from the DB, or null [ARRAY]  
+Change Log:
+  04/12/2009 New function [Chad Sikorra]
+**********************************************************************************************************/
+function GetAuditConfigurationsFromDb(){
+  global $mysql_server,$mysql_user,$mysql_password,$mysql_database;
+  $aes_key = GetAesKey();
+
+  $db = mysql_connect($mysql_server,$mysql_user,$mysql_password);
+  mysql_select_db($mysql_database,$db);
+
+  $sql = "SELECT * FROM audit_configurations";
+
+  $result = mysql_query($sql, $db);
+  if ($myrow = mysql_fetch_array($result))
+  {
+    $config = array();
+    do
+    {
+      $id = $myrow["audit_cfg_id"];
+
+      $sql = "SELECT AES_DECRYPT(audit_cfg_ldap_user,'".$aes_key."') AS ldap_user, 
+                     AES_DECRYPT(audit_cfg_ldap_pass,'".$aes_key."') AS ldap_password,
+                     AES_DECRYPT(audit_cfg_audit_user,'".$aes_key."') AS audit_user,
+                     AES_DECRYPT(audit_cfg_audit_pass,'".$aes_key."') AS audit_password
+              FROM audit_configurations WHERE audit_cfg_id='$id'";
+
+      $r_cred = mysql_query($sql, $db);
+      $cred   = mysql_fetch_array($r_cred);
+
+      $config[$id] = Array();
+      $config[$id]["name"]                = $myrow["audit_cfg_name"];
+      $config[$id]["action"]              = $myrow["audit_cfg_action"];
+      $config[$id]["type"]                = $myrow["audit_cfg_type"];
+      $config[$id]["os"]                  = $myrow["audit_cfg_os"];
+      $config[$id]["max_audits"]          = $myrow["audit_cfg_max_audits"];
+      $config[$id]["wait_time"]           = $myrow["audit_cfg_wait_time"];
+      $config[$id]["windows_uuid"]        = $myrow['audit_cfg_win_uuid'];
+      $config[$id]["windows_url"]         = $myrow['audit_cfg_win_url'];
+      $config[$id]["windows_software"]    = $myrow['audit_cfg_win_sft'];
+      $config[$id]["vbs_path"]            = $myrow['audit_cfg_win_vbs'];
+      $config[$id]["linux_url"]           = $myrow['audit_cfg_lin_url'];
+      $config[$id]["linux_software"]      = $myrow['audit_cfg_lin_sft'];
+      $config[$id]["linux_software_list"] = $myrow['audit_cfg_sft_lst'];
+      $config[$id]["software_list_only"]  = $myrow['audit_cfg_lin_sft_lst'];
+      $config[$id]["enable_logging"]      = $myrow['audit_cfg_log_enable'];
+      $config[$id]["command_list"]        = $myrow['audit_cfg_command_list'];
+      $config[$id]["pc_list"]             = $myrow['audit_cfg_pc_list'];
+      $config[$id]["command_ids"]         = $myrow['audit_cfg_cmd_list'];
+      $config[$id]["command_interact"]    = $myrow['audit_cfg_command_interact'];
+      $config[$id]["local_user"]          = $myrow['audit_cfg_audit_local'];
+      $config[$id]["ip_start"]            = $myrow['audit_cfg_ip_start'];
+      $config[$id]["ip_end"]              = $myrow['audit_cfg_ip_end'];
+      $config[$id]["filter"]              = $myrow['audit_cfg_filter'];
+      $config[$id]["filter_case"]         = $myrow['audit_cfg_filter_case'];
+      $config[$id]["filter_inverse"]      = $myrow['audit_cfg_filter_inverse'];
+      $config[$id]["audit_use_conn"]      = $myrow['audit_cfg_audit_use_conn'];
+      $config[$id]["audit_conn"]          = $myrow['audit_cfg_audit_conn'];
+      $config[$id]["ldap_use_conn"]       = $myrow['audit_cfg_ldap_use_conn'];
+      $config[$id]["ldap_path"]           = $myrow['audit_cfg_ldap_path'];
+      $config[$id]["ldap_page"]           = $myrow['audit_cfg_ldap_page'];
+      $config[$id]["ldap_server"]         = $myrow['audit_cfg_ldap_server'];
+      $config[$id]["ldap_conn"]           = $myrow['audit_cfg_ldap_conn'];
+      $config[$id]["remote_command_path"] = $myrow['audit_cfg_com_path'];
+      $config[$id]["nmap_path"]           = $myrow['audit_cfg_nmap_path'];
+      $config[$id]["mysql_ids"]           = $myrow['audit_cfg_mysql_ids'];
+      $config[$id]["nmap_url"]            = $myrow['audit_cfg_nmap_url'];
+      $config[$id]["nmap_intensity"]      = $myrow['audit_cfg_nmap_int'];
+      $config[$id]["nmap_tcp_scan"]       = $myrow['audit_cfg_nmap_tcp_syn'];
+      $config[$id]["nmap_udp_scan"]       = $myrow['audit_cfg_nmap_udp'];
+      $config[$id]["nmap_detect_service"] = $myrow['audit_cfg_nmap_srv'];
+      $config[$id]["audit_user"]          = $cred['audit_user'];
+      $config[$id]["audit_pass"]          = $cred['audit_password'];
+      $config[$id]["ldap_user"]           = $cred['ldap_user'];
+      $config[$id]["ldap_pass"]           = $cred['ldap_password'];
+    }
+    while ($myrow = mysql_fetch_array($result));
+  }
+  else
+  {
+    $config = null;
+  }
+  mysql_close();
+
+  return $config;
 }
 
 ?>
