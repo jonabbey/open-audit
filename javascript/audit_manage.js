@@ -16,7 +16,7 @@ function deleteConfigRow(selected,config_id) {
     document.getElementById('config-table').deleteRow(row_to_remove);
     if ( document.getElementById('config-table').rows.length == '2' ) { 
       document.getElementById('cfg-holder').innerHTML = 
-        "<p>No audit configurations found." +
+        "<p class=\"no-table\">No audit configurations found." +
         "  <a href=\"audit_configuration.php\">Add one</a></p>";
     }
   }
@@ -62,7 +62,7 @@ function deleteSchedRow(selected,sched_id) {
     document.getElementById('sched-table').deleteRow(row_to_remove);
     if ( document.getElementById('sched-table').rows.length == '2' ) { 
       document.getElementById('sched-holder').innerHTML = 
-        "<p>No audit schedules found." +
+        "<p class=\"no-table\">No audit schedules found." +
         "  <a href=\"audit_schedule.php\">Add one</a></p>";
     }
   }
@@ -265,6 +265,6 @@ $(document).ready(function() {
     overlay: {
       backgroundColor: '#000',
       opacity: 0.5
-    },
+    }
   });
 });

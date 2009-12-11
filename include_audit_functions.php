@@ -375,7 +375,7 @@ function Get_Manage_Configs() {
     echo "</tbody></table>";
   }
   else {
-    echo "<p>No configurations found.
+    echo "<p class=\"no-table\">No configurations found.
           <a href=\"audit_configuration.php\">Add one</a></p>";
   }
   echo "</div>";
@@ -437,7 +437,7 @@ function Get_Manage_Schedules() {
     echo "</tbody></table></div>";
   }
   else {
-    echo "<p>No schedules found. <a href=\"audit_schedule.php\">Add one</a></p>";
+    echo "<p class=\"no-table\">No schedules found. <a href=\"audit_schedule.php\">Add one</a></p>";
   }
   echo "</div>";
 }

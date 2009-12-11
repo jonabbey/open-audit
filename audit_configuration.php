@@ -74,7 +74,6 @@
   <div class="header"><?php echo $head ?></div>
   <br /><br />
   <form action="javascript:SubmitForm('config','<?php echo $form_action ?>','<?php echo $_GET['config_id']; ?>');" method="post" id="form_config">
-    <input type="hidden" value="<?php echo $_GET['config_id']; ?>" id="config_id"/>
     <fieldset><legend>General Settings</legend>
       <label>Name</label>
         <input type="txt" size="20" id="input_name" name="input_name" value="<?php echo $cfg[$id]['name']; ?>"/>
@@ -114,6 +113,7 @@
       <label>Enable Logging</label>
        <input type="checkbox" size="20" id="check_log_enable" name="check_log_enable" onclick="ToggleLogging(this)" <?php if($opt_logging){ echo "CHECKED"; } ?>/>
      <br />
+     <input type="hidden" value="<?php echo $_GET['config_id']; ?>" id="config_id"/>
     </fieldset>
     <fieldset id="fs_auth" class="pc command pc_nmap audit-action"><legend>Audit Credentials</legend>
       <?php 

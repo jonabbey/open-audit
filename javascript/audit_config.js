@@ -481,7 +481,7 @@ function TestResult(selected,test_type) {
     'type': 'POST',
     'data': {
       'config_id': id,
-      'type': test_type,
+      'type': test_type
     },
     'beforeSend': function(){
       var html = "<br><br><img class=\"busy\" src=\"images/hourglass-busy.gif\"><i>Fetching Results...</i>";
@@ -493,7 +493,7 @@ function TestResult(selected,test_type) {
       $('#dialog-test-text').html(msg);
       $('#dialog-test-results').dialog('open');
     },
-    'error': function(){ $('#' + test_type + '_result').html(''); selected.disabled = false; },
+    'error': function(){ $('#' + test_type + '_result').html(''); selected.disabled = false; }
   });
 }
 
@@ -525,7 +525,7 @@ $(document).ready(function() {
       overlay: {
         backgroundColor: '#000',
         opacity: 0.5
-      },
+      }
     });
   }
   // Stuff for the audit_schedule.php page only...

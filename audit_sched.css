@@ -4,7 +4,12 @@ fieldset#fs_email, fieldset#fs_crontab { display: none }
 
 .tooltip { margin-right: 5px; }
 
-#form-result img { padding: 0px 5px; }
+#form-result img { 
+  padding: 0px 5px;
+  margin: 0px 5px;
+  width: 1.0em;
+  height: 1.0em;
+}
 
 .Box {
   border: #000 1px solid;

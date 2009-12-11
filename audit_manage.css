@@ -1,7 +1,7 @@
 #config-table, #sched-table {
   font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
   font-size: 10px;
-  margin: 15px 10px 10px 30px;
+  margin: 15px 10px 10px 20px;
   width: 500px;
   text-align: left;
   border-collapse: collapse;
@@ -51,24 +51,22 @@
 
 label {
   float: left;
-  width: 45%;
   margin-right: 0.5em;
-  text-align: right;
   font-weight: bold;
+  margin-left: 10px;
 }
-
 
 .header {
   margin-left: 2em;
   font-weight:bold;
   vertical-align:top;
-  padding-top:20px;
+  padding-top:15px;
   font-size: 120%;
   color: #555;
 }
 
-#log-link-holder { margin-left: 30px; }
 #log-link-holder img { border: none; margin-right: 5px; }
+#log-link-holder { margin-left: 10px; }
 
 #busy { margin-right: 5px; }
 .busy { width: 2em; height: 2em; }
@@ -94,5 +92,6 @@ label {
 }
 
 .confirm-icon { float: left; margin: 0 7px 20px 0; }
-        
+.no-table { margin-left: 20px; }
+#config-tables { margin-left: 30px; }
 

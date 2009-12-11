@@ -5,7 +5,12 @@ fieldset#fs_auth, fieldset#fs_command,
 fieldset#fs_mysql { display: none }
 
 .mysql { font-size: .9em; }
-.formResult img { padding: 0px 5px; }
+.formResult img {
+  padding: 0px 5px;
+  margin: 0px 5px;
+  width: 1.0em;
+  height: 1.0em;
+}
 .tooltip { margin-right: 5px; }
 
 #DragContainer {
