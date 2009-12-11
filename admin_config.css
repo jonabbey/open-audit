@@ -132,7 +132,7 @@ div.npb_config_col {
 
 /* define how the fieldset borders look */
 .npb-connection-config fieldset, #npb_config_security_div fieldset,
-#npb_config_audits_div fieldset, #npb_config_general fieldset {
+#npb_config_audits_div fieldset, #npb_config_general_div fieldset {
 	margin:	5px;
 	width:	95%;
 	border:	1px solid #cccccc;
