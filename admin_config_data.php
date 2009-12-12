@@ -740,6 +740,7 @@ function GetSmtpConnectionHtml($db)
 		<td><input type=\"hidden\" id=\"smtp_table_empty\">No SMTP connection defined.</td>
 		<td></td>
 		<td></td>
+		<td></td>
 		</tr>";
 	}
 	$response .= "</table>";

@@ -1349,7 +1349,7 @@ function GetAuditSchedulesFromDb(){
         "{$cfg[$id]["hour_start"]}-{$cfg[$id]["hour_end"]}" : "*";
 
       switch($cfg[$id]["type"]){
-        case "weekly": $cfg[$id]["cron_line"]="{$cfg[$id]["minute"]} {$cfg[$id]["hour"]} * * {$cfg[$id]["day"]}"; break;
+        case "weekly": $cfg[$id]["cron_line"]="{$cfg[$id]["minute"]} {$cfg[$id]["hour"]} * * {$cfg[$id]["week_days"]}"; break;
         case "hourly": $cfg[$id]["cron_line"]="$min_start $hours/{$cfg[$id]["hour_frequency"]} * * *"; break;
         case "daily":  $cfg[$id]["cron_line"]="{$cfg[$id]["minute"]} {$cfg[$id]["hour"]} */{$cfg[$id]["daily_frequency"]} * *";break;
         case "monthly":$cfg[$id]["cron_line"]="{$cfg[$id]["minute"]} {$cfg[$id]["hour"]} {$cfg[$id]["month_day"]} {$cfg[$id]["months"]} *";break;
