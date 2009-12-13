@@ -414,6 +414,7 @@ function determine_img($os,$system_type) {
                            "Mandriva"=>"Mandriva",
                            "Novell"=>"Novell",
                            "Red Hat"=>"Red Hat",
+						   "RedHat"=>"Fedora",        //Fedora 13 Beta 
                            "Slackware"=>"Slackware",
                            "Suse"=>"Suse",
                            "SuSE"=>"SuSE",
