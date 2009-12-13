@@ -7,14 +7,14 @@ $query_array=array("headline"=>__("Statistic for Mozilla Firefox Versions"),
                                COUNT( * ) AS count_item,
                                round( 100 / (
                                        SELECT count(software_uuid) FROM software, system
-                                       WHERE (software_name LIKE 'Mozilla Firefox%' OR software_name LIKE 'FrontMotion Firefox Community Edition%')
+                                       WHERE (software_name LIKE 'Mozilla Firefox%' OR software_name LIKE 'FrontMotion Firefox Community Edition%' OR software_name LIKE 'firefox')
                                               AND (software_name NOT LIKE 'Mozilla Firefox Extension%' AND software_name NOT LIKE 'FrontMotion Firefox Community Edition Extension%') 
                                               AND software_timestamp=system_timestamp AND software_uuid=system_uuid
                                        )
                                  * COUNT( * )
                                ,$round_to_decimal_places ) AS percentage
                                FROM software, system
-                               WHERE (software_name LIKE 'Mozilla Firefox%' OR software_name LIKE 'FrontMotion Firefox Community Edition%')
+                               WHERE (software_name LIKE 'Mozilla Firefox%' OR software_name LIKE 'FrontMotion Firefox Community Edition%' OR software_name LIKE 'firefox')
                                       AND (software_name NOT LIKE 'Mozilla Firefox Extension%' AND software_name NOT LIKE 'FrontMotion Firefox Community Edition Extension%') 
                                       AND software_timestamp=system_timestamp AND software_uuid=system_uuid
                                GROUP BY software_version
