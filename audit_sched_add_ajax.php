@@ -143,7 +143,7 @@ if ( isset($error_list) ) {
            '{$_POST['select_hstrt_min']}','{$_POST['select_hend_hour']}','{$_POST['select_hend_min']}',
            '{$_POST['input_days_freq']}','$week_choices','{$_POST['select_monthly_day']}',
            '$month_choices', '$log_disable','$email_log',
-           '{$_POST['email_list']}','{$_POST['input_email_subject']}','{$_POST['input_email_replyto']}',
+           '{$_POST['input_email_list']}','{$_POST['input_email_subject']}','{$_POST['input_email_replyto']}',
            '{$_POST['select_email_logo']}','{$_POST['select_email_template']}','{$_POST['input_cron_line']}'
          )";
   }
