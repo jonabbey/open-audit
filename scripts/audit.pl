@@ -11,7 +11,7 @@ use Carp;
 use Getopt::Long;
 use FindBin qw($Bin $Script);
 use lib "$Bin/../lib/perl";
-our $VERSION = '0.20';
+our $VERSION = '0.21';
 
 # Some global variables needed
 our $WINDOWS_SERVER = ( $^O =~ m/mswin32|winxp/i ) ? ( '1' ) : ( '0' );
@@ -271,6 +271,46 @@ sub Get_AES_Key {
 }
 
 ############################################################
+# Purpose : Get the connection for MySQL
+# Usage   : Called from MySQL_Execute and MySQL_Quote_String
+# Returns : A DBI mysql connection object
+
+sub Get_MySQL_Connection {
+  my %include_config = Read_Config();
+  my $host = $include_config{'mysql_server'  };
+  my $user = $include_config{'mysql_user'    };
+  my $pass = $include_config{'mysql_password'};
+  my $db   = $include_config{'mysql_database'};
+
+  eval {
+    require DBI;
+    DBI->import;
+  };
+
+  if ( $@ ) {
+    print "ERROR: DBI and DBD::mysql module needed to query database\n";
+    exit 1;
+  }
+
+  my $dsn = "dbi:mysql:database=$db;host=$host;port=3306";
+
+  if ( not $WINDOWS_SERVER and $host =~ /localhost/i ) {
+    if ( -e "/var/run/mysqld/mysqld.sock" ) {
+      $dsn .= ";mysql_socket=/var/run/mysqld/mysqld.sock";
+    }
+    elsif ( -e "/tmp/mysql.sock" ) {
+      $dsn .= ";mysql_socket=/tmp/mysql.sock";
+    }
+  }
+
+  my $dbh = DBI->connect( $dsn, $user, $pass,
+    { RaiseError => 1, AutoCommit => 1 }
+  );
+
+  return $dbh;
+}
+
+############################################################
 # Purpose : Execute SQL against the OA DB
 # Usage   : Internally by sub name
 #             Arg 1 : SQL statement
@@ -279,23 +319,7 @@ sub Get_AES_Key {
 
 sub MySQL_Execute {
   my ( $sql, $query_type ) = @_;
-  my %include_config = Read_Config();
-
-  eval {
-    require DBI;
-    DBI->import;
-  };
-
-  if ( $@ ) {
-    print "ERROR: DBI module needed to query database\n";
-    exit 1;
-  }
-
-  my $dbh = DBI->connect(
-    "dbi:mysql:$include_config{'mysql_database'}:$include_config{'mysql_server'}:3306",
-               $include_config{'mysql_user'},$include_config{'mysql_password'},
-               { RaiseError => 1, AutoCommit => 1 }
-  );
+  my $dbh = Get_MySQL_Connection();
 
   if ( $query_type eq "non_select" ) {
     $dbh->do($sql) ? return 1 : return;
@@ -313,23 +337,7 @@ sub MySQL_Execute {
 
 sub MySQL_Quote_String {
   my ( $msg ) = shift;
-  my %include_config = Read_Config();
-
-  eval {
-    require DBI;
-    DBI->import;
-  };
-
-  if ( $@ ) {
-    print "ERROR: DBI module needed to query database\n";
-    exit 1;
-  }
-
-  my $dbh = DBI->connect(
-    "dbi:mysql:$include_config{'mysql_database'}:$include_config{'mysql_server'}:3306",
-               $include_config{'mysql_user'},$include_config{'mysql_password'},
-               { RaiseError => 1, AutoCommit => 1 }
-  );
+  my $dbh = Get_MySQL_Connection();
 
   return $dbh->quote($msg);
 }
