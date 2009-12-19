@@ -1,4 +1,5 @@
 <?php
+$JQUERY_UI = array('core','dialog','tooltip');
 $page = "graphs";
 include "include.php";
 
@@ -78,6 +79,7 @@ echo "</table>\n";
 echo "</div>\n";
 echo "</td>\n";
 include "include_right_column.php";
+include "include_export_modal.php"; 
 echo "</body>\n";
 echo "</html>\n";
 

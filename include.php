@@ -99,6 +99,7 @@ if ($use_pass != "n") {
       switch(basename($_SERVER["PHP_SELF"])){
         case 'list.php':
         case 'system.php':
+        case 'system_graphs.php':
           echo '<script type="text/javascript" src="javascript/list-system.js"></script>'."\n";
           break;
         case 'admin_config.php':
