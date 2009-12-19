@@ -685,12 +685,12 @@ $sql =
      `audit_cfg_audit_pass` VARCHAR(200) NOT NULL default '',
      `audit_cfg_ip_start` VARCHAR(15) NOT NULL default '',
      `audit_cfg_ip_end` INT(10) UNSIGNED NOT NULL default '0',
-     `audit_cfg_pc_list` VARCHAR(2048) NOT NULL default '',
+     `audit_cfg_pc_list` MEDIUMTEXT NOT NULL,
      `audit_cfg_win_vbs` VARCHAR(200) NOT NULL default '',
      `audit_cfg_com_path` VARCHAR(200) NOT NULL default '',
      `audit_cfg_lin_sft` INT(10) UNSIGNED NOT NULL default '0',
      `audit_cfg_lin_sft_lst` INT(10) UNSIGNED NOT NULL default '0',
-     `audit_cfg_sft_lst` VARCHAR(2048) NOT NULL default '',
+     `audit_cfg_sft_lst` MEDIUMTEXT NOT NULL,
      `audit_cfg_lin_identity` VARCHAR(200) NOT NULL default '',
      `audit_cfg_lin_url` VARCHAR(200) NOT NULL default '',
      `audit_cfg_win_sft` INT(10) UNSIGNED NOT NULL default '0',
@@ -702,7 +702,7 @@ $sql =
      `audit_cfg_nmap_tcp_syn` INT(10) UNSIGNED NOT NULL default '0',
      `audit_cfg_nmap_url` VARCHAR(200) NOT NULL default '',
      `audit_cfg_nmap_path` VARCHAR(200) NOT NULL default '',
-     `audit_cfg_command_list` VARCHAR(2048) NOT NULL default '',
+     `audit_cfg_command_list` MEDIUMTEXT NOT NULL,
      `audit_cfg_command_interact` INT(10) UNSIGNED NOT NULL default '0',
      `audit_cfg_log_enable` INT(10) UNSIGNED NOT NULL default '0',
      `audit_cfg_mysql_ids` VARCHAR(200) NOT NULL default '',
@@ -743,7 +743,7 @@ $sql =
      `mysql_queries_table` VARCHAR(50) NOT NULL default '',
      `mysql_queries_field` VARCHAR(50) NOT NULL default '',
      `mysql_queries_sort` VARCHAR(10) NOT NULL default '',
-     `mysql_queries_data` VARCHAR(500) NOT NULL default '',
+     `mysql_queries_data` VARCHAR(255) NOT NULL default '',
     PRIMARY KEY(`mysql_queries_id`)
    ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
@@ -773,7 +773,7 @@ $sql =
      `audit_schd_log_disable` INT(10) UNSIGNED NOT NULL default '0',
      `audit_schd_cron_line` VARCHAR(250) NOT NULL default '',
      `audit_schd_email_log` INT(10) UNSIGNED NOT NULL default '0',
-     `audit_schd_email_list` VARCHAR(500) NOT NULL default '',
+     `audit_schd_email_list` VARCHAR(255) NOT NULL default '',
      `audit_schd_email_subject` VARCHAR(100) NOT NULL default '',
      `audit_schd_email_replyto` VARCHAR(100) NOT NULL default '',
      `audit_schd_email_template` VARCHAR(100) NOT NULL default '',
@@ -785,13 +785,31 @@ $sql =
    CREATE TABLE `ws_log` (
      `ws_log_id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
      `ws_log_pid` INT(10) UNSIGNED NOT NULL default '0',
-     `ws_log_message` VARCHAR(150) NOT NULL default '',
+     `ws_log_message` VARCHAR(255) NOT NULL default '',
      `ws_log_timestamp` INT(10) UNSIGNED NOT NULL default '0',
     PRIMARY KEY(`ws_log_id`)
   ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
    
   INSERT INTO audit_settings () VALUES ();";
 upgrade ($version,"09.12.10", $sql);
+
+// ************************************************************************************************
+
+// *************  Version 09.12.19 *******************************************************************
+$sql = "ALTER TABLE `audit_configurations` 
+         CHANGE `audit_cfg_sft_lst` `audit_cfg_sft_lst` MEDIUMTEXT CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL ,
+         CHANGE `audit_cfg_pc_list` `audit_cfg_pc_list` MEDIUMTEXT CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL ,
+         CHANGE `audit_cfg_command_list` `audit_cfg_command_list` MEDIUMTEXT CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL;
+
+        ALTER TABLE `mysql_queries` 
+         CHANGE `mysql_queries_data` `mysql_queries_data` VARCHAR(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL;
+
+        ALTER TABLE `audit_schedules` 
+         CHANGE `audit_schd_email_list` `audit_schd_email_list` VARCHAR(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL;
+
+        ALTER TABLE `ws_log` 
+         CHANGE `ws_log_message` `ws_log_message` VARCHAR(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL;";
+upgrade ($version,"09.12.19", $sql);
 
 // ************************************************************************************************
 set_time_limit (30);
