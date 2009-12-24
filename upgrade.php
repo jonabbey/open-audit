@@ -655,7 +655,7 @@ $sql =
    CREATE TABLE `audit_commands` (
      `audit_cmd_id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
      `audit_cmd_name` VARCHAR(100) NOT NULL default '',
-     `audit_cmd_command` VARCHAR(500) NOT NULL default '',
+     `audit_cmd_command` VARCHAR(255) NOT NULL default '',
      PRIMARY KEY(`audit_cmd_id`)
    ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
@@ -812,6 +812,12 @@ $sql = "ALTER TABLE `audit_configurations`
 upgrade ($version,"09.12.19", $sql);
 
 // ************************************************************************************************
+
+// *sigh* missed one last field in the previous upgrade
+// *************  Version 09.12.23 *******************************************************************
+  $sql = "ALTER TABLE `audit_commands` 
+           CHANGE `audit_cmd_command` `audit_cmd_command` VARCHAR(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL;";
+upgrade ($version,"09.12.23", $sql);
 set_time_limit (30);
 
 ?>

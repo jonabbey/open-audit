@@ -35,7 +35,7 @@ $extra = "";
 $software = "";
 $count = 0;
 $total_rows = 0;
-$latest_version = "09.12.19";
+$latest_version = "09.12.23";
 
 // Check for config, otherwise run setup
 if(!file_exists("include_config.php"))exit(header("Location: setup.php"));
