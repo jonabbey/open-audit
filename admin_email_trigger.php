@@ -7,13 +7,15 @@ if ( isset($_POST['timestamp']) && isset($_POST['schedule_id']) && is_numeric($_
   $schedules = GetAuditSchedulesFromDb();
 
   if ( is_null($schedules[$_POST["schedule_id"]]) ) {
-		LogEvent("admin_email_trigger.php","SendAuditLogEmail","Non-Existent Schedule ID Used");
+    LogEvent("admin_email_trigger.php","SendAuditLogEmail","Non-Existent Schedule ID Used");
+    exit;
   }
 
   $smtp_conn = GetSmtpConnectionFromDb();
 
   if ( is_null($smtp_conn) ) {
-		LogEvent("admin_email_trigger.php","SendAuditLogEmail","No SMTP Connection. Cannot Send Email");
+    LogEvent("admin_email_trigger.php","SendAuditLogEmail","No SMTP Connection. Cannot Send Email");
+    exit;
   }
 
   $db       = GetOpenAuditDbConnection();
@@ -38,16 +40,15 @@ if ( isset($_POST['timestamp']) && isset($_POST['schedule_id']) && is_numeric($_
                AND audit_log_timestamp = '$ts'";
 
   /* Sort the results of the audit first */
-	$result = mysql_query($sql, $db);
-	if ($myrow = mysql_fetch_array($result))
-	{
-		do
-		{
+  $result = mysql_query($sql, $db);
+  if ($myrow = mysql_fetch_array($result)) {
+    do {
       $msg  = $myrow['audit_log_message'];
       $host = $myrow['audit_log_host'];
-      $success_regex = "^(Finished|Audit Completed|Port Scan).*?(\d+)";
+      $success_regex = "^(Finished|Audit Completed|Port Scan).*";
+      $failed_regex = "^(Cannot Connect|Unable to Scan).*";
       $elapsed_regex = "^Script Execution Time: (.*)$";
-      if ( preg_match("/^Cannot Connect/i",$msg) ) { array_push($failed,$host);     }
+      if ( preg_match("/$failed_regex/i",$msg)   ) { array_push($failed,$host);     }
       if ( preg_match("/^Killed Hanging/i",$msg) ) { array_push($killed,$host);     }
       if ( preg_match("/^Audit Stopped/i",$msg ) ) { array_push($aborted,$host);    }
       if ( preg_match("/^Error /i",$msg)         ) { array_push($cmd_error,$host);  }
@@ -55,9 +56,9 @@ if ( isset($_POST['timestamp']) && isset($_POST['schedule_id']) && is_numeric($_
       if ( preg_match("/$success_regex/i",$msg)  ) { array_push($success,$host);    }
       if ( preg_match("/$elapsed_regex/i",$msg)  ) { $elapsed = $msg;               }
       if ( !empty($host) ) { array_push($hosts,$host); }
-		}
-		while ($myrow = mysql_fetch_array($result));
-	}
+    }
+    while ($myrow = mysql_fetch_array($result));
+  }
   else {
     exit;
   }
