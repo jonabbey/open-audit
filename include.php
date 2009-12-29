@@ -188,7 +188,11 @@ if ($pc > "0") {
           echo "<li>";
         }
 
-        echo "<a href=\"".$topic_item["link"]."\">";
+        echo "<a href=\"".$topic_item["link"]."\"";
+        if (isset($topic_item["css-class"])) {
+          echo " class=\"".$topic_item["css-class"]."\"";
+        }
+        echo ">";
         if(isset($topic_item["childs"]) AND is_array($topic_item["childs"])){
           echo "<span><img src=\"images/spacer.gif\" height=\"16\" width=\"0\" alt=\"\" />&gt;</span>";
         }
