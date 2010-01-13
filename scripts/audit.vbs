@@ -2374,26 +2374,23 @@ if ((SystemBuildNumber = "2600" AND CInt(ServicePack) > 1) OR (CInt(SystemBuildN
   Echo(comment)
   Set objWMIService_AV = GetObject("winmgmts:\\" & strComputer & "\root\SecurityCenter")
   Set colItems = objWMIService_AV.ExecQuery("Select * from AntiVirusProduct")
-
 '
 ' If we have previously seen Anti-virus, and now the machine is re-imaged or whatever then 
 ' we dont want to report the AV up to date when it no longer exists. Therefore we need to add an empty entry for AV if we find nothing. 
 ' 
 ' Thanks to acraiger for spotting this...
 ' 
- if colItems = "" then
- av_prod = ""
- av_disp = ""
- av_vers = ""
- av_up2d = ""
+if colItems = "" then
+av_prod = ""
+av_disp = ""
+av_vers = ""
+av_up2d = ""
    form_input = "system10^^^" & av_prod & "^^^" & av_disp & "^^^" _
    & av_up2d & "^^^" & av_vers & "^^^"
    entry form_input,comment,objTextFile,oAdd,oComment
    form_input = ""
 end if
 
-'
-  
   For Each objAntiVirusProduct In colItems
     av_prod = Clean(objAntiVirusProduct.companyName)
     av_disp = Clean(objAntiVirusProduct.displayName)
@@ -2405,6 +2402,29 @@ end if
       av_up2d = "False"
     End If
     
+    form_input = "system10^^^" & av_prod  & "^^^"   & av_disp  & "^^^" _
+                               & av_up2d  & "^^^"   & av_vers  & "^^^"
+    entry form_input,comment,objTextFile,oAdd,oComment
+    form_input = ""
+  Next
+
+  Set objWMIService_AV = GetObject("winmgmts:\\" & strComputer & "\root\SecurityCenter2")
+  Set colItems2 = objWMIService_AV.ExecQuery("Select * from AntiVirusProduct")
+
+  For Each objAntiVirusProduct In colItems2
+  PathToSignedProductExe = Replace(objAntiVirusProduct.PathToSignedProductExe,"\","\\")
+  echo ("Path " & PathToSignedProductExe)
+  Set colFiles = objWMIService.ExecQuery ("Select * from CIM_Datafile Where name = '" & PathToSignedProductExe & "'",,48)
+  For Each itemFile In colFiles  
+    av_prod  = Clean(itemFile.Manufacturer)
+    av_vers = Clean(itemFile.Version)
+    av_disp = Clean(objAntiVirusProduct.displayName)  
+  if objAntiVirusProduct.ProductState = "266240" then  
+    av_up2d = "True"
+  Else
+    av_up2d = "False"
+  End If
+  Next
     form_input = "system10^^^" & av_prod  & "^^^"   & av_disp  & "^^^" _
                                & av_up2d  & "^^^"   & av_vers  & "^^^"
     entry form_input,comment,objTextFile,oAdd,oComment
