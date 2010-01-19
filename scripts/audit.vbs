@@ -700,7 +700,8 @@ Set colItems = objWMIService.ExecQuery("Select * from Win32_NetworkAdapterConfig
    & "AND ServiceName<>'Rasl2tp' AND ServiceName<>'msloop' " _
    & "AND ServiceName<>'PptpMiniport' AND ServiceName<>'Raspti' " _
    & "AND ServiceName<>'NDISWan' AND ServiceName<>'NdisWan4' AND ServiceName<>'RasPppoe' " _
-   & "AND ServiceName<>'NdisIP' AND Description<>'PPP Adapter.'",,48)
+   & "AND ServiceName<>'tunmp' AND ServiceName<>'tunnel' AND ServiceName<>'VPCNetS2' " _
+   & "AND ServiceName<>'RasSstp' AND ServiceName<>'NdisIP' AND Description<>'PPP Adapter.'",,48)
 For Each objItem in colItems
    net_index = objItem.Index
    net_description = objItem.Description
@@ -2431,7 +2432,6 @@ end if
     form_input = ""
   Next
 end if
-
 
 if software_audit = "y" then
 ' software audit finishes further down the script
