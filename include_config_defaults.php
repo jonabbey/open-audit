@@ -86,5 +86,25 @@ $user_ldap_attributes = Array("company","department","description","displayname"
 $computer_ldap_attributes = Array("description","name","operatingsystem","operatingsystemversion","operatingsystemservicepack");
 $timezone = 'Europe/London';
 $show_summary_barcode = FALSE ;
+/* 
+ [AJH] 12th Feb 2010 Included the GPLed liberation-fonts from RedHat, you can still pick a local font, but these are now the defaults
+  These are included in './lib/fonts-ttf/' 
+  Valid font names are.. 
+    LiberationSerif-Bold.ttf
+	LiberationSans-Regular.ttf
+	LiberationMono-Bold.ttf
+	LiberationSerif-BoldItalic.ttf
+	LiberationSans-BoldItalic.ttf
+	LiberationSans-Bold.ttf
+	LiberationSans-Italic.ttf
+	LiberationMono-Regular.ttf
+	LiberationSerif-Italic.ttf
+	LiberationMono-BoldItalic.ttf
+	LiberationSerif-Regular.ttf
+	LiberationMono-Italic.ttf
+	*/
+	
+$summary_barcode_font = './lib/fonts-ttf/LiberationMono-Regular.ttf';
+//
 $summary_barcode = "name";
 ?>

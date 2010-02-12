@@ -70,7 +70,7 @@ echo "<td valign=\"top\">\n";
                  echo "</td></tr>";
                  if((isset($show_summary_barcode) AND ($show_summary_barcode === TRUE)) or (isset($show_summary_barcode) AND ($show_summary_barcode === 'y'))){
                   //
-                include_once('lib/barcode/code128.class.php');
+                include_once('./lib/barcode/code128.class.php');
                 
                 
                   $thistext = htmlspecialchars($myrow[0]);
@@ -79,19 +79,23 @@ echo "<td valign=\"top\">\n";
                 // If windows, the above should work, if Linux, anything might happen. 
                 // I should fix this by standardising this and the disk usage font, or including a local font.
                 // 
-                $thisfont = 'c:\windows\fonts\verdana.ttf';
+                $thisfont = $summary_barcode_font;
                 $thisimagename = 'barcode.png';
-                $barcode = new phpCode128($thistext, 120, $thisfont, 18);
+				
+                $barcode = new phpCode128($thistext, 120, $thisfont,12);
+				//$barcode = new phpCode128($thistext, 120, $thisfont, 18);
+				
                 $barcode->setBorderWidth(1);
                 $barcode->setBorderSpacing(10);
                 $barcode->setPixelWidth(1);
                 $barcode->setEanStyle(true);
-                $barcode->setShowText(true);
-                $barcode->setAutoAdjustFontSize(true);
+                $barcode->setShowText(false);
+                $barcode->setAutoAdjustFontSize(false);
                 $barcode->setTextSpacing(5);
-//                $barcode->setEanStyle(false);
-//                $barcode->setShowText(true);
+                $barcode->setEanStyle(false);
+                $barcode->setShowText(true);
                 $barcode->saveBarcode($thisimagename);
+				
                 echo "<img src='".$thisimagename."'><tr>";
                 
                //
