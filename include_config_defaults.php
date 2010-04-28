@@ -104,7 +104,7 @@ $show_summary_barcode = FALSE ;
 	LiberationMono-Italic.ttf
 	*/
 	
-$summary_barcode_font = './lib/fonts-ttf/LiberationMono-Regular.ttf';
+$summary_barcode_font = './lib/fonts-ttf/LiberationSerif-Bold.ttf';
 //
 $summary_barcode = "name";
 ?>

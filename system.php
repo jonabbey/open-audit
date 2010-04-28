@@ -75,9 +75,7 @@ echo "<td valign=\"top\">\n";
                 
                   $thistext = htmlspecialchars($myrow[0]);
                 // 
-                // FIXME: (AJH) The font could be an issue, as we have no idea where the fonts reside.
-                // If windows, the above should work, if Linux, anything might happen. 
-                // I should fix this by standardising this and the disk usage font, or including a local font.
+                // Included the GPLed liberation-fonts from RedHat, you can still pick a local font, but these are now the defaults
                 // 
                 $thisfont = $summary_barcode_font;
                 $thisimagename = 'barcode.png';
@@ -92,7 +90,7 @@ echo "<td valign=\"top\">\n";
                 $barcode->setShowText(false);
                 $barcode->setAutoAdjustFontSize(false);
                 $barcode->setTextSpacing(5);
-                $barcode->setEanStyle(false);
+                $barcode->setEanStyle(true);
                 $barcode->setShowText(true);
                 $barcode->saveBarcode($thisimagename);
 				
