@@ -472,6 +472,9 @@ if audit_local_domain = "y" then
       num_running = HowMany
     end if
   Next
+
+ Echo("Domain Audit Completed")
+ Wscript.Quit
 end if
 
 '''''''''''''''''''''''''''''''''''
