@@ -1370,8 +1370,8 @@ function insert_printer ($split){
     $printer_name = NULL;
     //if (strpos($printer_system_name,'\\\\') !== false ) { $printer_system_name = substr($printer_system_name, 2); }
 
-    if ((strpos($printer_caption,'PDF') !== false) OR (strpos($printer_caption,'__') !== false)){
-    // A pdf or Terminal Server printer - not physical, not inserted.
+    if ((strpos($printer_caption,'PDF') !== false) OR (strpos($printer_caption,'__') !== false) OR (strpos($printer_caption,'Microsoft') !== false)){
+    // A pdf, Terminal Server or MS Office printer - not physical, not inserted.
     } else {
     // A physical printer - insert
 
