@@ -200,6 +200,8 @@ $menue_array = array(
                                     "70"=>array("name"=>"Gateway", "link"=>"list.php?view=statistic_gateway", "image"=>"images/network_device.png", "title"=>"",), 
                                     "80"=>array("name"=>"Model", "link"=>"list.php?view=statistic_model", "image"=>"images/computer.png", "title"=>"",), 
                                     "90"=>array("name"=>"Manufacturer", "link"=>"list.php?view=statistic_manufacturer", "image"=>"images/computer.png", "title"=>"",), 
+                                    "100"=>array("name"=>"Printer Models", "link"=>"list.php?view=statistic_printer", "image"=>"images/printer.png", "title"=>"Printer Models",), 
+									
 /*                                  This next bit wont work, we need a Parameter for each choice FIXME
                                     "70"=>array("name"=>"AllByOSType", "link"=>"statistics.php?sub=s12", "image"=>"images/o_specialized.png", "title"=>"",),
                                     "80"=>array("name"=>"AllByIeVersions", "link"=>"statistics.php?sub=s13", "image"=>"images/browser_l.png", "title"=>"",),
