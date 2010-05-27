@@ -2,8 +2,9 @@
 /**********************************************************************************************************
 Recent Changes:
 
-	01/08/2009	Added in the 'insert_service' function the adding/updating of the 'service.service_start_name' field.
-				Fixed a bug in updating the 'service' table (only name and display_name are fixed, every other field is dynamic and needs to be updated)
+[Edoardo]	01/08/2009	Added in the 'insert_service' function the adding/updating of the 'service.service_start_name' field.
+						Fixed a bug in updating the 'service' table (only name and display_name are fixed, every other field is dynamic and needs to be updated)
+[Edoardo]	27/05/2010	Filtered out Citrix virtual printers in the 'insert_printers' function - Fix by jpa 						
 
 **********************************************************************************************************/
 
@@ -1370,8 +1371,9 @@ function insert_printer ($split){
     $printer_name = NULL;
     //if (strpos($printer_system_name,'\\\\') !== false ) { $printer_system_name = substr($printer_system_name, 2); }
 
-    if ((strpos($printer_caption,'PDF') !== false) OR (strpos($printer_caption,'__') !== false) OR (strpos($printer_caption,'Microsoft') !== false)){
-    // A pdf, Terminal Server or MS Office printer - not physical, not inserted.
+    if ((strpos($printer_caption,'PDF') !== false) OR (strpos($printer_caption,'__') !== false) OR 
+		(strpos($printer_caption,'Microsoft') !== false) OR (strpos($printer_caption,'in session') !== false)) {
+    // A pdf, Terminal Server, Citrix or MS Office printer - Not physical, not inserted.
     } else {
     // A physical printer - insert
 
@@ -1413,13 +1415,10 @@ function insert_printer ($split){
       // If not, the audit of the PC $printer_system_name will be relied
       // upon to detect and insert the printer.
       echo "Local Printer<br />\n";
-      if (($printer_system_name == $system_name) AND
-          ($printer_port_name !== "FILE:") AND
-          ($printer_port_name !== "MSFAX:") AND
-          ($printer_port_name !== "SHRFAX:") AND
-          ($printer_port_name !== "BIPORT") AND
-          (substr($printer_port_name,0,2) !== "TS") AND
-          ($printer_port_name !== "SmarThruFaxPort")) {
+      if (($printer_system_name == $system_name) AND ($printer_port_name !== "FILE:") AND
+          ($printer_port_name !== "MSFAX:") AND ($printer_port_name !== "SHRFAX:") AND
+          ($printer_port_name !== "BIPORT") AND (substr($printer_port_name,0,2) !== "TS") AND
+          ($printer_port_name !== "SmarThruFaxPort") AND ($printer_port_name !== "CLIENT")) {
         $printer_timestamp = $old_timestamp;
         $sql  = "SELECT count(other_linked_pc) AS count FROM other WHERE other_linked_pc = '$uuid' AND ";
         $sql .= "other_description = '$printer_caption' AND other_p_port_name = '$printer_port_name' AND ";
