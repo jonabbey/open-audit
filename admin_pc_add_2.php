@@ -2,10 +2,33 @@
 /**********************************************************************************************************
 Recent Changes:
 
+[Edoardo]	30/01/2008	Modified function 'insert_system_03' to add/update the system last boot date/time
+						Modified function 'insert_harddrive' to add/update the HDD status
+						Added function 'insert_sched_task' for Scheduled tasks
+						Added function 'insert_env_var' for Environment variables
+						Added function 'insert_evt_log' for Event Logs
+						Added function 'insert_ip_route'
+						Added function 'insert_pagefile'
+						Added function 'insert_motherboard'
+						Added function 'insert_onboard' for onboard devices
+[Edoardo]	13/04/2008	Added function 'insert_system12' for IIS version. 
+						Modified function 'insert_iis_1' to add/update fields for site state, application pool, anonymous user, anonymous/basic/NTLM authentication flag, SSL/SSL 128 communications flag.
+						Fixed same function for updating dynamic fields.
+						Added function 'insert_iis_4' to add/update fields for Web service extensions (name, path and access).
+						Added function 'insert_auto_upd' for Automatic Updating settings
+[Edoardo]	19/05/2008	Added in the 'insert_network' function the adding/updating of driver provider, version and date for installed NICs 
+[Edoardo]	06/06/2008	Added in the 'insert_mapped' function the adding/updating of 'mapped_username' and 'mapped_connect_as' fields.
+						Fixed same function for updating dynamic fields.
+						Added in the 'insert_motherboard' function the adding/updating of 'motherboard_cpu_sockets' and 'motherboard_memory_slots' fields.
+[Edoardo]	23/07/2008	Added in the 'insert_memory' function the adding/updating of the 'memory_tag' field.
+[Edoardo]	21/05/2009	Fixed updating of printer share names on local printers.
+[Edoardo]	22/05/2009	Same fix as above for network printers also.	
 [Edoardo]	01/08/2009	Added in the 'insert_service' function the adding/updating of the 'service.service_start_name' field.
-						Fixed a bug in updating the 'service' table (only name and display_name are fixed, every other field is dynamic and needs to be updated)
-[Edoardo]	27/05/2010	Filtered out Citrix virtual printers in the 'insert_printers' function - Fix by jpa 						
-
+[Edoardo]				Fixed a bug in updating the 'service' table (only name and display_name are static, every other field is dynamic and needs to be updated)	
+[Edoardo]	21/05/2010	Filtered out MS Office virtual printers, if any, in the 'insert_printers' function.
+[Edoardo]	27/05/2010	Filtered out Citrix virtual printers in the 'insert_printers' function - Fix by jpa.
+[Edoardo]	28/05/2010	Modified function 'insert_harddrive()' to to add/update the 'hard_drive_predicted_failure' field.
+					
 **********************************************************************************************************/
 
 $page = "add_pc";
@@ -809,6 +832,7 @@ function insert_harddrive ($split){
     $hard_drive_size = trim($extended[10]);
     $hard_drive_pnpid = trim($extended[11]);
     $hard_drive_status = trim($extended[12]);
+	$hard_drive_predicted_failure = trim($extended[13]);
     if (is_null($hard_drive_timestamp)){
       $sql = "SELECT MAX(hard_drive_timestamp) FROM hard_drive WHERE hard_drive_uuid = '$uuid'";
       if ($verbose == "y"){echo $sql . "<br />\n\n";}
@@ -816,12 +840,14 @@ function insert_harddrive ($split){
       $myrow = mysql_fetch_array($result);
       if ($myrow["MAX(hard_drive_timestamp)"]) {$hard_drive_timestamp = $myrow["MAX(hard_drive_timestamp)"];} else {$hard_drive_timestamp = "";}
     } else {}
-    $sql  = "SELECT count(hard_drive_uuid) AS count FROM hard_drive WHERE hard_drive_uuid = '$uuid' AND hard_drive_caption = '$hard_drive_caption' AND ";
-    $sql .= "hard_drive_index = '$hard_drive_index' AND hard_drive_interface_type = '$hard_drive_interface_type' AND ";
-    $sql .= "hard_drive_manufacturer = '$hard_drive_manufacturer' AND hard_drive_model = '$hard_drive_model' AND ";
-    $sql .= "hard_drive_partitions = '$hard_drive_partitions' AND hard_drive_scsi_bus = '$hard_drive_scsi_bus' AND ";
-    $sql .= "hard_drive_scsi_logical_unit = '$hard_drive_scsi_logical_unit' AND hard_drive_scsi_port = '$hard_drive_scsi_port' AND ";
-    $sql .= "hard_drive_size = '$hard_drive_size' AND (hard_drive_timestamp = '$hard_drive_timestamp' OR hard_drive_timestamp = '$timestamp')";
+    $sql  = "SELECT count(hard_drive_uuid) AS count FROM hard_drive ";
+	$sql .= "WHERE hard_drive_uuid = '$uuid' AND hard_drive_caption = '$hard_drive_caption' ";
+    $sql .= "AND hard_drive_index = '$hard_drive_index' AND hard_drive_interface_type = '$hard_drive_interface_type' ";
+    $sql .= "AND hard_drive_manufacturer = '$hard_drive_manufacturer' AND hard_drive_model = '$hard_drive_model' ";
+    $sql .= "AND hard_drive_scsi_bus = '$hard_drive_scsi_bus' AND hard_drive_scsi_logical_unit = '$hard_drive_scsi_logical_unit' ";
+    $sql .= "AND hard_drive_scsi_port = '$hard_drive_scsi_port' AND hard_drive_size = '$hard_drive_size' ";
+    $sql .= "AND hard_drive_pnpid = '$hard_drive_pnpid' ";
+	$sql .= "AND (hard_drive_timestamp = '$hard_drive_timestamp' OR hard_drive_timestamp = '$timestamp')";
     if ($verbose == "y"){echo $sql . "<br />\n\n";}
     $result = mysql_query($sql) or die ('Insert Failed: ' . mysql_error() . '<br />' . $sql);
     $myrow = mysql_fetch_array($result);
@@ -832,18 +858,28 @@ function insert_harddrive ($split){
       $sql .= "hard_drive_interface_type, hard_drive_manufacturer, hard_drive_model, ";
       $sql .= "hard_drive_partitions, hard_drive_scsi_bus, hard_drive_scsi_logical_unit, ";
       $sql .= "hard_drive_scsi_port, hard_drive_size, hard_drive_timestamp, ";
-      $sql .= "hard_drive_first_timestamp, hard_drive_pnpid, hard_drive_status) VALUES (";
+      $sql .= "hard_drive_first_timestamp, hard_drive_pnpid, hard_drive_status, ";
+	  $sql .= "hard_drive_predicted_failure) VALUES (";
       $sql .= "'$uuid', '$hard_drive_caption', '$hard_drive_index', ";
       $sql .= "'$hard_drive_interface_type', '$hard_drive_manufacturer', '$hard_drive_model', ";
       $sql .= "'$hard_drive_partitions', '$hard_drive_scsi_bus', '$hard_drive_scsi_logical_unit', ";
       $sql .= "'$hard_drive_scsi_port', '$hard_drive_size', '$timestamp', ";
-      $sql .= "'$timestamp', '$hard_drive_pnpid', '$hard_drive_status')";
+      $sql .= "'$timestamp', '$hard_drive_pnpid', '$hard_drive_status', ";
+	  $sql .= "'$hard_drive_predicted_failure')";
       if ($verbose == "y"){echo $sql . "<br />\n\n";}
       $result = mysql_query($sql) or die ('Insert Failed: ' . mysql_error() . '<br />' . $sql);
     } else {
-      // Already present in database - update timestamp and status
-      $sql  = "UPDATE hard_drive SET hard_drive_timestamp = '$timestamp', hard_drive_pnpid = '$hard_drive_pnpid', hard_drive_status = '$hard_drive_status' ";
-      $sql .= "WHERE hard_drive_index = '$hard_drive_index' AND hard_drive_uuid = '$uuid' AND hard_drive_timestamp = '$hard_drive_timestamp'";
+      // Already present in database - update timestamp and dynamic fields 
+      $sql  = "UPDATE hard_drive SET ";
+	  $sql .= "hard_drive_timestamp = '$timestamp', hard_drive_partitions = '$hard_drive_partitions', ";
+	  $sql .= "hard_drive_status = '$hard_drive_status', hard_drive_predicted_failure = '$hard_drive_predicted_failure' ";
+	  $sql .= "WHERE hard_drive_uuid = '$uuid' AND hard_drive_caption = '$hard_drive_caption' ";
+      $sql .= "AND hard_drive_index = '$hard_drive_index' AND hard_drive_interface_type = '$hard_drive_interface_type' ";
+      $sql .= "AND hard_drive_manufacturer = '$hard_drive_manufacturer' AND hard_drive_model = '$hard_drive_model' ";
+      $sql .= "AND hard_drive_scsi_bus = '$hard_drive_scsi_bus' AND hard_drive_scsi_logical_unit = '$hard_drive_scsi_logical_unit' ";
+      $sql .= "AND hard_drive_scsi_port = '$hard_drive_scsi_port' AND hard_drive_size = '$hard_drive_size' ";
+      $sql .= "AND hard_drive_pnpid = '$hard_drive_pnpid' ";
+	  $sql .= "AND hard_drive_timestamp = '$hard_drive_timestamp'";
       if ($verbose == "y"){echo $sql . "<br />\n\n";}
       $result = mysql_query($sql) or die ('Insert Failed: ' . mysql_error() . '<br />' . $sql);
     }

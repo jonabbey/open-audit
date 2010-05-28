@@ -23,6 +23,7 @@ Recent Changes:
 	[Nick Brown]	01/05/2009	Added checkbox to enable LDAP over SSL for a connection.
 	[Chad Sikorra]	15/11/2009	Added SMTP configuration/support on the same tab where LDAP connections are configured
 	[Chad Sikorra]	03/12/2009	Added web-scheduling config options. Form validation moved to admin_config_data.php
+	[Edoardo]		28/05/2010	Added $show_hard_disk_alerts and $hard_disk_alerts_days in the Admin Config Homepage tab
 
 **********************************************************************************************************/
 
@@ -62,7 +63,7 @@ if(isset($_POST['submit_button']))
 	$image_link_ldap_attribute_post = GetPOSTOrDefaultValue('image_link_ldap_attribute_post','name');
 
 	// *************** Check Homepage settings ************************************************
-  $show_other_discovered_post = GetPOSTOrDefaultValue('show_other_discovered_post','n');
+    $show_other_discovered_post = GetPOSTOrDefaultValue('show_other_discovered_post','n');
 	$other_detected_post = GetPOSTOrDefaultValue('other_detected_post','1');
 	$show_system_discovered_post = GetPOSTOrDefaultValue('show_system_discovered_post','n');
 	$system_detected_post = GetPOSTOrDefaultValue('system_detected_post','1');
@@ -93,7 +94,9 @@ if(isset($_POST['submit_button']))
 	$ldap_changes_days_post = GetPOSTOrDefaultValue('ldap_changes_days_post','n');
 	$show_systems_audited_graph_post = GetPOSTOrDefaultValue('show_systems_audited_graph_post','n');
 	$systems_audited_days_post = GetPOSTOrDefaultValue('systems_audited_days_post','n');
-
+	$show_hard_disk_alerts_post = GetPOSTOrDefaultValue('show_hard_disk_alerts_post','n');
+	$hard_disk_alerts_days_post = GetPOSTOrDefaultValue('hard_disk_alerts_days_post','7');
+	
 	$admin_list_post = GetVarOrDefaultValue($admin_list, Array('Domain Admins')); 
 	$user_list_post = GetVarOrDefaultValue($user_list, Array('Domain Users')); 
 	
@@ -164,8 +167,10 @@ if(isset($_POST['submit_button']))
   $content .= "\$show_systems_audited_graph = '".$show_systems_audited_graph_post."';\n";	// Added by Nick Brown	
   $content .= "\$systems_audited_days = ".$systems_audited_days_post.";\n"; // Added by Nick Brown
   $content .= "\$show_ldap_changes = '".$show_ldap_changes_post."';\n";	// Added by Nick Brown	
-  $content .= "\$ldap_changes_days = ".$ldap_changes_days_post.";\n\n";	// Added by Nick Brown	
-
+  $content .= "\$ldap_changes_days = ".$ldap_changes_days_post.";\n";	// Added by Nick Brown
+  $content .= "\$show_hard_disk_alerts = '".$show_hard_disk_alerts_post."';\n";		
+  $content .= "\$hard_disk_alerts_days = ".$hard_disk_alerts_days_post.";\n\n";
+  
   // ****************  Settings that have no associated GUI *******************************************
   $content .= "// ****************  Settings that have no associated GUI *******************************************\n";
 	$admin_list_array = (count($admin_list_post) > 0) ? "'".implode("','",$admin_list_post)."'" : ""; // Added by Nick Brown
@@ -396,6 +401,11 @@ echo "<div class=\"npb_config_col\">".__("Days").":<input type='text' name='ldap
 echo "<label>".__("Display 'Systems Audited' graph on homepage").":</label>\n";
 echo "<input type='checkbox' name='show_systems_audited_graph_post' value='y'".CheckedIfYes($show_systems_audited_graph);
 echo "<div class=\"npb_config_col\">".__("Days").":<input type='text' name='systems_audited_days_post' size='4' value='$systems_audited_days'/></div><br />\n";
+
+echo "<label>".__("Display 'Hard Disks Alerts' on homepage").":</label>\n";
+echo "<input type='checkbox' name='show_hard_disk_alerts_post' value='y'".CheckedIfYes($show_hard_disk_alerts);
+echo "<div class=\"npb_config_col\">".__("Days").":<input type='text' name='hard_disk_alerts_days_post' size='4' value='$hard_disk_alerts_days'/></div><br />\n";
+
 echo "</div>";
 ?>
 	<div id='npb_config_save_div'>

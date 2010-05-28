@@ -6,13 +6,27 @@ Description:
 	Code to ensure PHP installation is brought up to the latest version
 
 Recent Changes:
-
+	[Edoardo]		30/01/2008	Upgrade to version 08.02.01	- Added `scheduled_task`, `environment_variable`, `event_log`, `ip_route`, `pagefile`, `motherboard` and `onboard_device` tables.
+															  Added the `system_last_boot` column to the 'system' table.
+															  Added the `hard_drive_status` column to the `hard_drive` table.
+	[Edoardo]		13/04/2008	Upgrade to version 08.04.15	- Added `iis_web_ext` and `auto_updating` tables.
+															  Added the `iis_version` column to the 'system' table.
+															  Added various columns to the 'iis' table.
+	[Edoardo]		19/05/2008	Upgrade to version 08.05.19 - Added `net_driver_provider`, `net_driver_version` and `net_driver_date` columns to the `network_card` table.
+	[Edoardo]		06/06/2008	Upgrade to version 08.06.06 - Added 'mapped_username' and mapped_connect_as' columns to the 'mapped' table.
+															  Added 'motherboard_cpu_sockets' and 'motherboard_memory_slots' columns to the 'motherboard' table.
+															  Changed the `groups_members` column to VARCHAR(255)
+	[Edoardo]		23/07/2008	Upgrade to version 08.07.23 - Added 'memory_tag' column to the 'memory' table
+	[Edoardo]		17/10/2008	Various fixes by Nick Brown
+	[Edoardo]		07/12/2008	Fixed upgrade to version 07.08.01 (Changed `software_name` column to VARCHAR(255) instead of 256)
+								Fixed upgrade to version 08.07.23 (Changed `memory_tag` column to VARCHAR(255) instead of 256)
 	[Nick Brown]	17/03/2009	Added code to upgrade to Version 09.03.17 
 	[Nick Brown]	05/05/2009	Upgrade to Version 09.05.05 - LDAP over SSL support 
-				01/08/2009	Upgrade to version 09.08.01 - Added 'service_start_name' column to the 'service' table
+	[Edoardo]		01/08/2009	Upgrade to version 09.08.01 - Added 'service_start_name' column to the 'service' table
 	[Nick Brown]	03/09/2009	Upgrade to Version 09.09.03 - Added OpenLDAP support 
 	[Chad Sikorra]	04/10/2009	Upgrade to Version 09.10.03 - Update regex that helps determine AES key.
 					Add version checks to 09.03.17
+	[Edoardo]		28/05/2010	Upgrade to version 10.05.25 - Added 'hard_drive_predicted_failure' column to the 'hard_drive' table				
 
 **********************************************************************************************************/
 ?>
@@ -818,6 +832,14 @@ upgrade ($version,"09.12.19", $sql);
   $sql = "ALTER TABLE `audit_commands` 
            CHANGE `audit_cmd_command` `audit_cmd_command` VARCHAR(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL;";
 upgrade ($version,"09.12.23", $sql);
+
+// *************  Version 10.05.25 *******************************************************************
+$sql = "ALTER TABLE `hard_drive` ADD COLUMN `hard_drive_predicted_failure` VARCHAR(10) NOT NULL DEFAULT '' AFTER `hard_drive_status`";
+upgrade ($version,"10.05.25", $sql);
+
+// ************************************************************************************************
+
+
 set_time_limit (30);
 
 ?>

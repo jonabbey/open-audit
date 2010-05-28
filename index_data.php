@@ -7,7 +7,11 @@ Description:
 		
 Change Control:
 	
+	[Edoardo]		12/12/2008	Fixed case issue in the 'GetLdapInfo()' function - Fix by Nick Brown
+	[Edoardo]		24/02/2009	Modified the 'GetLdapInfo()' function to include the audited LDAP change (Added/Removed) and the changing date
 	[Nick Brown]	02/03/2009	Minor change in GetSystemsAuditedGraph()
+	[Edoardo]		25/03/2009	Fixed query in the 'GetDetectedSoftwareData()' function to exclude the word "Update" in software_name (like Java(TM) 6 Update X, LiveUpdate (Symantec Corp.), MS Windows Server Update Services and so on).
+	[Edoardo]		28/05/2010	Added function 'GetHardDisksAlertsData()' to show HDD status and S.M.A.R.T. failure alerts
 	
 **********************************************************************************************************/
 set_time_limit(60);
@@ -40,6 +44,7 @@ if ($sub == "f12") GetRdpServers($sub);
 if ($sub == "f13") GetDbServers($sub);
 if ($sub == "f14") GetSystemsAuditedGraph();
 if ($sub == "f15") GetLdapInfo($sub);
+if ($sub == "f16") GetHardDisksAlertsData($sub);
 
 // ****** GetLdapInfo**************************************************
 function GetLdapInfo($id)
@@ -1416,4 +1421,54 @@ function GetDetectedXpAvData($id)
 	
 	return; 
 }
+
+// ****** Get hard disks alerts detected in the last $hard_disk_alerts_days days *****************************************************
+// $id = ID of the HTML element that this data is "bound" to
+function GetHardDisksAlertsData($id)
+{
+  global $db, $hard_disk_alerts_days;
+	$tr_class='npb_highlight_row';
+
+    $sql  = "SELECT system_name, net_ip_address, system_uuid, system_timestamp, hard_drive_index, hard_drive_model, hard_drive_status, hard_drive_predicted_failure FROM system, hard_drive ";
+    $sql .= "WHERE hard_drive_uuid = system_uuid AND hard_drive_timestamp = system_timestamp AND system_timestamp > '" . adjustdate(0,0,-$hard_disk_alerts_days) . "000000' "; 
+    $sql .= "AND (hard_drive_status <> 'OK' OR hard_drive_predicted_failure = 'Yes') ";
+    $sql .= "ORDER BY system_name, hard_drive_index";
+	
+	$result = mysql_query($sql, $db) or die (mysql_error()); 	
+	$count=mysql_numrows($result);
+
+	echo "<div class='npb_content_data' id='".$id."' style='display: none;'>";	
+	
+	if ($myrow = mysql_fetch_array($result))
+	{
+		echo "<table>";
+	  echo "  <tr>";
+		echo "		<th>".__("IP Address")."</td>";
+		echo "  	<th>".__("Hostname")."</td>";
+		echo "  	<th>".__("Date Audited")."</td>";
+		echo "		<th>".__("HDD Index")."</td>";
+		echo "  	<th>".__("HDD Model")."</td>";
+		echo "  	<th>".__("HDD Status")."</td>";
+		echo "  	<th>".__("S.M.A.R.T. Failure Predicted")."</td>";
+	  echo "  </tr>";
+		do
+		{
+			echo "<tr class='".alternate_tr_class($tr_class)."'>";
+			echo "	<td>".ip_trans($myrow["net_ip_address"])."</td>";
+			echo "	<td><a href=\"system.php?pc=".$myrow["system_uuid"]."&amp;view=summary\">".$myrow["system_name"]."</a></td>";
+			echo "	<td>".return_date_time($myrow["system_timestamp"])."</td>";
+			echo "	<td>".$myrow["hard_drive_index"]."</td>";
+			echo "	<td>".$myrow["hard_drive_model"]."</td>";
+			echo "	<td>".$myrow["hard_drive_status"]."</td>";
+			echo "	<td>".$myrow["hard_drive_predicted_failure"]."</td>";
+			echo "</tr>";
+		} while ($myrow = mysql_fetch_array($result));
+		}
+	echo "</table>";
+	echo "</div>";
+	echo "<p class='npb_section_summary'>".__("Systems").": ".$count."</p>";
+
+	return; 
+}
+
 ?>

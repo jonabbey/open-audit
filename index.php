@@ -20,13 +20,18 @@ Description:
 	Home page for Open Audit application.
 
 Recent Changes:
-
+	[Edoardo]		01/02/2008	$latest_version  now "08.02.01"
+	[Edoardo]		15/04/2008	$latest_version  now "08.04.15"
+	[Edoardo]		19/05/2008	$latest_version  now "08.05.19"
+	[Edoardo]		06/06/2008	$latest_version  now "08.06.06"
+	[Edoardo]		23/07/2008	$latest_version  now "08.07.23"
 	[Nick Brown]	29/04/2009	Removed reference to $validate - doesn't appear to be used anywhere in the application.
 	[Nick Brown]	05/05/2009	$latest_version  now "09.05.05"
-				01/08/2009	$latest_version  now "09.08.01"
+	[Edoardo]		01/08/2009	$latest_version  now "09.08.01"
 	[Nick Brown]	03/09/2009	$latest_version  now "09.09.03"
 	[Chad Sikorra]	05/10/2009	$latest_version  now "09.10.05"
 	[Chad Sikorra]	05/10/2009	$latest_version  now "09.11.15"
+	[Edoardo]		28/05/2010	$latest_version  now "10.05.25"
 
 **********************************************************************************************************/
 
@@ -35,7 +40,7 @@ $extra = "";
 $software = "";
 $count = 0;
 $total_rows = 0;
-$latest_version = "09.12.23";
+$latest_version = "10.05.25";
 
 // Check for config, otherwise run setup
 if(!file_exists("include_config.php"))exit(header("Location: setup.php"));
@@ -66,6 +71,7 @@ if ($show_detected_servers == "y" )
 if ($show_detected_xp_av == "y")  echo "var DetectedXpAvXml=new HttpRequestor('DetectedXpAv');\n";
 if ($show_ldap_changes == 'y') echo "var AdInfoXml=new HttpRequestor('AdInfo');\n";
 if ($show_systems_audited_graph == 'y') echo "var AuditedSystemsXml=new HttpRequestor('AuditedSystems');\n";
+if ($show_hard_disk_alerts == 'y') echo "var HardDisksAlertsXml=new HttpRequestor('HardDisksAlerts');\n";
 ?>
 //]]></script>
 
@@ -123,6 +129,9 @@ if ($show_detected_xp_av == "y")
 	
 if ($show_ldap_changes == 'y') DisplaySection('f15',__("LDAP Directory changes in the last ".$ldap_changes_days." days"),'AdInfo','Accounts','rss_ldap_directory_changes.php');
 if ($show_systems_audited_graph == 'y') DisplayAuditGraph();
+if ($show_hard_disk_alerts == "y") 
+	DisplaySection('f16',__("Hard Disks Alerts detected in the last ").$hard_disk_alerts_days.__(" Days"),'HardDisksAlerts','Systems','rss_hard_disk_alerts.php');
+
 
 
 //******* Display Graph *****************************************************
@@ -195,6 +204,7 @@ if ($show_detected_servers == "y" )
 if ($show_detected_xp_av == "y") echo "DetectedXpAvXml.send('index_data.php?sub=f11');\n";
 if ($show_ldap_changes == 'y') echo "AdInfoXml.send('index_data.php?sub=f15');\n";
 if ($show_systems_audited_graph == 'y') echo "AuditedSystemsXml.send('index_data.php?sub=f14');\n";
+if ($show_hard_disk_alerts == "y") echo "HardDisksAlertsXml.send(\"index_data.php?sub=f16\");\n";
 ?>
 //]]></script>
 

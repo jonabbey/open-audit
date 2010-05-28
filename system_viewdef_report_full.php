@@ -1,5 +1,29 @@
 <?php
+/**********************************************************************************************************
+Module:	system_viewdef_report_full.php
 
+Description:
+	
+		
+Change Log:
+	[Edoardo]		30/01/2008	Added Scheduled tasks, Env. variables, IP routes, Event logs, Pagefile, Mobo and Onboard devices sections.
+								Added System last boot in the OS section and HDD status in the Fixed Disks section.
+								Fixed System Software query to add MDAC/WDAC
+	[Edoardo]		13/04/2008	Added the Automatic Updating Client Settings section and many IIS items
+	[Edoardo]		19/05/2008	Added Driver provider, version and date in the Network card section
+	[Edoardo]		23/05/2008	Modified Groups layout to horizontal
+	[Edoardo]		04/06/2008	Added Index and Socket Type in the Processor section
+	[Edoardo]		06/06/2008	Added CPU Sockets # and Memory Slots # in the Mobo section
+								Added persistently Mapped drives and fixed Shared folders tags	
+	[Edoardo]		23/07/2008	Added Slot # to the Memory section
+	[Edoardo]		24/11/2008	Fixed Symantec client security detection for servers on the Security system viewdef - Other antivirus section
+	[Edoardo]		04/03/2009	Sorted partitions list (by partition ID and drive letter)
+	[Edoardo]		25/03/2009	Fixed query in the Software section to exclude the word 'Update' in software_name (like Java(TM) 6 Update X, LiveUpdate (Symantec Corp.), MS Windows Server Update Services and so on)
+	[Edoardo]		21/05/2009	Added Printer share name to the Printers section
+	[Edoardo]		01/08/2009	Added Logon As to the Services section
+	[Edoardo]		28/05/2010	Added S.M.A.R.T. Failure Predicted to the Fixed Disks section
+	
+**********************************************************************************************************/
 $query_array=array("name"=>array("name"=>__("Report"),
                                  "sql"=>"SELECT `system_name` FROM `system` WHERE `system_uuid` = '" . $_GET["pc"] . "'",
                                 ),
@@ -62,7 +86,7 @@ $query_array=array("name"=>array("name"=>__("Report"),
                                                     "headline"=>__("Fixed Disks"),
                                                     "sql"=>"SELECT hard_drive_index, hard_drive_manufacturer, hard_drive_interface_type, hard_drive_model, 
                                                                    hard_drive_partitions, hard_drive_size, hard_drive_scsi_bus, hard_drive_scsi_logical_unit, 
-                                                                   hard_drive_scsi_port, hard_drive_status
+                                                                   hard_drive_scsi_port, hard_drive_status, hard_drive_predicted_failure
                                                             FROM hard_drive, system
                                                             WHERE hard_drive_uuid=system_uuid AND hard_drive_uuid = '" . $pc . "' AND hard_drive_timestamp = '".$GLOBAL["system_timestamp"]."' ORDER BY hard_drive_index",
                                                     "fields"=>array("10"=>array("name"=>"hard_drive_index", "head"=>__("Index"),),
@@ -75,7 +99,8 @@ $query_array=array("name"=>array("name"=>__("Report"),
                                                                     "80"=>array("name"=>"hard_drive_scsi_logical_unit", "head"=>__("SCSI Logical Unit"),),
                                                                     "90"=>array("name"=>"hard_drive_scsi_port", "head"=>__("SCSI Port"),),
                                                                     "100"=>array("name"=>"hard_drive_status", "head"=>__("Status"),),
-                                                                    "110"=>array("name"=>" ", "head"=>__(" "),),
+																	"110"=>array("name"=>"hard_drive_predicted_failure", "head"=>__("S.M.A.R.T. Failure Predicted"),),
+                                                                    "120"=>array("name"=>" ", "head"=>__(" "),),
                                                                    ),
                                                     ),
                                    "partition"=>array(

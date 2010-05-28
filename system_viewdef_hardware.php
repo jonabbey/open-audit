@@ -1,5 +1,22 @@
 <?php
+/**********************************************************************************************************
+Module:	system_viewdef_hardware.php
 
+Description:
+	
+		
+Change Log:
+	[Edoardo]		30/01/2008	Added Motherboard and Onboard devices sections.
+								Added HDD status to the Fixed Disks section.
+	[Edoardo]		19/05/2008	Added Driver provider, version and date in the Network card section
+	[Edoardo]		04/06/2008	Added Index and Socket Type in the Processor section
+	[Edoardo]		06/06/2008	Added CPU Sockets # and Memory Slots # in the Mobo section
+	[Edoardo]		23/07/2008	Added Slot # to the Memory section
+	[Edoardo]		04/03/2009	Sorted partitions list (by partition ID and drive letter)
+	[Edoardo]		21/05/2009	Added Printer share name to the Printers section
+	[Edoardo]		28/05/2010	Added S.M.A.R.T. Failure Predicted to the Fixed Disks section
+	
+**********************************************************************************************************/
 $query_array=array("name"=>array("name"=>__("Hardware"),
                                  "sql"=>"SELECT `system_name` FROM `system` WHERE `system_uuid` = '" . $_GET["pc"] . "'",
                                 ),
@@ -38,7 +55,7 @@ $query_array=array("name"=>array("name"=>__("Hardware"),
                                                     "headline"=>__("Fixed Disks"),
                                                     "sql"=>"SELECT hard_drive_index, hard_drive_manufacturer, hard_drive_interface_type, hard_drive_model, 
                                                                    hard_drive_partitions, hard_drive_size, hard_drive_scsi_bus, hard_drive_scsi_logical_unit, 
-                                                                   hard_drive_scsi_port, hard_drive_status
+                                                                   hard_drive_scsi_port, hard_drive_status, hard_drive_predicted_failure
                                                             FROM hard_drive, system
                                                             WHERE hard_drive_uuid=system_uuid AND hard_drive_uuid = '" . $_GET["pc"] . "' AND hard_drive_timestamp = '".$GLOBAL["system_timestamp"]."' ORDER BY hard_drive_index",
                                                     "image"=>"images/harddisk_l.png",
@@ -52,6 +69,7 @@ $query_array=array("name"=>array("name"=>__("Hardware"),
                                                                     "80"=>array("name"=>"hard_drive_scsi_logical_unit", "head"=>__("SCSI Logical Unit"),),
                                                                     "90"=>array("name"=>"hard_drive_scsi_port", "head"=>__("SCSI Port"),),
                                                                     "100"=>array("name"=>"hard_drive_status", "head"=>__("Status"),),
+																	"110"=>array("name"=>"hard_drive_predicted_failure", "head"=>__("S.M.A.R.T. Failure Predicted"),),
                                                                    ),
                                                     ),
                                    "partition"=>array(

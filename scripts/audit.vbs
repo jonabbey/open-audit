@@ -2,14 +2,45 @@
 ' Open Audit                   
 ' Software and Hardware Inventory 
 ' Outputs into MySQL              
-' (c) Open-Audit.org 2003-2007    
+' (c) Open-Audit.org 2003-2010    
 ' Licensed under the GPL          
 
 ' Change Control:
+
+'	[Edoardo]		30/01/2008	 Added detection of MDAC/WDAC, system last boot, HDD status, scheduled tasks, env. variables, ip routes, event logs, pagefile, mobo and onboard devices detection
+'								 Fixed SSL self-signed certs issue when sending XML data to server
+'	[Edoardo]		31/01/2008	 Fixed error in current script PID detection on W2k.
+'	[Edoardo]		06/02/2008	 Fixed hanging when auditing sched. tasks on Win9x.
+'	[Edoardo]		07/02/2008	 Fixed NICs link speed detection when providing username/password 
+'	[Edoardo]		08/02/2008	 Hopefully fixed both hanging when auditing sched. tasks on Win9x and error in current script PID detection on W2k.
+'								 Fixed error when sending xml data (uses ServerXMLHTTP first, otherwise the XMLHTTP object) 
+'	[Edoardo]		20/02/2008	 Fixed error when sending xml data to a W2k OA server
+'	[Edoardo]		13/04/2008	 Modified IIS section to use IIS WMI provider, when available. Detected also
+'								 - IIS version and installed components
+'								 - Web service extensions (name, path and access)
+'								 - Site state, application pool, anonymous user, anonymous/basic/NTLM authentication flag, SSL/SSL 128 communications flag
+'								 Added detection of Automatic Updating settings
+'	[Edoardo]		15/04/2008	 Fixed an internationalization bug causing the home page not reporting systems without up to date antivirus
+'	[Edoardo]		21/04/2008	 Display W2k3 R2, when detected
+'	[Edoardo]		19/05/2008	 Added driver provider, version and date for installed Network Cards
+'	[Edoardo]		21/05/2008	 Fixed Antivirus and Win Firewall detection for Windows XP SP3
+'	[Edoardo]		04/06/2008	 Slightly improved Processor Socket type detection
+'	[Edoardo]		06/06/2008	 Added persistently mapped drives detection for each user who logged on the system.
+'								 Added CPU sockets # and memory slots # detection to the Motherboard section. Removed memory slot # for each memory bank
+'	[Edoardo]		07/06/2008	 Fixed Mapped drive letters to Uppercase
+'	[Edoardo]		20/06/2008	 Fixed Local Groups members detection for standalone servers
+'	[Edoardo]		23/08/2008	 Added detection of memory tag (slot # on Mobo) for memory banks
+'	[Edoardo]		27/08/2008	 Hopefully fixed hanging when auditing mapped drives.
+'	[Edoardo]		23/10/2008	 Fixed slow mapped drives auditing - Fix by Nick Brown
+'	[Edoardo]		24/02/2009	 Fixed IIS details - Fix by jvandermark
 '	[Nick Brown]	17/04/2009	 Changes to system user detection - line 893
 '	[Nick Brown]	23/04/2009	 [Bug] ODBC section not using Echo() - around line 3926 - Fixed
-'				01/08/2009	 In the Services section added auditing of StartName 
+'	[Edoardo]		01/08/2009	 In the Services section added auditing of StartName 
 '	[Chad Sikorra]	09/10/2009	 Add support for named arguments from the command line
+'	[Edoardo]		16/10/2009	 Fixed AV and Win Firewall info detection for Vista, Seven and 2k8.
+'	[Edoardo]		13/01/2010	 Fixed Windows Security Center Registered Antivirus detection for Vista and Seven - Fix by JpMorgan
+'	[Edoardo]		19/01/2010	 Filtered out detection of several virtual NICS - Fix by JpMorgan
+'	[Edoardo]		28/05/2010	 Added auditing of S.M.A.R.T. failure prediction for supported HDDs	to the Hard Drive Information section
 
 '***********************************************************************************************
 
@@ -356,12 +387,15 @@ if strComputer <> "" then
       Set oReg = wmiNameSpace.Get("StdRegProv")
       Set objWMIService = wmiLocator.ConnectServer(strComputer, "root\cimv2",strUser,strPass)
       objWMIService.Security_.ImpersonationLevel = 3
+      Set objWMIService2 = wmiLocator.ConnectServer(strComputer, "\root\WMI",strUser,strPass)
+      objWMIService2.Security_.ImpersonationLevel = 3
     end if
     if strUser = "" and strPass = "" then
     ' No Username & Password provided - assume a domain local PC
       Echo("No username and password provided - therefore assuming local domain PC.")
       Set oReg=GetObject("winmgmts:{impersonationLevel=impersonate}!\\" & strComputer & "\root\default:StdRegProv")
       Set objWMIService = GetObject("winmgmts:\\" & strComputer & "\root\cimv2")
+	  Set objWMIService2 = GetObject("winmgmts:\\" & strComputer & "\root\WMI")
     end if
     if use_audit_log = "y" then 
         Set objFSO = CreateObject("Scripting.FileSystemObject")
@@ -690,13 +724,6 @@ comment = "Network Info"
 Echo(comment)
 On Error Resume Next
 
-if strUser <> "" and strPass <> "" then
-  Set objWMIService_WMI = wmiLocator.ConnectServer(strComputer, "\root\WMI",strUser,strPass)
-  objWMIService_WMI.Security_.ImpersonationLevel = 3
-else
-  Set objWMIService_WMI = GetObject("winmgmts:\\" & strComputer & "\root\WMI")
-end if
-
 Set colItems = objWMIService.ExecQuery("Select * from Win32_NetworkAdapterConfiguration " _
    & "WHERE ServiceName<>'' AND ServiceName<>'AsyncMac' " _
    & "AND ServiceName<>'VMnetx' AND ServiceName<>'VMnetadapter' " _
@@ -720,7 +747,7 @@ For Each objItem in colItems
         net_connection_status = objItem2.NetConnectionStatus
         if net_connection_status = "2" then
           ' Found a connected NIC: detecting link speed
-          Set colItems3 = objWMIService_WMI.ExecQuery("Select * from MSNdis_LinkSpeed ",,48)
+          Set colItems3 = objWMIService2.ExecQuery("Select * from MSNdis_LinkSpeed ",,48)
           For Each objItem3 in colItems3
             if objItem3.InstanceName = net_description then net_speed = objItem3.NdisLinkSpeed  end if
           Next
@@ -1605,18 +1632,38 @@ For Each objDevice in colDevices
 Next
 
 '''''''''''''''''''''''''''
-'   H.Drive Information   '
+'   Hard Drive Information   '
 '''''''''''''''''''''''''''
 comment = "Hard Disk Info"
 Echo(comment)
 On Error Resume Next
 Set colItems = objWMIService.ExecQuery("Select * from Win32_DiskDrive",,48)
+
 For Each objItem in colItems
+   PredictFailure = ""
+   If objItem.InterfaceType <> "USB" Then
+     Set colItems2 = objWMIService2.ExecQuery("Select InstanceName,PredictFailure from MsStorageDriver_FailurePredictStatus ",,48)  
+	 Err.Clear
+     For Each objItem2 in colItems2
+	   If Err.Number = 0 Then 
+	     InstanceName = UCase(Left(objItem2.InstanceName, Len(objItem2.InstanceName)-2))
+		 If InstanceName = objItem.PNPDeviceID Then
+		   If objItem2.PredictFailure Then 
+			 PredictFailure = "Yes"
+		   Else
+			 PredictFailure = "No"
+		   End If
+		 End If
+	   End If	  
+	 Next
+   End If
+   If PredictFailure = "" Then PredictFailure = "No Results"
    form_input = "harddrive^^^" _
      & clean(objItem.Caption)               & "^^^" & clean(objItem.Index)           & "^^^" & clean(objItem.InterfaceType) & "^^^" _
      & clean(objItem.Manufacturer)          & "^^^" & clean(objItem.Model)           & "^^^" & clean(objItem.Partitions)    & "^^^" _
      & clean(objItem.SCSIBus)               & "^^^" & clean(objItem.SCSILogicalUnit) & "^^^" & clean(objItem.SCSIPort)      & "^^^" _
-     & clean(int(objItem.Size /1024 /1024)) & "^^^" & clean(objItem.PNPDeviceID)     & "^^^" & clean(objItem.Status)        & "^^^"
+     & clean(int(objItem.Size /1024 /1024)) & "^^^" & clean(objItem.PNPDeviceID)     & "^^^" & clean(objItem.Status)        & "^^^" _
+     & PredictFailure                       & "^^^" 
    entry form_input,comment,objTextFile,oAdd,oComment
    form_input = ""
    if online = "p" then

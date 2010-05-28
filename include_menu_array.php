@@ -1,4 +1,22 @@
 <?php
+/**********************************************************************************************************
+Recent Changes:
+
+[Edoardo]	30/01/2008	Added Chassis, Mobo and Onboard devices items in yhe Hardware menu
+						Added Scheduled Tasks, Env. vars, Event Logs. IP routes and Pagefile items in the OS settings menu
+[Edoardo]	13/04/2008	Added the Security - Automatic Updating menu item
+[Edoardo]	23/05/2008	Added the Queries - All MS Windows local Administrators menu item
+[Edoardo]	06/06/2008	Added the Queries - All Mapped drives menu item
+[Edoardo]	07/06/2008	Changed some Hardware and OS Settings icons	
+[Edoardo]	13/02/2009	Moved the All partitions menu item from Statistics to Queries
+[Edoardo]	12/03/2009	Fixed the Queries - All mapped drives menu item - Fix by Michalak
+[Edoardo]	10/10/2009	Added the Other items - All modems menu item
+[Edoardo]	10/10/2009	Fixed Security - Firewall menu to include Windows Firewall system settings
+[Edoardo]	22/05/2010	Added the Statistics - Printer model menu item
+[Edoardo]	28/05/2010	Added the Queries - All Hard Disks menu item
+	
+					
+**********************************************************************************************************/
 if(!isset($name)) $name = "";
 $menue_array = array(
 
@@ -127,16 +145,17 @@ $menue_array = array(
                                     "110"=>array("name"=>"All Services", "link"=>"./list.php?view=all_services", "image"=>"images/services.png", "title"=>"All Services",),
                                     "120"=>array("name"=>"All Scheduled Tasks", "link"=>"list.php?pc=$pc&amp;view=all_sch_tasks", "image"=>"images/sched_task_l.png", "title"=>"",),
                                     "130"=>array("name"=>"All Software Keys", "link"=>"./list.php?view=all_keys", "image"=>"images/key_2.png", "title"=>"All Keys",),
-                                    "140"=>array("name"=>"All MS Office-Keys", "link"=>"./list.php?view=keys_for_software&amp;type=office%&amp;headline_addition=Office", "image"=>"images/key_1.png", "title"=>"All Office Keys",),
-                                    "150"=>array("name"=>"All MS Windows-Keys", "link"=>"./list.php?view=keys_for_software&amp;type=windows%&amp;headline_addition=Windows", "image"=>"images/key_3.png", "title"=>"All Widnows Keys",),
-                                    "160"=>array("name"=>"All Windows Shares", "link"=>"./list.php?view=all_network_shares", "image"=>"images/shared_drive_l.png", "title"=>"All Windows Shares by Host",),
-                                    "170"=>array("name"=>"All Windows Administrators", "link"=>"./list.php?view=all_win_admins", "image"=>"images/users.png", "title"=>"All Windows Administrators by Host",),
+                                    "140"=>array("name"=>"All MS Office Keys", "link"=>"./list.php?view=keys_for_software&amp;type=office%&amp;headline_addition=Office", "image"=>"images/key_1.png", "title"=>"All Office Keys",),
+                                    "150"=>array("name"=>"All MS Windows Keys", "link"=>"./list.php?view=keys_for_software&amp;type=windows%&amp;headline_addition=Windows", "image"=>"images/key_3.png", "title"=>"All Windows Keys",),
+                                    "160"=>array("name"=>"All MS Windows Shares", "link"=>"./list.php?view=all_network_shares", "image"=>"images/shared_drive_l.png", "title"=>"All Windows Shares by Host",),
+                                    "170"=>array("name"=>"All MS Windows local Administrators", "link"=>"./list.php?view=all_win_admins", "image"=>"images/users.png", "title"=>"All Windows Administrators by Host",),
                                     "180"=>array("name"=>"All Mapped Drives", "link"=>"./list.php?view=all_mapped_drives", "image"=>"images/shared_drive_l.png", "title"=>"All Mapped Drives by Host",),
                                     "190"=>array("name"=>"All LDAP Systems", "link"=>"./list.php?view=ldap_computers", "image"=>"images/computer.png", "title"=>"All LDAP Audited Systems",),
                                     "200"=>array("name"=>"All LDAP Users", "link"=>"./list.php?view=ldap_users", "image"=>"images/users.png", "title"=>"All LDAP Audited Users",),
-                                    "210"=>array("name"=>"All Partitions", "link"=>"./list.php?view=all_partition_space", "image"=>"images/harddisk_l.png", "title"=>"All Partitions",),
-//                                                                                            Placekeeper for the All Dell Warranty link if it is needed 
-                                    "220"=>array("name"=>"", "link"=>"","image"=>"","title"=>"",),  
+                                    "210"=>array("name"=>"All Partitions", "link"=>"./list.php?view=all_partition_space", "image"=>"images/partition.png", "title"=>"All Partitions",),
+                                    "220"=>array("name"=>"All Hard Disks", "link"=>"./list.php?view=all_hard_disks", "image"=>"images/harddisk_l.png", "title"=>"All Hard Disks",),
+									// Placekeeper for the All Dell Warranty link if it is needed 
+                                    "230"=>array("name"=>"", "link"=>"","image"=>"","title"=>"",),  
                               ),
               ),
       "20" => array("name"=>"Other Items",
@@ -248,7 +267,7 @@ if ((isset($use_ldap_integration))and($use_ldap_integration == 'y')) {
  $menue_array['misc']['60']['childs']['100']=array("name"=>"Audit LDAP Directory", "link"=>"ldap_audit_script.php", "image"=>"images/o_PDA.png", "title"=>"Audit the LDAP Directory.",);
 };
 if ((isset($show_dell_warranty ))and($show_dell_warranty  == 'y')) {
- $menue_array['misc']['10']['childs']['220']=array("name"=>"All Dell Warranty", "link"=>"./list.php?view=all_dell_warranty", "image"=>"images/notes_l.png", "title"=>"Audit the LDAP Directory.",);
+ $menue_array['misc']['10']['childs']['230']=array("name"=>"All Dell Warranty", "link"=>"./list.php?view=all_dell_warranty", "image"=>"images/notes_l.png", "title"=>"All Dell Warranty.",);
 };
 
 
