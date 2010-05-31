@@ -15,6 +15,7 @@ Change Log:
 	[Edoardo]		04/03/2009	Sorted partitions list (by partition ID and drive letter)
 	[Edoardo]		21/05/2009	Added Printer share name to the Printers section
 	[Edoardo]		28/05/2010	Added S.M.A.R.T. Failure Predicted to the Fixed Disks section
+	[Edoardo]		31/05/2010	Added Driver Name to the Printer section - Suggested by jpa
 	
 **********************************************************************************************************/
 $query_array=array("name"=>array("name"=>__("Hardware"),
@@ -294,6 +295,7 @@ $query_array=array("name"=>array("name"=>__("Hardware"),
                                                                     "20"=>array("name"=>"other_p_port_name", "head"=>__("Port"),),
                                                                     "30"=>array("name"=>"other_p_shared", "head"=>__("Shared"),),
                                                                     "40"=>array("name"=>"other_p_share_name", "head"=>__("Share Name"),),
+                                                                    "50"=>array("name"=>"other_model", "head"=>__("Driver Name"),),
                                                                    ),
                                                     ),
                                    "usb"=>array(

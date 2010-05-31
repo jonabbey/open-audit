@@ -41,6 +41,8 @@
 '	[Edoardo]		13/01/2010	 Fixed Windows Security Center Registered Antivirus detection for Vista and Seven - Fix by JpMorgan
 '	[Edoardo]		19/01/2010	 Filtered out detection of several virtual NICS - Fix by JpMorgan
 '	[Edoardo]		28/05/2010	 Added auditing of S.M.A.R.T. failure prediction for supported HDDs	to the Hard Drive Information section
+'	[Edoardo]		31/05/2010	 Added printer driver name - Suggested by jpa	
+
 
 '***********************************************************************************************
 
@@ -1966,13 +1968,10 @@ For Each objItem in colItems
    if (objItem.SystemName) then printer_system_name = clean(objItem.SystemName) else printer_system_name = "" end if
    if (objItem.Location) then printer_location = clean(objItem.Location) else printer_location = "" end if
      form_input = "printer^^^" _
-     & printer_caption        & "^^^" _
-     & printer_local          & "^^^" _
-     & printer_port_name      & "^^^" _
-     & printer_shared         & "^^^" _
-     & printer_share_name     & "^^^" _
-     & printer_system_name    & "^^^" _
-     & printer_location       & "^^^"
+     & printer_caption        & "^^^" & printer_local        & "^^^" _
+     & printer_port_name      & "^^^" & printer_shared       & "^^^" _
+     & printer_share_name     & "^^^" & printer_system_name  & "^^^" _
+     & printer_location       & "^^^" & printer_driver_name  & "^^^"
      entry form_input,comment,objTextFile,oAdd,oComment
      form_input = ""
 Next

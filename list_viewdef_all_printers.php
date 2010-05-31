@@ -1,5 +1,17 @@
 <?php
+/**********************************************************************************************************
+Module:	list_viewdef_all_printers.php
 
+Description:
+	
+		
+Recent changes:
+	
+	[Edoardo]		19/05/2009	Added share name and location.
+	[Edoardo]		05/01/2010	Fixed query (only existing printers are showed).
+	[Edoardo]		31/05/2010	Added Driver Name - Suggested by jpa.
+	
+**********************************************************************************************************/
 $query_array=array("headline"=>__("List All Printers"),
                    "sql"=>"SELECT * FROM other, system WHERE other_type = 'printer' AND (other_linked_pc = system_uuid OR other_linked_pc = '') AND other_timestamp = system_timestamp ",
                    "sort"=>"other_network_name",
@@ -49,6 +61,11 @@ $query_array=array("headline"=>__("List All Printers"),
                                               ),
                                    "70"=>array("name"=>"other_location",
                                                "head"=>__("Location"),
+                                               "show"=>"y",
+                                               "link"=>"n",
+                                              ),
+                                   "80"=>array("name"=>"other_model",
+                                               "head"=>__("Driver Name"),
                                                "show"=>"y",
                                                "link"=>"n",
                                               ),

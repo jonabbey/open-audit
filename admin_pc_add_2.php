@@ -28,6 +28,7 @@ Recent Changes:
 [Edoardo]	21/05/2010	Filtered out MS Office virtual printers, if any, in the 'insert_printers' function.
 [Edoardo]	27/05/2010	Filtered out Citrix virtual printers in the 'insert_printers' function - Fix by jpa.
 [Edoardo]	28/05/2010	Modified function 'insert_harddrive()' to to add/update the 'hard_drive_predicted_failure' field.
+[Edoardo]	31/05/2010	Added printer_driver_name in function 'insert_printer' - Suggested by jpa	
 					
 **********************************************************************************************************/
 
@@ -1404,6 +1405,7 @@ function insert_printer ($split){
     $printer_share_name = trim($extended[5]);
     $printer_system_name = strtoupper(str_replace('\\','',trim($extended[6])));
     $printer_location = trim($extended[7]);
+	$printer_driver_name = trim($extended[8]);
     $printer_name = NULL;
     //if (strpos($printer_system_name,'\\\\') !== false ) { $printer_system_name = substr($printer_system_name, 2); }
 
@@ -1431,7 +1433,7 @@ function insert_printer ($split){
         $sql  = "INSERT INTO other (other_ip_address, other_description, other_location, other_type, other_model, ";
         $sql .= "other_network_name, other_p_port_name, other_p_shared, other_p_share_name, ";
         $sql .= "other_timestamp, other_first_timestamp) VALUES (";
-        $sql .= "'" . ip_trans_to($printer_ip) . "', '$printer_caption', '$printer_location', 'printer', '$printer_description', ";
+        $sql .= "'" . ip_trans_to($printer_ip) . "', '$printer_caption', '$printer_location', 'printer', '$printer_driver_name', ";
         $sql .= "'$printer_network_name', '$printer_port_name', '$printer_shared', '$printer_share_name', ";
         $sql .= "'$timestamp', '$timestamp')";
         if ($verbose == "y"){echo $sql . "<br />\n\n";}
@@ -1440,7 +1442,8 @@ function insert_printer ($split){
         // Update
        $sql  = "UPDATE other SET other_timestamp = '$timestamp', other_p_port_name = '$printer_network_name', ";
        $sql .= "       other_location = '$printer_location', other_description = '$printer_caption', ";
-       $sql .= "       other_p_shared = '$printer_shared', other_p_share_name = '$printer_share_name' ";
+       $sql .= "       other_p_shared = '$printer_shared', other_p_share_name = '$printer_share_name', ";
+       $sql .= "       other_model = '$printer_driver_name' ";
        $sql .= "WHERE other_ip_address = '" . ip_trans_to($printer_ip) . "'";
        if ($verbose == "y"){echo $sql . "<br />\n\n";}
        $result = mysql_query($sql) or die ('Insert Failed: ' . mysql_error() . '<br />' . $sql);
@@ -1466,12 +1469,12 @@ function insert_printer ($split){
         if ($myrow['count'] == "0"){
         // Insert into database
         $sql  = "INSERT INTO other (other_linked_pc, other_description, other_type, ";
-        $sql .= "other_p_port_name, ";
+        $sql .= "other_model, other_p_port_name, ";
         $sql .= "other_p_shared, other_p_share_name, ";
         $sql .= "other_network_name, other_location,";
         $sql .= "other_timestamp, other_first_timestamp ) VALUES (";
         $sql .= "'$uuid', '$printer_caption', 'printer', ";
-        $sql .= "'$printer_port_name',";
+        $sql .= "'$printer_driver_name', '$printer_port_name',";
         $sql .= "'$printer_shared', '$printer_share_name', ";
         $sql .= "'$printer_system_name', '$printer_location', ";
         $sql .= "'$timestamp', '$timestamp')";
@@ -1480,7 +1483,8 @@ function insert_printer ($split){
       } else {
         // Already present in database - update timestamp and dynamic values
         $sql =  "UPDATE other SET other_timestamp = '$timestamp', other_location = '$printer_location', ";
-		$sql .= "                 other_p_shared = '$printer_shared', other_p_share_name = '$printer_share_name' ";
+		$sql .= "                 other_p_shared = '$printer_shared', other_p_share_name = '$printer_share_name', ";
+		$sql .= "                 other_model = '$printer_driver_name' ";
 		$sql .= "WHERE other_linked_pc = '$uuid' AND other_description = '$printer_caption' AND other_p_port_name = '$printer_port_name' ";
 		$sql .= "      AND other_timestamp = '$printer_timestamp'";
         if ($verbose == "y"){echo $sql . "<br />\n\n";}
