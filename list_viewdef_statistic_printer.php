@@ -1,15 +1,31 @@
 <?php
+/**********************************************************************************************************
+Filename:	list_viewdef_statistic_printer.php
+
+Description:
+	
+		
+Changelog:
+	
+	[Edoardo]	22/05/2010	New page
+	[Edoardo]	07/06/2010	Updated query - Suggestions by jpa
+	
+**********************************************************************************************************/
 
 $query_array=array("headline"=>__("Statistic for Printer models"),
-                   "sql"=>"SELECT
-                               DISTINCT other_description,
-                               COUNT( * ) AS count_item,
-                               round( 100 / (SELECT count(other_id) FROM other, system
-											WHERE other_type = 'printer' AND (other_linked_pc = system_uuid OR other_linked_pc = '') AND other_timestamp = system_timestamp
-											) * COUNT( * ),$round_to_decimal_places ) AS percentage
-                               FROM other, system
-                               WHERE other_type = 'printer' AND (other_linked_pc = system_uuid OR other_linked_pc = '') AND other_timestamp = system_timestamp
-                               GROUP BY other_description",
+                   "sql"=>"SELECT DISTINCT other_description,
+								  COUNT( * ) AS count_item,
+								  round( 100 / (SELECT count(other_id)
+												FROM other LEFT JOIN system ON (other.other_timestamp = system.system_timestamp)
+																				AND (other.other_linked_pc = system.system_uuid)
+												WHERE (other.other_type='printer' AND other.other_timestamp = system.system_timestamp)
+													  OR (other.other_type='printer' AND other.other_linked_pc = '')
+												) * COUNT( * ),$round_to_decimal_places) AS percentage
+							FROM other LEFT JOIN system ON (other.other_timestamp = system.system_timestamp)
+															AND (other.other_linked_pc = system.system_uuid)
+							WHERE (other.other_type='printer' AND other.other_timestamp = system.system_timestamp)
+								  OR (other.other_type='printer' AND other.other_linked_pc = '')
+							GROUP BY other_description",
                    "sort"=>"count_item",
                    "dir"=>"DESC",
                    "get"=>array("file"=>"list.php",
