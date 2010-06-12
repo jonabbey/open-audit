@@ -24,6 +24,7 @@ Recent Changes:
 	[Chad Sikorra]	15/11/2009	Added SMTP configuration/support on the same tab where LDAP connections are configured
 	[Chad Sikorra]	03/12/2009	Added web-scheduling config options. Form validation moved to admin_config_data.php
 	[Edoardo]		28/05/2010	Added $show_hard_disk_alerts and $hard_disk_alerts_days in the Admin Config Homepage tab
+	[Edoardo]		12/06/2010	Fixed missing quotes to $hard_disk_alerts_days. Suggested by jpa.
 
 **********************************************************************************************************/
 
@@ -169,7 +170,7 @@ if(isset($_POST['submit_button']))
   $content .= "\$show_ldap_changes = '".$show_ldap_changes_post."';\n";	// Added by Nick Brown	
   $content .= "\$ldap_changes_days = ".$ldap_changes_days_post.";\n";	// Added by Nick Brown
   $content .= "\$show_hard_disk_alerts = '".$show_hard_disk_alerts_post."';\n";		
-  $content .= "\$hard_disk_alerts_days = ".$hard_disk_alerts_days_post.";\n\n";
+  $content .= "\$hard_disk_alerts_days = '".$hard_disk_alerts_days_post."';\n\n";
   
   // ****************  Settings that have no associated GUI *******************************************
   $content .= "// ****************  Settings that have no associated GUI *******************************************\n";

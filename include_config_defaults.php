@@ -16,6 +16,7 @@ Change Control:
 	Re-organised settings into sections. Removed $domain_suffix and $ldap_connect_string settings as they don't appear to 
 	be used anywhere.
 	[Edoardo]		28/05/2010	Added $show_hard_disk_alerts and $hard_disk_alerts_days in the Homepage Settings section
+	[Edoardo]		12/06/2010	Fixed missing quotes to $hard_disk_alerts_days. Suggested by jpa.
 	
 **********************************************************************************************************/
 
@@ -74,7 +75,7 @@ $systems_audited_days='45';
 $show_ldap_changes = 'y';
 $ldap_changes_days = 7;
 $show_hard_disk_alerts = 'y';
-$hard_disk_alerts_days = 7;
+$hard_disk_alerts_days = '7';
 
 // ****************  Settings that have no associated GUI *******************************************
 $enable_remote_management = 'y';

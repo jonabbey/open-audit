@@ -1,4 +1,15 @@
 <?php
+/**********************************************************************************************************
+Module:	setup.php
+
+Description:
+			
+Recent Changes:
+	
+	[Edoardo]		12/06/2010	Added missing $show_hard_disk_alerts and $hard_disk_alerts_days in function ReturnConfig(). Suggested by jpa.
+
+**********************************************************************************************************/
+
 if (isset($_POST['language_post'])) $GLOBALS["language"] = $_POST['language_post'];
 include_once "include_lang.php";
 ?>
@@ -502,6 +513,8 @@ $content .= "\$show_ldap_changes = 'y';\n";
 $content .= "\$ldap_changes_days = 7;\n";
 $content .= "\$show_systems_audited_graph = 'y';\n";
 $content .= "\$systems_audited_days = 30;\n";
+$content .= "\$show_hard_disk_alerts = 'y';\n";
+$content .= "\$hard_disk_alerts_days = '7';\n";
 
 $content .= "\$language = '";
 $content .= $_POST['language_post'];
