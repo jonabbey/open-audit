@@ -31,18 +31,28 @@
 '	[Edoardo]		20/06/2008	 Fixed Local Groups members detection for standalone servers
 '	[Edoardo]		23/08/2008	 Added detection of memory tag (slot # on Mobo) for memory banks
 '	[Edoardo]		27/08/2008	 Hopefully fixed hanging when auditing mapped drives.
-'	[Edoardo]		23/10/2008	 Fixed slow mapped drives auditing - Fix by Nick Brown
-'	[Edoardo]		24/02/2009	 Fixed IIS details - Fix by jvandermark
+'	[Edoardo]		23/10/2008	 (by Nick Brown) Fixed slow mapped drives auditing
+'	[Edoardo]		24/02/2009	 (by jvandermark) Fixed IIS details
 '	[Nick Brown]	17/04/2009	 Changes to system user detection - line 893
 '	[Nick Brown]	23/04/2009	 [Bug] ODBC section not using Echo() - around line 3926 - Fixed
 '	[Edoardo]		01/08/2009	 In the Services section added auditing of StartName 
 '	[Chad Sikorra]	09/10/2009	 Add support for named arguments from the command line
 '	[Edoardo]		16/10/2009	 Fixed AV and Win Firewall info detection for Vista, Seven and 2k8.
-'	[Edoardo]		13/01/2010	 Fixed Windows Security Center Registered Antivirus detection for Vista and Seven - Fix by JpMorgan
-'	[Edoardo]		19/01/2010	 Filtered out detection of several virtual NICS - Fix by JpMorgan
+'	[Edoardo]		13/01/2010	 (By jpmorgan) Fixed Windows Security Center Registered Antivirus detection for Vista and Seven
+'	[Edoardo]		19/01/2010	 (By jpmorgan) Filtered out detection of several virtual NICS
 '	[Edoardo]		28/05/2010	 Added auditing of S.M.A.R.T. failure prediction for supported HDDs	to the Hard Drive Information section
-'	[Edoardo]		31/05/2010	 Added printer driver name - Suggested by jpa	
-
+'	[Edoardo]		31/05/2010	 (Suggested by jpa) Added printer driver name
+'	[Edoardo]		19/06/2010	 (By tekkie330) Software collection 32 and 64 bit regardless of plattform audit.vbs runs on.
+'												Added Office 2010 PKs
+'												Fixed scheduled tasks auditing for Seven X64
+'								 (By jpa) Fixed the IsWMIConnectible function adding declaration of wbemConnectFlagUseMaxWait. This should prevent script hanging when the ConnectServer method fails
+'								 (By lsvi) Added Windows 7 PKs
+'								 (By ccpyle) Added Windows 2008 PKs
+'								 Fixed on-screen counting of auditing systems, retrieved from ldap or PC list file  
+'								 Added //Nologo to the cscript command line also for PC list file auditing. This permits to the CheckForHungWMI function to terminate running scripts after script_timeout seconds
+'								 Added the wbemConnectFlagUseMaxWait flag whenever the ConnectServer method of the SWbemLocator object is used.
+'								 Removed wscript.quit after completing domain and PC list file auditing, otherwise email sending is broken.
+'								 Deleted oShell object at the end of scheduled tasks auditing, to terminate RPC connections to audited hosts caused by the schtasks.exe command
 
 '***********************************************************************************************
 
@@ -94,6 +104,10 @@ random_order = false
 Const ForReading = 1, ForWriting = 2, ForAppending = 8 
 
 form_total = ""
+
+' If specified, the wbemConnectFlagUseMaxWait flag prevents from hanging indefinitely if the connection cannot be established
+' using the ConnectServer method of the SWbemLocator object.
+Const wbemConnectFlagUseMaxWait = 128
 
 '
 ' Find out the name of this script, usually audit.vbs but it depends where we were called form.
@@ -385,11 +399,11 @@ if strComputer <> "" then
     ' Username & Password provided - assume not a domain local PC.
       Echo("Username and password provided - therefore assuming NOT a local domain PC.")
       Set wmiLocator = CreateObject("WbemScripting.SWbemLocator")
-      Set wmiNameSpace = wmiLocator.ConnectServer( strComputer, "root\default", strUser, strPass)
+      Set wmiNameSpace = wmiLocator.ConnectServer( strComputer, "root\default", strUser, strPass, "", "", wbemConnectFlagUseMaxWait)
       Set oReg = wmiNameSpace.Get("StdRegProv")
-      Set objWMIService = wmiLocator.ConnectServer(strComputer, "root\cimv2",strUser,strPass)
+      Set objWMIService = wmiLocator.ConnectServer(strComputer, "root\cimv2",strUser,strPass, "", "", wbemConnectFlagUseMaxWait)
       objWMIService.Security_.ImpersonationLevel = 3
-      Set objWMIService2 = wmiLocator.ConnectServer(strComputer, "\root\WMI",strUser,strPass)
+      Set objWMIService2 = wmiLocator.ConnectServer(strComputer, "\root\WMI",strUser,strPass, "", "", wbemConnectFlagUseMaxWait)
       objWMIService2.Security_.ImpersonationLevel = 3
     end if
     if strUser = "" and strPass = "" then
@@ -483,7 +497,7 @@ if audit_local_domain = "y" then
    end if   
    
    num_running = HowMany
-   Echo("Number of systems retrieved from ldap: " & Ubound(comparray))
+   Echo("Number of systems retrieved from ldap: " & (Ubound(comparray) +1))
    Echo("--------------")
   end if 
     For i = 0 To Ubound(comparray)
@@ -495,7 +509,7 @@ if audit_local_domain = "y" then
       num_running = HowMany
     wend
     if comparray(i) <> "" then
-      Echo(i & " of " & Ubound(comparray))
+      Echo((i +1) & " of " & (Ubound(comparray) +1))
       Echo("Processes running: " & num_running)
       Echo("Next System: " & comparray(i))
       Echo("--------------")
@@ -509,8 +523,8 @@ if audit_local_domain = "y" then
     end if
   Next
 
- Echo("Domain Audit Completed")
- Wscript.Quit
+  Echo("Domain Audit Completed")
+  'Wscript.Quit
 end if
 
 '''''''''''''''''''''''''''''''''''
@@ -539,7 +553,7 @@ if input_file <> "" then
   Loop
   num_running = HowMany
   Echo("File " & input_file & " read into array.")
-  Echo("Number of systems retrieved from file: " & Ubound(comparray))
+  Echo("Number of systems retrieved from file: " & (Ubound(comparray) +1))
   Echo("--------------")
   For i = 0 To Ubound(comparray)
     while num_running > number_of_audits
@@ -549,17 +563,19 @@ if input_file <> "" then
       num_running = HowMany
     wend
     if comparray(i) <> "" then
-      Echo(i & " of " & Ubound(comparray))
+      Echo((i +1) & " of " & (Ubound(comparray) +1))
       Echo("Processes running: " & num_running)
       Echo("Next System: " & comparray(i))
       Echo("--------------")
-      command1 = "cscript " & script_name & " " & comparray(i) & " " & userarray(i) & " " & passarray(i)
+      command1 = "cscript //Nologo " & script_name & " " & comparray(i) & " " & userarray(i) & " " & passarray(i)
       set sh1=WScript.CreateObject("WScript.Shell")
       sh1.Run command1, 6, False
       set sh1 = nothing
       num_running = HowMany
     end if
   Next
+  Echo("PC list Audit Completed")
+  'Wscript.Quit
 end if
 
 ' Give the spawned scripts time to fail before emailing
@@ -1110,8 +1126,16 @@ On Error Resume Next
 
 Set colItems = objWMIService.ExecQuery("Select * from Win32_OperatingSystem",,48)
 For Each objItem in colItems
-   OSName = objItem.Caption
-   if objItem.OSType = "16" then
+OSName = objItem.Caption
+
+'// begin addition for 64bit discovery
+   if instr(Ucase(objItem.Caption),"X64") then OS64bit = 1
+   'super hack here, MS doesn't provide osarchitecture
+   oReg.GetStringValue HKEY_LOCAL_MACHINE, "SOFTWARE\Wow6432Node\Microsoft\Windows NT\CurrentVersion\Winlogon", "Shell", win_shell
+   if ( Len(Trim(win_shell)) ) then OS64bit = 1   
+'// end addition for 64bit discovery
+
+if objItem.OSType = "16" then
      OSName = "Microsoft Windows 95"
    end if
    if objItem.OSType = "17" then
@@ -2236,8 +2260,10 @@ if (CInt(LocalSystemBuildNumber) > 2222 and not LocalSystemBuildNumber = "3000")
     intOffset = 1
   End if
 
-  Do While Not oTF.AtEndOfStream
+  ibreaker=0
+  Do While (ibreaker<200) ' (Not oTF.AtEndOfStream)
     sLine = oTF.Readline
+    ibreaker=ibreaker+1   
     if sLine <> "" then
       ' Parse the line
       sTask = CSVParser(sLine)
@@ -2263,6 +2289,7 @@ if (CInt(LocalSystemBuildNumber) > 2222 and not LocalSystemBuildNumber = "3000")
   'Delete the CSV file
   oTF.Close
   oFS.DeleteFile sTempFile
+  set oShell = nothing
 end if
 
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -2589,7 +2616,7 @@ if (OSName <> "Microsoft Windows 95" AND OSName <> "Microsoft Windows 98") then
   comment = "Internet Explorer Browser Helper Objects"
   Echo(comment)
   if strUser <> "" and strPass <> "" then
-    Set objWMIService_IE = wmiLocator.ConnectServer(strComputer, "root\cimv2\Applications\MicrosoftIE",strUser,strPass)
+    Set objWMIService_IE = wmiLocator.ConnectServer(strComputer, "root\cimv2\Applications\MicrosoftIE", strUser, strPass, "", "", wbemConnectFlagUseMaxWait)
     objWMIService_IE.Security_.ImpersonationLevel = 3
   else
     Set objWMIService_IE = GetObject("winmgmts:\\" & strComputer & "\root\cimv2\Applications\MicrosoftIE")
@@ -2607,94 +2634,207 @@ end if
 '''''''''''''''''''''''''''
 '   Installed Software    '
 '''''''''''''''''''''''''''
-comment = "Installed Software"
-Echo(comment)
 if online = "p" then
-    dim software
     oIE.document.WriteLn "<div id=""content"">"
     oIE.document.WriteLn "<table border=""0"" cellpadding=""2"" cellspacing=""0"" class=""content"">"
     oIE.document.WriteLn "<tr><td colspan=""2""><b>Installed Software</b></td></tr>"
 end if
 On Error Resume Next
-strKeyPath = "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall"
-oReg.EnumKey HKEY_LOCAL_MACHINE,strKeyPath,arrSubKeys
-For Each subkey In arrSubKeys
-   newpath = strKeyPath & "\" & subkey
-   newkey = "DisplayName"
-   oReg.GetStringValue HKEY_LOCAL_MACHINE, newpath, newkey, strValue
-   if strValue <> "" then
-     version = ""
-     uninstall_string = ""
-     install_date = ""
-     publisher = ""
-     install_source = ""
-     install_location = ""
-     system_component = ""
-     display_name = strValue
-     newkey = "DisplayVersion"
-     oReg.GetStringValue HKEY_LOCAL_MACHINE, newpath, newkey, strValue
-     version = strValue
-     if (isnull(version)) then version = "" end if
 
-     newkey = "UninstallString"
-     oReg.GetStringValue HKEY_LOCAL_MACHINE, newpath, newkey, strValue
-     uninstall_string = strValue
-     if (isnull(uninstall_string)) then uninstall_string = "" end if
+'//   Begin Replacement Softwareinventory 32 and 64 bit
 
-     newkey = "InstallDate"
-     oReg.GetStringValue HKEY_LOCAL_MACHINE, newpath, newkey, strValue
-     install_date = strValue
-     if (isnull(install_date)) then install_date = "" end if
+Subhive="Software\Microsoft\Windows\CurrentVersion\Uninstall\" 
+Set objCtx = CreateObject("WbemScripting.SWbemNamedValueSet")
 
-     newkey = "Publisher"
-     oReg.GetStringValue HKEY_LOCAL_MACHINE, newpath, newkey, strValue
-     publisher = strValue
-     if (isnull(publisher)) then publisher = "" end if
+objCtx.Add "__ProviderArchitecture", 32
+objCtx.Add "__RequiredArchitecture", TRUE
+Set objLocator = CreateObject("Wbemscripting.SWbemLocator")
+Set objServices = objLocator.ConnectServer(strComputer, "root\default", strUser, strPass, "", "", wbemConnectFlagUseMaxWait, objCtx)
+Set o64reg = objServices.Get("StdRegProv") 
+comment = "Installed Software 32 Bit"
+Echo(comment)
 
-     newkey = "InstallSource"
-     oReg.GetStringValue HKEY_LOCAL_MACHINE, newpath, newkey, strValue
-     install_source = strValue
-     if (isnull(install_source)) then install_source = "" end if
+  Set Inparams = o64reg.Methods_("EnumKey").Inparameters
+  Inparams.Hdefkey = HKLM
+  Inparams.Ssubkeyname = subhive
+  set Outparams = o64reg.ExecMethod_("EnumKey", Inparams,,objCtx) 
+  For Each strSubKey In Outparams.snames 
+    Set Inparams = o64reg.Methods_("GetStringValue").Inparameters
+    Inparams.Hdefkey = HKLM
+    Inparams.Ssubkeyname = Subhive & strSubKey
 
-     newkey = "InstallLocation"
-     oReg.GetStringValue HKEY_LOCAL_MACHINE, newpath, newkey, strValue
-     install_location = strValue
-     if (isnull(install_location)) then install_location = "" end if
+		Inparams.Svaluename = "DisplayName"
+		set Outparams = o64reg.ExecMethod_("GetStringValue", Inparams,,objCtx)
+		if Outparams.SValue <> "" then
+        version = ""
+        uninstall_string = ""
+        install_date = ""
+        publisher = ""
+        install_source = ""
+        install_location = ""
+        system_component = ""
+        display_name = Outparams.SValue
+        Inparams.Svaluename = "DisplayVersion"
+        set Outparams = o64reg.ExecMethod_("GetStringValue", Inparams,,objCtx)
+        version = Outparams.SValue
+        if (isnull(version)) then version = "" end if
 
-     newkey = "SystemComponent"
-     oReg.GetDWORDValue HKEY_LOCAL_MACHINE, newpath, newkey, strValue
-     system_component = strValue
-     if (isnull(system_component)) then system_component = "" end if
+        Inparams.Svaluename = "UninstallString"
+        set Outparams = o64reg.ExecMethod_("GetStringValue", Inparams,,objCtx)
+        uninstall_string = Outparams.SValue
+        if (isnull(uninstall_string)) then uninstall_string = "" end if
 
-     newkey = "URLInfoAbout"
-     oReg.GetStringValue HKEY_LOCAL_MACHINE, newpath, newkey, strValue
-     software_url = strValue
-     if (isnull(software_url)) then software_url = "" end if
+        Inparams.Svaluename = "InstallDate"
+        set Outparams = o64reg.ExecMethod_("GetStringValue", Inparams,,objCtx)
+        install_date = Outparams.SValue
+        if (isnull(install_date)) then install_date = "" end if
 
-     newkey = "Comments"
-     oReg.GetStringValue HKEY_LOCAL_MACHINE, newpath, newkey, strValue
-     software_comments = strValue
-     if (isnull(software_comments)) then software_comments = " " end if
+        Inparams.Svaluename = "Publisher"
+        set Outparams = o64reg.ExecMethod_("GetStringValue", Inparams,,objCtx)
+        publisher = Outparams.SValue
+        if (isnull(publisher)) then publisher = "" end if
 
-     if online = "p" then
-       software = software & display_name & vbcrlf
-     end if
-    form_input = "software^^^" & clean(display_name)      & " ^^^" _
-                               & clean(version)           & " ^^^" _
-                               & clean(install_location)  & " ^^^" _
-                               & clean(uninstall_string)  & " ^^^" _
-                               & clean(install_date)      & " ^^^" _
-                               & clean(publisher)         & " ^^^" _
-                               & clean(install_source)    & " ^^^" _
-                               & clean(system_component)  & " ^^^" _
-                               & clean(software_url)      &  "^^^" _
-                               & clean(software_comments) & "^^^"
-    entry form_input,comment,objTextFile,oAdd,oComment
-    form_input = ""
-   end If
-Next
+        Inparams.Svaluename = "InstallSource"
+        set Outparams = o64reg.ExecMethod_("GetStringValue", Inparams,,objCtx)
+        install_source = Outparams.SValue
+        if (isnull(install_source)) then install_source = "" end if
+
+        Inparams.Svaluename = "InstallLocation"
+        set Outparams = o64reg.ExecMethod_("GetStringValue", Inparams,,objCtx)
+        install_location = Outparams.SValue
+        if (isnull(install_location)) then install_location = "" end if
+
+        Inparams.Svaluename = "SystemComponent"
+        set Outparams = o64reg.ExecMethod_("GetStringValue", Inparams,,objCtx)
+        system_component = Outparams.SValue
+        if (isnull(system_component)) then system_component = "" end if
+
+        Inparams.Svaluename = "URLInfoAbout"
+        set Outparams = o64reg.ExecMethod_("GetStringValue", Inparams,,objCtx)
+        software_url = Outparams.SValue
+        if (isnull(software_url)) then software_url = "" end if
+
+        Inparams.Svaluename = "Comments"
+        set Outparams = o64reg.ExecMethod_("GetStringValue", Inparams,,objCtx)
+        software_comments = Outparams.SValue
+        if (isnull(software_comments)) then software_comments = " " end if
+
+        if online = "p" then
+          software = software & display_name & vbcrlf
+        end if
+       form_input = "software^^^" & clean(display_name)      & " ^^^" _
+                   & clean(version)           & " ^^^" _
+                   & clean(install_location)  & " ^^^" _
+                   & clean(uninstall_string)  & " ^^^" _
+                   & clean(install_date)      & " ^^^" _
+                   & clean(publisher)         & " ^^^" _
+                   & clean(install_source)    & " ^^^" _
+                   & clean(system_component)  & " ^^^" _
+                   & clean(software_url)      &  "^^^" _
+                   & clean(software_comments) & "^^^"
+		entry form_input,comment,objTextFile,oAdd,oComment
+        form_input = ""
+      end If
+Next 
+
+'// 64-Bit
+objCtx.Add "__ProviderArchitecture", 64
+objCtx.Add "__RequiredArchitecture", TRUE
+Set objLocator = CreateObject("Wbemscripting.SWbemLocator")
+Set objServices = objLocator.ConnectServer(strComputer, "root\default", strUser, strPass, "", "", wbemConnectFlagUseMaxWait, objCtx)
+Set o64reg = objServices.Get("StdRegProv") 
+comment = "Installed Software 64 Bit"
+Echo(comment)
+
+  Set Inparams = o64reg.Methods_("EnumKey").Inparameters
+  Inparams.Hdefkey = HKLM
+  Inparams.Ssubkeyname = subhive
+  set Outparams = o64reg.ExecMethod_("EnumKey", Inparams,,objCtx) 
+  For Each strSubKey In Outparams.snames 
+    Set Inparams = o64reg.Methods_("GetStringValue").Inparameters
+    Inparams.Hdefkey = HKLM
+    Inparams.Ssubkeyname = Subhive & strSubKey
+
+		Inparams.Svaluename = "DisplayName"
+		set Outparams = o64reg.ExecMethod_("GetStringValue", Inparams,,objCtx)
+		if Outparams.SValue <> "" then
+        version = ""
+        uninstall_string = ""
+        install_date = ""
+        publisher = ""
+        install_source = ""
+        install_location = ""
+        system_component = ""
+        display_name = Outparams.SValue
+        Inparams.Svaluename = "DisplayVersion"
+        set Outparams = o64reg.ExecMethod_("GetStringValue", Inparams,,objCtx)
+        version = Outparams.SValue
+        if (isnull(version)) then version = "" end if
+
+        Inparams.Svaluename = "UninstallString"
+        set Outparams = o64reg.ExecMethod_("GetStringValue", Inparams,,objCtx)
+        uninstall_string = Outparams.SValue
+        if (isnull(uninstall_string)) then uninstall_string = "" end if
+
+        Inparams.Svaluename = "InstallDate"
+        set Outparams = o64reg.ExecMethod_("GetStringValue", Inparams,,objCtx)
+        install_date = Outparams.SValue
+        if (isnull(install_date)) then install_date = "" end if
+
+        Inparams.Svaluename = "Publisher"
+        set Outparams = o64reg.ExecMethod_("GetStringValue", Inparams,,objCtx)
+        publisher = Outparams.SValue
+        if (isnull(publisher)) then publisher = "" end if
+
+        Inparams.Svaluename = "InstallSource"
+        set Outparams = o64reg.ExecMethod_("GetStringValue", Inparams,,objCtx)
+        install_source = Outparams.SValue
+        if (isnull(install_source)) then install_source = "" end if
+
+        Inparams.Svaluename = "InstallLocation"
+        set Outparams = o64reg.ExecMethod_("GetStringValue", Inparams,,objCtx)
+        install_location = Outparams.SValue
+        if (isnull(install_location)) then install_location = "" end if
+
+        Inparams.Svaluename = "SystemComponent"
+        set Outparams = o64reg.ExecMethod_("GetStringValue", Inparams,,objCtx)
+        system_component = Outparams.SValue
+        if (isnull(system_component)) then system_component = "" end if
+
+        Inparams.Svaluename = "URLInfoAbout"
+        set Outparams = o64reg.ExecMethod_("GetStringValue", Inparams,,objCtx)
+        software_url = Outparams.SValue
+        if (isnull(software_url)) then software_url = "" end if
+
+        Inparams.Svaluename = "Comments"
+        set Outparams = o64reg.ExecMethod_("GetStringValue", Inparams,,objCtx)
+        software_comments = Outparams.SValue
+        if (isnull(software_comments)) then software_comments = " " end if
+
+        if online = "p" then
+          software = software & display_name & vbcrlf
+        end if
+       form_input = "software^^^" & clean(display_name)      & " ^^^" _
+                   & clean(version)           & " ^^^" _
+                   & clean(install_location)  & " ^^^" _
+                   & clean(uninstall_string)  & " ^^^" _
+                   & clean(install_date)      & " ^^^" _
+                   & clean(publisher)         & " ^^^" _
+                   & clean(install_source)    & " ^^^" _
+                   & clean(system_component)  & " ^^^" _
+                   & clean(software_url)      &  "^^^" _
+                   & clean(software_comments) & "^^^"
+		entry form_input,comment,objTextFile,oAdd,oComment
+        form_input = ""
+      end If
+Next 
+
+
+'//   End Softwareinventory 32 and 64 bit
+
 
 ' Include customer specific audits
+
 ExecuteGlobal CreateObject("Scripting.FileSystemObject").OpenTextFile("audit_custom_software.inc").ReadAll
 
 ' Installed Codecs
@@ -3157,6 +3297,36 @@ For Each subkey In arrSubKeys
 Next
 
 ''''''''''''''''''''''''''''''''
+'   MS CD Keys for Office 2010 '
+''''''''''''''''''''''''''''''''
+strKeyPath = "SOFTWARE\Microsoft\Office\14.0\Registration"
+oReg.EnumKey HKEY_LOCAL_MACHINE, strKeyPath, arrSubKeys
+For Each subkey In arrSubKeys
+  name_2010 = get_sku_2010(subkey)
+  release_type = get_release_type(subkey)
+  edition_type = get_edition_type(subkey)
+  path = strKeyPath & "\" & subkey
+  strOffXPRU = "HKLM\" & path & "\DigitalProductId"
+  subKey = "DigitalProductId"
+  oReg.GetBinaryValue HKEY_LOCAL_MACHINE,path,subKey,key
+  if IsNull(key) then
+  else
+    strOffXPRUKey=GetKey(key)
+      form_input = "ms_keys^^^" & name_2010     & "^^^" _
+                                & strOffXPRUKey & "^^^" _
+                                & release_type  & "^^^" _
+                                & edition_type  & "^^^" _
+                                & "office_2010" & "^^^"
+      entry form_input,comment,objTextFile,oAdd,oComment
+      strOffXPRUKey = ""
+      release_type = ""
+      edition_type = ""
+      form_input = ""
+  end if
+Next
+
+
+''''''''''''''''''''''''''''''''
 '   MS CD Keys for Office 2003 '
 ''''''''''''''''''''''''''''''''
 strKeyPath = "SOFTWARE\Microsoft\Office\11.0\Registration"
@@ -3214,16 +3384,18 @@ For Each subkey In arrSubKeys
   end if
 Next
 
-'''''''''''''''''''''''''''''''''''''''''''''''''
-'   MS CD Keys for Windows XP, 2000, 2003 and Vista   '
-'''''''''''''''''''''''''''''''''''''''''''''''''
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'   MS CD Keys for Windows XP, 2000, 2003, Vista, Win7 and 2008  '
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 IsOSXP = InStr(OSName, "Windows XP")
 IsOS2K = InStr(OSName, "Windows 2000")
 IsOS2K3 = InStr(OSName, "Server 2003")
 IsOSVista = InStr(OSName, "Windows Vista")
-IsOSXP2K2K3WV = CInt(IsOSXP + IsOS2K + IsOS2K3 + IsOSVista)
+IsOS2K8 = InStr(OSName, "2008")
+IsOS7 = InStr(OSName, "Windows 7")
+IsOSMicrosoft = CInt(IsOSXP + IsOS2K + IsOS2K3 + IsOSVista + IsOS2K8 + IsOS7)
 
-if (IsOSXP2K2K3WV > 0) then
+if (IsOSMicrosoft > 0) then
   path = "SOFTWARE\Microsoft\Windows NT\CurrentVersion"
   subKey = "DigitalProductId"
   oReg.GetBinaryValue HKEY_LOCAL_MACHINE,path,subKey,key
@@ -3678,7 +3850,7 @@ If iis = "True" Then
   If iis_wmi Then 
     ' MicrosoftIISv2 WMI provider available
     If strUser <> "" and strPass <> "" Then
-      Set objWMIService_IIS = wmiLocator.ConnectServer(strComputer, "\root\MicrosoftIISv2",strUser,strPass)
+      Set objWMIService_IIS = wmiLocator.ConnectServer(strComputer, "\root\MicrosoftIISv2", strUser, strPass, "", "", wbemConnectFlagUseMaxWait)
       objWMIService_IIS.Security_.AuthenticationLevel = 6 'PacketPrivacy
     Else
       Set objWMIService_IIS = GetObject("winmgmts:{AuthenticationLevel=pktPrivacy}!\\" & strComputer & "\root\MicrosoftIISv2") 
@@ -4389,6 +4561,9 @@ Function IsWMIConnectible(strComputer, strUser, strPass)
 'Set objWMIService = GetObject("winmgmts:\\" & strComputer &"\root\cimv2") '(*)
 Set objSWbemLocator = CreateObject("WbemScripting.SWbemLocator")
 'Set objSWbemServices = objSWbemLocator.ConnectServer(strComputer, "root\cimv2", strUser, strPass, "", "", &h80)
+
+' The ConnectServer call is guaranteed to return in 2 minutes or less.
+' The wbemConnectFlagUseMaxWait flag prevents the script from hanging indefinitely if the connection cannot be established
 Set objSWbemServices = objSWbemLocator.ConnectServer(strComputer, "root\cimv2", strUser, strPass, "", "", wbemConnectFlagUseMaxWait)
 Set colSWbemObjectSet = objSWbemServices.InstancesOf("Win32_Service")
 '
@@ -4428,6 +4603,54 @@ Function IsConnectible(sHost,iPings,iTO)
     End Select
   end if
 End Function
+
+function get_sku_2010(subkey)
+  vers = mid(subkey,11,4)
+if vers = "0011" then vers_name = "Microsoft Office Professional Plus 2010" end if
+if vers = "0012" then vers_name = "Microsoft Office Standard 2010" end if
+if vers = "0013" then vers_name = "Microsoft Office Basic 2010" end if
+if vers = "0014" then vers_name = "Microsoft Office Professional 2010" end if
+if vers = "0015" then vers_name = "Microsoft Office Access 2010" end if
+if vers = "0016" then vers_name = "Microsoft Office Excel 2010" end if
+if vers = "0017" then vers_name = "Microsoft Office SharePoint Designer 2010" end if
+if vers = "0018" then vers_name = "Microsoft Office PowerPoint 2010" end if
+if vers = "0019" then vers_name = "Microsoft Office Publisher 2010" end if
+if vers = "001A" then vers_name = "Microsoft Office Outlook 2010" end if
+if vers = "001B" then vers_name = "Microsoft Office Word 2010" end if
+if vers = "001C" then vers_name = "Microsoft Office Access Runtime 2010" end if
+if vers = "0020" then vers_name = "Microsoft Office Compatibility Pack for Word, Excel, and PowerPoint 2010 File Formats" end if
+if vers = "0026" then vers_name = "Microsoft Expression Web" end if
+if vers = "0029" then vers_name = "Microsoft Office Excel 2010" end if
+if vers = "002B" then vers_name = "Microsoft Office Word 2010" end if
+if vers = "002E" then vers_name = "Microsoft Office Ultimate 2010" end if
+if vers = "002F" then vers_name = "Microsoft Office Home and Student 2010" end if
+if vers = "0030" then vers_name = "Microsoft Office Enterprise 2010" end if
+if vers = "0031" then vers_name = "Microsoft Office Professional Hybrid 2010" end if
+if vers = "0033" then vers_name = "Microsoft Office Personal 2010" end if
+if vers = "0035" then vers_name = "Microsoft Office Professional Hybrid 2010" end if
+if vers = "0037" then vers_name = "Microsoft Office PowerPoint 2010" end if
+if vers = "003A" then vers_name = "Microsoft Office Project Standard 2010" end if
+if vers = "003B" then vers_name = "Microsoft Office Project Professional 2010" end if
+if vers = "0044" then vers_name = "Microsoft Office InfoPath 2010" end if
+if vers = "0051" then vers_name = "Microsoft Office Visio Professional 2010" end if
+if vers = "0052" then vers_name = "Microsoft Office Visio Viewer 2010" end if
+if vers = "0053" then vers_name = "Microsoft Office Visio Standard 2010" end if
+if vers = "0057" then vers_name = "Microsoft Office Visio Premium 2010" end if
+if vers = "00A1" then vers_name = "Microsoft Office OneNote 2010" end if
+if vers = "00A3" then vers_name = "Microsoft Office OneNote Home Student 2010" end if
+if vers = "00A7" then vers_name = "Calendar Printing Assistant for Microsoft Office Outlook 2010" end if
+if vers = "00A9" then vers_name = "Microsoft Office InterConnect 2010" end if
+if vers = "00AF" then vers_name = "Microsoft Office PowerPoint Viewer 2010 (English)" end if
+if vers = "00B0" then vers_name = "The Microsoft Save as PDF add-in" end if
+if vers = "00B1" then vers_name = "The Microsoft Save as XPS add-in" end if
+if vers = "00B2" then vers_name = "The Microsoft Save as PDF or XPS add-in" end if
+if vers = "00BA" then vers_name = "Microsoft Office Groove 2010" end if
+if vers = "00CA" then vers_name = "Microsoft Office Small Business 2010" end if
+if vers = "00E0" then vers_name = "Microsoft Office Outlook 2010" end if
+if vers = "10D7" then vers_name = "Microsoft Office InfoPath Forms Services" end if
+if vers = "110D" then vers_name = "Microsoft Office SharePoint Server 2010" end if
+get_sku_2010 = vers_name
+end function
 
 
 function get_sku_2007(subkey)
@@ -4716,17 +4939,19 @@ Sub CheckForHungWMI()
     For each objProcess in colProcesses
         ' Look for cscript.exe processes only
         if objProcess.Name = "cscript.exe" then
-            ' Look for audit.vbs processes with the //Nologo cmd line option. 
-         ' NOTE: The //Nologo cmd line option should NOT be used to start the initial audit, or it will kill itself off after script_timeout seconds
-            if InStr(objProcess.CommandLine, "//Nologo") and InStr(objProcess.CommandLine, "audit.vbs") then
+          ' Look for audit.vbs processes with the //Nologo cmd line option. 
+          ' NOTE: The //Nologo cmd line option should NOT be used to start the initial audit, or it will kill itself off after script_timeout seconds
+          'if InStr(objProcess.CommandLine, "//Nologo") and InStr(objProcess.CommandLine, "audit.vbs") then
+		  if InStr(objProcess.CommandLine, "//Nologo") and InStr(objProcess.CommandLine, script_name) then
             ' The command line looks something like this: "C:\WINDOWS\system32\cscript.exe" //Nologo audit.vbs S0259W11
-            ' Get the position of audit.vbs in the command line, and add 10 to get to the start of the workstation name
-            position = InStr(objProcess.CommandLine, "audit.vbs") + 10
+            ' Get the position of the auditing script name in the command line, and add its lenght +1 to get to the start of the workstation name
+            'position = InStr(objProcess.CommandLine, "audit.vbs") + 10
+			position = InStr(objProcess.CommandLine, script_name) + Len(script_name) +1
             affectedComputer = Mid(objProcess.CommandLine,position)
             Echo("" & Now & "," & affectedComputer & " - Hung Process Killed. ")
             LogKilledAudit("Hung Process Killed for machine: " & affectedComputer)
-                objProcess.Terminate
-            end if
+            objProcess.Terminate
+          end if
         end if
     Next
 
