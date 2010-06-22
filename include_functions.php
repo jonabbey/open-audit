@@ -19,6 +19,7 @@ Recent Changes:
 	[Nick Brown]	06/05/2009	GetAesKey() modified
 	[Nick Brown]	12/05/2009	GetAesKey() modified
 	[Nick Brown]	19/08/2009	GetLdapConnectionsFromDb() modified
+	[Edoardo]		22/06/2010	Minor additions to functions ConvertSpecialField() and determine_os()
 
 **********************************************************************************************************/
 require_once "application_class.php";
@@ -223,8 +224,48 @@ function ConvertSpecialField($myrow, $field, $db, $page)
 		case "system_timestamp":
 		case "other_first_timestamp":
 		case "other_timestamp":
+		case "motherboard_first_timestamp":
+		case "motherboard_timestamp":
+		case "onboard_first_timestamp":
+		case "onboard_timestamp":
+		case "hard_drive_first_timestamp":
+		case "hard_drive_timestamp":
+		case "partition_first_timestamp":
+		case "partition_timestamp":
+		case "scsi_controller_first_timestamp":
+		case "scsi_controller_timestamp":
+		case "optical_drive_first_timestamp":
+		case "optical_drive_timestamp":
+		case "floppy_first_timestamp":
+		case "floppy_timestamp":
+		case "tape_drive_first_timestamp":
+		case "tape_drive_timestamp":
+		case "processor_first_timestamp":
+		case "processor_timestamp":
+		case "bios_first_timestamp":
+		case "bios_timestamp":
+		case "memory_first_timestamp":
+		case "memory_timestamp":
+		case "net_first_timestamp":
+		case "net_timestamp":
+		case "video_first_timestamp":
+		case "video_timestamp":
 		case "monitor_first_timestamp":
 		case "monitor_timestamp":
+		case "sound_first_timestamp":
+		case "sound_timestamp":
+		case "keyboard_first_timestamp":
+		case "keyboard_timestamp":
+		case "mouse_first_timestamp":
+		case "mouse_timestamp":
+		case "modem_first_timestamp":
+		case "modem_timestamp":
+		case "battery_first_timestamp":
+		case "battery_timestamp":
+		case "printer_first_timestamp":
+		case "printer_timestamp":
+		case "usb_first_timestamp":
+		case "usb_timestamp":
 		case "system_audits_timestamp":
 		case "system_last_boot":
 		case "log_timestamp";
@@ -356,7 +397,12 @@ function determine_os($os) {
                     "Microsoft Windows 2000 Advanced Server"=>"2000 Adv Server",
                     "Microsoft&#174 Windows Vista&#153 Ultimate"=>"Vista Ultimate",
                     "Microsoft&#174 Windows Vista&#153 Enterprise"=>"Vista Ent",
-                    "Microsoft&#174 Windows Vista&#153 Business"=>"Vista Business",);
+                    "Microsoft&#174 Windows Vista&#153 Business"=>"Vista Business",
+					"Microsoft® Windows Vista™ Business"=>"Vista Business",
+					"Microsoft&#174 Windows Server&#174 2008 Standard"=>"2008 Server, Std",
+					"Microsoft Windows Server 2008 R2 Standard"=>"2008 Server R2, Std",
+					"Microsoft Windows Server 2008 R2 Enterprise"=>"2008 Server R2, Ent",
+					"Microsoft Windows 7 Enterprise"=>"Win 7 Ent",);
     reset ($systems);
     while (list ($key, $val) = each ($systems)) {
         if($os==$key){
