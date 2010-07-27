@@ -53,6 +53,7 @@
 '								 Added the wbemConnectFlagUseMaxWait flag whenever the ConnectServer method of the SWbemLocator object is used.
 '								 Removed wscript.quit after completing domain and PC list file auditing, otherwise email sending is broken.
 '								 Deleted oShell object at the end of scheduled tasks auditing, to terminate RPC connections to audited hosts caused by the schtasks.exe command
+'	[Edoardo]		27/07/2010	 (by jpa) Added auditing of OS Architecture in system03
 
 '***********************************************************************************************
 
@@ -1128,11 +1129,12 @@ Set colItems = objWMIService.ExecQuery("Select * from Win32_OperatingSystem",,48
 For Each objItem in colItems
 OSName = objItem.Caption
 
+  OSArch = "32-bit"
 '// begin addition for 64bit discovery
-   if instr(Ucase(objItem.Caption),"X64") then OS64bit = 1
+   if instr(Ucase(objItem.Caption),"X64") then OSArch = "64-bit"
    'super hack here, MS doesn't provide osarchitecture
    oReg.GetStringValue HKEY_LOCAL_MACHINE, "SOFTWARE\Wow6432Node\Microsoft\Windows NT\CurrentVersion\Winlogon", "Shell", win_shell
-   if ( Len(Trim(win_shell)) ) then OS64bit = 1   
+   if ( Len(Trim(win_shell)) ) then OSArch = "64-bit"   
 '// end addition for 64bit discovery
 
 if objItem.OSType = "16" then
@@ -1175,7 +1177,8 @@ if objItem.OSType = "16" then
 Next
 form_input = "system03^^^" & boot_device        & "^^^" & build_number & "^^^" & OSType  & "^^^" & OSName & "^^^" & Country _
                    & "^^^" & system_description & "^^^" & OSInstall    & "^^^" & RegOrg  & "^^^" & OSLang & "^^^" & RegUser _
-                   & "^^^" & SerNum             & "^^^" & OSSerPack    & "^^^" & Version & "^^^" & WinDir & "^^^" & LastBoot & "^^^"
+                   & "^^^" & SerNum             & "^^^" & OSSerPack    & "^^^" & Version & "^^^" & WinDir & "^^^" & LastBoot _
+                   & "^^^" & OSArch             & "^^^"
 entry form_input,comment,objTextFile,oAdd,oComment
 form_input = ""
 

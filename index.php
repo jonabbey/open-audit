@@ -32,6 +32,7 @@ Recent Changes:
 	[Chad Sikorra]	05/10/2009	$latest_version  now "09.10.05"
 	[Chad Sikorra]	05/10/2009	$latest_version  now "09.11.15"
 	[Edoardo]		28/05/2010	$latest_version  now "10.05.25"
+	[Edoardo]		27/07/2010	$latest_version  now "10.07.26"	
 
 **********************************************************************************************************/
 
@@ -40,7 +41,7 @@ $extra = "";
 $software = "";
 $count = 0;
 $total_rows = 0;
-$latest_version = "10.05.25";
+$latest_version = "10.07.26";
 
 // Check for config, otherwise run setup
 if(!file_exists("include_config.php"))exit(header("Location: setup.php"));

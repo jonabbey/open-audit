@@ -22,7 +22,8 @@ Change Log:
 	[Edoardo]		21/05/2009	Added Printer share name to the Printers section
 	[Edoardo]		01/08/2009	Added Logon As to the Services section
 	[Edoardo]		28/05/2010	Added S.M.A.R.T. Failure Predicted to the Fixed Disks section
-	[Edoardo]		31/05/2010	Added Driver Name to the Printer section - Suggested by jpa
+	[Edoardo]		31/05/2010	(suggested by jpa) Added Driver Name to the Printer section
+	[Edoardo]		27/07/2010	Added OS Arch. to the OS section
 
 **********************************************************************************************************/
 $query_array=array("name"=>array("name"=>__("Report"),
@@ -411,16 +412,17 @@ $query_array=array("name"=>array("name"=>__("Report"),
                                                     "sql"=>"SELECT * FROM system WHERE system_uuid = '" . $pc . "' AND system_timestamp = '".$GLOBAL["system_timestamp"]."' ",
                                                     "fields"=>array("10"=>array("name"=>"system_os_name", "head"=>__("Operating System"),),
                                                                     "20"=>array("name"=>"system_registered_user", "head"=>__("Registered User"),),
-                                                                    "30"=>array("name"=>"system_organisation", "head"=>__("Registered Organisation"),),
+                                                                    "30"=>array("name"=>"system_organisation", "head"=>__("Registered Organization"),),
                                                                     "40"=>array("name"=>"system_build_number", "head"=>__("OS Version (Build Number)"),),
                                                                     "50"=>array("name"=>"system_service_pack", "head"=>__("Service Pack"),),
-                                                                    "60"=>array("name"=>"system_windows_directory", "head"=>__("Windows Directory"),),
-                                                                    "70"=>array("name"=>"system_serial_number", "head"=>__("Windows Serial"),),
-                                                                    "80"=>array("name"=>"date_system_install", "head"=>__("OS Installed On"),),
-                                                                    "90"=>array("name"=>"system_language", "head"=>__("Language"),),
-                                                                    "100"=>array("name"=>"time_caption", "head"=>__("Time Zone"),),
-                                                                    "110"=>array("name"=>"time_daylight", "head"=>__("Daylight Savings Zone"),),
-                                                                    "120"=>array("name"=>"system_last_boot", "head"=>__("Last Boot On"),),
+																	"60"=>array("name"=>"system_os_arch", "head"=>__("OS Architecture"),),
+                                                                    "70"=>array("name"=>"system_windows_directory", "head"=>__("Windows Directory"),),
+                                                                    "80"=>array("name"=>"system_serial_number", "head"=>__("Windows Serial"),),
+                                                                    "90"=>array("name"=>"date_system_install", "head"=>__("OS Installed On"),),
+                                                                    "100"=>array("name"=>"system_language", "head"=>__("Language"),),
+                                                                    "110"=>array("name"=>"time_caption", "head"=>__("Time Zone"),),
+                                                                    "120"=>array("name"=>"time_daylight", "head"=>__("Daylight Savings Zone"),),
+                                                                    "130"=>array("name"=>"system_last_boot", "head"=>__("Last Boot On"),),
                                                                    ),
                                                     ),
                                    "system_software"=>array(

@@ -25,8 +25,10 @@ Recent Changes:
 	[Edoardo]		01/08/2009	Upgrade to version 09.08.01 - Added 'service_start_name' column to the 'service' table
 	[Nick Brown]	03/09/2009	Upgrade to Version 09.09.03 - Added OpenLDAP support 
 	[Chad Sikorra]	04/10/2009	Upgrade to Version 09.10.03 - Update regex that helps determine AES key.
-					Add version checks to 09.03.17
-	[Edoardo]		28/05/2010	Upgrade to version 10.05.25 - Added 'hard_drive_predicted_failure' column to the 'hard_drive' table				
+								Add version checks to 09.03.17
+	[Edoardo]		28/05/2010	Upgrade to version 10.05.25 - Added 'hard_drive_predicted_failure' column to the 'hard_drive' table	
+	[Edoardo]		27/07/2010	(by jpa) Upgrade to version 10.07.26 - Added 'system_os_arch' column to the 'system' table	
+
 
 **********************************************************************************************************/
 ?>
@@ -837,8 +839,11 @@ upgrade ($version,"09.12.23", $sql);
 $sql = "ALTER TABLE `hard_drive` ADD COLUMN `hard_drive_predicted_failure` VARCHAR(10) NOT NULL DEFAULT '' AFTER `hard_drive_status`";
 upgrade ($version,"10.05.25", $sql);
 
-// ************************************************************************************************
+// *************  Version 10.07.26 *******************************************************************
+$sql = "ALTER TABLE `system` ADD COLUMN `system_os_arch` VARCHAR(7) NOT NULL DEFAULT '' AFTER `system_os_name`";
+upgrade ($version,"10.07.26", $sql);
 
+// ************************************************************************************************
 
 set_time_limit (30);
 

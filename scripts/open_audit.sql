@@ -1295,6 +1295,7 @@ CREATE TABLE `system` (
   `system_boot_device` varchar(100) NOT NULL default '',
   `system_os_type` varchar(50) NOT NULL default '',
   `system_os_name` varchar(100) NOT NULL default '',
+  `system_os_arch` varchar(7) NOT NULL default '',
   `system_country_code` varchar(50) NOT NULL default '',
   `system_description` varchar(50) NOT NULL default '',
   `system_organisation` varchar(80) NOT NULL default '',
@@ -1497,7 +1498,7 @@ CREATE TABLE `ws_log` (
   PRIMARY KEY(`ws_log_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
-INSERT INTO config (config_name, config_value) VALUES ('version','10.05.25');
+INSERT INTO config (config_name, config_value) VALUES ('version','10.07.26');
 INSERT INTO audit_settings () VALUES ();
 
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;

@@ -26,9 +26,10 @@ Recent Changes:
 [Edoardo]	01/08/2009	Added in the 'insert_service' function the adding/updating of the 'service.service_start_name' field.
 [Edoardo]				Fixed a bug in updating the 'service' table (only name and display_name are static, every other field is dynamic and needs to be updated)	
 [Edoardo]	21/05/2010	Filtered out MS Office virtual printers, if any, in the 'insert_printers' function.
-[Edoardo]	27/05/2010	Filtered out Citrix virtual printers in the 'insert_printers' function - Fix by jpa.
+[Edoardo]	27/05/2010	(by jpa) Filtered out Citrix virtual printers in the 'insert_printers' function.
 [Edoardo]	28/05/2010	Modified function 'insert_harddrive()' to to add/update the 'hard_drive_predicted_failure' field.
 [Edoardo]	31/05/2010	Added printer_driver_name in function 'insert_printer' - Suggested by jpa	
+[Edoardo]	27/07/2010	(by jpa) Added 'system_os_arch' in function 'insert_system03'
 					
 **********************************************************************************************************/
 
@@ -527,6 +528,7 @@ function insert_system03 ($split){
     $system_version = trim($extended[13]);
     $system_windows_directory = trim($extended[14]);
     $system_last_boot = trim($extended[15]);
+    $system_os_arch = trim($extended[16]);
     $sql  = "UPDATE system SET system_boot_device = '$system_boot_device', system_build_number = '$system_build_number', ";
     $sql .= "system_os_type = '$system_os_type', system_os_name = '$system_os_name', ";
     $sql .= "system_country_code = '$system_country_code', system_description = '$system_description', ";
@@ -534,7 +536,7 @@ function insert_system03 ($split){
     $sql .= "system_language = '$system_language', system_registered_user = '$system_registered_user', ";
     $sql .= "system_serial_number = '$system_serial_number', system_service_pack = '$system_service_pack', ";
     $sql .= "system_version = '$system_version', system_windows_directory = '$system_windows_directory', ";
-    $sql .= "system_last_boot = '$system_last_boot' ";
+    $sql .= "system_last_boot = '$system_last_boot', system_os_arch = '$system_os_arch' ";
     $sql .= "WHERE system_uuid = '$uuid' AND system_timestamp = '$timestamp'";
     if ($verbose == "y"){echo $sql . "<br />\n\n";}
     $result = mysql_query($sql) or die ('Insert Failed: ' . mysql_error() . '<br />' . $sql);
