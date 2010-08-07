@@ -30,6 +30,7 @@ Recent Changes:
 [Edoardo]	28/05/2010	Modified function 'insert_harddrive()' to to add/update the 'hard_drive_predicted_failure' field.
 [Edoardo]	31/05/2010	Added printer_driver_name in function 'insert_printer' - Suggested by jpa	
 [Edoardo]	27/07/2010	(by jpa) Added 'system_os_arch' in function 'insert_system03'
+[Edoardo]	07/08/2010	Fixed the 'insert_software()' function to update all fields
 					
 **********************************************************************************************************/
 
@@ -1882,10 +1883,10 @@ function insert_software ($split) {
     $software_system_component = trim($extended[8]);
     $software_url = trim($extended[9]);
     $software_comments = trim($extended[10]);
-    $sql  = "UPDATE software SET ";
-    $sql .= "software_timestamp = '$timestamp', ";
-    $sql .= "software_count = '$count', ";
-    $sql .= "software_version = '$software_version' ";
+    $sql  = "UPDATE software SET software_timestamp = '$timestamp', software_count = '$count', software_version = '$software_version', ";
+    $sql .= "software_location = '$software_location', software_uninstall = '$software_uninstall', software_install_date = '$software_install_date', ";
+	$sql .= "software_publisher = '$software_publisher', software_install_source = '$software_install_source', software_system_component = '$software_system_component', ";
+	$sql .= "software_url = '$software_url', software_comment = '$software_comments' ";
     $sql .= "WHERE software_uuid = '$uuid' AND ";
     $sql .= "software_name = '$software_name' AND ";
     $sql .= "(software_timestamp = '$software_timestamp' OR software_timestamp = '$timestamp')";
