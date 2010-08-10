@@ -19,11 +19,12 @@ Change Log:
 	[Edoardo]		24/11/2008	Fixed Symantec client security detection for servers on the Security system viewdef - Other antivirus section
 	[Edoardo]		04/03/2009	Sorted partitions list (by partition ID and drive letter)
 	[Edoardo]		25/03/2009	Fixed query in the Software section to exclude the word 'Update' in software_name (like Java(TM) 6 Update X, LiveUpdate (Symantec Corp.), MS Windows Server Update Services and so on)
-	[Edoardo]		21/05/2009	Added Printer share name to the Printers section
+	[Edoardo]		21/05/2009	Added Printer share name to the Printer section
 	[Edoardo]		01/08/2009	Added Logon As to the Services section
 	[Edoardo]		28/05/2010	Added S.M.A.R.T. Failure Predicted to the Fixed Disks section
 	[Edoardo]		31/05/2010	(suggested by jpa) Added Driver Name to the Printer section
 	[Edoardo]		27/07/2010	Added OS Arch. to the OS section
+	[Edoardo]		10/08/2010	Removed Printer section horizontal layout to fix pdf files creation
 
 **********************************************************************************************************/
 $query_array=array("name"=>array("name"=>__("Report"),
@@ -315,18 +316,19 @@ $query_array=array("name"=>array("name"=>__("Report"),
                                    "printer"=>array(
                                                     "headline"=>__("Printer"),
                                                     "sql"=>"SELECT * FROM other WHERE other_type = 'printer' AND other_linked_pc = '" . $pc . "' AND other_timestamp = '".$GLOBAL["system_timestamp"]."' ",
-                                                    "table_layout"=>"horizontal",
+													//"table_layout"=>"horizontal",
                                                     "fields"=>array("10"=>array("name"=>"other_description", "head"=>__("Description"),),
                                                                     "20"=>array("name"=>"other_p_port_name", "head"=>__("Port"),),
                                                                     "30"=>array("name"=>"other_p_shared", "head"=>__("Shared"),),
                                                                     "40"=>array("name"=>"other_p_share_name", "head"=>__("Share Name"),),
                                                                     "50"=>array("name"=>"other_model", "head"=>__("Driver Name"),),
+																	"60"=>array("name"=>" ", "head"=>__(" "),),
                                                                    ),
                                                     ),
                                    "usb"=>array(
                                                     "headline"=>__("USB"),
                                                     "sql"=>"SELECT * FROM usb WHERE usb_uuid = '" . $pc . "' AND usb_timestamp = '".$GLOBAL["system_timestamp"]."' AND usb_manufacturer <> '(Standard system devices)' AND usb_caption <> 'HID-compliant consumer control device' AND usb_manufacturer <> '(Standard USB Host Controller)' ORDER BY usb_caption",
-//                                                    "table_layout"=>"horizontal",
+													//"table_layout"=>"horizontal",
                                                     "fields"=>array("10"=>array("name"=>"usb_caption", "head"=>__("Name"),),
                                                                     "20"=>array("name"=>"usb_description", "head"=>__("Description"),),
                                                                     "30"=>array("name"=>"usb_manufacturer", "head"=>__("Manufacturer"),),
@@ -364,7 +366,7 @@ $query_array=array("name"=>array("name"=>__("Report"),
                                    "uninstalled_software"=>array(
                                                     "headline"=>__("Uninstalled Software"),
                                                     "sql"=>"SELECT software_name, software_version, software_publisher FROM software, system WHERE system_uuid = '".$pc."' AND software_uuid = system_uuid AND software_timestamp <> system_timestamp GROUP BY software_name, software_version ",
-//                                                    "table_layout"=>"horizontal",
+													//"table_layout"=>"horizontal",
                                                     "fields"=>array("10"=>array("name"=>"software_name", "head"=>__("Name"),),
                                                                     "20"=>array("name"=>"software_version", "head"=>__("Version"),),
                                                                     "30"=>array("name"=>"software_publisher", "head"=>__("Publisher"),),
@@ -487,7 +489,7 @@ $query_array=array("name"=>array("name"=>__("Report"),
                                    "ip_routes"=>array(
                                                     "headline"=>__("IP Routes"),
                                                     "sql"=>"SELECT * FROM ip_route WHERE ip_route_uuid = '".$_REQUEST["pc"]."' AND ip_route_timestamp = '".$GLOBAL["system_timestamp"]."' ORDER BY ip_route_destination",
-//                                                    "table_layout"=>"horizontal",
+													//"table_layout"=>"horizontal",
                                                     "fields"=>array("10"=>array("name"=>"ip_route_destination", "head"=>__("Destination"),),
                                                                     "20"=>array("name"=>"ip_route_mask", "head"=>__("Mask"),),
                                                                     "30"=>array("name"=>"ip_route_metric", "head"=>__("Metric"),),
@@ -509,7 +511,7 @@ $query_array=array("name"=>array("name"=>__("Report"),
                                    "mapped"=>array(
                                                     "headline"=>__("Mapped Drives"),
                                                     "sql"=>"SELECT * FROM mapped WHERE mapped_uuid = '".$_REQUEST["pc"]."' AND mapped_timestamp = '".$GLOBAL["system_timestamp"]."' ORDER BY mapped_username, mapped_device_id",
-//                                                    "table_layout"=>"horizontal",
+													//"table_layout"=>"horizontal",
                                                     "fields"=>array("10"=>array("name"=>"mapped_username", "head"=>__("UserName"),),
                                                                     "20"=>array("name"=>"mapped_device_id", "head"=>__("Drive ID"),),
                                                                     "30"=>array("name"=>"mapped_provider_name", "head"=>__("UNC Path"),),
@@ -558,7 +560,7 @@ $query_array=array("name"=>array("name"=>__("Report"),
                                                                                          AND (software_name LIKE '%ZoneAlarm%' 
                                                                                               OR software_name LIKE '%Internet Security%'
                                                                                               OR software_name LIKE '%Firewall%')",
-//                                                    "table_layout"=>"horizontal",
+													//"table_layout"=>"horizontal",
                                                     "fields"=>array("10"=>array("name"=>"software_name", "head"=>__("Name"),),
                                                                     "20"=>array("name"=>"software_version", "head"=>__("Version"),),
                                                                     "30"=>array("name"=>"software_publisher", "head"=>__("Publisher"),),
@@ -582,7 +584,7 @@ $query_array=array("name"=>array("name"=>__("Report"),
                                                                                               OR software_name LIKE '%Internet Security%'
                                                                                               OR software_name LIKE '%Virus%'
                                                                                               OR software_name LIKE '%Client Security%')",
-//                                                    "table_layout"=>"horizontal",
+													//"table_layout"=>"horizontal",
                                                     "fields"=>array("10"=>array("name"=>"software_name", "head"=>__("Name"),),
                                                                     "20"=>array("name"=>"software_version", "head"=>__("Version"),),
                                                                     "30"=>array("name"=>"software_publisher", "head"=>__("Publisher"),),
@@ -611,7 +613,7 @@ $query_array=array("name"=>array("name"=>__("Report"),
                                    "nmap"=>array(
                                                     "headline"=>__("Open Ports discovered by Nmap"),
                                                     "sql"=>"SELECT * from nmap_ports WHERE nmap_other_id = '" . $pc . "' ORDER BY nmap_port_number, nmap_port_proto, nmap_port_name, nmap_port_version ",
-//                                                    "table_layout"=>"horizontal",
+													//"table_layout"=>"horizontal",
                                                     "fields"=>array("10"=>array("name"=>"nmap_port_number", "head"=>__("Port"),),
                                                                     "20"=>array("name"=>"nmap_port_proto", "head"=>__("Protocol"),),
                                                                     "30"=>array("name"=>"nmap_port_name", "head"=>__("Service"),),
@@ -635,7 +637,7 @@ $query_array=array("name"=>array("name"=>__("Report"),
                                    "groups"=>array(
                                                     "headline"=>__("Groups"),
                                                     "sql"=>"SELECT * FROM groups WHERE groups_uuid = '".$pc."' AND groups_timestamp = '".$GLOBAL["system_timestamp"]."' ORDER BY groups_name ",
-//                                                    "table_layout"=>"horizontal",
+													//"table_layout"=>"horizontal",
                                                     "fields"=>array("10"=>array("name"=>"groups_name", "head"=>__("Name"),),
                                                                     "20"=>array("name"=>"groups_members", "head"=>__("Members"),),
                                                                     "30"=>array("name"=>"gd_description", "head"=>__("Description"),),
@@ -666,7 +668,7 @@ $query_array=array("name"=>array("name"=>__("Report"),
                                                         "headline"=>__("IIS Web Service Extensions"),
                                                         "sql"=>"SELECT * FROM iis_web_ext WHERE iis_web_ext_uuid = '" . $_GET["pc"] . "' AND iis_web_ext_timestamp = '".$GLOBAL["system_timestamp"]."' 
                                                                 ORDER BY iis_web_ext_desc",
-//                                                        "table_layout"=>"horizontal",
+														//"table_layout"=>"horizontal",
                                                         "fields"=>array("10"=>array("name"=>"iis_web_ext_desc", "head"=>__("Description"),),
                                                                         "20"=>array("name"=>"iis_web_ext_path", "head"=>__("Path"),),
                                                                         "30"=>array("name"=>"iis_web_ext_access", "head"=>__("Access"),),
@@ -701,7 +703,7 @@ $query_array=array("name"=>array("name"=>__("Report"),
                                    "iis_ip"=>array(
                                                    "headline"=>__("IIS IP settings"),
                                                    "sql"=>"SELECT iis_ip_site, iis_ip_ip_address, iis_ip_port, iis_ip_host_header FROM iis_ip where iis_ip_uuid = '".$pc."' AND iis_ip_timestamp = '".$GLOBAL["system_timestamp"]."' ORDER BY iis_ip_site ",
-//                                                   "table_layout"=>"horizontal",
+													//"table_layout"=>"horizontal",
                                                    "fields"=>array("10"=>array("name"=>"iis_ip_site", "head"=>__("Site ID"),),
                                                                    "20"=>array("name"=>"iis_ip_ip_address", "head"=>__("IP Address"),),
                                                                    "30"=>array("name"=>"iis_ip_port", "head"=>__("Port"),),
@@ -712,7 +714,7 @@ $query_array=array("name"=>array("name"=>__("Report"),
                                    "iis_vd"=>array(
                                                    "headline"=>__("IIS Virtual Directories"),
                                                    "sql"=>"SELECT * from iis_vd where iis_vd_uuid = '".$pc."' AND iis_vd_timestamp = '".$GLOBAL["system_timestamp"]."' ORDER BY iis_vd_site ",
-//                                                   "table_layout"=>"horizontal",
+													//"table_layout"=>"horizontal",
                                                    "fields"=>array("10"=>array("name"=>"iis_vd_site", "head"=>__("Site ID"),),
                                                                    "20"=>array("name"=>"iis_vd_name", "head"=>__("Name"),),
                                                                    "30"=>array("name"=>"iis_vd_path", "head"=>__("Path"),),
