@@ -25,6 +25,7 @@ Change Log:
 	[Edoardo]		31/05/2010	(suggested by jpa) Added Driver Name to the Printer section
 	[Edoardo]		27/07/2010	Added OS Arch. to the OS section
 	[Edoardo]		10/08/2010	Removed Printer section horizontal layout to fix pdf files creation
+	[Edoardo]		26/08/2010	Fixed users/groups labels (users/groups description to be fixed)
 
 **********************************************************************************************************/
 $query_array=array("name"=>array("name"=>__("Report"),
@@ -628,10 +629,11 @@ $query_array=array("name"=>array("name"=>__("Report"),
                                                                     "20"=>array("name"=>"users_full_name", "head"=>__("Full Name"),),
                                                                     "30"=>array("name"=>"users_sid", "head"=>__("SID"),),
                                                                     "40"=>array("name"=>"users_disabled", "head"=>__("Disabled"),),
-                                                                    "50"=>array("name"=>"users_password_changeable", "head"=>__("Password "),),
-                                                                    "60"=>array("name"=>"users_password_required", "head"=>__("Changeable"),),
-                                                                    "70"=>array("name"=>"ud_description", "head"=>__("Description"),),
-                                                                    "80"=>array("name"=>" ", "head"=>__(" "),),
+                                                                    "50"=>array("name"=>"users_password_changeable", "head"=>__("Password changeable"),),
+                                                                    "60"=>array("name"=>"users_password_required", "head"=>__("Password required"),),
+                                                                    //"70"=>array("name"=>"ud_description", "head"=>__("Description"),),
+																	"80"=>array("name"=>"users_password_expires", "head"=>__("Password expires"),),
+                                                                    "90"=>array("name"=>" ", "head"=>__(" "),),
                                                                    ),
                                                     ),
                                    "groups"=>array(
@@ -640,8 +642,9 @@ $query_array=array("name"=>array("name"=>__("Report"),
 													//"table_layout"=>"horizontal",
                                                     "fields"=>array("10"=>array("name"=>"groups_name", "head"=>__("Name"),),
                                                                     "20"=>array("name"=>"groups_members", "head"=>__("Members"),),
-                                                                    "30"=>array("name"=>"gd_description", "head"=>__("Description"),),
-                                                                    "40"=>array("name"=>" ", "head"=>__(" "),),
+                                                                    //"30"=>array("name"=>"gd_description", "head"=>__("Description"),),
+																	"40"=>array("name"=>"groups_sid", "head"=>__("SID"),),
+                                                                    "50"=>array("name"=>" ", "head"=>__(" "),),
                                                                    ),
                                                     ),
                                    "iis"=>array(

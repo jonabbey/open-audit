@@ -54,6 +54,7 @@
 '								 Removed wscript.quit after completing domain and PC list file auditing, otherwise email sending is broken.
 '								 Deleted oShell object at the end of scheduled tasks auditing, to terminate RPC connections to audited hosts caused by the schtasks.exe command
 '	[Edoardo]		27/07/2010	 (by jpa) Added auditing of OS Architecture in system03
+'	[Edoardo]		26/08/2010	 Fixed auditing of local groups members for standalone (non-domain) PCs
 
 '***********************************************************************************************
 
@@ -110,7 +111,10 @@ form_total = ""
 ' using the ConnectServer method of the SWbemLocator object.
 Const wbemConnectFlagUseMaxWait = 128
 
-'
+' Used by the OpenDSObject method of the "WinNT:" GetObject call to pass alternate credentials
+Const ADS_SECURE_AUTHENTICATION = 1
+Const ADS_USE_ENCRYPTION = 2
+
 ' Find out the name of this script, usually audit.vbs but it depends where we were called form.
 full_script_name = WScript.ScriptFullName
 ' Strip off the .vbs and the path, so we can create files with the same suffix. 
@@ -2119,7 +2123,12 @@ else
   Set colItems = objWMIService.ExecQuery("Select * from Win32_Group where Domain = '" & system_name & "'",,48)
   For Each objItem in colItems
     users = ""
-    Set colGroups = GetObject("WinNT://" & system_name & "")
+	If (strUser <> "" and strPass <> "") then
+      Set objDSO = GetObject("WinNT:")
+	  Set colGroups = objDSO.OpenDSObject("WinNT://" & system_name & "", strUser, strPass, ADS_USE_ENCRYPTION OR ADS_SECURE_AUTHENTICATION)
+	Else
+	  Set colGroups = GetObject("WinNT://" & system_name & "")
+	End If
     colGroups.Filter = Array("group")
     For Each objGroup In colGroups
       if objGroup.Name = objItem.Name then
@@ -2135,10 +2144,10 @@ else
     if users = "" then
       users = "No Members in this group."
     end if
-    form_input = "l_group^^^" & clean(objItem.Description) & "^^^" _
-                             & clean(objItem.Name)         & "^^^" _
-                             & users                       & "^^^" _
-                             & clean(objItem.SID)          & "^^^"
+    form_input = "l_group^^^" & clean(objItem.Description)  & "^^^" _
+                              & clean(objItem.Name)         & "^^^" _
+                              & users                       & "^^^" _
+                              & clean(objItem.SID)          & "^^^"
     entry form_input,comment,objTextFile,oAdd,oComment
     form_input = ""
   Next
