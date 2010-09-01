@@ -3,6 +3,7 @@
 Recent Changes:
 
 [Edoardo]	26/08/2010	Sorted users query and fixed labels (users/groups description to be fixed)
+[Edoardo]	01/09/2010	Added "Locked out" in the Users section
 					
 **********************************************************************************************************/
 
@@ -22,6 +23,7 @@ $query_array=array("name"=>array("name"=>__("Users & Groups"),
                                                                     "60"=>array("name"=>"users_password_required", "head"=>__("Password required"),),
                                                                     //"70"=>array("name"=>"ud_description", "head"=>__("Description"),),
                                                                     "80"=>array("name"=>"users_password_expires", "head"=>__("Password expires"),),
+																	"90"=>array("name"=>"users_lockout", "head"=>__("Locked Out"),),
                                                                    ),
                                                     ),
                                    "groups"=>array(

@@ -1452,6 +1452,7 @@ CREATE TABLE `users` (
   `users_password_expires` varchar(20) NOT NULL default '',
   `users_password_required` varchar(20) NOT NULL default '',
   `users_sid` varchar(100) NOT NULL default '',
+  `users_lockout` varchar(10) NOT NULL default '',
   `users_timestamp` bigint(20) unsigned NOT NULL default '0',
   `users_first_timestamp` bigint(20) unsigned NOT NULL default '0',
   PRIMARY KEY  (`users_id`),
@@ -1498,7 +1499,7 @@ CREATE TABLE `ws_log` (
   PRIMARY KEY(`ws_log_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
-INSERT INTO config (config_name, config_value) VALUES ('version','10.07.26');
+INSERT INTO config (config_name, config_value) VALUES ('version','10.09.01');
 INSERT INTO audit_settings () VALUES ();
 
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;

@@ -28,7 +28,7 @@ Recent Changes:
 								Add version checks to 09.03.17
 	[Edoardo]		28/05/2010	Upgrade to version 10.05.25 - Added 'hard_drive_predicted_failure' column to the 'hard_drive' table	
 	[Edoardo]		27/07/2010	(by jpa) Upgrade to version 10.07.26 - Added 'system_os_arch' column to the 'system' table	
-
+	[Edoardo]		01/09/2010	Upgrade to version 10.09.01 - Added 'users_lockout' column to the 'users' table
 
 **********************************************************************************************************/
 ?>
@@ -842,6 +842,12 @@ upgrade ($version,"10.05.25", $sql);
 // *************  Version 10.07.26 *******************************************************************
 $sql = "ALTER TABLE `system` ADD COLUMN `system_os_arch` VARCHAR(7) NOT NULL DEFAULT '' AFTER `system_os_name`";
 upgrade ($version,"10.07.26", $sql);
+
+// ************************************************************************************************
+
+// *************  Version 10.09.01 *******************************************************************
+$sql = "ALTER TABLE `users` ADD COLUMN `users_lockout` VARCHAR(10) NOT NULL DEFAULT '' AFTER `users_sid`";
+upgrade ($version,"10.09.01", $sql);
 
 // ************************************************************************************************
 

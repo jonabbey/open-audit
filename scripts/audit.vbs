@@ -55,6 +55,7 @@
 '								 Deleted oShell object at the end of scheduled tasks auditing, to terminate RPC connections to audited hosts caused by the schtasks.exe command
 '	[Edoardo]		27/07/2010	 (by jpa) Added auditing of OS Architecture in system03
 '	[Edoardo]		26/08/2010	 Fixed auditing of local groups members for standalone (non-domain) PCs
+'	[Edoardo]		01/09/2010	 Added detection of the locked out property for User accounts 
 
 '***********************************************************************************************
 
@@ -2171,7 +2172,8 @@ else
                              & clean(objItem.PasswordChangeable) & "^^^" _
                              & clean(objItem.PasswordExpires)    & "^^^" _
                              & clean(objItem.PasswordRequired)   & "^^^" _
-                             & clean(objItem.SID)                & "^^^"
+                             & clean(objItem.SID)                & "^^^" _
+							 & clean(objItem.Lockout)            & "^^^"
     entry form_input,comment,objTextFile,oAdd,oComment
     form_input = ""
   Next

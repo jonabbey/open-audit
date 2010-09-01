@@ -31,6 +31,7 @@ Recent Changes:
 [Edoardo]	31/05/2010	Added printer_driver_name in function 'insert_printer' - Suggested by jpa	
 [Edoardo]	27/07/2010	(by jpa) Added 'system_os_arch' in function 'insert_system03'
 [Edoardo]	07/08/2010	Fixed the 'insert_software()' function to update all fields
+[Edoardo]	01/09/2010	Added 'users_lockout' in function 'insert_users()' and fixed updating of other dynamic fields in the 'users' table						
 					
 **********************************************************************************************************/
 
@@ -1637,6 +1638,7 @@ function insert_user ($split) {
     $users_password_expires = trim($extended[6]);
     $users_password_required = trim($extended[7]);
     $users_sid = trim($extended[8]);
+	$users_lockout = trim($extended[9]);
     if (is_null($users_timestamp)){
       $sql = "SELECT MAX(users_timestamp) FROM users WHERE users_uuid = '$uuid'";
       if ($verbose == "y"){echo $sql . "<br />\n\n";}
@@ -1644,28 +1646,30 @@ function insert_user ($split) {
       $myrow = mysql_fetch_array($result);
       if ($myrow["MAX(users_timestamp)"]) {$users_timestamp = $myrow["MAX(users_timestamp)"];} else {$users_timestamp = "";}
     } else {}
-    $sql  = "SELECT count(users_uuid) AS count FROM users WHERE users_uuid = '$uuid' AND ";
-    $sql .= "users_disabled = '$users_disabled' AND ";
-    $sql .= "users_full_name = '$users_full_name' AND users_password_changeable = '$users_password_changeable' AND ";
-    $sql .= "users_password_expires = '$users_password_expires' AND users_password_required = '$users_password_required' AND ";
-    $sql .= "users_sid = '$users_sid' AND (users_timestamp = '$users_timestamp' OR users_timestamp = '$timestamp')";
+    $sql  = "SELECT count(users_uuid) AS count FROM users ";
+    $sql .= "WHERE users_uuid = '$uuid' AND users_sid = '$users_sid' AND ";
+    $sql .= "(users_timestamp = '$users_timestamp' OR users_timestamp = '$timestamp')";
     if ($verbose == "y"){echo $sql . "<br />\n\n";}
     $result = mysql_query($sql) or die ('Insert Failed: ' . mysql_error() . '<br />' . $sql);
     $myrow = mysql_fetch_array($result);
     if ($verbose == "y"){echo "Count: " . $myrow['count'] . "<br />\n\n";}
     if ($myrow['count'] == "0"){
-      // Insert into database
-      $sql  = "INSERT INTO users (users_uuid, users_disabled, users_full_name, ";
-      $sql .= "users_name, users_password_changeable, users_password_expires, users_password_required, users_sid, ";
+      // New user - Insert into database
+      $sql  = "INSERT INTO users (users_uuid, users_disabled, users_full_name, users_name, ";
+      $sql .= "users_password_changeable, users_password_expires, users_password_required, users_sid, users_lockout, ";
       $sql .= "users_timestamp, users_first_timestamp) VALUES (";
-      $sql .= "'$uuid', '$users_disabled', '$users_full_name', ";
-      $sql .= "'$users_name', '$users_password_changeable', '$users_password_expires', '$users_password_required', '$users_sid', ";
+      $sql .= "'$uuid', '$users_disabled', '$users_full_name', '$users_name', ";
+      $sql .= "'$users_password_changeable', '$users_password_expires', '$users_password_required', '$users_sid', '$users_lockout', ";
       $sql .= "'$timestamp', '$timestamp')";
       if ($verbose == "y"){echo $sql . "<br />\n\n";}
       $result = mysql_query($sql) or die ('Insert Failed: ' . mysql_error() . '<br />' . $sql);
     } else {
-      // Already present in database - update timestamp
-      $sql = "UPDATE users SET users_timestamp = '$timestamp' WHERE users_sid = '$users_sid' AND users_uuid = '$uuid' AND users_timestamp = '$users_timestamp'";
+      // Already present in database - update timestamp and dynamic values
+      $sql  = "UPDATE users SET users_disabled = '$users_disabled', users_full_name = '$users_full_name', ";
+	  $sql .= "users_name = '$users_name', users_password_changeable = '$users_password_changeable', ";
+	  $sql .= "users_password_expires = '$users_password_expires', users_password_required = '$users_password_required', ";
+	  $sql .= "users_lockout = '$users_lockout', users_timestamp = '$timestamp' ";
+	  $sql .= "WHERE users_uuid = '$uuid' AND users_sid = '$users_sid' AND users_timestamp = '$users_timestamp'";
       if ($verbose == "y"){echo $sql . "<br />\n\n";}
       $result = mysql_query($sql) or die ('Insert Failed: ' . mysql_error() . '<br />' . $sql);
     }
