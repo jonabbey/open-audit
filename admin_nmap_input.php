@@ -1,4 +1,25 @@
 <?php
+/**********************************************************************************************************
+Module:	admin_nmap_input.php
+
+Description:
+			
+Recent Changes:
+	
+	[mikeyrb]	29/12/2006	Changed png replacement to a CSS trick (should speed up page load, reduce server load)
+	[Andrew]	14/08/2007	Declare vars for admin_nmap_input.php to avoid warnings
+	[Mark]		17/08/2007	
+	[mikeyrb]	02/10/2007	Removed extra ^M characters from files
+	[Andrew]	02/11/2007	Fix to nmap input form, for unreachable hosts. Thanks to ef.
+	[Andrew]	07/11/2007	Fixed issues with IP 000.000.000.000 and/or MAC 00:00:00:00:00:00
+	[Andrew]	14/11/2007	Added UDP Port scanning
+	[Edoardo]	16/04/2008	Fixed IP address detection for other items
+	[Edoardo]	03/11/2008	(by Giacomo) Fixed hosts detection when no open ports are available, even with latest nmap versions
+	[Edoardo]	07/09/2009	(by Chad) Fixed SQL query
+	[Edoardo]	23/09/2010	(by jpa) Updated to include the string "Nmap scan report for".
+ 
+**********************************************************************************************************/
+
 $page = "add_pc";
 include "include.php";
 echo "<td valign=\"top\">\n";
@@ -17,6 +38,10 @@ $mac="00:00:00:00:00:00";
 $timestamp = date("YmdHis");
 $uuid = "";
 $process = "";
+
+$sql = "SET @@session.sql_mode=''";
+$result = mysql_query($sql);
+
 if (isset($_POST["submit"])){
   $input = $_POST['add'];
   $input = explode("\n", $input);
@@ -60,6 +85,36 @@ if (isset($_POST["submit"])){
         $temp2 = $temp[3];
         $temp = explode(":",$temp2);
         $ip_address = $temp[0];
+        $ip_explode = explode(".",$ip_address);
+        if (strlen($ip_explode[0]) < 2){$ip_explode[0] = "0" . $ip_explode[0];}
+        if (strlen($ip_explode[0]) < 3){$ip_explode[0] = "0" . $ip_explode[0];}
+        if (strlen($ip_explode[1]) < 2){$ip_explode[1] = "0" . $ip_explode[1];}
+        if (strlen($ip_explode[1]) < 3){$ip_explode[1] = "0" . $ip_explode[1];}
+        if (strlen($ip_explode[2]) < 2){$ip_explode[2] = "0" . $ip_explode[2];}
+        if (strlen($ip_explode[2]) < 3){$ip_explode[2] = "0" . $ip_explode[2];}
+        if (strlen($ip_explode[3]) < 2){$ip_explode[3] = "0" . $ip_explode[3];}
+        if (strlen($ip_explode[3]) < 3){$ip_explode[3] = "0" . $ip_explode[3];}
+        $ip_address = $ip_explode[0] . "." . $ip_explode[1] . "." . $ip_explode[2] . "." . $ip_explode[3];
+        echo "IP Address: " . $ip_address . "<br />";
+        $name = $ip_address;
+        echo "Name: " . $name . "<br />";
+      }
+    }
+    if (substr($split, 0, 20) == "Nmap scan report for") {
+      // OK - we have a hit.
+      if (strpos($split, ")") !== false){
+        // Name resolution succeeded 
+        $temp = explode(")",substr($split, strpos($split, "(")+1));
+        $ip_address = $temp[0];
+        echo "IP Address: " . $ip_address . "<br />";
+        $temp = explode(" ", $split);
+        $temp2 = explode(".", $temp[4]);
+        $name = $temp2[0];
+        echo "Name: " . $name . "<br />";
+      } else {
+        // No name resolution
+        $temp = explode(" ",$split);
+        $ip_address = trim($temp[4]);
         $ip_explode = explode(".",$ip_address);
         if (strlen($ip_explode[0]) < 2){$ip_explode[0] = "0" . $ip_explode[0];}
         if (strlen($ip_explode[0]) < 3){$ip_explode[0] = "0" . $ip_explode[0];}
@@ -238,7 +293,7 @@ if (isset($_POST["submit"])){
                } 
     }// End of foreach
   }//End of if ($process <> "")
- 
+
 
 //echo "<br />" .$sql . "<br />";
 
